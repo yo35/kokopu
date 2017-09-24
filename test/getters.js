@@ -13,9 +13,9 @@ describe('Getters', function() {
 	it('Get turn 1', function() { var p=new RPBChess.Position(); test.value(p.turn()).is('w'); });
 	it('Get turn 2', function() { var p=new RPBChess.Position(customFEN); test.value(p.turn()).is('b'); });
 
-	it('Get castling 1', function() { var p=new RPBChess.Position(); test.value(p.castleRights('wq')).is(true); });
-	it('Get castling 2', function() { var p=new RPBChess.Position(customFEN); test.value(p.castleRights('bq')).is(false); });
-	it('Get castling 3', function() { var p=new RPBChess.Position(customFEN); test.value(p.castleRights('bk')).is(true); });
+	it('Get castling 1', function() { var p=new RPBChess.Position(); test.value(p.castling('wq')).is(true); });
+	it('Get castling 2', function() { var p=new RPBChess.Position(customFEN); test.value(p.castling('bq')).is(false); });
+	it('Get castling 3', function() { var p=new RPBChess.Position(customFEN); test.value(p.castling('bk')).is(true); });
 
 	it('Get en-passant 1', function() { var p=new RPBChess.Position(); test.value(p.enPassant()).is('-'); });
 	it('Get en-passant 2', function() { var p=new RPBChess.Position(customFEN); test.value(p.enPassant()).is('e'); });
@@ -30,7 +30,7 @@ describe('Getters', function() {
 	['bK', 'wa'].forEach(function(elem) {
 		it('Error for castling with ' + elem, function() {
 			var p=new RPBChess.Position();
-			test.exception(function() { p.castleRights(elem); }).isInstanceOf(RPBChess.exception.IllegalArgument);
+			test.exception(function() { p.castling(elem); }).isInstanceOf(RPBChess.exception.IllegalArgument);
 		});
 	});
 
