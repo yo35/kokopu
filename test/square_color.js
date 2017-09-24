@@ -4,14 +4,14 @@ const test = require('unit.js');
 
 describe('Square color', function() {
 
-	const ROW    = '12345678';
-	const COLUMN = 'abcdefgh';
+	const FILE = '12345678';
+	const RANK = 'abcdefgh';
 
 	it('Valid inputs', function() {
 		for(var r=0; r<8; ++r) {
-			for(var c=0; c<8; ++c) {
-				var expected = c%2 === r%2 ? 'b' : 'w';
-				var square = COLUMN[c] + ROW[r];
+			for(var f=0; f<8; ++f) {
+				var expected = f%2 === r%2 ? 'b' : 'w';
+				var square = FILE[c] + RANK[r];
 				test.value(RPBChess.squareColor(square)).is(expected);
 			}
 		}

@@ -123,7 +123,7 @@ function setTurn(position, value) {
 // -----------------------------------------------------------------------------
 
 /**
- * Get/set the castle rights. TODO: make it chess-960 compatible.
+ * Get/set the castling rights. TODO: make it chess-960 compatible.
  *
  * @param {string} color
  * @param {string} side
@@ -131,7 +131,7 @@ function setTurn(position, value) {
  */
 Position.prototype.castling = function(castle, value) {
 	if(!/^[wb][qk]$/.test(castle)) {
-		throw new exception.IllegalArgument('Position#castleRights()');
+		throw new exception.IllegalArgument('Position#castling()');
 	}
 	var color = internals.colorFromString(castle[0]);
 	var file = castle[1]==='k' ? 7 : 0;
@@ -140,7 +140,7 @@ Position.prototype.castling = function(castle, value) {
 		return getCastling(this, color, file);
 	}
 	else if(!setCastling(this, color, file, value)) {
-		throw new exception.IllegalArgument('Position#castleRights()');
+		throw new exception.IllegalArgument('Position#castling()');
 	}
 };
 

@@ -116,7 +116,7 @@ Position.prototype.reset = function() {
 
 	// Meta-data
 	this._turn      = WHITE;
-	this._castling  = [129 /* (1 << 'column a') | (1 << 'column h') */, 129];
+	this._castling  = [129 /* (1 << A-file) | (1 << H-file) */, 129];
 	this._enPassant = -1;
 
 	// Computed attributes
@@ -292,7 +292,7 @@ function setFEN(position, fen, strict) {
 			++i;
 		}
 
-		// Ensure that the current sub-field deals with all the squares of the current row.
+		// Ensure that the current sub-field deals with all the squares of the current rank.
 		if(i !== rankField.length || f !== 8) {
 			throw new exception.InvalidFEN(fen, i18n.UNEXPECTED_END_OF_SUBFIELD_IN_BOARD_FIELD, i18n.ORDINALS[7-r]);
 		}
@@ -304,20 +304,20 @@ function setFEN(position, fen, strict) {
 		throw new exception.InvalidFEN(fen, i18n.INVALID_TURN_FIELD);
 	}
 
-	// Castle-rights parsing
+	// Castling rights parsing
 	position._castling = castlingFromString(fields[2], strict);
 	if(position._castling === null) {
-		throw new exception.InvalidFEN(fen, i18n.INVALID_CASTLE_RIGHTS_FIELD);
+		throw new exception.InvalidFEN(fen, i18n.INVALID_CASTLING_FIELD);
 	}
 
-	// En-passant parsing
+	// En-passant rights parsing
 	var enPassantField = fields[3];
 	if(enPassantField !== '-') {
 		if(!/^[a-h][36]$/.test(enPassantField)) {
 			throw new exception.InvalidFEN(fen, i18n.INVALID_EN_PASSANT_FIELD);
 		}
 		if(strict && ((enPassantField[1]==='3' && position._turn===WHITE) || (enPassantField[1]==='6' && position._turn===BLACK))) {
-			throw new exception.InvalidFEN(fen, i18n.WRONG_ROW_IN_EN_PASSANT_FIELD);
+			throw new exception.InvalidFEN(fen, i18n.WRONG_RANK_IN_EN_PASSANT_FIELD);
 		}
 		position._enPassant = internals.fileFromString(enPassantField[0]);
 	}
