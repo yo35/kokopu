@@ -19,7 +19,7 @@ describe('Square color', function() {
 
 	['e9', 'i5'].forEach(function(elem) {
 		it('Error with ' + elem, function() {
-			test.exception(function() { RPBChess.squareColor(elem); }).isInstanceOf(RPBChess.exceptions.IllegalArgument);
+			test.exception(function() { RPBChess.squareColor(elem); }).isInstanceOf(RPBChess.exception.IllegalArgument);
 		});
 	});
 

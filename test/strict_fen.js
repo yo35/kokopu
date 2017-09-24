@@ -23,8 +23,8 @@ describe('Strict FEN', function() {
 	it('Set FEN (strict) OK 2', function() { var p=new RPBChess.Position(); p.fen(customFEN2, true); test.value(p.fen(optsFEN2)).is(customFEN2); });
 	it('Set FEN (strict) OK 3', function() { var p=new RPBChess.Position(); p.fen(customFEN3, true); test.value(p.fen()).is(customFEN3); });
 
-	it('Set FEN (strict) NOK A', function() { var p=new RPBChess.Position(); test.exception(function() { p.fen(customFEN3a, true); }).isInstanceOf(RPBChess.exceptions.InvalidFEN); });
-	it('Set FEN (strict) NOK B', function() { var p=new RPBChess.Position(); test.exception(function() { p.fen(customFEN3b, true); }).isInstanceOf(RPBChess.exceptions.InvalidFEN); });
-	it('Set FEN (strict) NOK C', function() { var p=new RPBChess.Position(); test.exception(function() { p.fen(customFEN3c, true); }).isInstanceOf(RPBChess.exceptions.InvalidFEN); });
+	it('Set FEN (strict) NOK A', function() { var p=new RPBChess.Position(); test.exception(function() { p.fen(customFEN3a, true); }).isInstanceOf(RPBChess.exception.InvalidFEN); });
+	it('Set FEN (strict) NOK B', function() { var p=new RPBChess.Position(); test.exception(function() { p.fen(customFEN3b, true); }).isInstanceOf(RPBChess.exception.InvalidFEN); });
+	it('Set FEN (strict) NOK C', function() { var p=new RPBChess.Position(); test.exception(function() { p.fen(customFEN3c, true); }).isInstanceOf(RPBChess.exception.InvalidFEN); });
 
 });

@@ -23,113 +23,8 @@
 'use strict';
 
 
-// ---------------------------------------------------------------------------
-// Internationalization
-// ---------------------------------------------------------------------------
-
-var i18n = {};
-
-// Ordinal integers (from 1 to 8).
-i18n.ORDINALS = ['1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th'];
-
-// FEN parsing error messages
-i18n.WRONG_NUMBER_OF_FEN_FIELDS                = 'A FEN string must contain exactly 6 space-separated fields.';
-i18n.WRONG_NUMBER_OF_SUBFIELDS_IN_BOARD_FIELD  = 'The 1st field of a FEN string must contain exactly 8 `/`-separated subfields.';
-i18n.UNEXPECTED_CHARACTER_IN_BOARD_FIELD       = 'Unexpected character in the 1st field of the FEN string: `%1$s`.';
-i18n.UNEXPECTED_END_OF_SUBFIELD_IN_BOARD_FIELD = 'The %1$s subfield of the FEN string 1st field is unexpectedly short.';
-i18n.INVALID_TURN_FIELD                        = 'The 2nd field of a FEN string must be either `w` or `b`.';
-i18n.INVALID_CASTLE_RIGHTS_FIELD               = 'The 3rd field of a FEN string must be either `-` or a list of characters among `K`, `Q`, `k` and `q` (in this order).';
-i18n.INVALID_EN_PASSANT_FIELD                  = 'The 4th field of a FEN string must be either `-` or a square from the 3rd or 6th row where en-passant is allowed.';
-i18n.WRONG_ROW_IN_EN_PASSANT_FIELD             = 'The row number indicated in the FEN string 4th field is inconsistent with respect to the 2nd field.';
-i18n.INVALID_MOVE_COUNTING_FIELD               = 'The %1$s field of a FEN string must be a number.';
-
-// Notation parsing error message
-i18n.INVALID_MOVE_NOTATION_SYNTAX        = 'The syntax of the move notation is invalid.';
-i18n.ILLEGAL_POSITION                    = 'The position is not legal.';
-i18n.ILLEGAL_QUEEN_SIDE_CASTLING         = 'Queen-side castling is not legal in the considered position.';
-i18n.ILLEGAL_KING_SIDE_CASTLING          = 'King-side castling is not legal in the considered position.';
-i18n.NO_PIECE_CAN_MOVE_TO                = 'No %1$s can move to %2$s.';
-i18n.NO_PIECE_CAN_MOVE_TO_DISAMBIGUATION = 'No %1$s on the specified row/column can move to %2$s.';
-i18n.REQUIRE_DISAMBIGUATION              = 'Cannot determine uniquely which %1$s is supposed to move to %2$s.';
-i18n.WRONG_DISAMBIGUATION_SYMBOL         = 'Wrong disambiguation symbol (expected: `%1$s`, observed: `%2$s`).';
-i18n.TRYING_TO_CAPTURE_YOUR_OWN_PIECES   = 'Capturing its own pieces is not legal.';
-i18n.INVALID_CAPTURING_PAWN_MOVE         = 'Invalid capturing pawn move.';
-i18n.INVALID_NON_CAPTURING_PAWN_MOVE     = 'Invalid non-capturing pawn move.';
-i18n.NOT_SAFE_FOR_WHITE_KING             = 'This move would put let the white king in check.';
-i18n.NOT_SAFE_FOR_BLACK_KING             = 'This move would put let the black king in check.';
-i18n.MISSING_PROMOTION                   = 'A promoted piece must be specified for this move.';
-i18n.MISSING_PROMOTION_SYMBOL            = 'Character `=` is required to specify a promoted piece.';
-i18n.INVALID_PROMOTED_PIECE              = '%1$s cannot be specified as a promoted piece.';
-i18n.ILLEGAL_PROMOTION                   = 'Specifying a promoted piece is illegal for this move.';
-i18n.MISSING_CAPTURE_SYMBOL              = 'Capture symbol `x` is missing.';
-i18n.INVALID_CAPTURE_SYMBOL              = 'This move is not a capture move.';
-i18n.WRONG_CHECK_CHECKMATE_SYMBOL        = 'Wrong check/checkmate symbol (expected: `%1$s`, observed: `%2$s`).';
-
-
-
-// ---------------------------------------------------------------------------
-// Exceptions
-// ---------------------------------------------------------------------------
-
-/**
- * @constructor
- * @alias IllegalArgument
- * @memberof RPBChess.exceptions
- *
- * @classdesc
- * Exception thrown when an invalid argument is passed to a function.
- *
- * @param {string} fun
- */
-function IllegalArgument(fun) {
-	this.fun = fun;
-}
-
-
-/**
- * @constructor
- * @alias InvalidFEN
- * @memberof RPBChess.exceptions
- *
- * @classdesc
- * Exception thrown by the FEN parsing function.
- *
- * @param {string} fen String whose parsing leads to an error.
- * @param {string} message Human-readable error message.
- * @param ...
- */
- function InvalidFEN(fen, message) {
-	this.fen     = fen    ;
-	this.message = message;
-	for(var i=2; i<arguments.length; ++i) {
-		var re = new RegExp('%' + (i-1) + '\\$s');
-		this.message = this.message.replace(re, arguments[i]);
-	}
-}
-
-
-/**
- * @constructor
- * @alias InvalidNotation
- * @memberof RPBChess.exceptions
- *
- * @classdesc
- * Exception thrown by the move notation parsing function.
- *
- * @param {Position} position Position used to try to parse the move notation.
- * @param {string} notation String whose parsing leads to an error.
- * @param {string} message Human-readable error message.
- * @param ...
- */
-function InvalidNotation(position, notation, message) {
-	this.position = position;
-	this.notation = notation;
-	this.message  = message ;
-	for(var i=3; i<arguments.length; ++i) {
-		var re = new RegExp('%' + (i-2) + '\\$s');
-		this.message = this.message.replace(re, arguments[i]);
-	}
-}
+var i18n = require('./core/i18n');
+var exception = require('./core/exception');
 
 
 
@@ -237,7 +132,7 @@ function squareColor(square) {
 		if     (/^[aceg][1357]$/.test(square) || /^[bdfh][2468]$/.test(square)) { return 'b'; }
 		else if(/^[aceg][2468]$/.test(square) || /^[bdfh][1357]$/.test(square)) { return 'w'; }
 	}
-	throw new IllegalArgument('squareColor()');
+	throw new exception.IllegalArgument('squareColor()');
 }
 
 
@@ -451,7 +346,7 @@ Position.prototype.fen = function() {
 		return setFEN(this, arguments[0], arguments[1]);
 	}
 	else {
-		throw new IllegalArgument('Position#fen()');
+		throw new exception.IllegalArgument('Position#fen()');
 	}
 };
 
@@ -519,13 +414,13 @@ function setFEN(position, fen, strict) {
 	fen = fen.replace(/^\s+|\s+$/g, '');
 	var fields = fen.split(/\s+/);
 	if(fields.length !== 6) {
-		throw new InvalidFEN(fen, i18n.WRONG_NUMBER_OF_FEN_FIELDS);
+		throw new exception.InvalidFEN(fen, i18n.WRONG_NUMBER_OF_FEN_FIELDS);
 	}
 
 	// The first field (that represents the board) is split in 8 sub-fields.
 	var rowFields = fields[0].split('/');
 	if(rowFields.length !== 8) {
-		throw new InvalidFEN(fen, i18n.WRONG_NUMBER_OF_SUBFIELDS_IN_BOARD_FIELD);
+		throw new exception.InvalidFEN(fen, i18n.WRONG_NUMBER_OF_SUBFIELDS_IN_BOARD_FIELD);
 	}
 
 	// Initialize the position
@@ -554,7 +449,7 @@ function setFEN(position, fen, strict) {
 
 			// Otherwise -> parsing error.
 			else {
-				throw new InvalidFEN(fen, i18n.UNEXPECTED_CHARACTER_IN_BOARD_FIELD, s);
+				throw new exception.InvalidFEN(fen, i18n.UNEXPECTED_CHARACTER_IN_BOARD_FIELD, s);
 			}
 
 			// Increment the character counter.
@@ -563,30 +458,30 @@ function setFEN(position, fen, strict) {
 
 		// Ensure that the current sub-field deals with all the squares of the current row.
 		if(i !== rowField.length || c !== 8) {
-			throw new InvalidFEN(fen, i18n.UNEXPECTED_END_OF_SUBFIELD_IN_BOARD_FIELD, i18n.ORDINALS[7-r]);
+			throw new exception.InvalidFEN(fen, i18n.UNEXPECTED_END_OF_SUBFIELD_IN_BOARD_FIELD, i18n.ORDINALS[7-r]);
 		}
 	}
 
 	// Turn parsing
 	position._turn = COLOR_SYMBOL.indexOf(fields[1]);
 	if(position._turn < 0) {
-		throw new InvalidFEN(fen, i18n.INVALID_TURN_FIELD);
+		throw new exception.InvalidFEN(fen, i18n.INVALID_TURN_FIELD);
 	}
 
 	// Castle-rights parsing
 	position._castleRights = castleRightsFromString(fields[2], strict);
 	if(position._castleRights === null) {
-		throw new InvalidFEN(fen, i18n.INVALID_CASTLE_RIGHTS_FIELD);
+		throw new exception.InvalidFEN(fen, i18n.INVALID_CASTLE_RIGHTS_FIELD);
 	}
 
 	// En-passant parsing
 	var enPassantField = fields[3];
 	if(enPassantField !== '-') {
 		if(!/^[a-h][36]$/.test(enPassantField)) {
-			throw new InvalidFEN(fen, i18n.INVALID_EN_PASSANT_FIELD);
+			throw new exception.InvalidFEN(fen, i18n.INVALID_EN_PASSANT_FIELD);
 		}
 		if(strict && ((enPassantField[1]==='3' && position._turn===WHITE) || (enPassantField[1]==='6' && position._turn===BLACK))) {
-			throw new InvalidFEN(fen, i18n.WRONG_ROW_IN_EN_PASSANT_FIELD);
+			throw new exception.InvalidFEN(fen, i18n.WRONG_ROW_IN_EN_PASSANT_FIELD);
 		}
 		position._enPassant = COLUMN_SYMBOL.indexOf(enPassantField[0]);
 	}
@@ -594,10 +489,10 @@ function setFEN(position, fen, strict) {
 	// Move counting flags parsing
 	var moveCountingRegExp = strict ? /^(?:0|[1-9][0-9]*)$/ : /^[0-9]+$/;
 	if(!moveCountingRegExp.test(fields[4])) {
-		throw new InvalidFEN(fen, i18n.INVALID_MOVE_COUNTING_FIELD, i18n.ORDINALS[4]);
+		throw new exception.InvalidFEN(fen, i18n.INVALID_MOVE_COUNTING_FIELD, i18n.ORDINALS[4]);
 	}
 	if(!moveCountingRegExp.test(fields[5])) {
-		throw new InvalidFEN(fen, i18n.INVALID_MOVE_COUNTING_FIELD, i18n.ORDINALS[5]);
+		throw new exception.InvalidFEN(fen, i18n.INVALID_MOVE_COUNTING_FIELD, i18n.ORDINALS[5]);
 	}
 	return { fiftyMoveClock: parseInt(fields[4], 10), fullMoveNumber: parseInt(fields[5], 10) };
 }
@@ -656,14 +551,14 @@ function castleRightsFromString(castleRights, strict) {
 Position.prototype.square = function(square, value) {
 	square = parseSquare(square);
 	if(square < 0) {
-		throw new IllegalArgument('Position#square()');
+		throw new exception.IllegalArgument('Position#square()');
 	}
 	if(typeof value === 'undefined' || value === null) {
 		return getSquare(this, square);
 	}
 	else {
 		if(!setSquare(this, square, value)) {
-			throw new IllegalArgument('Position#square()');
+			throw new exception.IllegalArgument('Position#square()');
 		}
 	}
 };
@@ -717,7 +612,7 @@ Position.prototype.turn = function(value) {
 	}
 	else {
 		if(!setTurn(this, value)) {
-			throw new IllegalArgument('Position#turn()');
+			throw new exception.IllegalArgument('Position#turn()');
 		}
 	}
 };
@@ -761,7 +656,7 @@ function setTurn(position, value) {
 Position.prototype.castleRights = function(color, side, value) {
 	color = parseColor(color);
 	if(color < 0 || !(side==='k' || side==='q')) {
-		throw new IllegalArgument('Position#castleRights()');
+		throw new exception.IllegalArgument('Position#castleRights()');
 	}
 	var column = side==='k' ? 7 : 0;
 	if(typeof value === 'undefined' || value === null) {
@@ -769,7 +664,7 @@ Position.prototype.castleRights = function(color, side, value) {
 	}
 	else {
 		if(!setCastleRights(this, color, column, value)) {
-			throw new IllegalArgument('Position#castleRights()');
+			throw new exception.IllegalArgument('Position#castleRights()');
 		}
 	}
 };
@@ -820,7 +715,7 @@ Position.prototype.enPassant = function(value) {
 	}
 	else {
 		if(!setEnPassant(this, value)) {
-			throw new IllegalArgument('Position#enPassant()');
+			throw new exception.IllegalArgument('Position#enPassant()');
 		}
 	}
 };
@@ -877,7 +772,7 @@ Position.prototype.isAttacked = function(square, byWho, byWhat) {
 	square = parseSquare(square);
 	byWho  = parseColor (byWho );
 	if(square < 0 || byWho < 0) {
-		throw new IllegalArgument('Position#isAttacked()');
+		throw new exception.IllegalArgument('Position#isAttacked()');
 	}
 	if(typeof byWhat === 'undefined' || byWhat === null) {
 		return isAttacked(this, square, byWho);
@@ -891,7 +786,7 @@ Position.prototype.isAttacked = function(square, byWho, byWhat) {
 		return false;
 	}
 	else {
-		throw new IllegalArgument('Position#isAttacked()');
+		throw new exception.IllegalArgument('Position#isAttacked()');
 	}
 };
 
@@ -986,7 +881,7 @@ Position.prototype.isLegal = function() {
 Position.prototype.kingSquare = function(color) {
 	color = parseColor(color);
 	if(color < 0) {
-		throw new IllegalArgument('Position#kingSquare()');
+		throw new exception.IllegalArgument('Position#kingSquare()');
 	}
 	refreshLegalFlag(this);
 	var square = this._king[color];
@@ -1321,7 +1216,7 @@ Position.prototype.isMoveLegal = function(move) {
 			return parseNotation(this, move, false);
 		}
 		catch(err) {
-			if(err instanceof InvalidNotation) {
+			if(err instanceof exception.InvalidNotation) {
 				return false;
 			}
 			else {
@@ -1348,7 +1243,7 @@ Position.prototype.isMoveLegal = function(move) {
 	}
 
 	// Unknown move format
-	throw new IllegalArgument('Position#isMoveLegal()');
+	throw new exception.IllegalArgument('Position#isMoveLegal()');
 };
 
 
@@ -1785,7 +1680,7 @@ Position.prototype.notation = function() {
 		return parseNotation(this, arguments[0], arguments[1]);
 	}
 	else {
-		throw new IllegalArgument('Position#notation()');
+		throw new exception.IllegalArgument('Position#notation()');
 	}
 };
 
@@ -1941,12 +1836,12 @@ function parseNotation(position, notation, strict) {
 	// General syntax
 	var m = /^(?:(O-O-O)|(O-O)|([KQRBN])([a-h])?([1-8])?(x)?([a-h][1-8])|(?:([a-h])(x)?)?([a-h][1-8])(?:(=)?([KQRBNP]))?)([\+#])?$/.exec(notation);
 	if(m === null) {
-		throw new InvalidNotation(position, notation, i18n.INVALID_MOVE_NOTATION_SYNTAX);
+		throw new exception.InvalidNotation(position, notation, i18n.INVALID_MOVE_NOTATION_SYNTAX);
 	}
 
 	// Ensure that the position is legal.
 	if(!position.isLegal()) {
-		throw new InvalidNotation(position, notation, i18n.ILLEGAL_POSITION);
+		throw new exception.InvalidNotation(position, notation, i18n.ILLEGAL_POSITION);
 	}
 
 	// CASTLING
@@ -1979,7 +1874,7 @@ function parseNotation(position, notation, strict) {
 		descriptor = isCastlingLegal(position, from, to);
 		if(!descriptor) {
 			var message = m[2] ? i18n.ILLEGAL_KING_SIDE_CASTLING : i18n.ILLEGAL_QUEEN_SIDE_CASTLING;
-			throw new InvalidNotation(position, notation, message);
+			throw new exception.InvalidNotation(position, notation, message);
 		}
 	}
 
@@ -1991,7 +1886,7 @@ function parseNotation(position, notation, strict) {
 
 		// Cannot take your own pieces!
 		if(toContent >= 0 && toContent % 2 === position._turn) {
-			throw new InvalidNotation(position, notation, i18n.TRYING_TO_CAPTURE_YOUR_OWN_PIECES);
+			throw new exception.InvalidNotation(position, notation, i18n.TRYING_TO_CAPTURE_YOUR_OWN_PIECES);
 		}
 
 		// Find the "from"-square candidates
@@ -2008,7 +1903,7 @@ function parseNotation(position, notation, strict) {
 		}
 		if(attackers.length===0) {
 			var message = (m[4] || m[5]) ? i18n.NO_PIECE_CAN_MOVE_TO_DISAMBIGUATION : i18n.NO_PIECE_CAN_MOVE_TO;
-			throw new InvalidNotation(position, notation, message, m[3], m[7]);
+			throw new exception.InvalidNotation(position, notation, message, m[3], m[7]);
 		}
 
 		// Compute the move descriptor for each remaining "from"-square candidate
@@ -2016,14 +1911,14 @@ function parseNotation(position, notation, strict) {
 			var currentDescriptor = isKingSafeAfterMove(position, attackers[i], to, -1, -1);
 			if(currentDescriptor) {
 				if(descriptor !== null) {
-					throw new InvalidNotation(position, notation, i18n.REQUIRE_DISAMBIGUATION, m[3], m[7]);
+					throw new exception.InvalidNotation(position, notation, i18n.REQUIRE_DISAMBIGUATION, m[3], m[7]);
 				}
 				descriptor = currentDescriptor;
 			}
 		}
 		if(descriptor === null) {
 			var message = position._turn===WHITE ? i18n.NOT_SAFE_FOR_WHITE_KING : i18n.NOT_SAFE_FOR_BLACK_KING;
-			throw new InvalidNotation(position, notation, message);
+			throw new exception.InvalidNotation(position, notation, message);
 		}
 
 		// STRICT-MODE -> check the disambiguation symbol.
@@ -2031,7 +1926,7 @@ function parseNotation(position, notation, strict) {
 			var expectedDS = getDisambiguationSymbol(position, descriptor._from, to);
 			var observedDS = (m[4] ? m[4] : '') + (m[5] ? m[5] : '');
 			if(expectedDS !== observedDS) {
-				throw new InvalidNotation(position, notation, i18n.WRONG_DISAMBIGUATION_SYMBOL, expectedDS, observedDS);
+				throw new exception.InvalidNotation(position, notation, i18n.WRONG_DISAMBIGUATION_SYMBOL, expectedDS, observedDS);
 			}
 		}
 	}
@@ -2049,29 +1944,29 @@ function parseNotation(position, notation, strict) {
 		// Ensure that the pawn move do not let a king is check.
 		if(!descriptor) {
 			var message = position._turn===WHITE ? i18n.NOT_SAFE_FOR_WHITE_KING : i18n.NOT_SAFE_FOR_BLACK_KING;
-			throw new InvalidNotation(position, notation, message);
+			throw new exception.InvalidNotation(position, notation, message);
 		}
 
 		// Detect promotions
 		if(to<8 || to>=112) {
 			if(!m[12]) {
-				throw new InvalidNotation(position, notation, i18n.MISSING_PROMOTION);
+				throw new exception.InvalidNotation(position, notation, i18n.MISSING_PROMOTION);
 			}
 			var promotion = PIECE_SYMBOL.indexOf(m[12].toLowerCase());
 			if(!isPromotablePiece(promotion)) {
-				throw new InvalidNotation(position, notation, i18n.INVALID_PROMOTED_PIECE, m[12]);
+				throw new exception.InvalidNotation(position, notation, i18n.INVALID_PROMOTED_PIECE, m[12]);
 			}
 			descriptor = new MoveDescriptor(descriptor, promotion);
 
 			// STRICT MODE -> do not forget the `=` character!
 			if(strict && !m[11]) {
-				throw new InvalidNotation(position, notation, i18n.MISSING_PROMOTION_SYMBOL);
+				throw new exception.InvalidNotation(position, notation, i18n.MISSING_PROMOTION_SYMBOL);
 			}
 		}
 
 		// Detect illegal promotion attempts!
 		else if(m[12]) {
-			throw new InvalidNotation(position, notation, i18n.ILLEGAL_PROMOTION);
+			throw new exception.InvalidNotation(position, notation, i18n.ILLEGAL_PROMOTION);
 		}
 	}
 
@@ -2079,12 +1974,12 @@ function parseNotation(position, notation, strict) {
 	if(strict) {
 		if(descriptor.isCapture() !== (m[6] || m[9])) {
 			var message = descriptor.isCapture() ? i18n.MISSING_CAPTURE_SYMBOL : i18n.INVALID_CAPTURE_SYMBOL;
-			throw new InvalidNotation(position, notation, message);
+			throw new exception.InvalidNotation(position, notation, message);
 		}
 		var expectedCCS = getCheckCheckmateSymbol(position, descriptor);
 		var observedCCS = m[13] ? m[13] : '';
 		if(expectedCCS !== observedCCS) {
-			throw new InvalidNotation(position, notation, i18n.WRONG_CHECK_CHECKMATE_SYMBOL, expectedCCS, observedCCS);
+			throw new exception.InvalidNotation(position, notation, i18n.WRONG_CHECK_CHECKMATE_SYMBOL, expectedCCS, observedCCS);
 		}
 	}
 
@@ -2107,7 +2002,7 @@ function getPawnCaptureDescriptor(position, notation, columnFrom, to) {
 	// Ensure that `to` is not on the 1st row.
 	var from = to - 16 + position._turn*32;
 	if((from /* jshint bitwise:false */ & 0x88 /* jshint bitwise:true */)!==0) {
-		throw new InvalidNotation(position, notation, i18n.INVALID_CAPTURING_PAWN_MOVE);
+		throw new exception.InvalidNotation(position, notation, i18n.INVALID_CAPTURING_PAWN_MOVE);
 	}
 
 	// Compute the "from"-square.
@@ -2115,12 +2010,12 @@ function getPawnCaptureDescriptor(position, notation, columnFrom, to) {
 	if(columnTo - columnFrom === 1) { from -= 1; }
 	else if(columnTo - columnFrom === -1) { from += 1; }
 	else {
-		throw new InvalidNotation(position, notation, i18n.INVALID_CAPTURING_PAWN_MOVE);
+		throw new exception.InvalidNotation(position, notation, i18n.INVALID_CAPTURING_PAWN_MOVE);
 	}
 
 	// Check the content of the "from"-square
 	if(position._board[from] !== PAWN*2+position._turn) {
-		throw new InvalidNotation(position, notation, i18n.INVALID_CAPTURING_PAWN_MOVE);
+		throw new exception.InvalidNotation(position, notation, i18n.INVALID_CAPTURING_PAWN_MOVE);
 	}
 
 	// Check the content of the "to"-square
@@ -2134,7 +2029,7 @@ function getPawnCaptureDescriptor(position, notation, columnFrom, to) {
 		return isKingSafeAfterMove(position, from, to, -1, -1);
 	}
 
-	throw new InvalidNotation(position, notation, i18n.INVALID_CAPTURING_PAWN_MOVE);
+	throw new exception.InvalidNotation(position, notation, i18n.INVALID_CAPTURING_PAWN_MOVE);
 }
 
 
@@ -2152,12 +2047,12 @@ function getPawnAdvanceDescriptor(position, notation, to) {
 	var offset = 16 - position._turn*32;
 	var from = to - offset;
 	if((from /* jshint bitwise:false */ & 0x88 /* jshint bitwise:true */)!==0) {
-		throw new InvalidNotation(position, notation, i18n.INVALID_NON_CAPTURING_PAWN_MOVE);
+		throw new exception.InvalidNotation(position, notation, i18n.INVALID_NON_CAPTURING_PAWN_MOVE);
 	}
 
 	// Check the content of the "to"-square
 	if(position._board[to] >= 0) {
-		throw new InvalidNotation(position, notation, i18n.INVALID_NON_CAPTURING_PAWN_MOVE);
+		throw new exception.InvalidNotation(position, notation, i18n.INVALID_NON_CAPTURING_PAWN_MOVE);
 	}
 
 	// Check the content of the "from"-square
@@ -2175,7 +2070,7 @@ function getPawnAdvanceDescriptor(position, notation, to) {
 		}
 	}
 
-	throw new InvalidNotation(position, notation, i18n.INVALID_NON_CAPTURING_PAWN_MOVE);
+	throw new exception.InvalidNotation(position, notation, i18n.INVALID_NON_CAPTURING_PAWN_MOVE);
 }
 
 
@@ -2186,11 +2081,7 @@ function getPawnAdvanceDescriptor(position, notation, to) {
 
 
 exports.i18n = i18n;
-exports.exceptions = {
-	IllegalArgument: IllegalArgument,
-	InvalidFEN: InvalidFEN,
-	InvalidNotation: InvalidNotation
-};
+exports.exception = exception;
 exports.squareColor = squareColor;
 exports.squareToCoordinates = squareToCoordinates;
 exports.Position = Position;

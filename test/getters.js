@@ -23,14 +23,14 @@ describe('Getters', function() {
 	['j1', 'f9'].forEach(function(elem) {
 		it('Error for board with ' + elem, function() {
 			var p=new RPBChess.Position();
-			test.exception(function() { p.square(elem); }).isInstanceOf(RPBChess.exceptions.IllegalArgument);
+			test.exception(function() { p.square(elem); }).isInstanceOf(RPBChess.exception.IllegalArgument);
 		});
 	});
 
 	['bK', 'wa'].forEach(function(elem) {
 		it('Error for castling with ' + elem, function() {
 			var p=new RPBChess.Position();
-			test.exception(function() { p.castleRights(elem); }).isInstanceOf(RPBChess.exceptions.IllegalArgument);
+			test.exception(function() { p.castleRights(elem); }).isInstanceOf(RPBChess.exception.IllegalArgument);
 		});
 	});
 
