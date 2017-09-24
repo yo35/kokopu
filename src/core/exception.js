@@ -34,7 +34,7 @@
  */
 exports.IllegalArgument = function(fun) {
 	this.fun = fun;
-}
+};
 
 
 /**
@@ -56,7 +56,7 @@ exports.InvalidFEN = function(fen, message) {
 		var re = new RegExp('%' + (i-1) + '\\$s');
 		this.message = this.message.replace(re, arguments[i]);
 	}
-}
+};
 
 
 /**
@@ -80,4 +80,4 @@ exports.InvalidNotation = function(position, notation, message) {
 		var re = new RegExp('%' + (i-2) + '\\$s');
 		this.message = this.message.replace(re, arguments[i]);
 	}
-}
+};

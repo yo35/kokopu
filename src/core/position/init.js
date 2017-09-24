@@ -19,6 +19,9 @@
  ******************************************************************************/
 
 
+'use strict';
+
+
 var exception = require('../exception');
 var i18n = require('../i18n');
 var internals = require('../internals');
@@ -66,7 +69,7 @@ var Position = exports.Position = function(fen) {
 	else {
 		setFEN(this, fen, false);
 	}
-}
+};
 
 
 /**
@@ -111,7 +114,7 @@ Position.prototype.reset = function() {
 		EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID,
 		EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID,
 		/*BP*/11, /*BP*/11, /*BP*/11, /*BP*/11, /*BP*/11, /*BP*/11, /*BP*/11, /*BP*/11, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID,
-		/*BR*/ 5, /*BN*/ 9, /*BB*/ 7, /*BQ*/ 3, /*BK*/ 1, /*BB*/ 7, /*BN*/ 9, /*BR*/ 5,
+		/*BR*/ 5, /*BN*/ 9, /*BB*/ 7, /*BQ*/ 3, /*BK*/ 1, /*BB*/ 7, /*BN*/ 9, /*BR*/ 5
 	];
 
 	// Meta-data

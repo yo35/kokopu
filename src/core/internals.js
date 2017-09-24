@@ -48,19 +48,19 @@ var PIECE_SYMBOL = 'kqrbnp'  ;
 var RANK_SYMBOL  = '12345678';
 var FILE_SYMBOL  = 'abcdefgh';
 
-exports.colorToString = function(color) { return COLOR_SYMBOL[color]; }
-exports.pieceToString = function(piece) { return PIECE_SYMBOL[piece]; }
-exports.rankToString  = function(rank ) { return RANK_SYMBOL [rank ]; }
-exports.fileToString  = function(file ) { return FILE_SYMBOL [file ]; }
+exports.colorToString = function(color) { return COLOR_SYMBOL[color]; };
+exports.pieceToString = function(piece) { return PIECE_SYMBOL[piece]; };
+exports.rankToString  = function(rank ) { return RANK_SYMBOL [rank ]; };
+exports.fileToString  = function(file ) { return FILE_SYMBOL [file ]; };
 
-exports.colorFromString = function(color) { return COLOR_SYMBOL.indexOf(color); }
-exports.pieceFromString = function(piece) { return PIECE_SYMBOL.indexOf(piece); }
-exports.rankFromString  = function(rank ) { return RANK_SYMBOL .indexOf(rank ); }
-exports.fileFromString  = function(file ) { return FILE_SYMBOL .indexOf(file ); }
+exports.colorFromString = function(color) { return COLOR_SYMBOL.indexOf(color); };
+exports.pieceFromString = function(piece) { return PIECE_SYMBOL.indexOf(piece); };
+exports.rankFromString  = function(rank ) { return RANK_SYMBOL .indexOf(rank ); };
+exports.fileFromString  = function(file ) { return FILE_SYMBOL .indexOf(file ); };
 
 exports.squareToString = function(square) {
 	return FILE_SYMBOL[square % 16] + RANK_SYMBOL[Math.floor(square / 16)];
-}
+};
 
 exports.squareFromString = function(square) {
 	if(!/^[a-h][1-8]$/.test(square)) {
@@ -69,11 +69,11 @@ exports.squareFromString = function(square) {
 	var file = FILE_SYMBOL.indexOf(square[0]);
 	var rank = RANK_SYMBOL.indexOf(square[1]);
 	return rank*16 + file;
-}
+};
 
 exports.coloredPieceToString = function(cp) {
 	return COLOR_SYMBOL[cp % 2] + PIECE_SYMBOL[Math.floor(cp / 2)];
-}
+};
 
 exports.coloredPieceFromString = function(cp) {
 	if(!/^[wb][kqrbnp]$/.test(cp)) {
@@ -82,4 +82,4 @@ exports.coloredPieceFromString = function(cp) {
 	var color = COLOR_SYMBOL.indexOf(cp[0]);
 	var piece = PIECE_SYMBOL.indexOf(cp[1]);
 	return piece*2 + color;
-}
+};

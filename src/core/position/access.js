@@ -19,11 +19,11 @@
  ******************************************************************************/
 
 
+'use strict';
+
+
 var exception = require('../exception');
 var internals = require('../internals');
-
-var WHITE = internals.WHITE;
-var BLACK = internals.BLACK;
 
 var EMPTY = internals.EMPTY;
 
