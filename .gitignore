@@ -1,3 +1,8 @@
+# Eclipse's stuff
+/.buildpath
+/.project
+/.settings
+
 # Node's stuff
 /node_modules
 
