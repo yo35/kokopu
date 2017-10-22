@@ -24,10 +24,9 @@
 
 var exception = require('../exception');
 var bt = require('./private/basetypes');
+var Position = require('./init').Position;
 
 var EMPTY = bt.EMPTY;
-
-var Position = require('./init').Position;
 
 
 
