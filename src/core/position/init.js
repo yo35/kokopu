@@ -24,13 +24,13 @@
 
 var exception = require('../exception');
 var i18n = require('../i18n');
-var internals = require('../internals');
+var bt = require('./private/basetypes');
 
-var WHITE = internals.WHITE;
-var BLACK = internals.BLACK;
+var WHITE = bt.WHITE;
+var BLACK = bt.BLACK;
 
-var EMPTY = internals.EMPTY;
-var INVALID = internals.INVALID;
+var EMPTY = bt.EMPTY;
+var INVALID = bt.INVALID;
 
 var FEN_PIECE_SYMBOL = 'KkQqRrBbNnPp';
 
@@ -107,14 +107,14 @@ Position.prototype.reset = function() {
 
 	// Board state
 	this._board = [
-		/*WR*/ 4, /*WN*/ 8, /*WB*/ 6, /*WQ*/ 2, /*WK*/ 0, /*WB*/ 6, /*WN*/ 8, /*WR*/ 4, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID,
-		/*WP*/10, /*WP*/10, /*WP*/10, /*WP*/10, /*WP*/10, /*WP*/10, /*WP*/10, /*WP*/10, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID,
+		bt.WR, bt.WN, bt.WB, bt.WQ, bt.WK, bt.WB, bt.WN, bt.WR, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID,
+		bt.WP, bt.WP, bt.WP, bt.WP, bt.WP, bt.WP, bt.WP, bt.WP, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID,
 		EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID,
 		EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID,
 		EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID,
 		EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID,
-		/*BP*/11, /*BP*/11, /*BP*/11, /*BP*/11, /*BP*/11, /*BP*/11, /*BP*/11, /*BP*/11, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID,
-		/*BR*/ 5, /*BN*/ 9, /*BB*/ 7, /*BQ*/ 3, /*BK*/ 1, /*BB*/ 7, /*BN*/ 9, /*BR*/ 5
+		bt.BP, bt.BP, bt.BP, bt.BP, bt.BP, bt.BP, bt.BP, bt.BP, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID,
+		bt.BR, bt.BN, bt.BB, bt.BQ, bt.BK, bt.BB, bt.BN, bt.BR
 	];
 
 	// Meta-data
@@ -148,7 +148,7 @@ Position.prototype.ascii = function() {
 	}
 
 	// Flags
-	res += internals.colorToString(this._turn) + ' ' + castlingToString(this) + ' ' + enPassantToString(this);
+	res += bt.colorToString(this._turn) + ' ' + castlingToString(this) + ' ' + enPassantToString(this);
 
 	// Return the result
 	return res;
@@ -214,7 +214,7 @@ function getFEN(position, fiftyMoveClock, fullMoveNumber) {
 	}
 
 	// Flags + additional move counters
-	res += ' ' + internals.colorToString(position._turn) + ' ' + castlingToString(position) + ' ' + enPassantToString(position);
+	res += ' ' + bt.colorToString(position._turn) + ' ' + castlingToString(position) + ' ' + enPassantToString(position);
 	res += ' ' + fiftyMoveClock + ' ' + fullMoveNumber;
 
 	// Return the result
@@ -237,7 +237,7 @@ function enPassantToString(position) {
 		return '-';
 	}
 	else {
-		return internals.fileToString(position._enPassant) + (position._turn===WHITE ? '6' : '3');
+		return bt.fileToString(position._enPassant) + (position._turn===WHITE ? '6' : '3');
 	}
 }
 
@@ -302,7 +302,7 @@ function setFEN(position, fen, strict) {
 	}
 
 	// Turn parsing
-	position._turn = internals.colorFromString(fields[1]);
+	position._turn = bt.colorFromString(fields[1]);
 	if(position._turn < 0) {
 		throw new exception.InvalidFEN(fen, i18n.INVALID_TURN_FIELD);
 	}
@@ -322,7 +322,7 @@ function setFEN(position, fen, strict) {
 		if(strict && ((enPassantField[1]==='3' && position._turn===WHITE) || (enPassantField[1]==='6' && position._turn===BLACK))) {
 			throw new exception.InvalidFEN(fen, i18n.WRONG_RANK_IN_EN_PASSANT_FIELD);
 		}
-		position._enPassant = internals.fileFromString(enPassantField[0]);
+		position._enPassant = bt.fileFromString(enPassantField[0]);
 	}
 
 	// Move counting flags parsing

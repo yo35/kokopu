@@ -25,7 +25,7 @@
 
 var i18n = require('./core/i18n');
 var exception = require('./core/exception');
-var internals = require('./core/internals');
+var internals = require('./core/position/private/basetypes');
 
 
 
@@ -50,12 +50,12 @@ var EMPTY = internals.EMPTY;
 var INVALID = internals.INVALID;
 
 // Colored pieces
-var /* const */ WK =  0; var /* const */ BK =  1;
-var /* const */ WQ =  2; var /* const */ BQ =  3;
-var /* const */ WR =  4; var /* const */ BR =  5;
-var /* const */ WB =  6; var /* const */ BB =  7;
-var /* const */ WN =  8; var /* const */ BN =  9;
-var /* const */ WP = 10; var /* const */ BP = 11;
+var /* const */ WK = internals.WK; var /* const */ BK = internals.BK;
+var /* const */ WQ = internals.WQ; var /* const */ BQ = internals.BQ;
+var /* const */ WR = internals.WR; var /* const */ BR = internals.BR;
+var /* const */ WB = internals.WB; var /* const */ BB = internals.BB;
+var /* const */ WN = internals.WN; var /* const */ BN = internals.BN;
+var /* const */ WP = internals.WP; var /* const */ BP = internals.BP;
 
 // Whether the given colored piece is sliding or not.
 function isSliding(coloredPiece) {

@@ -23,9 +23,9 @@
 
 
 var exception = require('../exception');
-var internals = require('../internals');
+var bt = require('./private/basetypes');
 
-var EMPTY = internals.EMPTY;
+var EMPTY = bt.EMPTY;
 
 var Position = require('./init').Position;
 
@@ -42,7 +42,7 @@ var Position = require('./init').Position;
  * @param {string} [value]
  */
 Position.prototype.square = function(square, value) {
-	square = internals.squareFromString(square);
+	square = bt.squareFromString(square);
 	if(square < 0) {
 		throw new exception.IllegalArgument('Position#square()');
 	}
@@ -58,7 +58,7 @@ Position.prototype.square = function(square, value) {
 
 function getSquare(position, square) {
 	var cp = position._board[square];
-	return cp < 0 ? '-' : internals.coloredPieceToString(cp);
+	return cp < 0 ? '-' : bt.coloredPieceToString(cp);
 }
 
 
@@ -69,7 +69,7 @@ function setSquare(position, square, value) {
 		return true;
 	}
 	else {
-		var cp = internals.coloredPieceFromString(value);
+		var cp = bt.coloredPieceFromString(value);
 		if(cp >= 0) {
 			position._board[square] = cp;
 			position._legal = null;
@@ -101,12 +101,12 @@ Position.prototype.turn = function(value) {
 
 
 function getTurn(position) {
-	return internals.colorToString(position._turn);
+	return bt.colorToString(position._turn);
 }
 
 
 function setTurn(position, value) {
-	var turn = internals.colorFromString(value);
+	var turn = bt.colorFromString(value);
 	if(turn < 0) {
 		return false;
 	}
@@ -133,7 +133,7 @@ Position.prototype.castling = function(castle, value) {
 	if(!/^[wb][qk]$/.test(castle)) {
 		throw new exception.IllegalArgument('Position#castling()');
 	}
-	var color = internals.colorFromString(castle[0]);
+	var color = bt.colorFromString(castle[0]);
 	var file = castle[1]==='k' ? 7 : 0;
 	
 	if(typeof value === 'undefined' || value === null) {
@@ -186,7 +186,7 @@ Position.prototype.enPassant = function(value) {
 
 
 function getEnPassant(position) {
-	return position._enPassant < 0 ? '-' : internals.fileToString(position._enPassant);
+	return position._enPassant < 0 ? '-' : bt.fileToString(position._enPassant);
 }
 
 
@@ -197,7 +197,7 @@ function setEnPassant(position, value) {
 		return true;
 	}
 	else {
-		var enPassant = internals.fileFromString(value);
+		var enPassant = bt.fileFromString(value);
 		if(enPassant >= 0) {
 			position._enPassant = enPassant;
 			position._legal = null;

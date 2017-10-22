@@ -34,6 +34,14 @@ exports.BISHOP = 3;
 exports.KNIGHT = 4;
 exports.PAWN   = 5;
 
+// Colored pieces
+exports.WK =  0; exports.BK =  1;
+exports.WQ =  2; exports.BQ =  3;
+exports.WR =  4; exports.BR =  5;
+exports.WB =  6; exports.BB =  7;
+exports.WN =  8; exports.BN =  9;
+exports.WP = 10; exports.BP = 11;
+
 // Special square values
 exports.EMPTY = -1;
 exports.INVALID = -2;
