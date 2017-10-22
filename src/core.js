@@ -26,6 +26,7 @@
 var i18n = require('./core/i18n');
 var exception = require('./core/exception');
 var internals = require('./core/position/private/basetypes');
+var attacks = require('./core/position/private/attacks');
 
 
 
@@ -68,20 +69,7 @@ function isPromotablePiece(piece) {
 }
 
 // Attack directions per colored piece.
-var /* const */ ATTACK_DIRECTIONS = [
-	[-17, -16, -15, -1, 1, 15, 16, 17], // king/queen
-	[-17, -16, -15, -1, 1, 15, 16, 17], // king/queen
-	[-17, -16, -15, -1, 1, 15, 16, 17], // king/queen
-	[-17, -16, -15, -1, 1, 15, 16, 17], // king/queen
-	[-16, -1, 1, 16], // rook
-	[-16, -1, 1, 16], // rook
-	[-17, -15, 15, 17], // bishop
-	[-17, -15, 15, 17], // bishop
-	[-33, -31, -18, -14, 14, 18, 31, 33], // knight
-	[-33, -31, -18, -14, 14, 18, 31, 33], // knight
-	[15, 17], // white pawn
-	[-17, -15] // black pawn
-];
+var /* const */ ATTACK_DIRECTIONS = attacks.ATTACK_DIRECTIONS;
 
 // Displacement lookup per square index difference.
 var /* const */ DISPLACEMENT_LOOKUP = [
@@ -162,100 +150,15 @@ var Position = require('./core/position/init').Position;
 // ---------------------------------------------------------------------------
 
 require('./core/position/access');
+require('./core/position/process');
 
 
 // ---------------------------------------------------------------------------
 // Square control & position legality
 // ---------------------------------------------------------------------------
 
-/**
- * Check if any piece of the given color attacks a given square.
- *
- * @param {string} square
- * @param {string} byWho Either `'w'` or `'b'`
- * @param {string} [byWhat] Filter for the type of attacker (for instance, `'kp'` to consider only king and pawn attacks).
- *        If `null` or not defined, no filter is applied, and all types of pieces are considered.
- * @returns {boolean}
- */
-Position.prototype.isAttacked = function(square, byWho, byWhat) {
-	square = parseSquare(square);
-	byWho  = parseColor (byWho );
-	if(square < 0 || byWho < 0) {
-		throw new exception.IllegalArgument('Position#isAttacked()');
-	}
-	if(typeof byWhat === 'undefined' || byWhat === null) {
-		return isAttacked(this, square, byWho);
-	}
-	else if(typeof byWhat === 'string') {
-		for(var piece=0; piece<PIECE_SYMBOL.length; ++piece) {
-			if(byWhat.indexOf(PIECE_SYMBOL[piece])>=0 && isAttackedBy(this, square, piece*2 + byWho)) {
-				return true;
-			}
-		}
-		return false;
-	}
-	else {
-		throw new exception.IllegalArgument('Position#isAttacked()');
-	}
-};
 
-
-/**
- * Check if a given type of piece attacks a given square.
- *
- * This method can be used even if the position is not legal.
- *
- * @param {Position} position
- * @param {number} square Square index.
- * @param {number} attacker Colored piece constant.
- * @returns {boolean}
- */
-function isAttackedBy(position, square, attacker) {
-	var directions = ATTACK_DIRECTIONS[attacker];
-	if(isSliding(attacker)) {
-		for(var i=0; i<directions.length; ++i) {
-			var sq = square;
-			while(true) {
-				sq -= directions[i];
-				if((sq /* jshint bitwise:false */ & 0x88 /* jshint bitwise:true */)===0) {
-					var cp = position._board[sq];
-					if(cp === attacker) { return true; }
-					else if(cp === EMPTY) { continue; }
-				}
-				break;
-			}
-		}
-	}
-	else {
-		for(var i=0; i<directions.length; ++i) {
-			var sq = square - directions[i];
-			if((sq /* jshint bitwise:false */ & 0x88 /* jshint bitwise:true */)===0 && position._board[sq]===attacker) {
-				return true;
-			}
-		}
-	}
-	return false;
-}
-
-
-/**
- * Check if any piece of the given color attacks a given square.
- *
- * This method can be used even if the position is not legal.
- *
- * @param {Position} position
- * @param {number} square Square index.
- * @param {number} attackerColor Color constant.
- * @returns {boolean}
- */
-function isAttacked(position, square, attackerColor) {
-	for(var piece=0; piece<6; ++piece) {
-		if(isAttackedBy(position, square, piece*2 + attackerColor)) {
-			return true;
-		}
-	}
-	return false;
-}
+var isAttacked = attacks.isAttacked;
 
 
 /**
