@@ -27,6 +27,7 @@ var Position = require('./init').Position;
 
 var bt = require('./private/basetypes');
 var attacks = require('./private/attacks');
+var legality = require('./private/legality');
 
 
 
@@ -66,4 +67,43 @@ Position.prototype.getAttacks = function(square, byWho) {
 		throw new exception.IllegalArgument('Position#getAttacks()');
 	}
 	return attacks.getAttacks(this, square, byWho).map(bt.squareToString);
+};
+
+
+/**
+ * Check whether the current position is legal or not.
+ *
+ * A position is considered to be legal if all the following conditions are met:
+ *
+ *  1. There is exactly one white king and one black king on the board.
+ *  2. The player that is not about to play is not check.
+ *  3. There are no pawn on rows 1 and 8.
+ *  4. For each colored castle flag set, there is a rook and a king on the
+ *     corresponding initial squares.
+ *  5. The pawn situation is consistent with the en-passant flag if it is set.
+ *     For instance, if it is set to the 'e' column and black is about to play,
+ *     the squares e2 and e3 must be empty, and there must be a white pawn on e4.
+ *
+ * @returns {boolean}
+ */
+Position.prototype.isLegal = function() {
+	return legality.isLegal(this);
+};
+
+
+/**
+ * Return the square on which is located the king of the given color.
+ *
+ * @param {string} color
+ * @returns {string} Square where is located the searched king. `'-'` is returned
+ *          if there is no king of the given color or if the are 2 such kings or more.
+ */
+Position.prototype.kingSquare = function(color) {
+	color = bt.colorFromString(color);
+	if(color < 0) {
+		throw new exception.IllegalArgument('Position#kingSquare()');
+	}
+	legality.refreshLegalFlagAndKingSquares(this);
+	var square = this._king[color];
+	return square < 0 ? '-' : bt.squareToString(square);
 };
