@@ -28,6 +28,7 @@ var Position = require('./init').Position;
 var bt = require('./private/basetypes');
 var attacks = require('./private/attacks');
 var legality = require('./private/legality');
+var moveGeneration = require('./private/movegeneration');
 
 
 
@@ -112,4 +113,50 @@ Position.prototype.kingSquare = function(color) {
 	legality.refreshLegalFlagAndKingSquares(this);
 	var square = this._king[color];
 	return square < 0 ? '-' : bt.squareToString(square);
+};
+
+
+
+// -----------------------------------------------------------------------------
+// Move generation
+// -----------------------------------------------------------------------------
+
+
+/**
+ * Return true if the player that is about to play is in check. If the position is not legal, the returned value is always false.
+ *
+ * @returns {boolean}
+ */
+Position.prototype.isCheck = function() {
+	return moveGeneration.isCheck(this);
+};
+
+
+/**
+ * Return true if the player that is about to play is checkmated. If the position is not legal, the returned value is always false.
+ *
+ * @returns {boolean}
+ */
+Position.prototype.isCheckmate = function() {
+	return moveGeneration.isCheckmate(this);
+};
+
+
+/**
+ * Return true if the player that is about to play is stalemated. If the position is not legal, the returned value is always false.
+ *
+ * @returns {boolean}
+ */
+Position.prototype.isStalemate = function() {
+	return moveGeneration.isStalemate(this);
+};
+
+
+/**
+ * Detect if there exist any legal move in the current position. If the position is not legal, the returned value is always false.
+ *
+ * @returns {boolean}
+ */
+Position.prototype.hasMove = function() {
+	return moveGeneration.hasMove(this);
 };
