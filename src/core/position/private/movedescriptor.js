@@ -110,3 +110,12 @@ MoveDescriptor.prototype.to = function() {
 MoveDescriptor.prototype.movingPiece = function() {
 	return bt.squareToString(this._to);
 };
+
+
+MoveDescriptor.prototype.toString = function() {
+	var result = bt.squareToString(this._from) + bt.squareToString(this._to);
+	if(this.isPromotion()) {
+		result += bt.pieceToString(Math.floor(this._finalPiece / 2)).toUpperCase();
+	}
+	return result;
+};

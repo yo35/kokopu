@@ -39,16 +39,17 @@ function testData() {
 		
 		var field = elem.split('\t');
 		result.push({
-			label      : field[0],
-			constructor: field[1],
-			fen        : field[2],
-			isLegal    : field[3]==="true",
-			whiteKing  : field[4],
-			blackKing  : field[5],
-			isCheck    : field[6]==="true",
-			isCheckmate: field[7]==="true",
-			isStalemate: field[8]==="true",
-			hasMove    : field[9]==="true"
+			label      : field[ 0],
+			constructor: field[ 1],
+			fen        : field[ 2],
+			isLegal    : field[ 3]==="true",
+			whiteKing  : field[ 4],
+			blackKing  : field[ 5],
+			isCheck    : field[ 6]==="true",
+			isCheckmate: field[ 7]==="true",
+			isStalemate: field[ 8]==="true",
+			hasMove    : field[ 9]==="true",
+			moves      : field[10]
 		});
 		
 	});
@@ -112,6 +113,16 @@ describe('Check / checkmate / stalemate', function() {
 			test.value(pos.isCheckmate()).is(elem.isCheckmate);
 			test.value(pos.isStalemate()).is(elem.isStalemate);
 			test.value(pos.hasMove()).is(elem.hasMove);
+		});
+	});
+});
+
+
+describe('Move generation', function() {
+	testData().forEach(function(elem) {
+		it('Position ' + elem.label, function() {
+			var moves = createPosition(elem).moves().map(function(elem) { return elem.toString(); }).sort();
+			test.value(moves.join('/')).is(elem.moves);
 		});
 	});
 });
