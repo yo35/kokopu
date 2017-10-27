@@ -122,7 +122,7 @@ exports.moves = function(position) {
 function generateMoves(position, fun) {
 
 	// Ensure that the position is legal.
-	if(!position.isLegal()) { return; }
+	if(!legality.isLegal(position)) { return; }
 
 	// For all potential 'from' square...
 	for(var from=0; from<120; from += (from /* jshint bitwise:false */ & 0x7 /* jshint bitwise:true */)===7 ? 9 : 1) {
@@ -374,7 +374,7 @@ exports.isMoveLegal = function(position, from, to) {
 	var descriptor = isKingSafeAfterMove(position, from, to, enPassantSquare);
 	return descriptor && isPromotion ? function(promotion) {
 		if(promotion === bt.QUEEN || promotion === bt.ROOK || promotion === bt.BISHOP || promotion === bt.KNIGHT) {
-			return moveDescriptor.makePromotion(descriptor._from, descriptor._to, position._movingPiece % 2, promotion, descriptor._optionalPiece);
+			return moveDescriptor.makePromotion(descriptor._from, descriptor._to, descriptor._movingPiece % 2, promotion, descriptor._optionalPiece);
 		}
 		return false;
 	} : descriptor;

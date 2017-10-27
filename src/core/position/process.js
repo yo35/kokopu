@@ -183,12 +183,12 @@ Position.prototype.isMoveLegal = function(from, to) {
 	if(from < 0 || to < 0) {
 		throw new exception.IllegalArgument('Position#isMoveLegal()');
 	}
-	var result = moveGeneration.isMoveLegal(from, to);
+	var result = moveGeneration.isMoveLegal(this, from, to);
 
 	// A promoted piece needs to be chosen to build a valid move descriptor.
 	if(typeof result === 'function') {
 		var builder = function(promotion) {
-			promotion = bt.pieceFromString();
+			promotion = bt.pieceFromString(promotion);
 			if(promotion >= 0) {
 				var builtMoveDescriptor = result(promotion);
 				if(builtMoveDescriptor) {

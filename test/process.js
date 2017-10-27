@@ -62,26 +62,33 @@ function createPosition(testDataDescriptor) {
 }
 
 
-describe('isAttacked', function() {
-	
+function squares() {
 	var ROW    = '12345678';
 	var COLUMN = 'abcdefgh';
-	
+	var result = [];
+	for(var r=0; r<8; ++r) {
+		for(var c=0; c<8; ++c) {
+			result.push(COLUMN[c] + ROW[r]);
+		}
+	}
+	return result;
+}
+
+
+describe('isAttacked', function() {
+
 	function testIsAttacked(fen, byWho, attackedSquares) {
 		var position = new RPBChess.Position(fen);
 		var res = '';
-		for(var r=0; r<8; ++r) {
-			for(var c=0; c<8; ++c) {
-				var square = COLUMN[c] + ROW[r];
-				if(position.isAttacked(square, byWho)) {
-					if(res !== '') { res += '/'; }
-					res += square;
-				}
+		squares().forEach(function(square) {
+			if(position.isAttacked(square, byWho)) {
+				if(res !== '') { res += '/'; }
+				res += square;
 			}
-		}
+		});
 		test.value(res).is(attackedSquares);
 	}
-	
+
 	it('King attacks'      , function() { testIsAttacked('8/8/8/4K3/8/8/8/8 w - - 0 1', 'w', 'd4/e4/f4/d5/f5/d6/e6/f6'); });
 	it('Queen attacks'     , function() { testIsAttacked('8/8/8/4q3/8/8/8/8 w - - 0 1', 'b', 'a1/e1/b2/e2/h2/c3/e3/g3/d4/e4/f4/a5/b5/c5/d5/f5/g5/h5/d6/e6/f6/c7/e7/g7/b8/e8/h8'); });
 	it('Rook attacks'      , function() { testIsAttacked('8/8/8/4R3/8/8/8/8 w - - 0 1', 'w', 'e1/e2/e3/e4/a5/b5/c5/d5/f5/g5/h5/e6/e7/e8'); });
@@ -89,7 +96,7 @@ describe('isAttacked', function() {
 	it('Knight attacks'    , function() { testIsAttacked('8/8/8/4N3/8/8/8/8 w - - 0 1', 'w', 'd3/f3/c4/g4/c6/g6/d7/f7'); });
 	it('White pawn attacks', function() { testIsAttacked('8/8/8/4P3/8/8/8/8 w - - 0 1', 'w', 'd6/f6'); });
 	it('Black pawn attacks', function() { testIsAttacked('8/8/8/4p3/8/8/8/8 w - - 0 1', 'b', 'd4/f4'); });
-	
+
 });
 
 
@@ -123,6 +130,38 @@ describe('Move generation', function() {
 		it('Position ' + elem.label, function() {
 			var moves = createPosition(elem).moves().map(function(elem) { return elem.toString(); }).sort();
 			test.value(moves.join('/')).is(elem.moves);
+		});
+	});
+});
+
+
+describe('Move legality check', function() {
+	testData().forEach(function(elem) {
+		it('Position ' + elem.label, function() {
+			var moves = [];
+			var pos = createPosition(elem);
+
+			squares().forEach(function(from) {
+				squares().forEach(function(to) {
+
+					var moveDescriptor = pos.isMoveLegal(from, to);
+					if(!moveDescriptor) {
+						return;
+					}
+
+					if(moveDescriptor.needPromotion) {
+						moves.push(moveDescriptor('q'));
+						moves.push(moveDescriptor('r'));
+						moves.push(moveDescriptor('b'));
+						moves.push(moveDescriptor('n'));
+					}
+					else {
+						moves.push(moveDescriptor);
+					}
+				});
+			});
+
+			test.value(moves.map(function(elem) { return elem.toString(); }).sort().join('/')).is(elem.moves);
 		});
 	});
 });
