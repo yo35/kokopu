@@ -912,5 +912,3 @@ exports.exception = exception;
 exports.squareColor = squareColor;
 exports.squareToCoordinates = squareToCoordinates;
 exports.Position = Position;
-exports.movetype = movetype;
-exports.MoveDescriptor = MoveDescriptor;

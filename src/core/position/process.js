@@ -160,3 +160,13 @@ Position.prototype.isStalemate = function() {
 Position.prototype.hasMove = function() {
 	return moveGeneration.hasMove(this);
 };
+
+
+/**
+ * Return the list of all legal moves in the current position. An empty list is returned if the position itself is not legal.
+ *
+ * @returns {MoveDescriptor[]}
+ */
+Position.prototype.moves = function() {
+	return moveGeneration.moves(this);
+};

@@ -159,7 +159,7 @@ function generateMoves(position, fun) {
 		}
 
 		// Generate castling moves
-		if(movingPiece === bt.KING && position._castleRights[position._turn] !== 0) {
+		if(movingPiece === bt.KING && position._castling[position._turn] !== 0) {
 			var to = [from-2, from+2];
 			for(var i=0; i<to.length; ++i) {
 				fun(isCastlingLegal(position, from, to[i]), false);

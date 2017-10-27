@@ -44,7 +44,11 @@ function testData() {
 			fen        : field[2],
 			isLegal    : field[3]==="true",
 			whiteKing  : field[4],
-			blackKing  : field[5]
+			blackKing  : field[5],
+			isCheck    : field[6]==="true",
+			isCheckmate: field[7]==="true",
+			isStalemate: field[8]==="true",
+			hasMove    : field[9]==="true"
 		});
 		
 	});
@@ -88,13 +92,26 @@ describe('isAttacked', function() {
 });
 
 
-describe('isLegal & king squares', function() {
+describe('Legality check & king squares', function() {
 	testData().forEach(function(elem) {
 		it('Position ' + elem.label, function() {
 			var pos = createPosition(elem);
 			test.value(pos.isLegal()).is(elem.isLegal);
 			test.value(pos.kingSquare('w')).is(elem.whiteKing);
 			test.value(pos.kingSquare('b')).is(elem.blackKing);
+		});
+	});
+});
+
+
+describe('Check / checkmate / stalemate', function() {
+	testData().forEach(function(elem) {
+		it('Position ' + elem.label, function() {
+			var pos = createPosition(elem);
+			test.value(pos.isCheck()).is(elem.isCheck);
+			test.value(pos.isCheckmate()).is(elem.isCheckmate);
+			test.value(pos.isStalemate()).is(elem.isStalemate);
+			test.value(pos.hasMove()).is(elem.hasMove);
 		});
 	});
 });
