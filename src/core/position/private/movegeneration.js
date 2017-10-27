@@ -379,3 +379,52 @@ exports.isMoveLegal = function(position, from, to) {
 		return false;
 	} : descriptor;
 };
+
+
+/**
+ * Play the move corresponding to the given descriptor.
+ */
+exports.play = function(position, descriptor) {
+
+	// Update the board.
+	if(descriptor.isEnPassant()) {
+		position._board[descriptor._optionalSquare1] = bt.EMPTY;
+	}
+	else if(descriptor.isCastling()) {
+		position._board[descriptor._optionalSquare1] = bt.EMPTY;
+		position._board[descriptor._optionalSquare2] = descriptor._optionalPiece;
+	}
+	position._board[descriptor._to] = descriptor._finalPiece;
+	position._board[descriptor._from] = bt.EMPTY;
+
+	var movingPiece = Math.floor(descriptor._movingPiece / 2);
+
+	// Update the castling flags.
+	if(movingPiece === bt.KING) {
+		position._castling[position._turn] = 0;
+	}
+	if(descriptor._from <    8) { position._castling[bt.WHITE] /* jshint bitwise:false */ &= ~(1 <<  descriptor._from    ); /* jshint bitwise:true */ }
+	if(descriptor._to   <    8) { position._castling[bt.WHITE] /* jshint bitwise:false */ &= ~(1 <<  descriptor._to      ); /* jshint bitwise:true */ }
+	if(descriptor._from >= 112) { position._castling[bt.BLACK] /* jshint bitwise:false */ &= ~(1 << (descriptor._from%16)); /* jshint bitwise:true */ }
+	if(descriptor._to   >= 112) { position._castling[bt.BLACK] /* jshint bitwise:false */ &= ~(1 << (descriptor._to  %16)); /* jshint bitwise:true */ }
+
+	// Update the en-passant flag.
+	position._enPassant = -1;
+	if(movingPiece === bt.PAWN && Math.abs(descriptor._from - descriptor._to)===32) {
+		var otherPawn = descriptor._movingPiece /* jshint bitwise:false */ ^ 0x01 /* jshint bitwise:true */;
+		var squareBefore = descriptor._to - 1;
+		var squareAfter = descriptor._to + 1;
+		if(((squareBefore /* jshint bitwise:false */ & 0x88 /* jshint bitwise:true */)===0 && position._board[squareBefore]===otherPawn) ||
+			((squareAfter /* jshint bitwise:false */ & 0x88 /* jshint bitwise:true */)===0 && position._board[squareAfter]===otherPawn)) {
+			position._enPassant = descriptor._to % 16;
+		}
+	}
+
+	// Update the computed flags.
+	if(movingPiece === bt.KING) {
+		position._king[position._turn] = descriptor._to;
+	}
+
+	// Toggle the turn flag.
+	position._turn = 1 - position._turn;
+};

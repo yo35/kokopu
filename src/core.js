@@ -168,55 +168,6 @@ var isAttacked = attacks.isAttacked;
 
 
 /**
- * Play the given move if it is legal.
- *
- * @param {string} move
- * @returns {boolean} `true` if the move has been played and if it is legal, `false` otherwise.
- */
-Position.prototype.play = function(move) {
-	var descriptor = (move instanceof MoveDescriptor) ? move : this.isMoveLegal(move);
-	if(descriptor) {
-
-		// Update the board
-		var cp = descriptor._type===movetype.PROMOTION ? (descriptor._promotion*2 + this._turn) : this._board[descriptor._from];
-		this._board[descriptor._from] = EMPTY;
-		if(descriptor._type===movetype.EN_PASSANT_CAPTURE) {
-			this._board[descriptor._enPassantSquare] = EMPTY;
-		}
-		else if(descriptor._type===movetype.CASTLING_MOVE) {
-			this._board[descriptor._rookFrom] = EMPTY;
-			this._board[descriptor._rookTo  ] = ROOK*2 + this._turn;
-		}
-		this._board[descriptor._to] = cp;
-
-		// Update the castling flags
-		if(descriptor._movingPiece === KING) {
-			this._castleRights[this._turn] = 0;
-		}
-		if(descriptor._from <    8) { this._castleRights[WHITE] /* jshint bitwise:false */ &= ~(1 <<  descriptor._from    ); /* jshint bitwise:true */ }
-		if(descriptor._to   <    8) { this._castleRights[WHITE] /* jshint bitwise:false */ &= ~(1 <<  descriptor._to      ); /* jshint bitwise:true */ }
-		if(descriptor._from >= 112) { this._castleRights[BLACK] /* jshint bitwise:false */ &= ~(1 << (descriptor._from%16)); /* jshint bitwise:true */ }
-		if(descriptor._to   >= 112) { this._castleRights[BLACK] /* jshint bitwise:false */ &= ~(1 << (descriptor._to  %16)); /* jshint bitwise:true */ }
-
-		// Update the other flags
-		this._enPassant = descriptor._type===movetype.TWO_SQUARE_PAWN_MOVE ? descriptor._twoSquarePawnMoveColumn : -1;
-		if(descriptor._movingPiece === KING) {
-			this._king[this._turn] = descriptor._to;
-		}
-
-		// Toggle the turn flag
-		this._turn = 1-this._turn;
-
-		// Final result
-		return true;
-	}
-	else {
-		return false;
-	}
-};
-
-
-/**
  * Determine if a null-move (i.e. switching the player about to play) can be play in the current position.
  * A null-move is possible if the position is legal and if the current player about to play is not in check.
  *

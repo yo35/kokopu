@@ -28,6 +28,7 @@ var Position = require('./init').Position;
 var bt = require('./private/basetypes');
 var attacks = require('./private/attacks');
 var legality = require('./private/legality');
+var moveDescriptor = require('./private/movedescriptor');
 var moveGeneration = require('./private/movegeneration');
 
 
@@ -204,5 +205,25 @@ Position.prototype.isMoveLegal = function(from, to) {
 	// Either the result is false or is a valid move descriptor.
 	else {
 		return result;
+	}
+};
+
+
+/**
+ * Play the given move if it is legal.
+ *
+ * @param {string|MoveDescriptor} move
+ * @returns {boolean} `true` if the move has been played and if it is legal, `false` otherwise.
+ */
+Position.prototype.play = function(move) {
+	if(typeof move === 'string') {
+		throw new exception.IllegalArgument('Not implemented yet'); // TODO
+	}
+	else if(moveDescriptor.isInstanceOf(move)) {
+		moveGeneration.play(this, move);
+		return true;
+	}
+	else {
+		throw new exception.IllegalArgument('Position#play()');
 	}
 };

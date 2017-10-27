@@ -42,14 +42,15 @@ function testData() {
 			label      : field[ 0],
 			constructor: field[ 1],
 			fen        : field[ 2],
-			isLegal    : field[ 3]==="true",
+			isLegal    : field[ 3]==='true',
 			whiteKing  : field[ 4],
 			blackKing  : field[ 5],
-			isCheck    : field[ 6]==="true",
-			isCheckmate: field[ 7]==="true",
-			isStalemate: field[ 8]==="true",
-			hasMove    : field[ 9]==="true",
-			moves      : field[10]
+			isCheck    : field[ 6]==='true',
+			isCheckmate: field[ 7]==='true',
+			isStalemate: field[ 8]==='true',
+			hasMove    : field[ 9]==='true',
+			moves      : field[10],
+			successors : field[12]
 		});
 		
 	});
@@ -162,6 +163,22 @@ describe('Move legality check', function() {
 			});
 
 			test.value(moves.map(function(elem) { return elem.toString(); }).sort().join('/')).is(elem.moves);
+		});
+	});
+});
+
+
+describe('Play', function() {
+	testData().forEach(function(elem) {
+		it('Position ' + elem.label, function() {
+			var initialPos = createPosition(elem);
+			var moves = initialPos.moves().sort(function(e1, e2) { return e1.toString().localeCompare(e2.toString()); });
+			var successors = moves.map(function(elem) {
+				var nextPos = new RPBChess.Position(initialPos);
+				nextPos.play(elem);
+				return nextPos.fen();
+			});
+			test.value(successors.join('|')).is(elem.successors);
 		});
 	});
 });

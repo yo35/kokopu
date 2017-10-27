@@ -77,6 +77,14 @@ function MoveDescriptor(flags, from, to, movingPiece, finalPiece, optionalPiece,
 }
 
 
+/**
+ * Whether the given object is a move descriptor or not.
+ */
+exports.isInstanceOf = function(obj) {
+	return obj instanceof MoveDescriptor;
+};
+
+
 MoveDescriptor.prototype.isCastling = function() {
 	return (this._type /* jshint bitwise:false */ & CASTLING_FLAG /* jshint bitwise:true */) !== 0;
 };
