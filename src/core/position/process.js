@@ -70,6 +70,12 @@ Position.prototype.getAttacks = function(square, byWho) {
 };
 
 
+
+// -----------------------------------------------------------------------------
+// Legality
+// -----------------------------------------------------------------------------
+
+
 /**
  * Check whether the current position is legal or not.
  *
