@@ -24,6 +24,37 @@
 
 var RPBChess = require('../src/core.js');
 var test = require('unit.js');
+var fs = require('fs');
+
+
+function testData() {
+	var result = [];
+	var lines = fs.readFileSync('./test/positions.csv', 'utf8').split('\n');
+	lines.forEach(function(elem, index) {
+		
+		// Skip header and empty lines.
+		if(elem === '' || index === 0) {
+			return;
+		}
+		
+		var field = elem.split('\t');
+		result.push({
+			label      : field[0],
+			constructor: field[1],
+			fen        : field[2],
+			isLegal    : field[3]==="true",
+			whiteKing  : field[4],
+			blackKing  : field[5]
+		});
+		
+	});
+	return result;
+}
+
+
+function createPosition(testDataDescriptor) {
+	return new RPBChess.Position(testDataDescriptor.constructor==='fen' ? testDataDescriptor.fen : testDataDescriptor.constructor);
+}
 
 
 describe('isAttacked', function() {
@@ -54,4 +85,16 @@ describe('isAttacked', function() {
 	it('White pawn attacks', function() { testIsAttacked('8/8/8/4P3/8/8/8/8 w - - 0 1', 'w', 'd6/f6'); });
 	it('Black pawn attacks', function() { testIsAttacked('8/8/8/4p3/8/8/8/8 w - - 0 1', 'b', 'd4/f4'); });
 	
+});
+
+
+describe('isLegal & king squares', function() {
+	testData().forEach(function(elem) {
+		it('Position ' + elem.label, function() {
+			var pos = createPosition(elem);
+			test.value(pos.isLegal()).is(elem.isLegal);
+			test.value(pos.kingSquare('w')).is(elem.whiteKing);
+			test.value(pos.kingSquare('b')).is(elem.blackKing);
+		});
+	});
 });
