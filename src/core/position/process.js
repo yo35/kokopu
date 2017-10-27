@@ -202,7 +202,7 @@ Position.prototype.isMoveLegal = function(from, to) {
 		return builder;
 	}
 
-	// Either the result is false or is a valid move descriptor.
+	// The result is either false or is a valid move descriptor.
 	else {
 		return result;
 	}
