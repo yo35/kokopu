@@ -170,3 +170,39 @@ Position.prototype.hasMove = function() {
 Position.prototype.moves = function() {
 	return moveGeneration.moves(this);
 };
+
+
+/**
+ * Whether a move is legal or not.
+ *
+ * @returns {false|MoveDescriptor|function}
+ */
+Position.prototype.isMoveLegal = function(from, to) {
+	from = bt.squareFromString(from);
+	to = bt.squareFromString(to);
+	if(from < 0 || to < 0) {
+		throw new exception.IllegalArgument('Position#isMoveLegal()');
+	}
+	var result = moveGeneration.isMoveLegal(from, to);
+
+	// A promoted piece needs to be chosen to build a valid move descriptor.
+	if(typeof result === 'function') {
+		var builder = function(promotion) {
+			promotion = bt.pieceFromString();
+			if(promotion >= 0) {
+				var builtMoveDescriptor = result(promotion);
+				if(builtMoveDescriptor) {
+					return builtMoveDescriptor;
+				}
+			}
+			throw new exception.IllegalArgument('Position#isMoveLegal()');
+		};
+		builder.needPromotion = true;
+		return builder;
+	}
+
+	// Either the result is false or is a valid move descriptor.
+	else {
+		return result;
+	}
+};

@@ -28,6 +28,45 @@ var legality = require('./legality');
 var moveDescriptor = require('./movedescriptor');
 
 
+// Displacement lookup per square index difference.
+var /* const */ DISPLACEMENT_LOOKUP = [
+ 204,    0,    0,    0,    0,    0,    0,   60,    0,    0,    0,    0,    0,    0,  204,    0,
+	 0,  204,    0,    0,    0,    0,    0,   60,    0,    0,    0,    0,    0,  204,    0,    0,
+	 0,    0,  204,    0,    0,    0,    0,   60,    0,    0,    0,    0,  204,    0,    0,    0,
+	 0,    0,    0,  204,    0,    0,    0,   60,    0,    0,    0,  204,    0,    0,    0,    0,
+	 0,    0,    0,    0,  204,    0,    0,   60,    0,    0,  204,    0,    0,    0,    0,    0,
+	 0,    0,    0,    0,    0,  204,  768,   60,  768,  204,    0,    0,    0,    0,    0,    0,
+	 0,    0,    0,    0,    0,  768, 2255, 2111, 2255,  768,    0,    0,    0,    0,    0,    0,
+	60,   60,   60,   60,   60,   60,   63,    0,   63,   60,   60,   60,   60,   60,   60,    0,
+	 0,    0,    0,    0,    0,  768, 1231, 1087, 1231,  768,    0,    0,    0,    0,    0,    0,
+	 0,    0,    0,    0,    0,  204,  768,   60,  768,  204,    0,    0,    0,    0,    0,    0,
+	 0,    0,    0,    0,  204,    0,    0,   60,    0,    0,  204,    0,    0,    0,    0,    0,
+	 0,    0,    0,  204,    0,    0,    0,   60,    0,    0,    0,  204,    0,    0,    0,    0,
+	 0,    0,  204,    0,    0,    0,    0,   60,    0,    0,    0,    0,  204,    0,    0,    0,
+	 0,  204,    0,    0,    0,    0,    0,   60,    0,    0,    0,    0,    0,  204,    0,    0,
+ 204,    0,    0,    0,    0,    0,    0,   60,    0,    0,    0,    0,    0,    0,  204,    0
+];
+
+// Sliding direction
+var /* const */ SLIDING_DIRECTION = [
+	-17,   0,   0,   0,   0,   0,   0, -16,   0,   0,   0,   0,   0,   0, -15,   0,
+		0, -17,   0,   0,   0,   0,   0, -16,   0,   0,   0,   0,   0, -15,   0,   0,
+		0,   0, -17,   0,   0,   0,   0, -16,   0,   0,   0,   0, -15,   0,   0,   0,
+		0,   0,   0, -17,   0,   0,   0, -16,   0,   0,   0, -15,   0,   0,   0,   0,
+		0,   0,   0,   0, -17,   0,   0, -16,   0,   0, -15,   0,   0,   0,   0,   0,
+		0,   0,   0,   0,   0, -17,   0, -16,   0, -15,   0,   0,   0,   0,   0,   0,
+		0,   0,   0,   0,   0,   0, -17, -16, -15,   0,   0,   0,   0,   0,   0,   0,
+	 -1,  -1,  -1,  -1,  -1,  -1,  -1,   0,   1,   1,   1,   1,   1,   1,   1,   0,
+		0,   0,   0,   0,   0,   0,  15,  16,  17,   0,   0,   0,   0,   0,   0,   0,
+		0,   0,   0,   0,   0,  15,   0,  16,   0,  17,   0,   0,   0,   0,   0,   0,
+		0,   0,   0,   0,  15,   0,   0,  16,   0,   0,  17,   0,   0,   0,   0,   0,
+		0,   0,   0,  15,   0,   0,   0,  16,   0,   0,   0,  17,   0,   0,   0,   0,
+		0,   0,  15,   0,   0,   0,   0,  16,   0,   0,   0,   0,  17,   0,   0,   0,
+		0,  15,   0,   0,   0,   0,   0,  16,   0,   0,   0,   0,   0,  17,   0,   0,
+	 15,   0,   0,   0,   0,   0,   0,  16,   0,   0,   0,   0,   0,   0,  17,   0
+];
+
+
 exports.isCheck = function(position) {
 	return legality.isLegal(position) && attacks.isAttacked(position, position._king[position._turn], 1-position._turn);
 };
@@ -247,3 +286,96 @@ function isCastlingLegal(position, from, to) {
 	// The move is legal -> generate the move descriptor.
 	return moveDescriptor.makeCastling(from, to, rookFrom, rookTo, position._turn);
 }
+
+
+/**
+ * Core algorithm to determine whether a move is legal or not. The verification flow is the following:
+ *
+ *  1. Ensure that the position itself is legal.
+ *  2. Ensure that the origin square contains a piece (denoted as the moving-piece)
+ *     whose color is the same than the color of the player about to play.
+ *  4. Ensure that the displacement is geometrically correct, with respect to the moving piece.
+ *  5. Check the content of the destination square.
+ *  6. For the sliding pieces (and in case of a 2-square pawn move), ensure that there is no piece
+ *     on the trajectory.
+ *
+ * The move is almost ensured to be legal at this point. The last condition to check
+ * is whether the king of the current player will be in check after the move or not.
+ *
+ *  7. Execute the displacement from the origin to the destination square, in such a way that
+ *     it can be reversed. Only the state of the board is updated at this point.
+ *  8. Look for king attacks.
+ *  9. Reverse the displacement.
+ *
+ * Castling moves fail at step (4). They are taken out of this flow and processed
+ * by the dedicated method `isLegalCastling()`.
+ */
+exports.isMoveLegal = function(position, from, to) {
+
+	// Step (1)
+	if(!legality.isLegal(position)) { return false; }
+
+	// Step (2)
+	var fromContent = position._board[from];
+	var toContent   = position._board[to  ];
+	var movingPiece = Math.floor(fromContent / 2);
+	if(fromContent < 0 || fromContent%2 !== position._turn) { return false; }
+
+	// Miscellaneous variables
+	var displacement = to - from + 119;
+	var enPassantSquare = -1; // square where a pawn is taken if the move is "en-passant"
+	var isTwoSquarePawnMove = false;
+	var isPromotion = movingPiece===bt.PAWN && (to<8 || to>=112);
+
+	// Step (4)
+	if((DISPLACEMENT_LOOKUP[displacement] /* jshint bitwise:false */ & 1<<fromContent /* jshint bitwise:true */) === 0) {
+		if(movingPiece === bt.PAWN && displacement === 151-position._turn*64) {
+			var firstSquareOfRow = (1 + position._turn*5) * 16;
+			if(from < firstSquareOfRow || from >= firstSquareOfRow+8) { return false; }
+			isTwoSquarePawnMove = true;
+		}
+		else if(movingPiece === bt.KING && (displacement === 117 || displacement === 121)) {
+			return isCastlingLegal(position, from, to);
+		}
+		else {
+			return false;
+		}
+	}
+
+	// Step (5) -> check the content of the destination square
+	if(movingPiece === bt.PAWN) {
+		if(displacement === 135-position._turn*32 || isTwoSquarePawnMove) { // non-capturing pawn move
+			if(toContent !== bt.EMPTY) { return false; }
+		}
+		else if(toContent === bt.EMPTY) { // en-passant pawn move
+			if(position._enPassant < 0 || to !== (5-position._turn*3)*16 + position._enPassant) { return false; }
+			enPassantSquare = (4-position._turn)*16 + position._enPassant;
+		}
+		else { // regular capturing pawn move
+			if(toContent%2 === position._turn) { return false; }
+		}
+	}
+	else { // piece move
+		if(toContent >= 0 && toContent%2 === position._turn) { return false; }
+	}
+
+	// Step (6) -> For sliding pieces, ensure that there is nothing between the origin and the destination squares.
+	if(movingPiece === bt.BISHOP || movingPiece === bt.ROOK || movingPiece === bt.QUEEN) {
+		var direction = SLIDING_DIRECTION[displacement];
+		for(var sq=from + direction; sq !== to; sq += direction) {
+			if(position._board[sq] !== bt.EMPTY) { return false; }
+		}
+	}
+	else if(isTwoSquarePawnMove) { // two-square pawn moves also require this test.
+		if(position._board[(from + to) / 2] !== bt.EMPTY) { return false; }
+	}
+
+	// Steps (7) to (9) are delegated to `isKingSafeAfterMove`.
+	var descriptor = isKingSafeAfterMove(position, from, to, enPassantSquare);
+	return descriptor && isPromotion ? function(promotion) {
+		if(promotion === bt.QUEEN || promotion === bt.ROOK || promotion === bt.BISHOP || promotion === bt.KNIGHT) {
+			return moveDescriptor.makePromotion(descriptor._from, descriptor._to, position._movingPiece % 2, promotion, descriptor._optionalPiece);
+		}
+		return false;
+	} : descriptor;
+};
