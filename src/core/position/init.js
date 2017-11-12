@@ -28,6 +28,11 @@ var impl = require('./private/impl');
 var fen = require('./private/fen');
 
 
+
+// -----------------------------------------------------------------------------
+// Constructor & reset/clear
+// -----------------------------------------------------------------------------
+
 /**
  * @constructor
  * @alias Position
@@ -72,6 +77,12 @@ Position.prototype.reset = function() {
 };
 
 
+
+// -----------------------------------------------------------------------------
+// FEN & ASCII conversion
+// -----------------------------------------------------------------------------
+
+
 /**
  * Return a human-readable string representing the position. This string is multi-line,
  * and is intended to be displayed in a fixed-width font (similarly to an ASCII-art picture).
@@ -109,5 +120,114 @@ Position.prototype.fen = function() {
 	}
 	else {
 		throw new exception.IllegalArgument('Position#fen()');
+	}
+};
+
+
+
+// -----------------------------------------------------------------------------
+// Accessors
+// -----------------------------------------------------------------------------
+
+
+/**
+ * Get/set the content of a square.
+ *
+ * @param {string} square `'e4'` for instance
+ * @param {string} [value]
+ */
+Position.prototype.square = function(square, value) {
+	square = bt.squareFromString(square);
+	if(square < 0) {
+		throw new exception.IllegalArgument('Position#square()');
+	}
+
+	if(typeof value === 'undefined' || value === null) {
+		var cp = this._impl.board[square];
+		return cp < 0 ? '-' : bt.coloredPieceToString(cp);
+	}
+	else if(value === '-') {
+		this._impl.board[square] = bt.EMPTY;
+		this._impl.legal = null;
+	}
+	else {
+		var cp = bt.coloredPieceFromString(value);
+		if(cp < 0) {
+			throw new exception.IllegalArgument('Position#square()');
+		}
+		this._impl.board[square] = cp;
+		this._impl.legal = null;
+	}
+};
+
+
+/**
+ * Get/set the turn flag.
+ *
+ * @param {string} [value]
+ */
+Position.prototype.turn = function(value) {
+	if(typeof value === 'undefined' || value === null) {
+		return bt.colorToString(this._impl.turn);
+	}
+	else {
+		var turn = bt.colorFromString(value);
+		if(turn < 0) {
+			throw new exception.IllegalArgument('Position#turn()');
+		}
+		this._impl.turn = turn;
+		this._impl.legal = null;
+	}
+};
+
+
+/**
+ * Get/set the castling rights. TODO: make it chess-960 compatible.
+ *
+ * @param {string} color
+ * @param {string} side
+ * @param {boolean} [value]
+ */
+Position.prototype.castling = function(castle, value) {
+	if(!/^[wb][qk]$/.test(castle)) {
+		throw new exception.IllegalArgument('Position#castling()');
+	}
+	var color = bt.colorFromString(castle[0]);
+	var file = castle[1]==='k' ? 7 : 0;
+	
+	if(typeof value === 'undefined' || value === null) {
+		return (this._impl.castling[color] /* jshint bitwise:false */ & (1 << file) /* jshint bitwise:true */) !== 0;
+	}
+	else if(value) {
+		this._impl.castling[color] /* jshint bitwise:false */ |= 1 << file; /* jshint bitwise:true */
+		this._impl.legal = null;
+	}
+	else {
+		this._impl.castling[color] /* jshint bitwise:false */ &= ~(1 << file); /* jshint bitwise:true */
+		this._impl.legal = null;
+	}
+};
+
+
+/**
+ * Get/set the en-passant flag.
+ *
+ * @param {string} [value]
+ */
+Position.prototype.enPassant = function(value) {
+	if(typeof value === 'undefined' || value === null) {
+		return this._impl.enPassant < 0 ? '-' : bt.fileToString(this._impl.enPassant);
+	}
+	else if(value === '-') {
+		this._impl.enPassant = -1;
+		this._impl.legal = null;
+	}
+	else {
+		var enPassant = bt.fileFromString(value);
+		if(enPassant < 0) {
+			throw new exception.IllegalArgument('Position#enPassant()');
+		}
+		this._impl.enPassant = enPassant;
+		this._impl.legal = null;
 	}
 };

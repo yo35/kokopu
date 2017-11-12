@@ -149,7 +149,6 @@ var Position = require('./core/position/init').Position;
 // Getters/setters
 // ---------------------------------------------------------------------------
 
-require('./core/position/access');
 require('./core/position/process');
 
 
