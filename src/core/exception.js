@@ -67,13 +67,13 @@ exports.InvalidFEN = function(fen, message) {
  * @classdesc
  * Exception thrown by the move notation parsing function.
  *
- * @param {Position} position Position used to try to parse the move notation.
+ * @param {string} fen FEN-representation of the position used to try to parse the move notation.
  * @param {string} notation String whose parsing leads to an error.
  * @param {string} message Human-readable error message.
  * @param ...
  */
-exports.InvalidNotation = function(position, notation, message) {
-	this.position = position;
+exports.InvalidNotation = function(fen, notation, message) {
+	this.fen = fen;
 	this.notation = notation;
 	this.message = message;
 	for(var i=3; i<arguments.length; ++i) {

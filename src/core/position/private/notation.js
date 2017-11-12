@@ -22,9 +22,14 @@
 'use strict';
 
 
+var exception = require('../../exception');
+var i18n = require('../../i18n');
 var bt = require('./basetypes');
 var impl = require('./impl');
+var fen = require('./fen');
 var attacks = require('./attacks');
+var legality = require('./legality');
+var moveDescriptor = require('./movedescriptor');
 var moveGeneration = require('./movegeneration');
 
 
@@ -119,4 +124,246 @@ function isPinned(position, sq) {
 	var result = attacks.isAttacked(position, position.king[position.turn], 1-position.turn);
 	position.board[sq] = content;
 	return result;
+}
+
+
+/**
+ * Parse a move notation for the given position.
+ * 
+ * @returns {MoveDescriptor}
+ * @throws InvalidNotation
+ */
+exports.parseNotation = function(position, notation, strict) {
+
+	// General syntax
+	var m = /^(?:(O-O-O)|(O-O)|([KQRBN])([a-h])?([1-8])?(x)?([a-h][1-8])|(?:([a-h])(x)?)?([a-h][1-8])(?:(=)?([KQRBNP]))?)([\+#])?$/.exec(notation);
+	if(m === null) {
+		throw new exception.InvalidNotation(fen.getFEN(position, 0, 1), notation, i18n.INVALID_MOVE_NOTATION_SYNTAX);
+	}
+
+	// Ensure that the position is legal.
+	if(!legality.isLegal(position)) {
+		throw new exception.InvalidNotation(fen.getFEN(position, 0, 1), notation, i18n.ILLEGAL_POSITION);
+	}
+
+	// CASTLING
+	// m[1] -> O-O-O
+	// m[2] -> O-O
+
+	// NON-PAWN MOVE
+	// m[3] -> moving piece
+	// m[4] -> file disambiguation
+	// m[5] -> rank disambiguation
+	// m[6] -> x (capture symbol)
+	// m[7] -> to
+
+	// PAWN MOVE
+	// m[ 8] -> from column (only for captures)
+	// m[ 9] -> x (capture symbol)
+	// m[10] -> to
+	// m[11] -> = (promotion symbol)
+	// m[12] -> promoted piece
+
+	// OTHER
+	// m[13] -> +/# (check/checkmate symbol)
+
+	var descriptor = null;
+
+	// Parse castling moves
+	if(m[1] || m[2]) {
+		var from = position.king[position.turn];
+		var to = from + (m[2] ? 2 : -2);
+		descriptor = moveGeneration.isCastlingLegal(position, from, to);
+		if(!descriptor) {
+			var message = m[2] ? i18n.ILLEGAL_KING_SIDE_CASTLING : i18n.ILLEGAL_QUEEN_SIDE_CASTLING;
+			throw new exception.InvalidNotation(fen.getFEN(position, 0, 1), notation, message);
+		}
+	}
+
+	// Non-pawn move
+	else if(m[3]) {
+		var movingPiece = bt.pieceFromString(m[3].toLowerCase());
+		var to = bt.squareFromString(m[7]);
+		var toContent = position.board[to];
+
+		// Cannot take your own pieces!
+		if(toContent >= 0 && toContent % 2 === position.turn) {
+			throw new exception.InvalidNotation(fen.getFEN(position, 0, 1), notation, i18n.TRYING_TO_CAPTURE_YOUR_OWN_PIECES);
+		}
+
+		// Find the "from"-square candidates
+		var attackers = attacks.getAttacks(position, to, position.turn).filter(function(sq) { return position.board[sq] === movingPiece*2 + position.turn; });
+
+		// Apply disambiguation
+		if(m[4]) {
+			var fileFrom = bt.fileFromString(m[4]);
+			attackers = attackers.filter(function(sq) { return sq%16 === fileFrom; });
+		}
+		if(m[5]) {
+			var rankFrom = bt.rankFromString(m[5]);
+			attackers = attackers.filter(function(sq) { return Math.floor(sq/16) === rankFrom; });
+		}
+		if(attackers.length===0) {
+			var message = (m[4] || m[5]) ? i18n.NO_PIECE_CAN_MOVE_TO_DISAMBIGUATION : i18n.NO_PIECE_CAN_MOVE_TO;
+			throw new exception.InvalidNotation(fen.getFEN(position, 0, 1), notation, message, m[3], m[7]);
+		}
+
+		// Compute the move descriptor for each remaining "from"-square candidate
+		for(var i=0; i<attackers.length; ++i) {
+			var currentDescriptor = moveGeneration.isKingSafeAfterMove(position, attackers[i], to, -1);
+			if(currentDescriptor) {
+				if(descriptor !== null) {
+					throw new exception.InvalidNotation(fen.getFEN(position, 0, 1), notation, i18n.REQUIRE_DISAMBIGUATION, m[3], m[7]);
+				}
+				descriptor = currentDescriptor;
+			}
+		}
+		if(descriptor === null) {
+			var message = position.turn===bt.WHITE ? i18n.NOT_SAFE_FOR_WHITE_KING : i18n.NOT_SAFE_FOR_BLACK_KING;
+			throw new exception.InvalidNotation(fen.getFEN(position, 0, 1), notation, message);
+		}
+
+		// STRICT-MODE -> check the disambiguation symbol.
+		if(strict) {
+			var expectedDS = getDisambiguationSymbol(position, descriptor._from, to);
+			var observedDS = (m[4] ? m[4] : '') + (m[5] ? m[5] : '');
+			if(expectedDS !== observedDS) {
+				throw new exception.InvalidNotation(fen.getFEN(position, 0, 1), notation, i18n.WRONG_DISAMBIGUATION_SYMBOL, expectedDS, observedDS);
+			}
+		}
+	}
+
+	// Pawn move
+	else if(m[10]) {
+		var to = bt.squareFromString(m[10]);
+		if(m[8]) {
+			descriptor = getPawnCaptureDescriptor(position, notation, bt.fileFromString(m[8]), to);
+		}
+		else {
+			descriptor = getPawnAdvanceDescriptor(position, notation, to);
+		}
+
+		// Ensure that the pawn move do not let a king in check.
+		if(!descriptor) {
+			var message = position.turn===bt.WHITE ? i18n.NOT_SAFE_FOR_WHITE_KING : i18n.NOT_SAFE_FOR_BLACK_KING;
+			throw new exception.InvalidNotation(fen.getFEN(position, 0, 1), notation, message);
+		}
+
+		// Detect promotions
+		if(to<8 || to>=112) {
+			if(!m[12]) {
+				throw new exception.InvalidNotation(fen.getFEN(position, 0, 1), notation, i18n.MISSING_PROMOTION);
+			}
+			var promotion = bt.pieceFromString(m[12].toLowerCase());
+			if(promotion === bt.PAWN || promotion === bt.KING) {
+				throw new exception.InvalidNotation(fen.getFEN(position, 0, 1), notation, i18n.INVALID_PROMOTED_PIECE, m[12]);
+			}
+			descriptor = moveDescriptor.makePromotion(descriptor._from, descriptor._to, descriptor._movingPiece % 2, promotion, descriptor._optionalPiece);
+
+			// STRICT MODE -> do not forget the `=` character!
+			if(strict && !m[11]) {
+				throw new exception.InvalidNotation(fen.getFEN(position, 0, 1), notation, i18n.MISSING_PROMOTION_SYMBOL);
+			}
+		}
+
+		// Detect illegal promotion attempts!
+		else if(m[12]) {
+			throw new exception.InvalidNotation(fen.getFEN(position, 0, 1), notation, i18n.ILLEGAL_PROMOTION);
+		}
+	}
+
+	// STRICT MODE
+	if(strict) {
+		if(descriptor.isCapture() !== (m[6] || m[9])) {
+			var message = descriptor.isCapture() ? i18n.MISSING_CAPTURE_SYMBOL : i18n.INVALID_CAPTURE_SYMBOL;
+			throw new exception.InvalidNotation(fen.getFEN(position, 0, 1), notation, message);
+		}
+		var expectedCCS = getCheckCheckmateSymbol(position, descriptor);
+		var observedCCS = m[13] ? m[13] : '';
+		if(expectedCCS !== observedCCS) {
+			throw new exception.InvalidNotation(fen.getFEN(position, 0, 1), notation, i18n.WRONG_CHECK_CHECKMATE_SYMBOL, expectedCCS, observedCCS);
+		}
+	}
+
+	// Final result
+	return descriptor;
+};
+
+
+/**
+ * Delegate function for capture pawn move parsing.
+ * 
+ * @returns {boolean|MoveDescriptor}
+ */
+function getPawnCaptureDescriptor(position, notation, columnFrom, to) {
+
+	// Ensure that `to` is not on the 1st row.
+	var from = to - 16 + position.turn*32;
+	if((from /* jshint bitwise:false */ & 0x88 /* jshint bitwise:true */)!==0) {
+		throw new exception.InvalidNotation(fen.getFEN(position, 0, 1), notation, i18n.INVALID_CAPTURING_PAWN_MOVE);
+	}
+
+	// Compute the "from"-square.
+	var columnTo = to % 16;
+	if(columnTo - columnFrom === 1) { from -= 1; }
+	else if(columnTo - columnFrom === -1) { from += 1; }
+	else {
+		throw new exception.InvalidNotation(fen.getFEN(position, 0, 1), notation, i18n.INVALID_CAPTURING_PAWN_MOVE);
+	}
+
+	// Check the content of the "from"-square
+	if(position.board[from] !== bt.PAWN*2+position.turn) {
+		throw new exception.InvalidNotation(fen.getFEN(position, 0, 1), notation, i18n.INVALID_CAPTURING_PAWN_MOVE);
+	}
+
+	// Check the content of the "to"-square
+	var toContent = position.board[to];
+	if(toContent < 0) {
+		if(to === (5-position.turn*3)*16 + position.enPassant) { // detecting "en-passant" captures
+			return moveGeneration.isKingSafeAfterMove(position, from, to, (4-position.turn)*16 + position.enPassant);
+		}
+	}
+	else if(toContent % 2 !== position.turn) { // detecting regular captures
+		return moveGeneration.isKingSafeAfterMove(position, from, to, -1);
+	}
+
+	throw new exception.InvalidNotation(fen.getFEN(position, 0, 1), notation, i18n.INVALID_CAPTURING_PAWN_MOVE);
+}
+
+
+/**
+ * Delegate function for non-capturing pawn move parsing.
+ *
+ * @returns {boolean|MoveDescriptor}
+ */
+function getPawnAdvanceDescriptor(position, notation, to) {
+
+	// Ensure that `to` is not on the 1st row.
+	var offset = 16 - position.turn*32;
+	var from = to - offset;
+	if((from /* jshint bitwise:false */ & 0x88 /* jshint bitwise:true */)!==0) {
+		throw new exception.InvalidNotation(fen.getFEN(position, 0, 1), notation, i18n.INVALID_NON_CAPTURING_PAWN_MOVE);
+	}
+
+	// Check the content of the "to"-square
+	if(position.board[to] >= 0) {
+		throw new exception.InvalidNotation(fen.getFEN(position, 0, 1), notation, i18n.INVALID_NON_CAPTURING_PAWN_MOVE);
+	}
+
+	// Check the content of the "from"-square
+	var expectedFromContent = bt.PAWN*2+position.turn;
+	if(position.board[from] === expectedFromContent) {
+		return moveGeneration.isKingSafeAfterMove(position, from, to, -1);
+	}
+
+	// Look for two-square pawn moves
+	else if(position.board[from] < 0) {
+		from -= offset;
+		var firstSquareOfRow = (1 + position.turn*5) * 16;
+		if(from >= firstSquareOfRow && from < firstSquareOfRow+8 && position.board[from] === expectedFromContent) {
+			return moveGeneration.isKingSafeAfterMove(position, from, to, -1);
+		}
+	}
+
+	throw new exception.InvalidNotation(fen.getFEN(position, 0, 1), notation, i18n.INVALID_NON_CAPTURING_PAWN_MOVE);
 }

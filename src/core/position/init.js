@@ -454,12 +454,12 @@ Position.prototype.notation = function() {
 	if(arguments.length === 1 && moveDescriptor.isInstanceOf(arguments[0])) {
 		return notation.getNotation(this._impl, arguments[0]);
 	}
-	//else if(arguments.length === 1 && typeof arguments[0] === 'string') { TODO
-	//	return parseNotation(this, arguments[0], false);
-	//}
-	//else if(arguments.length >= 2 && typeof arguments[0] === 'string' && typeof arguments[1] === 'boolean') {
-	//	return parseNotation(this, arguments[0], arguments[1]);
-	//}
+	else if(arguments.length === 1 && typeof arguments[0] === 'string') {
+		return notation.parseNotation(this._impl, arguments[0], false);
+	}
+	else if(arguments.length >= 2 && typeof arguments[0] === 'string' && typeof arguments[1] === 'boolean') {
+		return notation.parseNotation(this._impl, arguments[0], arguments[1]);
+	}
 	else {
 		throw new exception.IllegalArgument('Position#notation()');
 	}

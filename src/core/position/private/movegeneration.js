@@ -216,7 +216,7 @@ function generateMoves(position, fun) {
  * @param {number} enPassantSquare Index of the square where the "en-passant" taken pawn lies if any, `-1` otherwise.
  * @returns {boolean|MoveDescriptor} The move descriptor if the move is legal, `false` otherwise.
  */
-function isKingSafeAfterMove(position, from, to, enPassantSquare) {
+var isKingSafeAfterMove = exports.isKingSafeAfterMove = function(position, from, to, enPassantSquare) {
 	var fromContent = position.board[from];
 	var toContent   = position.board[to  ];
 	var movingPiece = Math.floor(fromContent / 2);
@@ -251,7 +251,7 @@ function isKingSafeAfterMove(position, from, to, enPassantSquare) {
 			return moveDescriptor.make(from, to, position.turn, movingPiece, toContent);
 		}
 	}
-}
+};
 
 
 /**
@@ -259,7 +259,7 @@ function isKingSafeAfterMove(position, from, to, enPassantSquare) {
  *
  * TODO: make it chess-960 compatible.
  */
-function isCastlingLegal(position, from, to) {
+var isCastlingLegal = exports.isCastlingLegal = function(position, from, to) {
 
 	// Ensure that the given underlying castling is allowed.
 	var column = from < to ? 7 : 0;
@@ -285,7 +285,7 @@ function isCastlingLegal(position, from, to) {
 
 	// The move is legal -> generate the move descriptor.
 	return moveDescriptor.makeCastling(from, to, rookFrom, rookTo, position.turn);
-}
+};
 
 
 /**
@@ -373,7 +373,7 @@ exports.isMoveLegal = function(position, from, to) {
 	// Steps (7) to (9) are delegated to `isKingSafeAfterMove`.
 	var descriptor = isKingSafeAfterMove(position, from, to, enPassantSquare);
 	return descriptor && isPromotion ? function(promotion) {
-		if(promotion === bt.QUEEN || promotion === bt.ROOK || promotion === bt.BISHOP || promotion === bt.KNIGHT) {
+		if(promotion !== bt.PAWN && promotion !== bt.KING) {
 			return moveDescriptor.makePromotion(descriptor._from, descriptor._to, descriptor._movingPiece % 2, promotion, descriptor._optionalPiece);
 		}
 		return false;
