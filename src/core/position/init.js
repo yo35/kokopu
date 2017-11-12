@@ -26,6 +26,11 @@ var exception = require('../exception');
 var bt = require('./private/basetypes');
 var impl = require('./private/impl');
 var fen = require('./private/fen');
+var attacks = require('./private/attacks');
+var legality = require('./private/legality');
+var moveDescriptor = require('./private/movedescriptor');
+var moveGeneration = require('./private/movegeneration');
+var notation = require('./private/notation');
 
 
 
@@ -229,5 +234,233 @@ Position.prototype.enPassant = function(value) {
 		}
 		this._impl.enPassant = enPassant;
 		this._impl.legal = null;
+	}
+};
+
+
+
+// -----------------------------------------------------------------------------
+// Attacks
+// -----------------------------------------------------------------------------
+
+
+/**
+ * Check if any piece of the given color attacks a given square.
+ *
+ * @param {string} square
+ * @param {string} byWho Either `'w'` or `'b'`
+ * @returns {boolean}
+ */
+Position.prototype.isAttacked = function(square, byWho) {
+	square = bt.squareFromString(square);
+	byWho = bt.colorFromString(byWho);
+	if(square < 0 || byWho < 0) {
+		throw new exception.IllegalArgument('Position#isAttacked()');
+	}
+	return attacks.isAttacked(this._impl, square, byWho);
+};
+
+
+/**
+ * Return the squares from which a piece of the given color attacks a given square.
+ *
+ * @param {string} square
+ * @param {string} byWho Either `'w'` or `'b'`
+ * @returns {boolean}
+ */
+Position.prototype.getAttacks = function(square, byWho) {
+	square = bt.squareFromString(square);
+	byWho = bt.colorFromString(byWho);
+	if(square < 0 || byWho < 0) {
+		throw new exception.IllegalArgument('Position#getAttacks()');
+	}
+	return attacks.getAttacks(this._impl, square, byWho).map(bt.squareToString);
+};
+
+
+
+// -----------------------------------------------------------------------------
+// Legality
+// -----------------------------------------------------------------------------
+
+
+/**
+ * Check whether the current position is legal or not.
+ *
+ * A position is considered to be legal if all the following conditions are met:
+ *
+ *  1. There is exactly one white king and one black king on the board.
+ *  2. The player that is not about to play is not check.
+ *  3. There are no pawn on rows 1 and 8.
+ *  4. For each colored castle flag set, there is a rook and a king on the
+ *     corresponding initial squares.
+ *  5. The pawn situation is consistent with the en-passant flag if it is set.
+ *     For instance, if it is set to the 'e' column and black is about to play,
+ *     the squares e2 and e3 must be empty, and there must be a white pawn on e4.
+ *
+ * @returns {boolean}
+ */
+Position.prototype.isLegal = function() {
+	return legality.isLegal(this._impl);
+};
+
+
+/**
+ * Return the square on which is located the king of the given color.
+ *
+ * @param {string} color
+ * @returns {string} Square where is located the searched king. `'-'` is returned
+ *          if there is no king of the given color or if the are 2 such kings or more.
+ */
+Position.prototype.kingSquare = function(color) {
+	color = bt.colorFromString(color);
+	if(color < 0) {
+		throw new exception.IllegalArgument('Position#kingSquare()');
+	}
+	legality.refreshLegalFlagAndKingSquares(this._impl);
+	var square = this._impl.king[color];
+	return square < 0 ? '-' : bt.squareToString(square);
+};
+
+
+
+// -----------------------------------------------------------------------------
+// Move generation
+// -----------------------------------------------------------------------------
+
+
+/**
+ * Return true if the player that is about to play is in check. If the position is not legal, the returned value is always false.
+ *
+ * @returns {boolean}
+ */
+Position.prototype.isCheck = function() {
+	return moveGeneration.isCheck(this._impl);
+};
+
+
+/**
+ * Return true if the player that is about to play is checkmated. If the position is not legal, the returned value is always false.
+ *
+ * @returns {boolean}
+ */
+Position.prototype.isCheckmate = function() {
+	return moveGeneration.isCheckmate(this._impl);
+};
+
+
+/**
+ * Return true if the player that is about to play is stalemated. If the position is not legal, the returned value is always false.
+ *
+ * @returns {boolean}
+ */
+Position.prototype.isStalemate = function() {
+	return moveGeneration.isStalemate(this._impl);
+};
+
+
+/**
+ * Detect if there exist any legal move in the current position. If the position is not legal, the returned value is always false.
+ *
+ * @returns {boolean}
+ */
+Position.prototype.hasMove = function() {
+	return moveGeneration.hasMove(this._impl);
+};
+
+
+/**
+ * Return the list of all legal moves in the current position. An empty list is returned if the position itself is not legal.
+ *
+ * @returns {MoveDescriptor[]}
+ */
+Position.prototype.moves = function() {
+	return moveGeneration.moves(this._impl);
+};
+
+
+/**
+ * Whether a move is legal or not.
+ *
+ * @returns {false|MoveDescriptor|function}
+ */
+Position.prototype.isMoveLegal = function(from, to) {
+	from = bt.squareFromString(from);
+	to = bt.squareFromString(to);
+	if(from < 0 || to < 0) {
+		throw new exception.IllegalArgument('Position#isMoveLegal()');
+	}
+	var result = moveGeneration.isMoveLegal(this._impl, from, to);
+
+	// A promoted piece needs to be chosen to build a valid move descriptor.
+	if(typeof result === 'function') {
+		var builder = function(promotion) {
+			promotion = bt.pieceFromString(promotion);
+			if(promotion >= 0) {
+				var builtMoveDescriptor = result(promotion);
+				if(builtMoveDescriptor) {
+					return builtMoveDescriptor;
+				}
+			}
+			throw new exception.IllegalArgument('Position#isMoveLegal()');
+		};
+		builder.needPromotion = true;
+		return builder;
+	}
+
+	// The result is either false or is a valid move descriptor.
+	else {
+		return result;
+	}
+};
+
+
+/**
+ * Play the given move if it is legal.
+ *
+ * @param {string|MoveDescriptor} move
+ * @returns {boolean} `true` if the move has been played and if it is legal, `false` otherwise.
+ */
+Position.prototype.play = function(move) {
+	if(typeof move === 'string') {
+		throw new exception.IllegalArgument('Not implemented yet'); // TODO
+	}
+	else if(moveDescriptor.isInstanceOf(move)) {
+		moveGeneration.play(this._impl, move);
+		return true;
+	}
+	else {
+		throw new exception.IllegalArgument('Position#play()');
+	}
+};
+
+
+
+// -----------------------------------------------------------------------------
+// Algebraic notation
+// -----------------------------------------------------------------------------
+
+
+/**
+ * TODO comment
+ * 
+ * `notation(moveDescriptor)`: return the standard algebraic notation corresponding to the given move descriptor.
+ *
+ * `notation(string [, boolean])`: parse the given string as standard algebraic notation and return the corresponding move descriptor.
+ *
+ * @throws {InvalidNotation} If the move parsing fails or if the parsed move would correspond to an illegal move.
+ */
+Position.prototype.notation = function() {
+	if(arguments.length === 1 && moveDescriptor.isInstanceOf(arguments[0])) {
+		return notation.getNotation(this._impl, arguments[0]);
+	}
+	//else if(arguments.length === 1 && typeof arguments[0] === 'string') { TODO
+	//	return parseNotation(this, arguments[0], false);
+	//}
+	//else if(arguments.length >= 2 && typeof arguments[0] === 'string' && typeof arguments[1] === 'boolean') {
+	//	return parseNotation(this, arguments[0], arguments[1]);
+	//}
+	else {
+		throw new exception.IllegalArgument('Position#notation()');
 	}
 };

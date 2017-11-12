@@ -42,7 +42,7 @@ var attacks = require('./attacks');
  */
 exports.isLegal = function(position) {
 	refreshLegalFlagAndKingSquares(position);
-	return position._legal;
+	return position.legal;
 };
 
 
@@ -56,27 +56,27 @@ exports.isLegal = function(position) {
  * TODO: make it chess-960 compatible.
  */
 var refreshLegalFlagAndKingSquares = exports.refreshLegalFlagAndKingSquares = function(position) {
-	if(position._legal !== null) {
+	if(position.legal !== null) {
 		return;
 	}
-	position._legal = false;
+	position.legal = false;
 
 	// Condition (1)
 	refreshKingSquare(position, bt.WHITE);
 	refreshKingSquare(position, bt.BLACK);
-	if(position._king[bt.WHITE] < 0 || position._king[bt.BLACK] < 0) {
+	if(position.king[bt.WHITE] < 0 || position.king[bt.BLACK] < 0) {
 		return;
 	}
 
 	// Condition (2)
-	if(attacks.isAttacked(position, position._king[1-position._turn], position._turn)) {
+	if(attacks.isAttacked(position, position.king[1-position.turn], position.turn)) {
 		return;
 	}
 
 	// Condition (3)
 	for(var c=0; c<8; ++c) {
-		var cp1 = position._board[c];
-		var cp8 = position._board[112 + c];
+		var cp1 = position.board[c];
+		var cp8 = position.board[112 + c];
 		if(cp1 === bt.WP || cp8 === bt.WP || cp1 === bt.BP || cp8 === bt.BP) {
 			return;
 		}
@@ -84,28 +84,28 @@ var refreshLegalFlagAndKingSquares = exports.refreshLegalFlagAndKingSquares = fu
 
 	// Condition (4)
 	for(var color=0; color<2; ++color) {
-		var skipOO  = (position._castling[color] /* jshint bitwise:false */ & 0x80 /* jshint bitwise:true */) === 0;
-		var skipOOO = (position._castling[color] /* jshint bitwise:false */ & 0x01 /* jshint bitwise:true */) === 0;
-		var rookHOK = skipOO              || position._board[7 + 112*color] === bt.ROOK*2 + color;
-		var rookAOK = skipOOO             || position._board[0 + 112*color] === bt.ROOK*2 + color;
-		var kingOK  = (skipOO && skipOOO) || position._board[4 + 112*color] === bt.KING*2 + color;
+		var skipOO  = (position.castling[color] /* jshint bitwise:false */ & 0x80 /* jshint bitwise:true */) === 0;
+		var skipOOO = (position.castling[color] /* jshint bitwise:false */ & 0x01 /* jshint bitwise:true */) === 0;
+		var rookHOK = skipOO              || position.board[7 + 112*color] === bt.ROOK*2 + color;
+		var rookAOK = skipOOO             || position.board[0 + 112*color] === bt.ROOK*2 + color;
+		var kingOK  = (skipOO && skipOOO) || position.board[4 + 112*color] === bt.KING*2 + color;
 		if(!(kingOK && rookAOK && rookHOK)) {
 			return;
 		}
 	}
 
 	// Condition (5)
-	if(position._enPassant >= 0) {
-		var square2 = (6-position._turn*5)*16 + position._enPassant;
-		var square3 = (5-position._turn*3)*16 + position._enPassant;
-		var square4 = (4-position._turn  )*16 + position._enPassant;
-		if(!(position._board[square2]===bt.EMPTY && position._board[square3]===bt.EMPTY && position._board[square4]===bt.PAWN*2+1-position._turn)) {
+	if(position.enPassant >= 0) {
+		var square2 = (6-position.turn*5)*16 + position.enPassant;
+		var square3 = (5-position.turn*3)*16 + position.enPassant;
+		var square4 = (4-position.turn  )*16 + position.enPassant;
+		if(!(position.board[square2]===bt.EMPTY && position.board[square3]===bt.EMPTY && position.board[square4]===bt.PAWN*2+1-position.turn)) {
 			return;
 		}
 	}
 
 	// At this point, all the conditions (1) to (5) hold, so the position can be flagged as legal.
-	position._legal = true;
+	position.legal = true;
 };
 
 
@@ -114,21 +114,21 @@ var refreshLegalFlagAndKingSquares = exports.refreshLegalFlagAndKingSquares = fu
  */
 function refreshKingSquare(position, color) {
 	var target = bt.KING*2 + color;
-	position._king[color] = -1;
+	position.king[color] = -1;
 	for(var sq=0; sq<120; sq += (sq /* jshint bitwise:false */ & 0x7 /* jshint bitwise:true */)===7 ? 9 : 1) {
-		if(position._board[sq] === target) {
+		if(position.board[sq] === target) {
 
 			// If the targeted king is detected on the square sq, two situations may occur:
 			// 1) No king was detected on the previously visited squares: then the current
 			//    square is saved, and loop over the next board squares goes on.
-			if(position._king[color] < 0) {
-				position._king[color] = sq;
+			if(position.king[color] < 0) {
+				position.king[color] = sq;
 			}
 
-			// 2) Another king was detected on the previously visited squares: then the buffer position._king[color]
+			// 2) Another king was detected on the previously visited squares: then the buffer position.king[color]
 			//    is set to the invalid state (-1), and the loop is interrupted.
 			else {
-				position._king[color] = -1;
+				position.king[color] = -1;
 				return;
 			}
 		}

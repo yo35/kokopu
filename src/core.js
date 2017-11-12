@@ -145,12 +145,6 @@ function squareToCoordinates(square) {
 var Position = require('./core/position/init').Position;
 
 
-// ---------------------------------------------------------------------------
-// Getters/setters
-// ---------------------------------------------------------------------------
-
-require('./core/position/process');
-
 
 // ---------------------------------------------------------------------------
 // Square control & position legality

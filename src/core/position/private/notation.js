@@ -80,7 +80,7 @@ function getCheckCheckmateSymbol(position, descriptor) {
  * Return the disambiguation symbol to use for a move from `from` to `to`.
  */
 function getDisambiguationSymbol(position, from, to) {
-	var attackers = attacks.getAttacks(position, to, position._turn).filter(function(sq) { return position._board[sq]===position._board[from]; });
+	var attackers = attacks.getAttacks(position, to, position.turn).filter(function(sq) { return position.board[sq]===position.board[from]; });
 		
 	// Disambiguation is not necessary if there less than 2 attackers.
 	if(attackers.length < 2) {
@@ -114,9 +114,9 @@ function getDisambiguationSymbol(position, from, to) {
  * Whether the piece on the given square is pinned or not.
  */
 function isPinned(position, sq) {
-	var content = position._board[sq];
-	position._board[sq] = bt.EMPTY;
-	var result = attacks.isAttacked(position, position._king[position._turn], 1-position._turn);
-	position._board[sq] = content;
+	var content = position.board[sq];
+	position.board[sq] = bt.EMPTY;
+	var result = attacks.isAttacked(position, position.king[position.turn], 1-position.turn);
+	position.board[sq] = content;
 	return result;
 }

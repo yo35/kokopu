@@ -63,7 +63,7 @@ function isAttackedByNonSliding(position, square, nonSlidingAttacker) {
 	var directions = ATTACK_DIRECTIONS[nonSlidingAttacker];
 	for(var i=0; i<directions.length; ++i) {
 		var sq = square - directions[i];
-		if((sq /* jshint bitwise:false */ & 0x88 /* jshint bitwise:true */)===0 && position._board[sq]===nonSlidingAttacker) {
+		if((sq /* jshint bitwise:false */ & 0x88 /* jshint bitwise:true */)===0 && position.board[sq]===nonSlidingAttacker) {
 			return true;
 		}
 	}
@@ -78,7 +78,7 @@ function isAttackedBySliding(position, square, slidingAttacker, queenAttacker) {
 		while(true) {
 			sq -= directions[i];
 			if((sq /* jshint bitwise:false */ & 0x88 /* jshint bitwise:true */)===0) {
-				var cp = position._board[sq];
+				var cp = position.board[sq];
 				if(cp === bt.EMPTY) { continue; }
 				else if(cp === slidingAttacker || cp===queenAttacker) { return true; }
 			}
@@ -112,7 +112,7 @@ function findNonSlidingAttacks(position, square, result, nonSlidingAttacker) {
 	var directions = ATTACK_DIRECTIONS[nonSlidingAttacker];
 	for(var i=0; i<directions.length; ++i) {
 		var sq = square - directions[i];
-		if((sq /* jshint bitwise:false */ & 0x88 /* jshint bitwise:true */)===0 && position._board[sq]===nonSlidingAttacker) {
+		if((sq /* jshint bitwise:false */ & 0x88 /* jshint bitwise:true */)===0 && position.board[sq]===nonSlidingAttacker) {
 			result.push(sq);
 		}
 	}
@@ -126,7 +126,7 @@ function findSlidingAttacks(position, square, result, slidingAttacker, queenAtta
 		while(true) {
 			sq -= directions[i];
 			if((sq /* jshint bitwise:false */ & 0x88 /* jshint bitwise:true */)===0) {
-				var cp = position._board[sq];
+				var cp = position.board[sq];
 				if(cp === bt.EMPTY) { continue; }
 				else if(cp === slidingAttacker || cp===queenAttacker) { result.push(sq); }
 			}
