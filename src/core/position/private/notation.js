@@ -23,6 +23,7 @@
 
 
 var bt = require('./basetypes');
+var impl = require('./impl');
 var attacks = require('./attacks');
 var moveGeneration = require('./movegeneration');
 
@@ -69,10 +70,9 @@ exports.getNotation = function(position, descriptor) {
  * Return the check/checkmate symbol to use for a move.
  */
 function getCheckCheckmateSymbol(position, descriptor) {
-	//var nextPosition = new Position(position);
-	//moveGeneration.play(nextPosition, descriptor);
-	//return nextPosition.isCheck() ? (nextPosition.hasMove() ? '+' : '#') : '';
-	return ''; // TODO
+	var nextPosition = impl.makeCopy(position);
+	moveGeneration.play(nextPosition, descriptor);
+	return moveGeneration.isCheck(nextPosition) ? (moveGeneration.hasMove(nextPosition) ? '+' : '#') : '';
 }
 
 
