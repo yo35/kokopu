@@ -22,8 +22,9 @@
 'use strict';
 
 
+var bt = require('./basetypes');
 var exception = require('./exception');
-var bt = require('./private_position/basetypes');
+
 var impl = require('./private_position/impl');
 var fen = require('./private_position/fen');
 var attacks = require('./private_position/attacks');

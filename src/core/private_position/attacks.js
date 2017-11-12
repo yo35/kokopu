@@ -22,7 +22,7 @@
 'use strict';
 
 
-var bt = require('./basetypes');
+var bt = require('../basetypes');
 
 
 // Attack directions per colored piece.

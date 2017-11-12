@@ -22,8 +22,8 @@
 'use strict';
 
 
+var bt = require('./basetypes');
 var exception = require('./exception');
-var bt = require('./private_position/basetypes');
 
 
 /**

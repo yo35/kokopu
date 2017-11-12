@@ -22,7 +22,7 @@
 'use strict';
 
 
-var bt = require('./basetypes');
+var bt = require('../basetypes');
 var attacks = require('./attacks');
 var legality = require('./legality');
 var moveDescriptor = require('./movedescriptor');

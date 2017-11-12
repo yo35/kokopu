@@ -22,7 +22,7 @@
 'use strict';
 
 
-var bt = require('./basetypes');
+var bt = require('../basetypes');
 
 
 var CASTLING_FLAG   = 0x01;

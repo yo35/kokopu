@@ -22,9 +22,10 @@
 'use strict';
 
 
+var bt = require('../basetypes');
 var exception = require('../exception');
 var i18n = require('../i18n');
-var bt = require('./basetypes');
+
 var impl = require('./impl');
 
 var FEN_PIECE_SYMBOL = 'KkQqRrBbNnPp';
