@@ -474,8 +474,6 @@ Position.prototype.playNullMove = function() {
 
 
 /**
- * TODO comment
- * 
  * `notation(moveDescriptor)`: return the standard algebraic notation corresponding to the given move descriptor.
  *
  * `notation(string [, boolean])`: parse the given string as standard algebraic notation and return the corresponding move descriptor.
