@@ -26,7 +26,6 @@
 var i18n = require('./core/i18n');
 var exception = require('./core/exception');
 var internals = require('./core/private_position/basetypes');
-var attacks = require('./core/private_position/attacks');
 
 
 
@@ -71,47 +70,6 @@ function squareToCoordinates(square) {
 var Position = require('./core/position').Position;
 
 
-
-// ---------------------------------------------------------------------------
-// Square control & position legality
-// ---------------------------------------------------------------------------
-
-
-var isAttacked = attacks.isAttacked;
-
-
-
-// ---------------------------------------------------------------------------
-// Move generation & check/checkmate/stalemate tests
-// ---------------------------------------------------------------------------
-
-
-/**
- * Determine if a null-move (i.e. switching the player about to play) can be play in the current position.
- * A null-move is possible if the position is legal and if the current player about to play is not in check.
- *
- * @returns {boolean}
- */
-Position.prototype.isNullMoveLegal = function() {
-	return this.isLegal() && !isAttacked(this, this._king[this._turn], 1-this._turn);
-};
-
-
-/**
- * Play a null-move on the current position if it is legal.
- *
- * @returns {boolean} `true` if the move has actually been played, `false` otherwise.
- */
-Position.prototype.playNullMove = function() {
-	if(this.isNullMoveLegal()) {
-		this._turn      = 1 - this._turn;
-		this._enPassant = -1;
-		return true;
-	}
-	else {
-		return false;
-	}
-};
 
 
 

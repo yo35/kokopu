@@ -428,3 +428,27 @@ exports.play = function(position, descriptor) {
 	// Toggle the turn flag.
 	position.turn = 1 - position.turn;
 };
+
+
+/**
+ * Determine if a null-move (i.e. switching the player about to play) can be play in the current position.
+ * A null-move is possible if the position is legal and if the current player about to play is not in check.
+ */
+var isNullMoveLegal = exports.isNullMoveLegal = function(position) {
+	return legality.isLegal(position) && !attacks.isAttacked(position, position.king[position.turn], 1-position.turn);
+};
+
+
+/**
+ * Play a null-move on the current position if it is legal.
+ */
+exports.playNullMove = function(position) {
+	if(isNullMoveLegal(position)) {
+		position.turn = 1 - position.turn;
+		position.enPassant = -1;
+		return true;
+	}
+	else {
+		return false;
+	}
+};

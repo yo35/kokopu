@@ -423,7 +423,18 @@ Position.prototype.isMoveLegal = function(from, to) {
  */
 Position.prototype.play = function(move) {
 	if(typeof move === 'string') {
-		throw new exception.IllegalArgument('Not implemented yet'); // TODO
+		try {
+			moveGeneration.play(this._impl, notation.parseNotation(this._impl, move, false));
+			return true;
+		}
+		catch(err) {
+			if(err instanceof exception.InvalidNotation) {
+				return false;
+			}
+			else {
+				throw err;
+			}
+		}
 	}
 	else if(moveDescriptor.isInstanceOf(move)) {
 		moveGeneration.play(this._impl, move);
@@ -432,6 +443,27 @@ Position.prototype.play = function(move) {
 	else {
 		throw new exception.IllegalArgument('Position#play()');
 	}
+};
+
+
+/**
+ * Determine if a null-move (i.e. switching the player about to play) can be play in the current position.
+ * A null-move is possible if the position is legal and if the current player about to play is not in check.
+ *
+ * @returns {boolean}
+ */
+Position.prototype.isNullMoveLegal = function() {
+	return moveGeneration.isNullMoveLegal(this._impl);
+};
+
+
+/**
+ * Play a null-move on the current position if it is legal.
+ *
+ * @returns {boolean} `true` if the move has actually been played, `false` otherwise.
+ */
+Position.prototype.playNullMove = function() {
+	return moveGeneration.playNullMove(this._impl);
 };
 
 
