@@ -27,17 +27,12 @@ var test = require('unit.js');
 
 describe('Square color', function() {
 
-	var RANK = '12345678';
-	var FILE = 'abcdefgh';
-
 	it('Valid inputs', function() {
-		for(var r=0; r<8; ++r) {
-			for(var f=0; f<8; ++f) {
-				var expected = f%2 === r%2 ? 'b' : 'w';
-				var square = FILE[f] + RANK[r];
-				test.value(RPBChess.squareColor(square)).is(expected);
-			}
-		}
+		RPBChess.forEachSquare(function(square) {
+			var c = RPBChess.squareCoordinates(square);
+			var expected = c.rank%2 === c.file%2 ? 'b' : 'w';
+			test.value(RPBChess.squareColor(square)).is(expected);
+		});
 	});
 
 	['e9', 'i5'].forEach(function(elem) {

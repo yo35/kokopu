@@ -25,61 +25,14 @@
 
 var i18n = require('./core/i18n');
 var exception = require('./core/exception');
-var internals = require('./core/private_position/basetypes');
-
-
-
-// ---------------------------------------------------------------------------
-// Internal constants and helper methods
-// ---------------------------------------------------------------------------
-
-
-
-/**
- * Return the color of a square.
- *
- * @param {string} square
- * @returns {string} Either `'w'` or `'b'`.
- */
-function squareColor(square) {
-	if(typeof square === 'string') {
-		if     (/^[aceg][1357]$/.test(square) || /^[bdfh][2468]$/.test(square)) { return 'b'; }
-		else if(/^[aceg][2468]$/.test(square) || /^[bdfh][1357]$/.test(square)) { return 'w'; }
-	}
-	throw new exception.IllegalArgument('squareColor()');
-}
-
-
-/**
- * Return the coordinates of a square.
- *
- * @param {string} square
- * @returns {{r:number, c:number}}
- */
-function squareToCoordinates(square) {
-	square = internals.squareFromString(square);
-	return square >= 0 ? { r:Math.floor(square/16), f:square%16 } : null;
-}
-
-
-
-// ---------------------------------------------------------------------------
-// Constructor & string conversion methods
-// ---------------------------------------------------------------------------
-
+var util = require('./core/util');
 var Position = require('./core/position').Position;
-
-
-
-
-
-// ---------------------------------------------------------------------------
-// Public objects
-// ---------------------------------------------------------------------------
 
 
 exports.i18n = i18n;
 exports.exception = exception;
-exports.squareColor = squareColor;
-exports.squareToCoordinates = squareToCoordinates;
+exports.forEachSquare = util.forEachSquare;
+exports.squareColor = util.squareColor;
+exports.squareCoordinates = util.squareCoordinates;
+exports.square = util.square;
 exports.Position = Position;
