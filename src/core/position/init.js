@@ -23,21 +23,10 @@
 
 
 var exception = require('../exception');
-var i18n = require('../i18n');
 var bt = require('./private/basetypes');
+var impl = require('./private/impl');
+var fen = require('./private/fen');
 
-var WHITE = bt.WHITE;
-var BLACK = bt.BLACK;
-
-var EMPTY = bt.EMPTY;
-var INVALID = bt.INVALID;
-
-var FEN_PIECE_SYMBOL = 'KkQqRrBbNnPp';
-
-
-// -----------------------------------------------------------------------------
-// Main
-// -----------------------------------------------------------------------------
 
 /**
  * @constructor
@@ -51,23 +40,18 @@ var FEN_PIECE_SYMBOL = 'KkQqRrBbNnPp';
  * @param {string|Position} [fen = 'start'] Either `'start'`, `'empty'`, an existing position, or a FEN string representing chess position.
  * @throws InvalidFEN If the input parameter is neither a correctly formatted FEN string nor `'start'` or `'empty'`.
  */
-var Position = exports.Position = function(fen) {
-	if(typeof fen === 'undefined' || fen === null || fen === 'start') {
-		this.reset();
+var Position = exports.Position = function(argument) {
+	if(typeof argument === 'undefined' || argument === null || argument === 'start') {
+		this._impl = impl.makeInitial();
 	}
-	else if(fen === 'empty') {
-		this.clear();
+	else if(argument === 'empty') {
+		this._impl = impl.makeEmpty();
 	}
-	else if(fen instanceof Position) {
-		this._board     = fen._board.slice();
-		this._turn      = fen._turn;
-		this._castling  = fen._castling.slice();
-		this._enPassant = fen._enPassant;
-		this._legal     = fen._legal;
-		this._king      = fen._king.slice();
+	else if(argument instanceof Position) {
+		this._impl = impl.makeCopy(argument._impl);
 	}
 	else {
-		setFEN(this, fen, false);
+		this._impl = fen.parseFEN(argument, false).position;
 	}
 };
 
@@ -76,27 +60,7 @@ var Position = exports.Position = function(fen) {
  * Set the position to the empty state.
  */
 Position.prototype.clear = function() {
-
-	// Board state
-	this._board = [
-		EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID,
-		EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID,
-		EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID,
-		EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID,
-		EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID,
-		EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID,
-		EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID,
-		EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY
-	];
-
-	// Flags
-	this._turn      = WHITE;
-	this._castling  = [0, 0];
-	this._enPassant = -1;
-
-	// Computed attributes
-	this._legal = false;
-	this._king  = [-1, -1];
+	this._impl = impl.makeEmpty();
 };
 
 
@@ -104,27 +68,7 @@ Position.prototype.clear = function() {
  * Set the position to the starting state.
  */
 Position.prototype.reset = function() {
-
-	// Board state
-	this._board = [
-		bt.WR, bt.WN, bt.WB, bt.WQ, bt.WK, bt.WB, bt.WN, bt.WR, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID,
-		bt.WP, bt.WP, bt.WP, bt.WP, bt.WP, bt.WP, bt.WP, bt.WP, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID,
-		EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID,
-		EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID,
-		EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID,
-		EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID,
-		bt.BP, bt.BP, bt.BP, bt.BP, bt.BP, bt.BP, bt.BP, bt.BP, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID,
-		bt.BR, bt.BN, bt.BB, bt.BQ, bt.BK, bt.BB, bt.BN, bt.BR
-	];
-
-	// Meta-data
-	this._turn      = WHITE;
-	this._castling  = [129 /* (1 << A-file) | (1 << H-file) */, 129];
-	this._enPassant = -1;
-
-	// Computed attributes
-	this._legal = true;
-	this._king  = [4 /* e1 */, 116 /* e8 */];
+	this._impl = impl.makeInitial();
 };
 
 
@@ -135,23 +79,7 @@ Position.prototype.reset = function() {
  * @returns {string} Human-readable representation of the position.
  */
 Position.prototype.ascii = function() {
-
-	// Board scanning
-	var res = '+---+---+---+---+---+---+---+---+\n';
-	for(var r=7; r>=0; --r) {
-		for(var f=0; f<8; ++f) {
-			var cp = this._board[r*16 + f];
-			res += '| ' + (cp < 0 ? ' ' : FEN_PIECE_SYMBOL[cp]) + ' ';
-		}
-		res += '|\n';
-		res += '+---+---+---+---+---+---+---+---+\n';
-	}
-
-	// Flags
-	res += bt.colorToString(this._turn) + ' ' + castlingToString(this) + ' ' + enPassantToString(this);
-
-	// Return the result
-	return res;
+	return fen.ascii(this._impl);
 };
 
 
@@ -162,192 +90,24 @@ Position.prototype.ascii = function() {
  */
 Position.prototype.fen = function() {
 	if(arguments.length === 0) {
-		return getFEN(this, 0, 1);
+		return fen.getFEN(this._impl, 0, 1);
 	}
 	else if(arguments.length === 1 && typeof arguments[0] === 'object') {
 		var fiftyMoveClock = (typeof arguments[0].fiftyMoveClock === 'number') ? arguments[0].fiftyMoveClock : 0;
 		var fullMoveNumber = (typeof arguments[0].fullMoveNumber === 'number') ? arguments[0].fullMoveNumber : 1;
-		return getFEN(this, fiftyMoveClock, fullMoveNumber);
+		return fen.getFEN(this._impl, fiftyMoveClock, fullMoveNumber);
 	}
 	else if(arguments.length === 1 && typeof arguments[0] === 'string') {
-		return setFEN(this, arguments[0], false);
+		var result = fen.parseFEN(arguments[0], false);
+		this._impl = result.position;
+		return { fiftyMoveClock: result.fiftyMoveClock, fullMoveNumber: result.fullMoveNumber };
 	}
 	else if(arguments.length >= 2 && typeof arguments[0] === 'string' && typeof arguments[1] === 'boolean') {
-		return setFEN(this, arguments[0], arguments[1]);
+		var result = fen.parseFEN(arguments[0], arguments[1]);
+		this._impl = result.position;
+		return { fiftyMoveClock: result.fiftyMoveClock, fullMoveNumber: result.fullMoveNumber };
 	}
 	else {
 		throw new exception.IllegalArgument('Position#fen()');
 	}
 };
-
-
-
-// -----------------------------------------------------------------------------
-// FEN export
-// -----------------------------------------------------------------------------
-
-function getFEN(position, fiftyMoveClock, fullMoveNumber) {
-	var res = '';
-
-	// Board scanning
-	for(var r=7; r>=0; --r) {
-		var emptyCount = 0;
-		for(var f=0; f<8; ++f) {
-			var cp = position._board[r*16 + f];
-			if(cp < 0) {
-				++emptyCount;
-			}
-			else {
-				if(emptyCount > 0) {
-					res += emptyCount;
-					emptyCount = 0;
-				}
-				res += FEN_PIECE_SYMBOL[cp];
-			}
-		}
-		if(emptyCount > 0) {
-			res += emptyCount;
-		}
-		if(r > 0) {
-			res += '/';
-		}
-	}
-
-	// Flags + additional move counters
-	res += ' ' + bt.colorToString(position._turn) + ' ' + castlingToString(position) + ' ' + enPassantToString(position);
-	res += ' ' + fiftyMoveClock + ' ' + fullMoveNumber;
-
-	// Return the result
-	return res;
-}
-
-
-function castlingToString(position) {
-	var res = '';
-	if(position._castling[WHITE] /* jshint bitwise:false */ & 1<<7 /* jshint bitwise:true */) { res += 'K'; }
-	if(position._castling[WHITE] /* jshint bitwise:false */ & 1<<0 /* jshint bitwise:true */) { res += 'Q'; }
-	if(position._castling[BLACK] /* jshint bitwise:false */ & 1<<7 /* jshint bitwise:true */) { res += 'k'; }
-	if(position._castling[BLACK] /* jshint bitwise:false */ & 1<<0 /* jshint bitwise:true */) { res += 'q'; }
-	return res === '' ? '-' : res;
-}
-
-
-function enPassantToString(position) {
-	if(position._enPassant < 0) {
-		return '-';
-	}
-	else {
-		return bt.fileToString(position._enPassant) + (position._turn===WHITE ? '6' : '3');
-	}
-}
-
-
-
-// -----------------------------------------------------------------------------
-// FEN import
-// -----------------------------------------------------------------------------
-
-function setFEN(position, fen, strict) {
-
-	// Trim the input string and split it into 6 fields.
-	fen = fen.replace(/^\s+|\s+$/g, '');
-	var fields = fen.split(/\s+/);
-	if(fields.length !== 6) {
-		throw new exception.InvalidFEN(fen, i18n.WRONG_NUMBER_OF_FEN_FIELDS);
-	}
-
-	// The first field (that represents the board) is split in 8 sub-fields.
-	var rankFields = fields[0].split('/');
-	if(rankFields.length !== 8) {
-		throw new exception.InvalidFEN(fen, i18n.WRONG_NUMBER_OF_SUBFIELDS_IN_BOARD_FIELD);
-	}
-
-	// Initialize the position
-	position.clear();
-	position._legal = null;
-
-	// Board parsing
-	for(var r=7; r>=0; --r) {
-		var rankField = rankFields[7-r];
-		var i = 0;
-		var f = 0;
-		while(i<rankField.length && f<8) {
-			var s = rankField[i];
-			var cp = FEN_PIECE_SYMBOL.indexOf(s);
-
-			// The current character is in the range [1-8] -> skip the corresponding number of squares.
-			if(/^[1-8]$/.test(s)) {
-				f += parseInt(s, 10);
-			}
-
-			// The current character corresponds to a colored piece symbol -> set the current square accordingly.
-			else if(cp >= 0) {
-				position._board[r*16 + f] = cp;
-				++f;
-			}
-
-			// Otherwise -> parsing error.
-			else {
-				throw new exception.InvalidFEN(fen, i18n.UNEXPECTED_CHARACTER_IN_BOARD_FIELD, s);
-			}
-
-			// Increment the character counter.
-			++i;
-		}
-
-		// Ensure that the current sub-field deals with all the squares of the current rank.
-		if(i !== rankField.length || f !== 8) {
-			throw new exception.InvalidFEN(fen, i18n.UNEXPECTED_END_OF_SUBFIELD_IN_BOARD_FIELD, i18n.ORDINALS[7-r]);
-		}
-	}
-
-	// Turn parsing
-	position._turn = bt.colorFromString(fields[1]);
-	if(position._turn < 0) {
-		throw new exception.InvalidFEN(fen, i18n.INVALID_TURN_FIELD);
-	}
-
-	// Castling rights parsing
-	position._castling = castlingFromString(fields[2], strict);
-	if(position._castling === null) {
-		throw new exception.InvalidFEN(fen, i18n.INVALID_CASTLING_FIELD);
-	}
-
-	// En-passant rights parsing
-	var enPassantField = fields[3];
-	if(enPassantField !== '-') {
-		if(!/^[a-h][36]$/.test(enPassantField)) {
-			throw new exception.InvalidFEN(fen, i18n.INVALID_EN_PASSANT_FIELD);
-		}
-		if(strict && ((enPassantField[1]==='3' && position._turn===WHITE) || (enPassantField[1]==='6' && position._turn===BLACK))) {
-			throw new exception.InvalidFEN(fen, i18n.WRONG_RANK_IN_EN_PASSANT_FIELD);
-		}
-		position._enPassant = bt.fileFromString(enPassantField[0]);
-	}
-
-	// Move counting flags parsing
-	var moveCountingRegExp = strict ? /^(?:0|[1-9][0-9]*)$/ : /^[0-9]+$/;
-	if(!moveCountingRegExp.test(fields[4])) {
-		throw new exception.InvalidFEN(fen, i18n.INVALID_MOVE_COUNTING_FIELD, i18n.ORDINALS[4]);
-	}
-	if(!moveCountingRegExp.test(fields[5])) {
-		throw new exception.InvalidFEN(fen, i18n.INVALID_MOVE_COUNTING_FIELD, i18n.ORDINALS[5]);
-	}
-	return { fiftyMoveClock: parseInt(fields[4], 10), fullMoveNumber: parseInt(fields[5], 10) };
-}
-
-
-function castlingFromString(castling, strict) {
-	var res = [0, 0];
-	if(castling === '-') {
-		return res;
-	}
-	if(!(strict ? /^K?Q?k?q?$/ : /^[KQkq]*$/).test(castling)) {
-		return null;
-	}
-	if(castling.indexOf('K') >= 0) { res[WHITE] /* jshint bitwise:false */ |= 1<<7; /* jshint bitwise:true */ }
-	if(castling.indexOf('Q') >= 0) { res[WHITE] /* jshint bitwise:false */ |= 1<<0; /* jshint bitwise:true */ }
-	if(castling.indexOf('k') >= 0) { res[BLACK] /* jshint bitwise:false */ |= 1<<7; /* jshint bitwise:true */ }
-	if(castling.indexOf('q') >= 0) { res[BLACK] /* jshint bitwise:false */ |= 1<<0; /* jshint bitwise:true */ }
-	return res;
-}
