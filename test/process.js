@@ -31,12 +31,12 @@ function testData() {
 	var result = [];
 	var lines = fs.readFileSync('./test/positions.csv', 'utf8').split('\n');
 	lines.forEach(function(elem, index) {
-		
+
 		// Skip header and empty lines.
 		if(elem === '' || index === 0) {
 			return;
 		}
-		
+
 		var field = elem.split('\t');
 		result.push({
 			label      : field[ 0],
@@ -50,9 +50,10 @@ function testData() {
 			isStalemate: field[ 8]==='true',
 			hasMove    : field[ 9]==='true',
 			moves      : field[10],
+			notations  : field[11],
 			successors : field[12]
 		});
-		
+
 	});
 	return result;
 }
@@ -173,12 +174,24 @@ describe('Play', function() {
 		it('Position ' + elem.label, function() {
 			var initialPos = createPosition(elem);
 			var moves = initialPos.moves().sort(function(e1, e2) { return e1.toString().localeCompare(e2.toString()); });
-			var successors = moves.map(function(elem) {
+			var successors = moves.map(function(move) {
 				var nextPos = new RPBChess.Position(initialPos);
-				nextPos.play(elem);
+				nextPos.play(move);
 				return nextPos.fen();
 			});
 			test.value(successors.join('|')).is(elem.successors);
+		});
+	});
+});
+
+
+describe('Algebraic notation generation', function() {
+	testData().forEach(function(elem) {
+		it('Position ' + elem.label, function() {
+			var pos = createPosition(elem);
+			var moves = pos.moves().sort(function(e1, e2) { return e1.toString().localeCompare(e2.toString()); });
+			var notations = moves.map(function(move) { return pos.notation(move); });
+			test.value(notations.join('/')).is(elem.notations);
 		});
 	});
 });

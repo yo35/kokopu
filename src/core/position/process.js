@@ -30,6 +30,7 @@ var attacks = require('./private/attacks');
 var legality = require('./private/legality');
 var moveDescriptor = require('./private/movedescriptor');
 var moveGeneration = require('./private/movegeneration');
+var notation = require('./private/notation');
 
 
 
@@ -225,5 +226,36 @@ Position.prototype.play = function(move) {
 	}
 	else {
 		throw new exception.IllegalArgument('Position#play()');
+	}
+};
+
+
+
+// -----------------------------------------------------------------------------
+// Algebraic notation
+// -----------------------------------------------------------------------------
+
+
+/**
+ * TODO comment
+ * 
+ * `notation(moveDescriptor)`: return the standard algebraic notation corresponding to the given move descriptor.
+ *
+ * `notation(string [, boolean])`: parse the given string as standard algebraic notation and return the corresponding move descriptor.
+ *
+ * @throws {InvalidNotation} If the move parsing fails or if the parsed move would correspond to an illegal move.
+ */
+Position.prototype.notation = function() {
+	if(arguments.length === 1 && moveDescriptor.isInstanceOf(arguments[0])) {
+		return notation.getNotation(this, arguments[0]);
+	}
+	//else if(arguments.length === 1 && typeof arguments[0] === 'string') { TODO
+	//	return parseNotation(this, arguments[0], false);
+	//}
+	//else if(arguments.length >= 2 && typeof arguments[0] === 'string' && typeof arguments[1] === 'boolean') {
+	//	return parseNotation(this, arguments[0], arguments[1]);
+	//}
+	else {
+		throw new exception.IllegalArgument('Position#notation()');
 	}
 };
