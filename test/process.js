@@ -195,3 +195,64 @@ describe('Algebraic notation generation', function() {
 		});
 	});
 });
+
+
+describe('Algebraic notation parsing', function() {
+
+	var /* const */ PIECES = 'KQRBN';
+	var /* const */ PROMO  = ['', 'Q', 'R', 'B', 'N'];
+	var /* const */ RANK_DISAMBIGUATION = ['', '1', '2', '3', '4', '5', '6', '7', '8'];
+	var /* const */ FILE_DISAMBIGUATION = ['', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+
+	testData().forEach(function(elem) {
+		it('Position ' + elem.label, function() {
+			var pos = createPosition(elem);
+			var moves = [];
+
+			// Catch the exceptions thrown by the parsing function.
+			function parseNotation(text) {
+				try {
+					var descriptor = pos.notation(text, false);
+					moves.push(descriptor.toString());
+				}
+				catch(e) {
+					if(!(e instanceof RPBChess.exception.InvalidNotation)) {
+						throw e;
+					}
+				}
+			}
+
+			// Castling moves
+			parseNotation('O-O-O');
+			parseNotation('O-O');
+
+			// Pawn move
+			squares().forEach(function(to) {
+				for(var fd=0; fd<FILE_DISAMBIGUATION.length; ++fd) {
+					for(var p=0; p<PROMO.length; ++p) {
+						var text = FILE_DISAMBIGUATION[fd] + to + PROMO[p];
+						parseNotation(text);
+					}
+				}
+			});
+
+			// Non-pawn moves
+			squares().forEach(function(to) {
+				for(var p=0; p<PIECES.length; ++p) {
+					for(var rd=0; rd<RANK_DISAMBIGUATION.length; ++rd) {
+						for(var fd=0; fd<FILE_DISAMBIGUATION.length; ++fd) {
+							var text = PIECES[p] + FILE_DISAMBIGUATION[fd] + RANK_DISAMBIGUATION[rd] + to;
+							parseNotation(text);
+						}
+					}
+				}
+			});
+
+			// Sort the moves and remove the duplicates.
+			moves.sort();
+			moves = moves.filter(function(elem, index, tab) { return index===0 || elem!==tab[index-1]; });
+
+			test.value(moves.join('/')).is(elem.moves);
+		});
+	});
+});
