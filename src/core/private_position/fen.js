@@ -22,8 +22,8 @@
 'use strict';
 
 
-var exception = require('../../exception');
-var i18n = require('../../i18n');
+var exception = require('../exception');
+var i18n = require('../i18n');
 var bt = require('./basetypes');
 var impl = require('./impl');
 

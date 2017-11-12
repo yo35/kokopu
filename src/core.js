@@ -25,8 +25,8 @@
 
 var i18n = require('./core/i18n');
 var exception = require('./core/exception');
-var internals = require('./core/position/private/basetypes');
-var attacks = require('./core/position/private/attacks');
+var internals = require('./core/private_position/basetypes');
+var attacks = require('./core/private_position/attacks');
 
 
 
@@ -68,7 +68,7 @@ function squareToCoordinates(square) {
 // Constructor & string conversion methods
 // ---------------------------------------------------------------------------
 
-var Position = require('./core/position/init').Position;
+var Position = require('./core/position').Position;
 
 
 
