@@ -64,25 +64,12 @@ function createPosition(testDataDescriptor) {
 }
 
 
-function squares() {
-	var ROW    = '12345678';
-	var COLUMN = 'abcdefgh';
-	var result = [];
-	for(var r=0; r<8; ++r) {
-		for(var c=0; c<8; ++c) {
-			result.push(COLUMN[c] + ROW[r]);
-		}
-	}
-	return result;
-}
-
-
 describe('isAttacked', function() {
 
 	function testIsAttacked(fen, byWho, attackedSquares) {
 		var position = new RPBChess.Position(fen);
 		var res = '';
-		squares().forEach(function(square) {
+		RPBChess.forEachSquare(function(square) {
 			if(position.isAttacked(square, byWho)) {
 				if(res !== '') { res += '/'; }
 				res += square;
@@ -143,8 +130,8 @@ describe('Move legality check', function() {
 			var moves = [];
 			var pos = createPosition(elem);
 
-			squares().forEach(function(from) {
-				squares().forEach(function(to) {
+			RPBChess.forEachSquare(function(from) {
+				RPBChess.forEachSquare(function(to) {
 
 					var moveDescriptor = pos.isMoveLegal(from, to);
 					if(!moveDescriptor) {
@@ -227,7 +214,7 @@ describe('Algebraic notation parsing', function() {
 			parseNotation('O-O');
 
 			// Pawn move
-			squares().forEach(function(to) {
+			RPBChess.forEachSquare(function(to) {
 				for(var fd=0; fd<FILE_DISAMBIGUATION.length; ++fd) {
 					for(var p=0; p<PROMO.length; ++p) {
 						var text = FILE_DISAMBIGUATION[fd] + to + PROMO[p];
@@ -237,7 +224,7 @@ describe('Algebraic notation parsing', function() {
 			});
 
 			// Non-pawn moves
-			squares().forEach(function(to) {
+			RPBChess.forEachSquare(function(to) {
 				for(var p=0; p<PIECES.length; ++p) {
 					for(var rd=0; rd<RANK_DISAMBIGUATION.length; ++rd) {
 						for(var fd=0; fd<FILE_DISAMBIGUATION.length; ++fd) {
