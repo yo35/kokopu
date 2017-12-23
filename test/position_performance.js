@@ -24,6 +24,7 @@
 
 var RPBChess = require('../src/core.js');
 var test = require('unit.js');
+var fs = require('fs');
 
 
 /**
@@ -77,4 +78,38 @@ exports.run = function(fen, minDepth, maxDepth, verbose) {
 	for(var depth=minDepth; depth<=maxDepth; ++depth) {
 		runAtDepth(depth);
 	}
+};
+
+
+function testData() {
+	var result = [];
+	var lines = fs.readFileSync('./test/performance.csv', 'utf8').split('\n');
+	var depthMax = 4;
+	lines.forEach(function(elem, index) {
+
+		// Skip header and empty lines.
+		if(elem === '' || index === 0) {
+			return;
+		}
+
+		var field = elem.split('\t');
+		result.push({
+			fen: field[0],
+			nodes: field.slice(1, depthMax + 2)
+		});
+
+	});
+	return result;
 }
+
+
+describe('Recursive move generation', function() {
+	testData().forEach(function(elem) {
+		var initialPos = new RPBChess.Position(elem.fen);
+		elem.nodes.forEach(function(expectedNodeCount, depth) {
+			it('From ' + elem.fen + ' up to depth ' + depth, function() {
+				test.value(generateSuccessors(initialPos, depth), expectedNodeCount);
+			});
+		});
+	});
+});
