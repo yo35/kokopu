@@ -22,46 +22,22 @@
 'use strict';
 
 
-var RPBChess = require('../src/core.js');
-var generateSuccessors = require('./common/generatesuccessors');
-var test = require('unit.js');
-var fs = require('fs');
+var RPBChess = require('../../src/core.js');
 
 
-var DEPTH_MAX = 5;
-var SPEED_MAX = 100; // kN/s
-var FIXED_TIMOUT = 100; // ms
+/**
+ * Generate recursively the successors of the given position, up to the given depth.
+ */
+var generateSuccessors = module.exports = function(pos, depth) {
+	var result = 1;
 
-
-function testData() {
-	var result = [];
-	var lines = fs.readFileSync('./test/performance.csv', 'utf8').split('\n');
-
-	lines.forEach(function(elem, index) {
-
-		// Skip header and empty lines.
-		if(elem === '' || index === 0) {
-			return;
-		}
-
-		var field = elem.split('\t');
-		result.push({
-			fen: field[0],
-			nodes: field.slice(1, DEPTH_MAX + 2)
+	if(depth > 0) {
+		pos.moves().forEach(function(move) {
+			var nextPos = new RPBChess.Position(pos);
+			nextPos.play(move);
+			result += generateSuccessors(nextPos, depth-1);
 		});
+	}
 
-	});
 	return result;
-}
-
-
-describe('Recursive move generation', function() {
-	testData().forEach(function(elem) {
-		var initialPos = new RPBChess.Position(elem.fen);
-		elem.nodes.forEach(function(expectedNodeCount, depth) {
-			it('From ' + elem.fen + ' up to depth ' + depth, function() {
-				test.value(generateSuccessors(initialPos, depth), expectedNodeCount);
-			}).timeout(FIXED_TIMOUT + expectedNodeCount / SPEED_MAX);
-		});
-	});
-});
+};
