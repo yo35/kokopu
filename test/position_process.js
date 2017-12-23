@@ -23,39 +23,28 @@
 
 
 var RPBChess = require('../src/core.js');
+var readCSV = require('./common/readcsv');
 var test = require('unit.js');
-var fs = require('fs');
 
 
 function testData() {
-	var result = [];
-	var lines = fs.readFileSync('./test/positions.csv', 'utf8').split('\n');
-	lines.forEach(function(elem, index) {
-
-		// Skip header and empty lines.
-		if(elem === '' || index === 0) {
-			return;
-		}
-
-		var field = elem.split('\t');
-		result.push({
-			label      : field[ 0],
-			constructor: field[ 1],
-			fen        : field[ 2],
-			isLegal    : field[ 3]==='true',
-			whiteKing  : field[ 4],
-			blackKing  : field[ 5],
-			isCheck    : field[ 6]==='true',
-			isCheckmate: field[ 7]==='true',
-			isStalemate: field[ 8]==='true',
-			hasMove    : field[ 9]==='true',
-			moves      : field[10],
-			notations  : field[11],
-			successors : field[12]
-		});
-
+	return readCSV('positions.csv', function(fields) {
+		return {
+			label      : fields[ 0],
+			constructor: fields[ 1],
+			fen        : fields[ 2],
+			isLegal    : fields[ 3]==='true',
+			whiteKing  : fields[ 4],
+			blackKing  : fields[ 5],
+			isCheck    : fields[ 6]==='true',
+			isCheckmate: fields[ 7]==='true',
+			isStalemate: fields[ 8]==='true',
+			hasMove    : fields[ 9]==='true',
+			moves      : fields[10],
+			notations  : fields[11],
+			successors : fields[12]
+		};
 	});
-	return result;
 }
 
 

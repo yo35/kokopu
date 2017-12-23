@@ -22,34 +22,26 @@
 'use strict';
 
 
-var RPBChess = require('../src/core.js');
-var generateSuccessors = require('./common/generatesuccessors');
-var readCSV = require('./common/readcsv');
-var test = require('unit.js');
+var fs = require('fs');
 
 
-var DEPTH_MAX = 5;
-var SPEED_MAX = 100; // kN/s
-var FIXED_TIMOUT = 100; // ms
+/**
+ * Read a CSV file and process it line by line.
+ */
+module.exports = function(filename, parser) {
+	var result = [];
+	var lines = fs.readFileSync('./test/' + filename, 'utf8').split('\n');
 
+	lines.forEach(function(elem, index) {
 
-function testData() {
-	return readCSV('performance.csv', function(fields) {
-		return {
-			fen: fields[0],
-			nodes: fields.slice(1, DEPTH_MAX + 2)
-		};
+		// Skip header and empty lines.
+		if(elem === '' || index === 0) {
+			return;
+		}
+
+		var fields = elem.split('\t');
+		result.push(parser(fields));
+
 	});
-}
-
-
-describe('Recursive move generation', function() {
-	testData().forEach(function(elem) {
-		var initialPos = new RPBChess.Position(elem.fen);
-		elem.nodes.forEach(function(expectedNodeCount, depth) {
-			it('From ' + elem.fen + ' up to depth ' + depth, function() {
-				test.value(generateSuccessors(initialPos, depth), expectedNodeCount);
-			}).timeout(FIXED_TIMOUT + expectedNodeCount / SPEED_MAX);
-		});
-	});
-});
+	return result;
+};
