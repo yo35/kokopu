@@ -29,7 +29,7 @@ var test = require('unit.js');
 
 
 var DEPTH_MAX = 5;
-var SPEED_MAX = 100; // kN/s
+var SPEED_MIN = 100; // kN/s
 var FIXED_TIMOUT = 100; // ms
 
 
@@ -49,7 +49,7 @@ describe('Recursive move generation', function() {
 		elem.nodes.forEach(function(expectedNodeCount, depth) {
 			it('From ' + elem.fen + ' up to depth ' + depth, function() {
 				test.value(generateSuccessors(initialPos, depth), expectedNodeCount);
-			}).timeout(FIXED_TIMOUT + expectedNodeCount / SPEED_MAX);
+			}).timeout(FIXED_TIMOUT + expectedNodeCount / SPEED_MIN);
 		});
 	});
 });

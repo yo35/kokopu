@@ -30,7 +30,7 @@ var fs = require('fs');
  */
 module.exports = function(filename, parser) {
 	var result = [];
-	var lines = fs.readFileSync('./test/' + filename, 'utf8').split('\n');
+	var lines = fs.readFileSync('./test/resources/' + filename, 'utf8').split('\n');
 
 	lines.forEach(function(elem, index) {
 
