@@ -25,20 +25,16 @@
 var RPBChess = require('../src/core.js');
 var test = require('unit.js');
 
+
 describe('Square color', function() {
-
-	it('Valid inputs', function() {
-		RPBChess.forEachSquare(function(square) {
-			var c = RPBChess.squareCoordinates(square);
-			var expected = c.rank%2 === c.file%2 ? 'b' : 'w';
-			test.value(RPBChess.squareColor(square)).is(expected);
-		});
-	});
-
-	['e9', 'i5'].forEach(function(elem) {
-		it('Error with ' + elem, function() {
-			test.exception(function() { RPBChess.squareColor(elem); }).isInstanceOf(RPBChess.exception.IllegalArgument);
-		});
-	});
-
+	it('a1', function() { test.value(RPBChess.squareColor('a1')).is('b'); });
+	it('h1', function() { test.value(RPBChess.squareColor('h1')).is('w'); });
+	it('a8', function() { test.value(RPBChess.squareColor('a8')).is('w'); });
+	it('h8', function() { test.value(RPBChess.squareColor('h8')).is('b'); });
+	it('b3', function() { test.value(RPBChess.squareColor('b3')).is('w'); });
+	it('b4', function() { test.value(RPBChess.squareColor('b4')).is('b'); });
+	it('c4', function() { test.value(RPBChess.squareColor('c4')).is('w'); });
+	it('f5', function() { test.value(RPBChess.squareColor('f5')).is('w'); });
+	it('e5', function() { test.value(RPBChess.squareColor('e5')).is('b'); });
+	it('e6', function() { test.value(RPBChess.squareColor('e6')).is('w'); });
 });

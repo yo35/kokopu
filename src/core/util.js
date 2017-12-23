@@ -47,11 +47,11 @@ exports.forEachSquare = function(fun) {
  * @returns {string} Either `'w'` or `'b'`.
  */
 exports.squareColor = function(square) {
-	if(typeof square === 'string') {
-		if     (/^[aceg][1357]$/.test(square) || /^[bdfh][2468]$/.test(square)) { return 'b'; }
-		else if(/^[aceg][2468]$/.test(square) || /^[bdfh][1357]$/.test(square)) { return 'w'; }
+	square = bt.squareFromString(square);
+	if(square < 0) {
+		throw new exception.IllegalArgument('squareColor()');
 	}
-	throw new exception.IllegalArgument('squareColor()');
+	return Math.floor(square/16) % 2 === square % 2 ? 'b' : 'w';
 };
 
 
