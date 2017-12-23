@@ -61,7 +61,7 @@ exports.squareColor = function(square) {
  * @param {string} square
  * @returns {{rank:number, file:number}} 
  */
-exports.squareCoordinates = function(square) {
+exports.squareToCoordinates = function(square) {
 	square = bt.squareFromString(square);
 	if(square < 0) {
 		throw new exception.IllegalArgument('squareToCoordinates()');
@@ -75,8 +75,11 @@ exports.squareCoordinates = function(square) {
  *
  * @param {number} file
  * @param {number} rank
- * @returns {string} `'-'` is returned if the coordinates are invalid.
+ * @returns {string}
  */
-exports.square = function(file, rank) {
-	return file<0 || file>=8 || rank<0 || rank>= 8 ? '-' : bt.fileToString(file) + bt.rankToString(rank); 
+exports.coordinatesToSquare = function(file, rank) {
+	if(file<0 || file>=8 || rank<0 || rank>= 8) {
+		throw new exception.IllegalArgument('coordinatesToSquare()');
+	}
+	return bt.fileToString(file) + bt.rankToString(rank);
 };

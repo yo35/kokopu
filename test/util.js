@@ -38,3 +38,21 @@ describe('Square color', function() {
 	it('e5', function() { test.value(RPBChess.squareColor('e5')).is('b'); });
 	it('e6', function() { test.value(RPBChess.squareColor('e6')).is('w'); });
 });
+
+
+describe('Square to coordinates', function() {
+	it('a1', function() { test.value(RPBChess.squareToCoordinates('a1')).is({ file:0, rank:0 }); });
+	it('h1', function() { test.value(RPBChess.squareToCoordinates('h1')).is({ file:7, rank:0 }); });
+	it('a8', function() { test.value(RPBChess.squareToCoordinates('a8')).is({ file:0, rank:7 }); });
+	it('h8', function() { test.value(RPBChess.squareToCoordinates('h8')).is({ file:7, rank:7 }); });
+	it('e3', function() { test.value(RPBChess.squareToCoordinates('e3')).is({ file:4, rank:2 }); });
+});
+
+
+describe('Coordinates to square', function() {
+	it('a1', function() { test.value(RPBChess.coordinatesToSquare(0, 0)).is('a1'); });
+	it('h1', function() { test.value(RPBChess.coordinatesToSquare(7, 0)).is('h1'); });
+	it('a8', function() { test.value(RPBChess.coordinatesToSquare(0, 7)).is('a8'); });
+	it('h8', function() { test.value(RPBChess.coordinatesToSquare(7, 7)).is('h8'); });
+	it('e3', function() { test.value(RPBChess.coordinatesToSquare(4, 2)).is('e3'); });
+});
