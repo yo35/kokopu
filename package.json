@@ -7,7 +7,15 @@
   "author": "Yoann Le Montagner <yo35 -at- melix.net>",
   "devDependencies": {
     "mocha": "~3.5.3",
-    "unit.js": "~2.0.0"
+    "unit.js": "~2.0.0",
+    "browserify": "~14.5.0",
+    "browserify-shim": "~3.8.0"
+  },
+  "browserify-shim": {
+    "jquery": "global:jQuery"
+  },
+  "browserify": {
+    "transform": [ "browserify-shim" ]
   },
   "scripts": {
     "test": "mocha"
