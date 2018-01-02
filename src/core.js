@@ -23,16 +23,13 @@
 'use strict';
 
 
-var i18n = require('./core/i18n');
-var exception = require('./core/exception');
+exports.i18n = require('./core/i18n');
+exports.exception = require('./core/exception');
+
 var util = require('./core/util');
-var Position = require('./core/position').Position;
-
-
-exports.i18n = i18n;
-exports.exception = exception;
 exports.forEachSquare = util.forEachSquare;
 exports.squareColor = util.squareColor;
 exports.squareToCoordinates = util.squareToCoordinates;
 exports.coordinatesToSquare = util.coordinatesToSquare;
-exports.Position = Position;
+
+exports.Position = require('./core/position').Position;
