@@ -35,7 +35,7 @@ var Position = require('./position').Position;
 // -----------------------------------------------------------------------------
 
 /**
- * TODO
+ * Chess game, with some headers, a main variation, and a result.
  */
 var Game = exports.Game = function() {
 	this._playerName  = [undefined, undefined];
@@ -49,10 +49,8 @@ var Game = exports.Game = function() {
 	this._result    = bt.LINE;
 
 	this._initialPosition = new Position();
-	this._fullMoveNumber  = 1;
-
-	/* jshint nonew:false */ new Variation(this, true); /* jshint nonew:true */
-
+	this._fullMoveNumber = 1;
+	this._mainVariation = new Variation(this, true);
 };
 
 
@@ -164,6 +162,44 @@ Game.prototype.result = function(value) {
 };
 
 
+/**
+ * Get/set the initial position of the game. WARNING: the setter resets the main variation.
+ *
+ * @param {Position} initialPosition (SETTER only)
+ * @param {number?} fullMoveNumber (SETTER only)
+ * @returns {Position} (GETTER only)
+ */
+Game.prototype.initialPosition = function(initialPosition, fullMoveNumber) {
+	if(arguments.length === 0) {
+		return this._initialPosition;
+	}
+	else {
+		if(!(initialPosition instanceof Position)) {
+			throw new exception.IllegalArgument('Game#initialPosition()');
+		}
+		if(typeof fullMoveNumber === 'undefined') {
+			fullMoveNumber = 1;
+		}
+		else if(typeof fullMoveNumber !== 'number') {
+			throw new exception.IllegalArgument('Game#initialPosition()');
+		}
+		this._initialPosition = initialPosition;
+		this._fullMoveNumber = fullMoveNumber;
+		this._mainVariation = new Variation(this, true);
+	}
+};
+
+
+/**
+ * Main variation.
+ *
+ * @returns {Variation}
+ */
+Game.prototype.mainVariation = function() {
+	return this._mainVariation;
+};
+
+
 
 // -----------------------------------------------------------------------------
 // Node
@@ -172,15 +208,17 @@ Game.prototype.result = function(value) {
 /**
  * Represent one move in the tree structure formed by a chess game with multiple variations.
  *
- * @param {Node|Variation} parent
- * @param {string} move Move notation.
+ * @param {Variation} parentVariation
+ * @param {Node?} previous
+ * @param {string} move SAN notation (or `'--'` for a null-move).
  * @throws {InvalidNotation} If the move notation cannot be parsed.
  */
-function Node(parent, move) {
+function Node(parentVariation, previous, move) {
 
-	this._parent = parent;  // Either a `Node` or a `Variation` object.
+	this._parentVariation = parentVariation;  // Variation to which the current node belongs (always a `Variation` object).
+	this._previous = previous; // Previous node (always a `Node` object if defined).
 	this._next = undefined; // Next node (always a `Node` object if defined).
-	this._position = new Position(parent.position());
+	this._position = new Position(typeof previous === 'undefined' ? parentVariation.initialPosition() : previous.position());
 
 	// Null move.
 	if(move === '--') {
@@ -198,32 +236,21 @@ function Node(parent, move) {
 	}
 
 	// Full-move number
-	if(parent instanceof Variation) {
-		this._fullMoveNumber = parent._parent._fullMoveNumber;
+	if(typeof previous === 'undefined') {
+		this._fullMoveNumber = parentVariation.initialFullMoveNumber();
 	}
 	else {
-		this._fullMoveNumber = parent._fullMoveNumber + (parent.position().turn() === 'w' ? 1 : 0);
+		this._fullMoveNumber = previous._fullMoveNumber + (previous.position().turn() === 'w' ? 1 : 0);
 	}
 
-	// Whether the node belongs or not to a "long-variation".
-	this._withinLongVariation = parent._withinLongVariation;
+	// Variations that could be played instead of the current move.
+	this._variations = [];
 
 	// Annotations and comments associated to the current move.
 	this._nags = {};
 	this._tags = {};
 	this._comment = undefined;
 	this._isLongComment = false;
-
-	// Variations that could be played instead of the current move.
-	this._variations = [];
-
-	// TODO Connect to parent.
-	//if(parent instanceof Variation) {
-	//	parent._first = this;
-	//}
-	//else {
-	//	parent._next = this;
-	//}
 }
 
 
@@ -364,7 +391,8 @@ Node.prototype.tags = function() {
  * Get/set the value that is defined for the tag corresponding to the given key on the current move.
  *
  * @param {string} key
- * @returns {string?} `undefined` if no value is defined for this tag on the current move.
+ * @param {string} value (SETTER only)
+ * @returns {string?} `undefined` if no value is defined for this tag on the current move. (GETTER only)
  */
 Node.prototype.tag = function(key, value) {
 	if(arguments.length === 1) {
@@ -379,7 +407,9 @@ Node.prototype.tag = function(key, value) {
 /**
  * Get/set the text comment associated to the current move.
  *
- * @returns {string?} `undefined` if no comment is defined for the move.
+ * @param {string} value (SETTER only)
+ * @param {boolean?} isLongComment (SETTER only)
+ * @returns {string?} `undefined` if no comment is defined for the move. (GETTER only)
  */
 Node.prototype.comment = function(value, isLongComment) {
 	if(arguments.length === 0) {
@@ -387,7 +417,7 @@ Node.prototype.comment = function(value, isLongComment) {
 	}
 	else {
 		this._comment = value;
-		this._isLongComment = this._withinLongVariation && isLongComment;
+		this._isLongComment = isLongComment;
 	}
 };
 
@@ -398,7 +428,27 @@ Node.prototype.comment = function(value, isLongComment) {
  * @returns {boolean}
  */
 Node.prototype.isLongComment = function() {
-	return this._isLongComment;
+	return this._isLongComment && this._parentVariation.isLongVariation();
+};
+
+
+/**
+ * Play the given move after the current one.
+ *
+ * @param {string} move SAN notation (or `'--'` for a null-move).
+ * @returns {Node} A new node object, to represents the new move.
+ * @throws {InvalidNotation} If the move notation cannot be parsed.
+ */
+Node.prototype.play = function(move) {
+	this._next = new Node(this._parentVariation, this, move);
+};
+
+
+/**
+ * Create a new variation that can be played instead of the current move.
+ */
+Node.prototype.addVariation = function(isLongVariation) {
+	this._variations.push(new Variation(this, isLongVariation));
 };
 
 
@@ -420,21 +470,13 @@ function Variation(parent, isLongVariation) {
 	this._first = undefined; // First node of the variation (always a `Node` object if defined).
 
 	// Whether the variation is or not to a "long-variation".
-	this._withinLongVariation = isLongVariation;
+	this._isLongVariation = isLongVariation;
 
 	// Annotations and comments associated to the current variation.
 	this._nags = {};
 	this._tags = {};
 	this._comment = undefined;
 	this._isLongComment = false;
-
-	// TODO Connect to parent.
-	//if(parent instanceof Item) {
-	//	parent._mainVariation = this;
-	//}
-	//else {
-	//	parent._variations.push(this);
-	//}
 }
 
 
@@ -445,7 +487,7 @@ function Variation(parent, isLongVariation) {
  * @returns {boolean}
  */
 Variation.prototype.isLongVariation = function() {
-	return this._withinLongVariation;
+	return this._isLongVariation && (this._parent instanceof Game || this._parent._parentVariation.isLongVariation());
 };
 
 
@@ -454,8 +496,18 @@ Variation.prototype.isLongVariation = function() {
  *
  * @returns {Position}
  */
-Variation.prototype.position = function() {
+Variation.prototype.initialPosition = function() {
 	return (this._parent instanceof Game) ? this._parent.initialPosition() : this._parent.positionBefore();
+};
+
+
+/**
+ * Full-move number at the beginning of the variation.
+ *
+ * @returns {number}
+ */
+Node.prototype.initialFullMoveNumber = function() {
+	return this._parent._fullMoveNumber; // REMARK: `this._parent` can be `Game` or `Node`.
 };
 
 
@@ -468,3 +520,15 @@ Variation.prototype.tags          = Node.prototype.tags         ;
 Variation.prototype.tag           = Node.prototype.tag          ;
 Variation.prototype.comment       = Node.prototype.comment      ;
 Variation.prototype.isLongComment = Node.prototype.isLongComment;
+
+
+/**
+ * Play the given move as the first move of the variation.
+ *
+ * @param {string} move SAN notation (or `'--'` for a null-move).
+ * @returns {Node} A new node object, to represents the new move.
+ * @throws {InvalidNotation} If the move notation cannot be parsed.
+ */
+Variation.prototype.play = function(move) {
+	this._first = new Node(this, undefined, move);
+};
