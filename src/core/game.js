@@ -32,14 +32,14 @@ var Position = require('./position').Position;
  * TODO
  */
 var Game = exports.Game = function() {
-	this._playerName  = ['-', '-'];
-	this._playerElo   = ['-', '-'];
-	this._playerTitle = ['-', '-'];
-	this._event     = '-';
-	this._round     = '-';
-	this._date      = '-';
-	this._site      = '-';
-	this._annotator = '-';
+	this._playerName  = [undefined, undefined];
+	this._playerElo   = [undefined, undefined];
+	this._playerTitle = [undefined, undefined];
+	this._event     = undefined;
+	this._round     = undefined;
+	this._date      = undefined;
+	this._site      = undefined;
+	this._annotator = undefined;
 	this._result    = bt.LINE;
 
 	this._initialPosition = new Position();
@@ -50,35 +50,14 @@ var Game = exports.Game = function() {
 };
 
 
-function simpleAccessor(game, key, value) {
-	if(typeof value === 'undefined' || value === null) {
-		return game[key];
-	}
-	else {
-		game[key] = value;
-	}
-}
-
-
-function playerAccessor(game, color, key, value) {
-	color = bt.colorFromString(color);
-	if(color < 0) {
-		throw new exception.IllegalArgument('Game#' + key.substr(1) + '()');
-	}
-	if(typeof value === 'undefined' || value === null) {
-		return game[key];
-	}
-	else {
-		game[key] = value;
-	}
-}
-
-
 /**
  * Get/set the player name.
  */
 Game.prototype.playerName = function(color, value) {
-	return playerAccessor(this, color, '_playerName', value);
+	color = bt.colorFromString(color);
+	if(color < 0) { throw new exception.IllegalArgument('Game#playerName()'); }
+	if(arguments.length === 1) { return this._playerName[color]; }
+	else { this._playerName[color] = value; }
 };
 
 
@@ -86,7 +65,10 @@ Game.prototype.playerName = function(color, value) {
  * Get/set the player elo.
  */
 Game.prototype.playerElo = function(color, value) {
-	return playerAccessor(this, color, '_playerElo', value);
+	color = bt.colorFromString(color);
+	if(color < 0) { throw new exception.IllegalArgument('Game#playerElo()'); }
+	if(arguments.length === 1) { return this._playerElo[color]; }
+	else { this._playerElo[color] = value; }
 };
 
 
@@ -94,7 +76,10 @@ Game.prototype.playerElo = function(color, value) {
  * Get/set the player title.
  */
 Game.prototype.playerTitle = function(color, value) {
-	return playerAccessor(this, color, '_playerTitle', value);
+	color = bt.colorFromString(color);
+	if(color < 0) { throw new exception.IllegalArgument('Game#playerTitle()'); }
+	if(arguments.length === 1) { return this._playerTitle[color]; }
+	else { this._playerTitle[color] = value; }
 };
 
 
@@ -102,7 +87,8 @@ Game.prototype.playerTitle = function(color, value) {
  * Get/set the event.
  */
 Game.prototype.event = function(value) {
-	return simpleAccessor(this, '_event', value);
+	if(arguments.length === 0) { return this._event; }
+	else { this._event = value; }
 };
 
 
@@ -110,7 +96,8 @@ Game.prototype.event = function(value) {
  * Get/set the round.
  */
 Game.prototype.round = function(value) {
-	return simpleAccessor(this, '_round', value);
+	if(arguments.length === 0) { return this._round; }
+	else { this._round = value; }
 };
 
 
@@ -118,11 +105,11 @@ Game.prototype.round = function(value) {
  * Get/set the date of the game.
  */
 Game.prototype.date = function(value) {
-	if(typeof value === 'undefined' || value === null) {
+	if(arguments.length === 0) {
 		return this._date;
 	}
-	else if(value === '-') {
-		this.date = '-';
+	else if(typeof value === 'undefined' || value === null) {
+		this.date = undefined;
 	}
 	else if(value instanceof Date) {
 		this.date = value;
@@ -140,7 +127,8 @@ Game.prototype.date = function(value) {
  * Get/set where the game takes place.
  */
 Game.prototype.site = function(value) {
-	return simpleAccessor(this, '_site', value);
+	if(arguments.length === 0) { return this._site; }
+	else { this._site = value; }
 };
 
 
@@ -148,7 +136,8 @@ Game.prototype.site = function(value) {
  * Get/set the annotator.
  */
 Game.prototype.annotator = function(value) {
-	return simpleAccessor(this, '_annotator', value);
+	if(arguments.length === 0) { return this._annotator; }
+	else { this._annotator = value; }
 };
 
 
@@ -156,7 +145,7 @@ Game.prototype.annotator = function(value) {
  * Get/set the result of the game.
  */
 Game.prototype.result = function(value) {
-	if(typeof value === 'undefined' || value === null) {
+	if(arguments.length === 0) {
 		return bt.resultToString(this._result);
 	}
 	else {
