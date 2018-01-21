@@ -54,6 +54,7 @@ exports.MISSING_PROMOTION                   = 'A promoted piece must be specifie
 exports.MISSING_PROMOTION_SYMBOL            = 'Character `=` is required to specify a promoted piece.';
 exports.INVALID_PROMOTED_PIECE              = '%1$s cannot be specified as a promoted piece.';
 exports.ILLEGAL_PROMOTION                   = 'Specifying a promoted piece is illegal for this move.';
+exports.ILLEGAL_NULL_MOVE                   = 'Cannot play a null-move in this position.';
 exports.MISSING_CAPTURE_SYMBOL              = 'Capture symbol `x` is missing.';
 exports.INVALID_CAPTURE_SYMBOL              = 'This move is not a capture move.';
 exports.WRONG_CHECK_CHECKMATE_SYMBOL        = 'Wrong check/checkmate symbol (expected: `%1$s`, observed: `%2$s`).';

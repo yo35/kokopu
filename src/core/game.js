@@ -24,9 +24,15 @@
 
 var bt = require('./basetypes');
 var exception = require('./exception');
+var i18n = require('./i18n');
 
 var Position = require('./position').Position;
 
+
+
+// -----------------------------------------------------------------------------
+// Game
+// -----------------------------------------------------------------------------
 
 /**
  * TODO
@@ -156,3 +162,309 @@ Game.prototype.result = function(value) {
 		this._result = result;
 	}
 };
+
+
+
+// -----------------------------------------------------------------------------
+// Node
+// -----------------------------------------------------------------------------
+
+/**
+ * Represent one move in the tree structure formed by a chess game with multiple variations.
+ *
+ * @param {Node|Variation} parent
+ * @param {string} move Move notation.
+ * @throws {InvalidNotation} If the move notation cannot be parsed.
+ */
+function Node(parent, move) {
+
+	this._parent = parent;  // Either a `Node` or a `Variation` object.
+	this._next = undefined; // Next node (always a `Node` object if defined).
+	this._position = new Position(parent.position());
+
+	// Null move.
+	if(move === '--') {
+		this._notation = '--';
+		if(!this._position.playNullMove()) {
+			throw new exception.InvalidNotation(this._position, '--', i18n.ILLEGAL_NULL_MOVE);
+		}
+	}
+
+	// Regular move.
+	else {
+		var moveDescriptor = this._position.notation(move);
+		this._notation = this._position.notation(moveDescriptor);
+		this._position.play(moveDescriptor);
+	}
+
+	// Full-move number
+	if(parent instanceof Variation) {
+		this._fullMoveNumber = parent._parent._fullMoveNumber;
+	}
+	else {
+		this._fullMoveNumber = parent._fullMoveNumber + (parent.position().turn() === 'w' ? 1 : 0);
+	}
+
+	// Whether the node belongs or not to a "long-variation".
+	this._withinLongVariation = parent._withinLongVariation;
+
+	// Annotations and comments associated to the current move.
+	this._nags = {};
+	this._tags = {};
+	this._comment = undefined;
+	this._isLongComment = false;
+
+	// Variations that could be played instead of the current move.
+	this._variations = [];
+
+	// TODO Connect to parent.
+	//if(parent instanceof Variation) {
+	//	parent._first = this;
+	//}
+	//else {
+	//	parent._next = this;
+	//}
+}
+
+
+/**
+ * SAN representation of the move associated to the current node.
+ *
+ * @returns {string}
+ */
+Node.prototype.notation = function() {
+	return this._notation;
+};
+
+
+/**
+ * Chess position before the current move.
+ *
+ * @returns {Position}
+ */
+Node.prototype.positionBefore = function() {
+	return this._parent.position();
+};
+
+
+/**
+ * Chess position obtained after the current move.
+ *
+ * @returns {Position}
+ */
+Node.prototype.position = function() {
+	return this._position;
+};
+
+
+/**
+ * Full-move number. It starts at 1, and is incremented after each black move.
+ *
+ * @returns {number}
+ */
+Node.prototype.fullMoveNumber = function() {
+	return this._fullMoveNumber;
+};
+
+
+/**
+ * Color the side corresponding to the current move.
+ *
+ * @returns {string} Either `'w'` or `'b'`.
+ */
+Node.prototype.moveColor = function() {
+	return this._parent.position().turn();
+};
+
+
+/**
+ * Next move within the same variation.
+ *
+ * @returns {Node?} `undefined` if the current move is the last move of the variation.
+ */
+Node.prototype.next = function() {
+	return this._next;
+};
+
+
+/**
+ * Return the variations that can be followed instead of the current move.
+ *
+ * @returns {Variation[]}
+ */
+Node.prototype.variations = function() {
+	return this._variations.slice(0);
+};
+
+
+/**
+ * Return the NAGs associated to the current move.
+ *
+ * @returns {number[]}
+ */
+Node.prototype.nags = function() {
+	var res = [];
+	for(var key in this._nags) {
+		if(this._nags[key]) {
+			res.push(key);
+		}
+	}
+	return res;
+};
+
+
+/**
+ * Check whether the current has the given NAG or not.
+ *
+ * @param {number} nag
+ * @returns {boolean}
+ */
+Node.prototype.hasNag = function(nag) {
+	return !!this._nags[nag];
+};
+
+
+/**
+ * Add the given NAG to the current move.
+ *
+ * @param {number} nag
+ */
+Node.prototype.addNag = function(nag) {
+	this._nags[nag] = true;
+};
+
+
+/**
+ * Remove the given NAG from the current move.
+ *
+ * @param {number} nag
+ */
+Node.prototype.removeNag = function(nag) {
+	delete this._nags[nag];
+};
+
+
+/**
+ * Return the keys of the tags associated to the current move.
+ *
+ * @returns {string[]}
+ */
+Node.prototype.tags = function() {
+	var res = [];
+	for(var key in this._tags) {
+		if(typeof this._tags[key] !== 'undefined') {
+			res.push(key);
+		}
+	}
+	return res;
+};
+
+
+/**
+ * Get/set the value that is defined for the tag corresponding to the given key on the current move.
+ *
+ * @param {string} key
+ * @returns {string?} `undefined` if no value is defined for this tag on the current move.
+ */
+Node.prototype.tag = function(key, value) {
+	if(arguments.length === 1) {
+		return this._tags[key];
+	}
+	else {
+		this._tags[key] = value;
+	}
+};
+
+
+/**
+ * Get/set the text comment associated to the current move.
+ *
+ * @returns {string?} `undefined` if no comment is defined for the move.
+ */
+Node.prototype.comment = function(value, isLongComment) {
+	if(arguments.length === 0) {
+		return this._comment;
+	}
+	else {
+		this._comment = value;
+		this._isLongComment = this._withinLongVariation && isLongComment;
+	}
+};
+
+
+/**
+ * Whether the text comment associated to the current move is long or short.
+ *
+ * @returns {boolean}
+ */
+Node.prototype.isLongComment = function() {
+	return this._isLongComment;
+};
+
+
+
+// -----------------------------------------------------------------------------
+// Variation
+// -----------------------------------------------------------------------------
+
+/**
+ * Represent one variation in the tree structure formed by a chess game, meaning
+ * a starting chess position and list of played consecutively from this position.
+ *
+ * @param {Node|Game} parent Parent node in the tree structure.
+ * @param {boolean} isLongVariation Whether the variation is long or short.
+ */
+function Variation(parent, isLongVariation) {
+
+	this._parent = parent;   // Either a `Node` or a `Game` object.
+	this._first = undefined; // First node of the variation (always a `Node` object if defined).
+
+	// Whether the variation is or not to a "long-variation".
+	this._withinLongVariation = isLongVariation;
+
+	// Annotations and comments associated to the current variation.
+	this._nags = {};
+	this._tags = {};
+	this._comment = undefined;
+	this._isLongComment = false;
+
+	// TODO Connect to parent.
+	//if(parent instanceof Item) {
+	//	parent._mainVariation = this;
+	//}
+	//else {
+	//	parent._variations.push(this);
+	//}
+}
+
+
+/**
+ * Whether the current variation is considered as a "long" variation, i.e. a variation that
+ * should be displayed in an isolated block.
+ *
+ * @returns {boolean}
+ */
+Variation.prototype.isLongVariation = function() {
+	return this._withinLongVariation;
+};
+
+
+/**
+ * Chess position at the beginning of the variation.
+ *
+ * @returns {Position}
+ */
+Variation.prototype.position = function() {
+	return (this._parent instanceof Game) ? this._parent.initialPosition() : this._parent.positionBefore();
+};
+
+
+// Methods inherited from `Node`.
+Variation.prototype.nags          = Node.prototype.nags         ;
+Variation.prototype.hasNag        = Node.prototype.hasNag       ;
+Variation.prototype.addNag        = Node.prototype.addNag       ;
+Variation.prototype.removeNag     = Node.prototype.removeNag    ;
+Variation.prototype.tags          = Node.prototype.tags         ;
+Variation.prototype.tag           = Node.prototype.tag          ;
+Variation.prototype.comment       = Node.prototype.comment      ;
+Variation.prototype.isLongComment = Node.prototype.isLongComment;
