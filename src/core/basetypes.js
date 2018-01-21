@@ -46,6 +46,12 @@ exports.WP = 10; exports.BP = 11;
 exports.EMPTY = -1;
 exports.INVALID = -2;
 
+// Game result
+exports.WHITE_WINS = 0;
+exports.BLACK_WINS = 1;
+exports.DRAW = 2;
+exports.LINE = 3;
+
 
 // -----------------------------------------------------------------------------
 // Conversion API constants (strings) <-> internal constants (integers)
@@ -55,16 +61,19 @@ var COLOR_SYMBOL = 'wb'      ;
 var PIECE_SYMBOL = 'kqrbnp'  ;
 var RANK_SYMBOL  = '12345678';
 var FILE_SYMBOL  = 'abcdefgh';
+var RESULT_SYMBOL = ['1-0', '0-1', '1/2-1/2', '*'];
 
-exports.colorToString = function(color) { return COLOR_SYMBOL[color]; };
-exports.pieceToString = function(piece) { return PIECE_SYMBOL[piece]; };
-exports.rankToString  = function(rank ) { return RANK_SYMBOL [rank ]; };
-exports.fileToString  = function(file ) { return FILE_SYMBOL [file ]; };
+exports.colorToString  = function(color ) { return COLOR_SYMBOL [color ]; };
+exports.pieceToString  = function(piece ) { return PIECE_SYMBOL [piece ]; };
+exports.rankToString   = function(rank  ) { return RANK_SYMBOL  [rank  ]; };
+exports.fileToString   = function(file  ) { return FILE_SYMBOL  [file  ]; };
+exports.resultToString = function(result) { return RESULT_SYMBOL[result]; };
 
-exports.colorFromString = function(color) { return COLOR_SYMBOL.indexOf(color); };
-exports.pieceFromString = function(piece) { return PIECE_SYMBOL.indexOf(piece); };
-exports.rankFromString  = function(rank ) { return RANK_SYMBOL .indexOf(rank ); };
-exports.fileFromString  = function(file ) { return FILE_SYMBOL .indexOf(file ); };
+exports.colorFromString  = function(color ) { return COLOR_SYMBOL .indexOf(color ); };
+exports.pieceFromString  = function(piece ) { return PIECE_SYMBOL .indexOf(piece ); };
+exports.rankFromString   = function(rank  ) { return RANK_SYMBOL  .indexOf(rank  ); };
+exports.fileFromString   = function(file  ) { return FILE_SYMBOL  .indexOf(file  ); };
+exports.resultFromString = function(result) { return RESULT_SYMBOL.indexOf(result); };
 
 exports.squareToString = function(square) {
 	return FILE_SYMBOL[square % 16] + RANK_SYMBOL[Math.floor(square / 16)];
