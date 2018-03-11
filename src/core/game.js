@@ -441,6 +441,7 @@ Node.prototype.isLongComment = function() {
  */
 Node.prototype.play = function(move) {
 	this._next = new Node(this._parentVariation, this, move);
+	return this._next;
 };
 
 
@@ -449,6 +450,7 @@ Node.prototype.play = function(move) {
  */
 Node.prototype.addVariation = function(isLongVariation) {
 	this._variations.push(new Variation(this, isLongVariation));
+	return this._variations[this._variations.length - 1];
 };
 
 

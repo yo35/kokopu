@@ -36,7 +36,7 @@ exports.INVALID_EN_PASSANT_FIELD                  = 'The 4th field of a FEN stri
 exports.WRONG_RANK_IN_EN_PASSANT_FIELD            = 'The rank number indicated in the FEN string 4th field is inconsistent with respect to the 2nd field.';
 exports.INVALID_MOVE_COUNTING_FIELD               = 'The %1$s field of a FEN string must be a number.';
 
-// Notation parsing error message
+// Notation parsing error messages
 exports.INVALID_MOVE_NOTATION_SYNTAX        = 'The syntax of the move notation is invalid.';
 exports.ILLEGAL_POSITION                    = 'The position is not legal.';
 exports.ILLEGAL_QUEEN_SIDE_CASTLING         = 'Queen-side castling is not legal in the considered position.';
@@ -58,3 +58,14 @@ exports.ILLEGAL_NULL_MOVE                   = 'Cannot play a null-move in this p
 exports.MISSING_CAPTURE_SYMBOL              = 'Capture symbol `x` is missing.';
 exports.INVALID_CAPTURE_SYMBOL              = 'This move is not a capture move.';
 exports.WRONG_CHECK_CHECKMATE_SYMBOL        = 'Wrong check/checkmate symbol (expected: `%1$s`, observed: `%2$s`).';
+
+// PGN parsing error messages
+exports.INVALID_PGN_TOKEN               = 'Unrecognized character or group of characters.';
+exports.INVALID_MOVE_IN_PGN_TEXT        = 'Invalid move (%1$s). %2$s';
+exports.INVALID_FEN_IN_PGN_TEXT         = 'Invalid FEN string in the initial position header. %1$s';
+exports.UNEXPECTED_PGN_HEADER           = 'Unexpected PGN game header.';
+exports.UNEXPECTED_BEGIN_OF_VARIATION   = 'Unexpected begin of variation.';
+exports.UNEXPECTED_END_OF_VARIATION     = 'Unexpected end of variation.';
+exports.UNEXPECTED_END_OF_GAME          = 'Unexpected end of game: there are pending variations.';
+exports.UNEXPECTED_END_OF_TEXT          = 'Unexpected end of text: there is a pending game.';
+exports.INVALID_GAME_INDEX              = 'Game index %1$s is invalid (only %2$s game(s) found in the PGN data).';

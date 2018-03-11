@@ -81,3 +81,27 @@ exports.InvalidNotation = function(fen, notation, message) {
 		this.message = this.message.replace(re, arguments[i]);
 	}
 };
+
+
+/**
+ * @constructor
+ * @alias InvalidPGN
+ * @memberof RPBChess.exceptions
+ *
+ * @classdesc
+ * Exception thrown by the PGN parsing functions.
+ *
+ * @param {string} pgn String whose parsing leads to an error.
+ * @param {number} index Character index in the string where the parsing fails (`-1` if no particular character is targeted).
+ * @param {string} message Human-readable error message.
+ * @param ...
+ */
+exports.InvalidPGN = function(pgn, index, message) {
+	this.pgn = pgn;
+	this.index = index;
+	this.message = message;
+	for(var i=3; i<arguments.length; ++i) {
+		var re = new RegExp('%' + (i-2) + '\\$s');
+		this.message = this.message.replace(re, arguments[i]);
+	}
+};

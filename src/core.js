@@ -33,3 +33,4 @@ exports.squareToCoordinates = util.squareToCoordinates;
 exports.coordinatesToSquare = util.coordinatesToSquare;
 
 exports.Position = require('./core/position').Position;
+exports.Game = require('./core/game').Game;
