@@ -130,7 +130,7 @@ TokenStream.prototype._skipBlanks = function() {
 TokenStream.prototype.consumeToken = function() {
 
 	// Consume blank (i.e. meaning-less) characters
-	this._skipBlank();
+	this._skipBlanks();
 	if(this._pos >= this.text.length) {
 		return false; // -> `false` means that the end of the string have been reached
 	}

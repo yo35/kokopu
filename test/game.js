@@ -1,7 +1,7 @@
 /******************************************************************************
  *                                                                            *
- *    This file is part of RPB Chessboard, a WordPress plugin.                *
- *    Copyright (C) 2013-2017  Yoann Le Montagner <yo35 -at- melix.net>       *
+ *    This file is part of RPB Chess, a JavaScript chess library.             *
+ *    Copyright (C) 2017  Yoann Le Montagner <yo35 -at- melix.net>            *
  *                                                                            *
  *    This program is free software: you can redistribute it and/or modify    *
  *    it under the terms of the GNU General Public License as published by    *
@@ -19,21 +19,30 @@
  ******************************************************************************/
 
 
-
 'use strict';
 
 
-exports.i18n = require('./core/i18n');
-exports.exception = require('./core/exception');
+var RPBChess = require('../src/core.js');
+var readCSV = require('./common/readcsv');
+var readText = require('./common/readtext');
+var test = require('unit.js');
 
-var util = require('./core/util');
-exports.forEachSquare = util.forEachSquare;
-exports.squareColor = util.squareColor;
-exports.squareToCoordinates = util.squareToCoordinates;
-exports.coordinatesToSquare = util.coordinatesToSquare;
 
-exports.Position = require('./core/position').Position;
-exports.Game = require('./core/game').Game;
+function testData() {
+	return readCSV('games.csv', function(fields) {
+		return {
+			label: fields[0],
+			gameCount: fields[1],
+			pgn: readText('games/' + fields[0] + '.pgn')
+		};
+	});
+}
 
-var pgn = require('./core/pgn');
-exports.pgnRead = pgn.pgnRead;
+
+describe('Game count', function() {
+	testData().forEach(function(elem) {
+		it('Game ' + elem.label, function() {
+			test.value(RPBChess.pgnRead(elem.pgn).length, elem.gameCount);
+		});
+	});
+});
