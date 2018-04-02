@@ -508,8 +508,18 @@ Variation.prototype.initialPosition = function() {
  *
  * @returns {number}
  */
-Node.prototype.initialFullMoveNumber = function() {
+Variation.prototype.initialFullMoveNumber = function() {
 	return this._parent._fullMoveNumber; // REMARK: `this._parent` can be `Game` or `Node`.
+};
+
+
+/**
+ * First move within the variation.
+ *
+ * @returns {Node?} `undefined` if the variation is empty.
+ */
+Variation.prototype.first = function() {
+	return this._first;
 };
 
 
