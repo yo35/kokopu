@@ -57,29 +57,36 @@ describe('Game count', function() {
 function dumpGame(game) {
 	var res = '\n';
 
-	// TODO // Dump the headers.
-	// var headers = game.headers();
-	// headers.sort();
-	// for(var k=0; k<headers.length; ++k) {
-	// 	var key = headers[k];
-	// 	res += key + ' = {' + pgnItem.header(key) + '}\n';
-	// }
+	function dumpHeader(key, value) {
+		if(value !== undefined) {
+			res += key + ' = {' + value + '}\n';
+		}
+	}
 
-	// Helper function to dump the nags in an order that does not depend on the parsing order.
-	function dumpNags(nags) {
+	function dumpNags(node) {
+		var nags = node.nags();
 		nags.sort();
 		for(var k=0; k<nags.length; ++k) {
 			res += ' $' + nags[k];
 		}
 	}
 
-	// Helper function to dump the tags in an order that does not depend on the parsing order.
 	function dumpTags(node) {
 		var tags = node.tags();
 		tags.sort();
 		for(var k=0; k<tags.length; ++k) {
 			var key = tags[k];
 			res += ' [' + key + ' = {' + node.tag(key) + '}]';
+		}
+	}
+
+	function dumpComment(node) {
+		var comment = node.comment();
+		if(comment !== undefined) {
+			res += ' {' + node.comment() + '}';
+			if(node.isLongComment()) {
+				res += '<LONG';
+			}
 		}
 	}
 
@@ -91,14 +98,9 @@ function dumpGame(game) {
 		if(variation.isLongVariation()) {
 			res += '<LONG';
 		}
-		dumpNags(variation.nags());
+		dumpNags(variation);
 		dumpTags(variation);
-		if(variation.comment() !== null) {
-			res += ' {' + variation.comment() + '}';
-			if(variation.isLongComment()) {
-				res += '<LONG';
-			}
-		}
+		dumpComment(variation);
 		res += '\n';
 
 		// List of moves
@@ -107,14 +109,9 @@ function dumpGame(game) {
 
 			// Describe the move
 			res += indent + '(' + node.fullMoveNumber() + node.moveColor() + ') ' + node.move();
-			dumpNags(node.nags());
+			dumpNags(node);
 			dumpTags(node);
-			if(node.comment() !== null) {
-				res += ' {' + node.comment() + '}';
-				if(node.isLongComment()) {
-					res += '<LONG';
-				}
-			}
+			dumpComment(node);
 			res += '\n';
 
 			// Print the sub-variations
@@ -132,7 +129,17 @@ function dumpGame(game) {
 		}
 	}
 
-	// Dump the moves and the result.
+	dumpHeader('White'     , game.playerName ('w'));
+	dumpHeader('WhiteElo'  , game.playerElo  ('w'));
+	dumpHeader('WhiteTitle', game.playerTitle('w'));
+	dumpHeader('Black'     , game.playerName ('b'));
+	dumpHeader('BlackElo'  , game.playerElo  ('b'));
+	dumpHeader('BlackTitle', game.playerTitle('b'));
+	dumpHeader('Event'     , game.event    ());
+	dumpHeader('Round'     , game.round    ());
+	dumpHeader('Site'      , game.site     ());
+	dumpHeader('Date'      , game.date     ());
+	dumpHeader('Annotator' , game.annotator());
 	dumpVariation(game.mainVariation(), '', '');
 	res += '{' + game.result() + '}\n';
 
