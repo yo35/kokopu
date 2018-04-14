@@ -1,0 +1,23 @@
+White = {Bill Gates}
+Black = {Magnus Carlsen}
+-+<LONG
+(1w) e4
+(1b) Nc6
+(2w) Nf3
+(2b) d5
+(3w) Bd3
+(3b) Nf6
+(4w) exd5
+(4b) Qxd5
+(5w) Nc3
+(5b) Qh5
+(6w) O-O
+(6b) Bg4
+(7w) h3
+(7b) Ne5
+(8w) hxg4
+(8b) Nfxg4
+(9w) Nxe5
+(9b) Qh2#
+{Black wins}
+

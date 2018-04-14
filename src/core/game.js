@@ -218,7 +218,7 @@ function Node(parentVariation, previous, move) {
 	this._parentVariation = parentVariation;  // Variation to which the current node belongs (always a `Variation` object).
 	this._previous = previous; // Previous node (always a `Node` object if defined).
 	this._next = undefined; // Next node (always a `Node` object if defined).
-	this._position = new Position(typeof previous === 'undefined' ? parentVariation.initialPosition() : previous.position());
+	this._position = new Position(previous === undefined ? parentVariation.initialPosition() : previous.position());
 
 	// Null move.
 	if(move === '--') {
@@ -270,7 +270,7 @@ Node.prototype.notation = function() {
  * @returns {Position}
  */
 Node.prototype.positionBefore = function() {
-	return this._parent.position();
+	return this._previous === undefined ? this._parentVariation.initialPosition() : this._previous.position();
 };
 
 
@@ -300,7 +300,7 @@ Node.prototype.fullMoveNumber = function() {
  * @returns {string} Either `'w'` or `'b'`.
  */
 Node.prototype.moveColor = function() {
-	return this._parent.position().turn();
+	return this.positionBefore().turn();
 };
 
 
@@ -543,4 +543,5 @@ Variation.prototype.isLongComment = Node.prototype.isLongComment;
  */
 Variation.prototype.play = function(move) {
 	this._first = new Node(this, undefined, move);
+	return this._first;
 };

@@ -108,7 +108,7 @@ function dumpGame(game) {
 		while(node !== undefined) {
 
 			// Describe the move
-			res += indent + '(' + node.fullMoveNumber() + node.moveColor() + ') ' + node.move();
+			res += indent + '(' + node.fullMoveNumber() + node.moveColor() + ') ' + node.notation();
 			dumpNags(node);
 			dumpTags(node);
 			dumpComment(node);
