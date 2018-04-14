@@ -63,6 +63,18 @@ function dumpGame(game) {
 		}
 	}
 
+	function dumpResult(result) {
+		res += '{';
+		switch(result) {
+			case '1-0': res += 'White wins'; break;
+			case '0-1': res += 'Black wins'; break;
+			case '1/2-1/2': res += 'Draw'; break;
+			case '*': res += 'Line'; break;
+			default: break;
+		}
+		res += '}\n';
+	}
+
 	function dumpNags(node) {
 		var nags = node.nags();
 		nags.sort();
@@ -141,7 +153,7 @@ function dumpGame(game) {
 	dumpHeader('Date'      , game.date     ());
 	dumpHeader('Annotator' , game.annotator());
 	dumpVariation(game.mainVariation(), '', '');
-	res += '{' + game.result() + '}\n';
+	dumpResult(game.result());
 
 	return res;
 }
