@@ -52,3 +52,8 @@
 [Annotator "Kibitz"]
 [Result "*"]
 *
+
+[Event "Custom startup position"]
+[FEN "rnb1k1nr/pppp1ppp/8/2b1p3/2B1P2q/2N2N2/PPPP1PPP/R1BQK2R b KQkq - 5 4"]
+[Result "0-1"]
+4... Qxf2# 0-1
