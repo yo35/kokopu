@@ -197,22 +197,54 @@ TokenStream.prototype.consumeToken = function() {
 };
 
 
+function parseNullableHeader(value) {
+	return value === '?' ? undefined : value;
+}
+
+
+function parseDateHeader(value) {
+	if(/^([0-9]{4})\.([0-9]{2})\.([0-9]{2})$/.test(value)) {
+		var year = RegExp.$1;
+		var month = RegExp.$2;
+		var day = RegExp.$3;
+		year = parseInt(year, 10);
+		month = parseInt(month, 10);
+		day = parseInt(day, 10);
+		if(month >= 1 && month <= 12 && day >= 1 && day <= 31) {
+			return new Date(year, month - 1, day);
+		}
+	}
+	else if(/^([0-9]{4})\.([0-9]{2})\.\?\?$/.test(value)) {
+		var year = RegExp.$1;
+		var month = parseInt(RegExp.$2, 10);
+		if(month >= 1 && month <= 12) {
+			return { year: parseInt(year, 10), month: month };
+		}
+	}
+	else if(/^([0-9]{4})(?:\.\?\?\.\?\?)?$/.test(value)) {
+		return { year: parseInt(RegExp.$1, 10) };
+	}
+	return undefined;
+}
+
+
 /**
  * Process a TOKEN_HEADER.
  */
 function processHeader(stream, game, key, value) {
+	value = value.trim();
 	switch(key) {
-		case 'White': game.playerName('w', value); break;
-		case 'Black': game.playerName('b', value); break;
+		case 'White': game.playerName('w', parseNullableHeader(value)); break;
+		case 'Black': game.playerName('b', parseNullableHeader(value)); break;
 		case 'WhiteElo': game.playerElo('w', value); break;
 		case 'BlackElo': game.playerElo('b', value); break;
 		case 'WhiteTitle': game.playerTitle('w', value); break;
 		case 'BlackTitle': game.playerTitle('b', value); break;
-		case 'Event': game.event(value); break;
-		case 'Round': game.round(value); break;
-		case 'Date': game.date(value); break;
-		case 'Site': game.site(value); break;
-		case 'Annotator': game.annotator(value); break;
+		case 'Event': game.event(parseNullableHeader(value)); break;
+		case 'Round': game.round(parseNullableHeader(value)); break;
+		case 'Date': game.date(parseDateHeader(value)); break;
+		case 'Site': game.site(parseNullableHeader(value)); break;
+		case 'Annotator': game.annotator(parseNullableHeader(value)); break;
 
 		// The header 'FEN' has a special meaning, in that it is used to define a custom
 		// initial position, that may be different from the usual one.
@@ -389,7 +421,7 @@ exports.pgnRead = function(pgnString, gameIndex) {
 	else {
 		var gameCounter = 0;
 		while(gameCounter < gameIndex) {
-			if(doSkipGame()) {
+			if(doSkipGame(stream)) {
 				++gameCounter;
 			}
 			else {

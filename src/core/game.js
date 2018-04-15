@@ -113,13 +113,13 @@ Game.prototype.date = function(value) {
 		return this._date;
 	}
 	else if(typeof value === 'undefined' || value === null) {
-		this.date = undefined;
+		this._date = undefined;
 	}
 	else if(value instanceof Date) {
-		this.date = value;
+		this._date = value;
 	}
-	else if(typeof value === 'object' && typeof value.year === 'number' && typeof value.month === 'number') {
-		this.date = { year: value.year, month: value.month };
+	else if(typeof value === 'object' && typeof value.year === 'number' && (typeof value.month === 'number' || typeof value.month === 'undefined')) {
+		this._date = { year: value.year, month: value.month };
 	}
 	else {
 		throw new exception.IllegalArgument('Game#date()');
