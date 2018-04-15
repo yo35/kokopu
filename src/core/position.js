@@ -51,18 +51,21 @@ var notation = require('./private_position/notation');
  * @param {string|Position} [fen = 'start'] Either `'start'`, `'empty'`, an existing position, or a FEN string representing chess position.
  * @throws InvalidFEN If the input parameter is neither a correctly formatted FEN string nor `'start'` or `'empty'`.
  */
-var Position = exports.Position = function(argument) {
-	if(typeof argument === 'undefined' || argument === null || argument === 'start') {
+var Position = exports.Position = function() {
+	if(arguments.length === 0 || arguments[0] === 'start') {
 		this._impl = impl.makeInitial();
 	}
-	else if(argument === 'empty') {
+	else if(arguments[0] === 'empty') {
 		this._impl = impl.makeEmpty();
 	}
-	else if(argument instanceof Position) {
-		this._impl = impl.makeCopy(argument._impl);
+	else if(arguments[0] instanceof Position) {
+		this._impl = impl.makeCopy(arguments[0]._impl);
+	}
+	else if(typeof arguments[0] === 'string') {
+		this._impl = fen.parseFEN(arguments[0], false).position;
 	}
 	else {
-		this._impl = fen.parseFEN(argument, false).position;
+		throw new exception.IllegalArgument('Position()');
 	}
 };
 
@@ -148,7 +151,7 @@ Position.prototype.square = function(square, value) {
 		throw new exception.IllegalArgument('Position#square()');
 	}
 
-	if(typeof value === 'undefined' || value === null) {
+	if(arguments.length === 1) {
 		var cp = this._impl.board[square];
 		return cp < 0 ? '-' : bt.coloredPieceToString(cp);
 	}
@@ -173,7 +176,7 @@ Position.prototype.square = function(square, value) {
  * @param {string} [value]
  */
 Position.prototype.turn = function(value) {
-	if(typeof value === 'undefined' || value === null) {
+	if(arguments.length === 0) {
 		return bt.colorToString(this._impl.turn);
 	}
 	else {
@@ -200,8 +203,8 @@ Position.prototype.castling = function(castle, value) {
 	}
 	var color = bt.colorFromString(castle[0]);
 	var file = castle[1]==='k' ? 7 : 0;
-	
-	if(typeof value === 'undefined' || value === null) {
+
+	if(arguments.length === 1) {
 		return (this._impl.castling[color] /* jshint bitwise:false */ & (1 << file) /* jshint bitwise:true */) !== 0;
 	}
 	else if(value) {
@@ -221,7 +224,7 @@ Position.prototype.castling = function(castle, value) {
  * @param {string} [value]
  */
 Position.prototype.enPassant = function(value) {
-	if(typeof value === 'undefined' || value === null) {
+	if(arguments.length === 0) {
 		return this._impl.enPassant < 0 ? '-' : bt.fileToString(this._impl.enPassant);
 	}
 	else if(value === '-') {

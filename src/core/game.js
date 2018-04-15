@@ -112,14 +112,17 @@ Game.prototype.date = function(value) {
 	if(arguments.length === 0) {
 		return this._date;
 	}
-	else if(typeof value === 'undefined' || value === null) {
+	else if(value === undefined || value === null) {
 		this._date = undefined;
 	}
 	else if(value instanceof Date) {
 		this._date = value;
 	}
-	else if(typeof value === 'object' && typeof value.year === 'number' && (typeof value.month === 'number' || typeof value.month === 'undefined')) {
+	else if(typeof value === 'object' && typeof value.year === 'number' && typeof value.month === 'number') {
 		this._date = { year: value.year, month: value.month };
+	}
+	else if(typeof value === 'object' && typeof value.year === 'number' && (value.month === undefined || value.month === null)) {
+		this._date = { year: value.year };
 	}
 	else {
 		throw new exception.IllegalArgument('Game#date()');
@@ -177,7 +180,7 @@ Game.prototype.initialPosition = function(initialPosition, fullMoveNumber) {
 		if(!(initialPosition instanceof Position)) {
 			throw new exception.IllegalArgument('Game#initialPosition()');
 		}
-		if(typeof fullMoveNumber === 'undefined') {
+		if(arguments.length === 1) {
 			fullMoveNumber = 1;
 		}
 		else if(typeof fullMoveNumber !== 'number') {
@@ -236,7 +239,7 @@ function Node(parentVariation, previous, move) {
 	}
 
 	// Full-move number
-	if(typeof previous === 'undefined') {
+	if(previous === undefined) {
 		this._fullMoveNumber = parentVariation.initialFullMoveNumber();
 	}
 	else {
@@ -379,7 +382,7 @@ Node.prototype.removeNag = function(nag) {
 Node.prototype.tags = function() {
 	var res = [];
 	for(var key in this._tags) {
-		if(typeof this._tags[key] !== 'undefined') {
+		if(this._tags[key] !== undefined) {
 			res.push(key);
 		}
 	}

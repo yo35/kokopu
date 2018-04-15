@@ -344,7 +344,7 @@ function doParseGame(stream) {
 			// Comment
 			case TOKEN_COMMENT:
 				for(var key in stream.tokenValue.tags) {
-					if(typeof stream.tokenValue.tags[key] !== 'undefined') {
+					if(stream.tokenValue.tags[key] !== undefined) {
 						node.tag(key, stream.tokenValue.tags[key]);
 					}
 				}
@@ -418,7 +418,7 @@ exports.pgnRead = function(pgnString, gameIndex) {
 	var stream = new TokenStream(pgnString);
 
 	// Parse all games...
-	if(typeof gameIndex === 'undefined') {
+	if(arguments.length === 1) {
 		var result = [];
 		while(true) {
 			var currentGame = doParseGame(stream);
