@@ -1,0 +1,31 @@
+Event = {Game with variations}
+-+<LONG
+(1w) e4
+(1b) e5
+ |
+ +---+
+ |  (1b) e6 $18
+ |
+(2w) Nf3
+(2b) Nc6
+(3w) Bb5
+ |
+ +---+ {Italian game:}
+ |  (3w) Bc4
+ |  (3b) Bc5
+ |
+ +---+
+ |  (3w) d4
+ |  (3b) exd4
+ |  (4w) Nxd4
+ |   |
+ |   +---+ $42
+ |   |  (4w) Bc4 $5
+ |   |  (4b) Nf6 $13
+ |   |
+ |  (4b) Bc5
+ |
+(3b) a6
+(4w) Bxc6
+(4b) dxc6
+{Draw}

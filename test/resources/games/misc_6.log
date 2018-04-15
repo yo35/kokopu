@@ -1,0 +1,9 @@
+Event = {Game with null-moves}
+-+<LONG
+(1w) e4
+(1b) --
+(2w) d4
+(2b) d5
+(3w) --
+(3b) e5
+{Line}

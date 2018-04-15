@@ -531,7 +531,9 @@ Variation.prototype.removeNag     = Node.prototype.removeNag    ;
 Variation.prototype.tags          = Node.prototype.tags         ;
 Variation.prototype.tag           = Node.prototype.tag          ;
 Variation.prototype.comment       = Node.prototype.comment      ;
-Variation.prototype.isLongComment = Node.prototype.isLongComment;
+Variation.prototype.isLongComment = function() {
+	return this._isLongComment && this.isLongVariation();
+};
 
 
 /**

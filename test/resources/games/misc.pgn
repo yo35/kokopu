@@ -12,7 +12,7 @@
 
 [Event "Game with comments and NAGs"]
 
-{A comment with braces: ab\{cd\}ef\\gh\ij 3 backslashes: \\\\\\}
+{A comment with braces: ab\{cd\}ef\\ghij 3 backslashes: \\\\\\}
 1. e4 ! e6 ?! {This opening is called the French.} 2. d4 +/= *
 
 
@@ -48,3 +48,55 @@ the combination was sound and that he had a forced win in every variation.}
 23. Kg1 Bh3+ 24. Kh1 Bxf2 25. Qf1 {Absolutely forced.} 25... Bxf1 26. Rxf1 Re2
 27. Ra1 Rh6 28. d4 Be3 0-1
 
+
+
+[Annotator "gokhan007"]
+[FEN "r2q1b1r/ppn2kpp/2p1b3/3nP3/2BPQ3/P1N5/1PP3PP/R1B1K2R w KQ - 1 14"]
+[SetUp "1"]
+
+14. O-O+ Ke8 *
+
+
+
+[Event "Game with long/short comment descriptors"]
+{No empty line => SHORT.}
+1.e4 e5 (
+
+{Within short variation, always SHORT.}
+
+1...e6 +-
+
+{Within short variation, always SHORT.}
+
+) 2.Nf3 Nc6 3.Bb5
+
+({No empty line => SHORT.} 3.Bc4 Bc5 {No empty line => SHORT.})
+
+3...a6 4.Bxc6
+
+(
+
+{Empty line => LONG.}
+
+4. Ba4 b5
+
+{Empty line => LONG.}
+
+)
+
+4... dxc6 1/2-1/2
+
+
+
+[Event "Game with null-moves"]
+
+1.e4 -- 2.d4 d5 3.-- e5 *
+
+
+
+[Event "Game with tags"]
+
+1.e4 {[%cal Ge2e4]} 1...h5 {[%cal Gh7h5] Odd move:    the pawn in h5 [%csl Rh5] is weak.}
+({[%key value] More usual is} 1...c5 { })
+2.d4 {[%key value1] Cannot have several tags with the same key here! [%key value2]}
+2...a5 {No tag here.} *

@@ -59,12 +59,14 @@ function parseHeaderValue(rawHeaderValue) {
 
 
 /**
- * Parse a comment, looking for the `[%key value]` tags.
+ * Parse a comment, unescaping special characters, and looking for the `[%key value]` tags.
  *
  * @param {string} rawComment String to parse.
  * @returns {{comment:string, tags:object}}
  */
-function parseComment(rawComment) {
+function parseCommentValue(rawComment) {
+	rawComment = rawComment.replace(/\\([\{\}\\])/g, '$1');
+
 	var tags = {};
 
 	// Find and remove the tags from the raw comment.
@@ -76,7 +78,7 @@ function parseComment(rawComment) {
 	// Trim the comment and collapse sequences of space characters into 1 character only.
 	comment = comment.replace(/^\s+|\s+$/g, '').replace(/\s+/g, ' ');
 	if(comment === '') {
-		comment = null;
+		comment = undefined;
 	}
 
 	// Return the result
@@ -171,10 +173,10 @@ TokenStream.prototype.consumeToken = function() {
 	}
 
 	// Match a comment
-	else if(/^(\{((?:\\\\|\\\{|\\\}|[^\{\}])*)\})/.test(s)) {
+	else if(/^(\{((?:[^\{\}\\]|\\[\{\}\\])*)\})/.test(s)) {
 		this._pos      += RegExp.$1.length;
 		this.token      = TOKEN_COMMENT;
-		this.tokenValue = parseComment(RegExp.$2.replace(/\\(\\|\{|\})/g, '$1'));
+		this.tokenValue = parseCommentValue(RegExp.$2);
 	}
 
 	// Match the beginning of a variation

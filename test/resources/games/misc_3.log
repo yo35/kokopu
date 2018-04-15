@@ -1,0 +1,81 @@
+White = {Paulsen, Louis}
+Black = {Morphy, Paul}
+Event = {1<sup>st</sup> American Chess Congress}
+Round = {4.6}
+Site = {New York, NY USA}
+Date = {Tue Nov 03 1857}
+-+<LONG
+(1w) e4
+(1b) e5
+(2w) Nf3
+(2b) Nc6
+(3w) Nc3
+(3b) Nf6
+(4w) Bb5
+(4b) Bc5
+(5w) O-O
+(5b) O-O
+(6w) Nxe5
+(6b) Re8
+(7w) Nxc6
+(7b) dxc6
+(8w) Bc4
+(8b) b5
+(9w) Be2
+(9b) Nxe4
+(10w) Nxe4
+(10b) Rxe4
+(11w) Bf3
+(11b) Re6
+(12w) c3
+(12b) Qd3
+(13w) b4
+(13b) Bb6
+(14w) a4
+(14b) bxa4
+(15w) Qxa4
+(15b) Bd7
+(16w) Ra2
+(16b) Rae8
+(17w) Qa6 {Morphy took twelve minutes over his next move, probably to assure himself that the combination was sound and that he had a forced win in every variation.}<LONG
+(17b) Qxf3 $3
+(18w) gxf3
+(18b) Rg6+
+(19w) Kh1
+(19b) Bh3
+(20w) Rd1
+ |
+ +---+ {Not}
+ |  (20w) Rg1
+ |  (20b) Rxg1+
+ |  (21w) Kxg1
+ |  (21b) Re1+ $19
+ |
+(20b) Bg2+
+(21w) Kg1
+(21b) Bxf3+
+(22w) Kf1
+(22b) Bg2+
+ |
+ +---+<LONG
+ |  (22b) Rg2 $1 {would have won more quickly. For instance:}
+ |  (23w) Qd3
+ |  (23b) Rxf2+
+ |  (24w) Kg1
+ |  (24b) Rg2+
+ |  (25w) Kh1
+ |  (25b) Rg1#
+ |
+(23w) Kg1
+(23b) Bh3+
+(24w) Kh1
+(24b) Bxf2
+(25w) Qf1 {Absolutely forced.}
+(25b) Bxf1
+(26w) Rxf1
+(26b) Re2
+(27w) Ra1
+(27b) Rh6
+(28w) d4
+(28b) Be3
+{Black wins}
