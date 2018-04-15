@@ -1,6 +1,6 @@
 /******************************************************************************
  *                                                                            *
- *    This file is part of RPB Chess, a JavaScript chess library.             *
+ *    This file is part of Kokopu, a JavaScript chess library.                *
  *    Copyright (C) 2017  Yoann Le Montagner <yo35 -at- melix.net>            *
  *                                                                            *
  *    This program is free software: you can redistribute it and/or modify    *
@@ -22,7 +22,7 @@
 'use strict';
 
 
-var RPBChess = require('../src/core.js');
+var kokopu = require('../src/core.js');
 var generateSuccessors = require('./common/generatesuccessors');
 var readCSV = require('./common/readcsv');
 var test = require('unit.js');
@@ -45,7 +45,7 @@ function testData() {
 
 describe('Recursive move generation', function() {
 	testData().forEach(function(elem) {
-		var initialPos = new RPBChess.Position(elem.fen);
+		var initialPos = new kokopu.Position(elem.fen);
 		elem.nodes.forEach(function(expectedNodeCount, depth) {
 			if(NODE_COUNT_MAX_MAX >= 0 && expectedNodeCount <= NODE_COUNT_MAX_MAX) {
 				it('From ' + elem.fen + ' up to depth ' + depth, function() {

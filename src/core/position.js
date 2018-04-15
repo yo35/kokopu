@@ -1,6 +1,6 @@
 /******************************************************************************
  *                                                                            *
- *    This file is part of RPB Chess, a JavaScript chess library.             *
+ *    This file is part of Kokopu, a JavaScript chess library.                *
  *    Copyright (C) 2017  Yoann Le Montagner <yo35 -at- melix.net>            *
  *                                                                            *
  *    This program is free software: you can redistribute it and/or modify    *
@@ -40,11 +40,6 @@ var notation = require('./private_position/notation');
 // -----------------------------------------------------------------------------
 
 /**
- * @constructor
- * @alias Position
- * @memberof RPBChess
- *
- * @classdesc
  * Represent a chess position, i.e. the state of a 64-square chessboard with a few additional
  * information (who is about to play, castling rights, en-passant rights).
  *

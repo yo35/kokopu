@@ -1,6 +1,6 @@
 /******************************************************************************
  *                                                                            *
- *    This file is part of RPB Chess, a JavaScript chess library.             *
+ *    This file is part of Kokopu, a JavaScript chess library.                *
  *    Copyright (C) 2017  Yoann Le Montagner <yo35 -at- melix.net>            *
  *                                                                            *
  *    This program is free software: you can redistribute it and/or modify    *
@@ -23,11 +23,6 @@
 
 
 /**
- * @constructor
- * @alias IllegalArgument
- * @memberof RPBChess.exceptions
- *
- * @classdesc
  * Exception thrown when an invalid argument is passed to a function.
  *
  * @param {string} fun
@@ -38,11 +33,6 @@ exports.IllegalArgument = function(fun) {
 
 
 /**
- * @constructor
- * @alias InvalidFEN
- * @memberof RPBChess.exceptions
- *
- * @classdesc
  * Exception thrown by the FEN parsing function.
  *
  * @param {string} fen String whose parsing leads to an error.
@@ -60,11 +50,6 @@ exports.InvalidFEN = function(fen, message) {
 
 
 /**
- * @constructor
- * @alias InvalidNotation
- * @memberof RPBChess.exceptions
- *
- * @classdesc
  * Exception thrown by the move notation parsing function.
  *
  * @param {string} fen FEN-representation of the position used to try to parse the move notation.
@@ -84,11 +69,6 @@ exports.InvalidNotation = function(fen, notation, message) {
 
 
 /**
- * @constructor
- * @alias InvalidPGN
- * @memberof RPBChess.exceptions
- *
- * @classdesc
  * Exception thrown by the PGN parsing functions.
  *
  * @param {string} pgn String whose parsing leads to an error.

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /******************************************************************************
  *                                                                            *
- *    This file is part of RPB Chess, a JavaScript chess library.             *
+ *    This file is part of Kokopu, a JavaScript chess library.                *
  *    Copyright (C) 2017  Yoann Le Montagner <yo35 -at- melix.net>            *
  *                                                                            *
  *    This program is free software: you can redistribute it and/or modify    *
@@ -23,7 +23,7 @@
 'use strict';
 
 
-var RPBChess = require('./src/core.js');
+var kokopu = require('./src/core.js');
 var generateSuccessors = require('./test/common/generatesuccessors');
 var program = require('commander');
 
@@ -43,7 +43,7 @@ function align(data, width) {
  */
 function run(fen, minDepth, maxDepth, verbose) {
 
-	var initialPos = new RPBChess.Position(fen);
+	var initialPos = new kokopu.Position(fen);
 	function runAtDepth(depth) {
 		
 		var startAt = Date.now();

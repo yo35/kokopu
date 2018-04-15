@@ -1,6 +1,6 @@
 /******************************************************************************
  *                                                                            *
- *    This file is part of RPB Chess, a JavaScript chess library.             *
+ *    This file is part of Kokopu, a JavaScript chess library.                *
  *    Copyright (C) 2017  Yoann Le Montagner <yo35 -at- melix.net>            *
  *                                                                            *
  *    This program is free software: you can redistribute it and/or modify    *
@@ -22,7 +22,7 @@
 'use strict';
 
 
-var RPBChess = require('../../src/core.js');
+var kokopu = require('../../src/core.js');
 
 
 /**
@@ -33,7 +33,7 @@ var generateSuccessors = module.exports = function(pos, depth) {
 
 	if(depth > 0) {
 		pos.moves().forEach(function(move) {
-			var nextPos = new RPBChess.Position(pos);
+			var nextPos = new kokopu.Position(pos);
 			nextPos.play(move);
 			result += generateSuccessors(nextPos, depth-1);
 		});

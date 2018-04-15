@@ -1,6 +1,6 @@
 /******************************************************************************
  *                                                                            *
- *    This file is part of RPB Chess, a JavaScript chess library.             *
+ *    This file is part of Kokopu, a JavaScript chess library.                *
  *    Copyright (C) 2017  Yoann Le Montagner <yo35 -at- melix.net>            *
  *                                                                            *
  *    This program is free software: you can redistribute it and/or modify    *
@@ -22,7 +22,7 @@
 'use strict';
 
 
-var RPBChess = require('../src/core.js');
+var kokopu = require('../src/core.js');
 var test = require('unit.js');
 
 
@@ -36,15 +36,15 @@ describe('Constructor', function() {
 	var optsFEN1 = { fiftyMoveClock: 10, fullMoveNumber: 5 };
 	var optsFEN2 = { fullMoveNumber: 60 };
 
-	it('Default constructor'    , function() { test.value(new RPBChess.Position().fen()).is(startFEN); });
-	it('Constructor \'start\''  , function() { test.value(new RPBChess.Position('start').fen()).is(startFEN); });
-	it('Constructor \'empty\''  , function() { test.value(new RPBChess.Position('empty').fen()).is(emptyFEN); });
-	it('Constructor FEN-based 1', function() { test.value(new RPBChess.Position(customFEN1).fen(optsFEN1)).is(customFEN1); });
-	it('Constructor FEN-based 2', function() { test.value(new RPBChess.Position(customFEN2).fen(optsFEN2)).is(customFEN2); });
+	it('Default constructor'    , function() { test.value(new kokopu.Position().fen()).is(startFEN); });
+	it('Constructor \'start\''  , function() { test.value(new kokopu.Position('start').fen()).is(startFEN); });
+	it('Constructor \'empty\''  , function() { test.value(new kokopu.Position('empty').fen()).is(emptyFEN); });
+	it('Constructor FEN-based 1', function() { test.value(new kokopu.Position(customFEN1).fen(optsFEN1)).is(customFEN1); });
+	it('Constructor FEN-based 2', function() { test.value(new kokopu.Position(customFEN2).fen(optsFEN2)).is(customFEN2); });
 
 	it('Copy constructor', function() {
-		var p1 = new RPBChess.Position(customFEN1);
-		var p2 = new RPBChess.Position(p1);
+		var p1 = new kokopu.Position(customFEN1);
+		var p2 = new kokopu.Position(p1);
 		p1.clear();
 
 		test.value(p1.fen()).is(emptyFEN);
@@ -67,17 +67,17 @@ describe('Strict FEN', function() {
 	var customFEN3b = 'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b Kq e6 0 1';
 	var customFEN3c = 'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b Kq e3 00 1';
 
-	it('Set FEN (tolerant) A', function() { var p=new RPBChess.Position(); p.fen(customFEN3a); test.value(p.fen()).is(customFEN3); });
-	it('Set FEN (tolerant) B', function() { var p=new RPBChess.Position(); p.fen(customFEN3b); test.value(p.fen()).is(customFEN3); });
-	it('Set FEN (tolerant) C', function() { var p=new RPBChess.Position(); p.fen(customFEN3c); test.value(p.fen()).is(customFEN3); });
+	it('Set FEN (tolerant) A', function() { var p=new kokopu.Position(); p.fen(customFEN3a); test.value(p.fen()).is(customFEN3); });
+	it('Set FEN (tolerant) B', function() { var p=new kokopu.Position(); p.fen(customFEN3b); test.value(p.fen()).is(customFEN3); });
+	it('Set FEN (tolerant) C', function() { var p=new kokopu.Position(); p.fen(customFEN3c); test.value(p.fen()).is(customFEN3); });
 
-	it('Set FEN (strict) OK 1', function() { var p=new RPBChess.Position(); p.fen(customFEN1, true); test.value(p.fen(optsFEN1)).is(customFEN1); });
-	it('Set FEN (strict) OK 2', function() { var p=new RPBChess.Position(); p.fen(customFEN2, true); test.value(p.fen(optsFEN2)).is(customFEN2); });
-	it('Set FEN (strict) OK 3', function() { var p=new RPBChess.Position(); p.fen(customFEN3, true); test.value(p.fen()).is(customFEN3); });
+	it('Set FEN (strict) OK 1', function() { var p=new kokopu.Position(); p.fen(customFEN1, true); test.value(p.fen(optsFEN1)).is(customFEN1); });
+	it('Set FEN (strict) OK 2', function() { var p=new kokopu.Position(); p.fen(customFEN2, true); test.value(p.fen(optsFEN2)).is(customFEN2); });
+	it('Set FEN (strict) OK 3', function() { var p=new kokopu.Position(); p.fen(customFEN3, true); test.value(p.fen()).is(customFEN3); });
 
-	it('Set FEN (strict) NOK A', function() { var p=new RPBChess.Position(); test.exception(function() { p.fen(customFEN3a, true); }).isInstanceOf(RPBChess.exception.InvalidFEN); });
-	it('Set FEN (strict) NOK B', function() { var p=new RPBChess.Position(); test.exception(function() { p.fen(customFEN3b, true); }).isInstanceOf(RPBChess.exception.InvalidFEN); });
-	it('Set FEN (strict) NOK C', function() { var p=new RPBChess.Position(); test.exception(function() { p.fen(customFEN3c, true); }).isInstanceOf(RPBChess.exception.InvalidFEN); });
+	it('Set FEN (strict) NOK A', function() { var p=new kokopu.Position(); test.exception(function() { p.fen(customFEN3a, true); }).isInstanceOf(kokopu.exception.InvalidFEN); });
+	it('Set FEN (strict) NOK B', function() { var p=new kokopu.Position(); test.exception(function() { p.fen(customFEN3b, true); }).isInstanceOf(kokopu.exception.InvalidFEN); });
+	it('Set FEN (strict) NOK C', function() { var p=new kokopu.Position(); test.exception(function() { p.fen(customFEN3c, true); }).isInstanceOf(kokopu.exception.InvalidFEN); });
 
 });
 
@@ -86,31 +86,31 @@ describe('Getters', function() {
 
 	var customFEN = 'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b Kk e3 0 1';
 
-	it('Get board 1', function() { var p=new RPBChess.Position(); test.value(p.square('e1')).is('wk'); });
-	it('Get board 2', function() { var p=new RPBChess.Position(); test.value(p.square('f7')).is('bp'); });
-	it('Get board 3', function() { var p=new RPBChess.Position(); test.value(p.square('b4')).is('-'); });
+	it('Get board 1', function() { var p=new kokopu.Position(); test.value(p.square('e1')).is('wk'); });
+	it('Get board 2', function() { var p=new kokopu.Position(); test.value(p.square('f7')).is('bp'); });
+	it('Get board 3', function() { var p=new kokopu.Position(); test.value(p.square('b4')).is('-'); });
 
-	it('Get turn 1', function() { var p=new RPBChess.Position(); test.value(p.turn()).is('w'); });
-	it('Get turn 2', function() { var p=new RPBChess.Position(customFEN); test.value(p.turn()).is('b'); });
+	it('Get turn 1', function() { var p=new kokopu.Position(); test.value(p.turn()).is('w'); });
+	it('Get turn 2', function() { var p=new kokopu.Position(customFEN); test.value(p.turn()).is('b'); });
 
-	it('Get castling 1', function() { var p=new RPBChess.Position(); test.value(p.castling('wq')).is(true); });
-	it('Get castling 2', function() { var p=new RPBChess.Position(customFEN); test.value(p.castling('bq')).is(false); });
-	it('Get castling 3', function() { var p=new RPBChess.Position(customFEN); test.value(p.castling('bk')).is(true); });
+	it('Get castling 1', function() { var p=new kokopu.Position(); test.value(p.castling('wq')).is(true); });
+	it('Get castling 2', function() { var p=new kokopu.Position(customFEN); test.value(p.castling('bq')).is(false); });
+	it('Get castling 3', function() { var p=new kokopu.Position(customFEN); test.value(p.castling('bk')).is(true); });
 
-	it('Get en-passant 1', function() { var p=new RPBChess.Position(); test.value(p.enPassant()).is('-'); });
-	it('Get en-passant 2', function() { var p=new RPBChess.Position(customFEN); test.value(p.enPassant()).is('e'); });
+	it('Get en-passant 1', function() { var p=new kokopu.Position(); test.value(p.enPassant()).is('-'); });
+	it('Get en-passant 2', function() { var p=new kokopu.Position(customFEN); test.value(p.enPassant()).is('e'); });
 
 	['j1', 'f9'].forEach(function(elem) {
 		it('Error for board with ' + elem, function() {
-			var p=new RPBChess.Position();
-			test.exception(function() { p.square(elem); }).isInstanceOf(RPBChess.exception.IllegalArgument);
+			var p=new kokopu.Position();
+			test.exception(function() { p.square(elem); }).isInstanceOf(kokopu.exception.IllegalArgument);
 		});
 	});
 
 	['bK', 'wa'].forEach(function(elem) {
 		it('Error for castling with ' + elem, function() {
-			var p=new RPBChess.Position();
-			test.exception(function() { p.castling(elem); }).isInstanceOf(RPBChess.exception.IllegalArgument);
+			var p=new kokopu.Position();
+			test.exception(function() { p.castling(elem); }).isInstanceOf(kokopu.exception.IllegalArgument);
 		});
 	});
 
@@ -119,8 +119,8 @@ describe('Getters', function() {
 
 describe('Setters', function() {
 
-	var pos1 = new RPBChess.Position('start');
-	var pos2 = new RPBChess.Position('empty');
+	var pos1 = new kokopu.Position('start');
+	var pos2 = new kokopu.Position('empty');
 
 	it('Set board 1a', function() { pos1.square('a8', '-'); test.value(pos1.fen()).is('1nbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'); });
 	it('Set board 1b', function() { pos1.square('f6', 'wb'); test.value(pos1.fen()).is('1nbqkbnr/pppppppp/5B2/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'); });

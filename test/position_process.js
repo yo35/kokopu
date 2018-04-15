@@ -1,6 +1,6 @@
 /******************************************************************************
  *                                                                            *
- *    This file is part of RPB Chess, a JavaScript chess library.             *
+ *    This file is part of Kokopu, a JavaScript chess library.                *
  *    Copyright (C) 2017  Yoann Le Montagner <yo35 -at- melix.net>            *
  *                                                                            *
  *    This program is free software: you can redistribute it and/or modify    *
@@ -22,7 +22,7 @@
 'use strict';
 
 
-var RPBChess = require('../src/core.js');
+var kokopu = require('../src/core.js');
 var readCSV = require('./common/readcsv');
 var test = require('unit.js');
 
@@ -49,16 +49,16 @@ function testData() {
 
 
 function createPosition(testDataDescriptor) {
-	return new RPBChess.Position(testDataDescriptor.constructor==='fen' ? testDataDescriptor.fen : testDataDescriptor.constructor);
+	return new kokopu.Position(testDataDescriptor.constructor==='fen' ? testDataDescriptor.fen : testDataDescriptor.constructor);
 }
 
 
 describe('isAttacked', function() {
 
 	function testIsAttacked(fen, byWho, attackedSquares) {
-		var position = new RPBChess.Position(fen);
+		var position = new kokopu.Position(fen);
 		var res = '';
-		RPBChess.forEachSquare(function(square) {
+		kokopu.forEachSquare(function(square) {
 			if(position.isAttacked(square, byWho)) {
 				if(res !== '') { res += '/'; }
 				res += square;
@@ -119,8 +119,8 @@ describe('Move legality check', function() {
 			var moves = [];
 			var pos = createPosition(elem);
 
-			RPBChess.forEachSquare(function(from) {
-				RPBChess.forEachSquare(function(to) {
+			kokopu.forEachSquare(function(from) {
+				kokopu.forEachSquare(function(to) {
 
 					var moveDescriptor = pos.isMoveLegal(from, to);
 					if(!moveDescriptor) {
@@ -151,7 +151,7 @@ describe('Play', function() {
 			var initialPos = createPosition(elem);
 			var moves = initialPos.moves().sort(function(e1, e2) { return e1.toString().localeCompare(e2.toString()); });
 			var successors = moves.map(function(move) {
-				var nextPos = new RPBChess.Position(initialPos);
+				var nextPos = new kokopu.Position(initialPos);
 				nextPos.play(move);
 				return nextPos.fen();
 			});
@@ -192,7 +192,7 @@ describe('Algebraic notation parsing', function() {
 					moves.push(descriptor.toString());
 				}
 				catch(e) {
-					if(!(e instanceof RPBChess.exception.InvalidNotation)) {
+					if(!(e instanceof kokopu.exception.InvalidNotation)) {
 						throw e;
 					}
 				}
@@ -203,7 +203,7 @@ describe('Algebraic notation parsing', function() {
 			parseNotation('O-O');
 
 			// Pawn move
-			RPBChess.forEachSquare(function(to) {
+			kokopu.forEachSquare(function(to) {
 				for(var fd=0; fd<FILE_DISAMBIGUATION.length; ++fd) {
 					for(var p=0; p<PROMO.length; ++p) {
 						var text = FILE_DISAMBIGUATION[fd] + to + PROMO[p];
@@ -213,7 +213,7 @@ describe('Algebraic notation parsing', function() {
 			});
 
 			// Non-pawn moves
-			RPBChess.forEachSquare(function(to) {
+			kokopu.forEachSquare(function(to) {
 				for(var p=0; p<PIECES.length; ++p) {
 					for(var rd=0; rd<RANK_DISAMBIGUATION.length; ++rd) {
 						for(var fd=0; fd<FILE_DISAMBIGUATION.length; ++fd) {

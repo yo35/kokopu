@@ -1,6 +1,6 @@
 /******************************************************************************
  *                                                                            *
- *    This file is part of RPB Chess, a JavaScript chess library.             *
+ *    This file is part of Kokopu, a JavaScript chess library.                *
  *    Copyright (C) 2017  Yoann Le Montagner <yo35 -at- melix.net>            *
  *                                                                            *
  *    This program is free software: you can redistribute it and/or modify    *
@@ -22,7 +22,7 @@
 'use strict';
 
 
-var RPBChess = require('../src/core.js');
+var kokopu = require('../src/core.js');
 var readCSV = require('./common/readcsv');
 var readText = require('./common/readtext');
 var test = require('unit.js');
@@ -42,7 +42,7 @@ function testData() {
 describe('Game count', function() {
 	testData().forEach(function(elem) {
 		it('File ' + elem.label, function() {
-			test.value(RPBChess.pgnRead(elem.pgn).length).is(elem.gameCount);
+			test.value(kokopu.pgnRead(elem.pgn).length).is(elem.gameCount);
 		});
 	});
 });
@@ -107,7 +107,7 @@ function dumpGame(game) {
 	}
 
 	function dumpInitialPosition(position) {
-		if(position.fen() !== new RPBChess.Position().fen()) {
+		if(position.fen() !== new kokopu.Position().fen()) {
 			res += position.ascii() + '\n';
 		}
 	}
@@ -200,7 +200,7 @@ function dumpGame(game) {
 function checkGameContent(testDataDescriptor, gameIndex) {
 	it('File ' + testDataDescriptor.label + ' - Game ' + gameIndex, function() {
 		var expectedDump = readText('games/' + testDataDescriptor.label + '_' + gameIndex + '.log');
-		test.value(dumpGame(RPBChess.pgnRead(testDataDescriptor.pgn, gameIndex)).trim()).is(expectedDump.trim());
+		test.value(dumpGame(kokopu.pgnRead(testDataDescriptor.pgn, gameIndex)).trim()).is(expectedDump.trim());
 	});
 }
 
