@@ -1,7 +1,7 @@
 /******************************************************************************
  *                                                                            *
- *    This file is part of RPB Chessboard, a WordPress plugin.                *
- *    Copyright (C) 2013-2017  Yoann Le Montagner <yo35 -at- melix.net>       *
+ *    This file is part of Kokopu, a JavaScript chess library.                *
+ *    Copyright (C) 2017  Yoann Le Montagner <yo35 -at- melix.net>            *
  *                                                                            *
  *    This program is free software: you can redistribute it and/or modify    *
  *    it under the terms of the GNU General Public License as published by    *
@@ -23,17 +23,17 @@
 'use strict';
 
 
-exports.i18n = require('./core/i18n');
-exports.exception = require('./core/exception');
+exports.i18n = require('./src/i18n');
+exports.exception = require('./src/exception');
 
-var util = require('./core/util');
+var util = require('./src/util');
 exports.forEachSquare = util.forEachSquare;
 exports.squareColor = util.squareColor;
 exports.squareToCoordinates = util.squareToCoordinates;
 exports.coordinatesToSquare = util.coordinatesToSquare;
 
-exports.Position = require('./core/position').Position;
-exports.Game = require('./core/game').Game;
+exports.Position = require('./src/position').Position;
+exports.Game = require('./src/game').Game;
 
-var pgn = require('./core/pgn');
+var pgn = require('./src/pgn');
 exports.pgnRead = pgn.pgnRead;

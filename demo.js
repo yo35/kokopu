@@ -23,7 +23,7 @@
 'use strict';
 
 
-var kokopu = require('./src/core.js');
+var kokopu = require('./index');
 var generateSuccessors = require('./test/common/generatesuccessors');
 var program = require('commander');
 

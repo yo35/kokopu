@@ -22,7 +22,7 @@
 'use strict';
 
 
-var kokopu = require('../src/core.js');
+var kokopu = require('../index');
 var generateSuccessors = require('./common/generatesuccessors');
 var readCSV = require('./common/readcsv');
 var test = require('unit.js');
