@@ -58,9 +58,40 @@ function dumpGame(game) {
 	var res = '\n';
 
 	function dumpHeader(key, value) {
-		if(value !== undefined) {
-			res += key + ' = {' + value + '}\n';
+		if(value === undefined) { return; }
+
+		res += key + ' = {';
+		if(value instanceof Date) {
+			res += value.toDateString();
 		}
+		else if(typeof value === 'object') {
+
+			// Extract the subkeys of the object `value`.
+			var subkeys = [];
+			for(var subkey in value) {
+				if(value[subkey] !== undefined) {
+					subkeys.push(subkey);
+				}
+			}
+			subkeys.sort();
+
+			// Print the value of each subkey.
+			if(subkeys.length === 0) {
+				res += '{}';
+			}
+			else {
+				res += '{ ';
+				for(var i=0; i<subkeys.length; ++i) {
+					if(i !== 0) { res += ', '; }
+					res += subkeys[i] + ':' + value[subkeys[i]];
+				}
+				res += ' }';
+			}
+		}
+		else {
+			res += value;
+		}
+		res += '}\n';
 	}
 
 	function dumpResult(result) {

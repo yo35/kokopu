@@ -1,0 +1,8 @@
+White = {Player 1}
+Black = {Player 2}
+Event = {Some championship}
+Round = {1}
+Site = {Paris, France}
+Date = {{ year:2018 }}
+-+<LONG
+{Black wins}

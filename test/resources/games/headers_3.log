@@ -1,0 +1,8 @@
+White = {Player 1}
+Black = {Player 2}
+Event = {Some championship}
+Round = {1}
+Site = {Paris, France}
+Date = {{ month:4, year:2018 }}
+-+<LONG
+{Draw}

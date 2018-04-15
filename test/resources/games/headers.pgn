@@ -1,0 +1,54 @@
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+*
+
+[Event " ?"]
+[Site "? "]
+[Date "?"]
+[Round " ? "]
+[White "  ? 	 "]
+[Black " ?		"]
+[Result "1-0"]
+1-0
+
+[Event "Some championship"]
+[Site "Paris, France"]
+[Date "2018.??.??"]
+[Round "1"]
+[White "Player 1"]
+[Black "Player 2"]
+[Result "0-1"]
+0-1
+
+[Event " Some championship"]
+[Site "Paris, France "]
+[Date "2018.04.??"]
+[Round " 1 "]
+[White "  Player 1 	 "]
+[Black " Player 2		"]
+[Result "1/2-1/2"]
+1/2-1/2
+
+[Event "Special character \" (double quote)"]
+[Site "Special character ' (quote)"]
+[Date "2018.04.15"]
+[Round "1.2"]
+[White "Special characters \[\] (square brackets)"]
+[Black "Special character \\ (backslash)"]
+[Result "*"]
+*
+
+[White "Player 1"]
+[WhiteElo "2450"]
+[WhiteTitle "IM"]
+[Black "Player 2"]
+[BlackElo "2530"]
+[BlackTitle "GM"]
+[Annotator "Kibitz"]
+[Result "*"]
+*

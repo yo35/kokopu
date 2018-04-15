@@ -49,6 +49,16 @@ var SPECIAL_NAGS_LOOKUP = {
 
 
 /**
+ * Parse a header value, unescaping special characters.
+ * @param {string} rawHeaderValue
+ * @returns {string}
+ */
+function parseHeaderValue(rawHeaderValue) {
+	return rawHeaderValue.replace(/\\([\\"\[\]])/g, '$1');
+}
+
+
+/**
  * Parse a comment, looking for the `[%key value]` tags.
  *
  * @param {string} rawComment String to parse.
@@ -140,10 +150,10 @@ TokenStream.prototype.consumeToken = function() {
 	this.tokenPos = this._pos;
 
 	// Match a game header (ex: [White "Kasparov, G."])
-	if(/^(\[\s*(\w+)\s+\"([^\"]*)\"\s*\])/.test(s)) {
+	if(/^(\[\s*(\w+)\s+\"((?:[^\\"\[\]]|\\[\\"\[\]])*)\"\s*\])/.test(s)) {
 		this._pos      += RegExp.$1.length;
 		this.token      = TOKEN_HEADER;
-		this.tokenValue = {key: RegExp.$2, value: RegExp.$3};
+		this.tokenValue = {key: RegExp.$2, value: parseHeaderValue(RegExp.$3)};
 	}
 
 	// Match a move or a null-move
@@ -244,7 +254,7 @@ function processHeader(stream, game, key, value) {
 		case 'Round': game.round(parseNullableHeader(value)); break;
 		case 'Date': game.date(parseDateHeader(value)); break;
 		case 'Site': game.site(parseNullableHeader(value)); break;
-		case 'Annotator': game.annotator(parseNullableHeader(value)); break;
+		case 'Annotator': game.annotator(value); break;
 
 		// The header 'FEN' has a special meaning, in that it is used to define a custom
 		// initial position, that may be different from the usual one.

@@ -1,0 +1,8 @@
+White = {Special characters [] (square brackets)}
+Black = {Special character \ (backslash)}
+Event = {Special character " (double quote)}
+Round = {1.2}
+Site = {Special character ' (quote)}
+Date = {Sun Apr 15 2018}
+-+<LONG
+{Line}
