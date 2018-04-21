@@ -6,3 +6,6 @@
 # Node's stuff
 /node_modules
 
+# Generated files
+/kokopu.js
+
