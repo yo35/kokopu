@@ -16,7 +16,7 @@
 		"browserify": "~16.2.0"
 	},
 	"scripts": {
-		"lint": "jshint src test index.js demo.js",
+		"lint": "jshint index.js demo src test",
 		"test": "mocha",
 		"prebuild": "npm run lint && npm run test",
 		"build": "browserify -s kokopu index.js > kokopu.js"

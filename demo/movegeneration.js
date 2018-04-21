@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /******************************************************************************
  *                                                                            *
  *    This file is part of Kokopu, a JavaScript chess library.                *
@@ -23,8 +22,8 @@
 'use strict';
 
 
-var kokopu = require('./index');
-var generateSuccessors = require('./test/common/generatesuccessors');
+var kokopu = require('../index');
+var generateSuccessors = require('../test/common/generatesuccessors');
 var program = require('commander');
 
 
