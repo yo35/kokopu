@@ -13,12 +13,13 @@
 		"mocha": "~5.1.1",
 		"unit.js": "~2.0.0",
 		"jshint": "~2.9.5",
+		"uglify-js": "~3.3.21",
 		"browserify": "~16.2.0"
 	},
 	"scripts": {
 		"lint": "jshint index.js demo src test",
 		"test": "mocha",
 		"prebuild": "npm run lint && npm run test",
-		"build": "browserify -s kokopu index.js > kokopu.js"
+		"build": "browserify -s kokopu index.js | uglifyjs > kokopu.js"
 	}
 }
