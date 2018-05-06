@@ -24,6 +24,7 @@
 
 
 var bt = require('./basetypes');
+var exception = require('./exception');
 
 
 var CASTLING_FLAG   = 0x01;
@@ -116,15 +117,67 @@ MoveDescriptor.prototype.to = function() {
 };
 
 
+MoveDescriptor.prototype.color = function() {
+	return bt.colorToString(this._movingPiece % 2);
+};
+
+
 MoveDescriptor.prototype.movingPiece = function() {
-	return bt.squareToString(this._to);
+	return bt.pieceToString(Math.floor(this._movingPiece / 2));
+};
+
+
+MoveDescriptor.prototype.movingColoredPiece = function() {
+	return bt.coloredPieceToString(this._movingPiece);
+};
+
+
+MoveDescriptor.prototype.capturedPiece = function() {
+	if(!this.isCapture()) { throw new exception.IllegalArgument('MoveDescriptor#capturedPiece()'); }
+	return bt.pieceToString(Math.floor(this._optionalPiece / 2));
+};
+
+
+MoveDescriptor.prototype.capturedColoredPiece = function() {
+	if(!this.isCapture()) { throw new exception.IllegalArgument('MoveDescriptor#capturedColoredPiece()'); }
+	return bt.coloredPieceToString(this._optionalPiece);
+};
+
+
+MoveDescriptor.prototype.rookFrom = function() {
+	if(!this.isCastling()) { throw new exception.IllegalArgument('MoveDescriptor#rookFrom()'); }
+	return bt.squareToString(this._optionalSquare1);
+};
+
+
+MoveDescriptor.prototype.rookTo = function() {
+	if(!this.isCastling()) { throw new exception.IllegalArgument('MoveDescriptor#rookTo()'); }
+	return bt.squareToString(this._optionalSquare2);
+};
+
+
+MoveDescriptor.prototype.enPassantSquare = function() {
+	if(!this.isEnPassant()) { throw new exception.IllegalArgument('MoveDescriptor#enPassantSquare()'); }
+	return bt.squareToString(this._optionalSquare1);
+};
+
+
+MoveDescriptor.prototype.promotion = function() {
+	if(!this.isPromotion()) { throw new exception.IllegalArgument('MoveDescriptor#promotion()'); }
+	return bt.pieceToString(Math.floor(this._finalPiece / 2));
+};
+
+
+MoveDescriptor.prototype.coloredPromotion = function() {
+	if(!this.isPromotion()) { throw new exception.IllegalArgument('MoveDescriptor#coloredPromotion()'); }
+	return bt.coloredPieceToString(this._finalPiece);
 };
 
 
 MoveDescriptor.prototype.toString = function() {
 	var result = bt.squareToString(this._from) + bt.squareToString(this._to);
 	if(this.isPromotion()) {
-		result += bt.pieceToString(Math.floor(this._finalPiece / 2)).toUpperCase();
+		result += this.promotion().toUpperCase();
 	}
 	return result;
 };
