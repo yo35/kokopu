@@ -24,13 +24,13 @@
 
 
 var bt = require('./basetypes');
+var moveDescriptor = require('./movedescriptor');
 var exception = require('./exception');
 
 var impl = require('./private_position/impl');
 var fen = require('./private_position/fen');
 var attacks = require('./private_position/attacks');
 var legality = require('./private_position/legality');
-var moveDescriptor = require('./private_position/movedescriptor');
 var moveGeneration = require('./private_position/movegeneration');
 var notation = require('./private_position/notation');
 

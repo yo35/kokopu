@@ -32,6 +32,8 @@ exports.squareColor = util.squareColor;
 exports.squareToCoordinates = util.squareToCoordinates;
 exports.coordinatesToSquare = util.coordinatesToSquare;
 
+exports.isMoveDescriptor = require('./src/movedescriptor').isInstanceOf;
+
 exports.Position = require('./src/position').Position;
 exports.Game = require('./src/game').Game;
 

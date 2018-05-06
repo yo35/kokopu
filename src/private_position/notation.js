@@ -24,6 +24,7 @@
 
 
 var bt = require('../basetypes');
+var moveDescriptor = require('../movedescriptor');
 var exception = require('../exception');
 var i18n = require('../i18n');
 
@@ -31,7 +32,6 @@ var impl = require('./impl');
 var fen = require('./fen');
 var attacks = require('./attacks');
 var legality = require('./legality');
-var moveDescriptor = require('./movedescriptor');
 var moveGeneration = require('./movegeneration');
 
 

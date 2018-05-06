@@ -24,9 +24,9 @@
 
 
 var bt = require('../basetypes');
+var moveDescriptor = require('../movedescriptor');
 var attacks = require('./attacks');
 var legality = require('./legality');
-var moveDescriptor = require('./movedescriptor');
 
 
 // Displacement lookup per square index difference.
