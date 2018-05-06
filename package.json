@@ -1,8 +1,8 @@
 {
 	"name": "kokopu",
 	"version": "0.0.0",
-	"description": "TODO",
-	"keywords": "TODO",
+	"description": "JavaScript library implementing the chess game rules and providing tools to read/write the standard chess file formats.",
+	"keywords": ["chess", "fen", "pgn", "games"],
 	"homepage": "TODO",
 	"bugs": "TODO",
 	"repository": "TODO",
