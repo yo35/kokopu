@@ -1,6 +1,6 @@
 {
 	"name": "kokopu",
-	"version": "0.99.3",
+	"version": "0.99.4",
 	"description": "A JavaScript library implementing the chess game rules and providing tools to read/write the standard chess file formats.",
 	"keywords": ["chess", "fen", "pgn", "games"],
 	"bugs": "https://github.com/yo35/kokopu/issues",
