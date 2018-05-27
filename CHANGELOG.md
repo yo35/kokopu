@@ -1,8 +1,13 @@
 ChangeLog
 =========
 
+0.99.5 (May 27, 2018)
+---------------------
+* Improve testing pipeline.
+* Integration with Travis-CI.
+
 0.99.4 (May 26, 2018)
---------------------
+---------------------
 * Build both minified and non-minified files.
 
 0.99.3 (May 6, 2018)
