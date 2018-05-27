@@ -17,8 +17,9 @@
 	},
 	"scripts": {
 		"lint": "jshint index.js demo src test",
-		"test": "mocha",
-		"prebuild": "npm run lint && npm run test",
+		"unit": "mocha",
+		"test": "npm run lint && npm run unit",
+		"prebuild": "npm run test",
 		"build": "browserify -s kokopu index.js > kokopu.js && uglifyjs kokopu.js > kokopu.min.js"
 	}
 }
