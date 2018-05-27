@@ -27,7 +27,7 @@ var kokopu = require('../index');
 var test = require('unit.js');
 
 
-describe('Constructor', function() {
+describe('Position constructor', function() {
 
 	var startFEN   = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 	var emptyFEN   = '8/8/8/8/8/8/8/8 w - - 0 1';
@@ -55,7 +55,7 @@ describe('Constructor', function() {
 });
 
 
-describe('Strict FEN', function() {
+describe('FEN parsing', function() {
 
 	var customFEN1 = 'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b Kk e3 10 5';
 	var customFEN2 = 'k7/n1PB4/1K6/8/8/8/8/8 w - - 0 60';
@@ -83,7 +83,7 @@ describe('Strict FEN', function() {
 });
 
 
-describe('Getters', function() {
+describe('Position getters', function() {
 
 	var customFEN = 'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b Kk e3 0 1';
 
@@ -118,7 +118,7 @@ describe('Getters', function() {
 });
 
 
-describe('Setters', function() {
+describe('Position setters', function() {
 
 	var pos1 = new kokopu.Position('start');
 	var pos2 = new kokopu.Position('empty');
