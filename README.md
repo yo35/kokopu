@@ -6,6 +6,8 @@ and provides tools to read/write the standard chess file formats
 ([PGN](https://en.wikipedia.org/wiki/Portable_Game_Notation),
 [FEN](https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation), etc.).
 
+[![Build Status](https://travis-ci.org/yo35/kokopu.svg?branch=master)](https://travis-ci.org/yo35/kokopu)
+
 
 
 Documentation
