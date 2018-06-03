@@ -101,3 +101,28 @@ exports.coloredPieceFromString = function(cp) {
 	var piece = PIECE_SYMBOL.indexOf(cp[1]);
 	return piece*2 + color;
 };
+
+
+// -----------------------------------------------------------------------------
+// Typedefs for documentation
+// -----------------------------------------------------------------------------
+
+/**
+ * Either `'w'` (white) or `'b'` (black).
+ * @typedef {string} Color
+ */
+
+/**
+ * One-character string identifying a type of piece: `'p'` (pawn), `'n'` (knight), `'b'` (bishop), `'r'` (rook), `'q'` (queen) or `'k'` (king).
+ * @typedef {string} Piece
+ */
+
+/**
+ * Two-character string identifying a colored piece: `'wk'` (white king), `'br'` (black rook), etc...
+ * @typedef {string} ColoredPiece
+ */
+
+/**
+ * Two-character string identifying a square: `'a1'`, `'a2'`, ..., `'h8'`.
+ * @typedef {string} Square
+ */

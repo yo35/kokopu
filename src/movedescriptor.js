@@ -64,8 +64,8 @@ exports.makePromotion = function(from, to, color, promotion, capturedPiece) {
 
 
 /**
- * @classdesc
- * Hold the raw information that is required to play a move in a given position.
+ * @class
+ * @classdesc Hold the raw information that is required to play a move in a given position.
  */
 function MoveDescriptor(flags, from, to, movingPiece, finalPiece, optionalPiece, optionalSquare1, optionalSquare2) {
 	this._type            = flags          ;
@@ -87,97 +87,184 @@ exports.isInstanceOf = function(obj) {
 };
 
 
-MoveDescriptor.prototype.isCastling = function() {
-	return (this._type /* jshint bitwise:false */ & CASTLING_FLAG /* jshint bitwise:true */) !== 0;
-};
-
-
-MoveDescriptor.prototype.isEnPassant = function() {
-	return (this._type /* jshint bitwise:false */ & EN_PASSANT_FLAG /* jshint bitwise:true */) !== 0;
-};
-
-
-MoveDescriptor.prototype.isCapture = function() {
-	return (this._type /* jshint bitwise:false */ & CAPTURE_FLAG /* jshint bitwise:true */) !== 0;
-};
-
-
-MoveDescriptor.prototype.isPromotion = function() {
-	return (this._type /* jshint bitwise:false */ & PROMOTION_FLAG /* jshint bitwise:true */) !== 0;
-};
-
-
-MoveDescriptor.prototype.from = function() {
-	return bt.squareToString(this._from);
-};
-
-
-MoveDescriptor.prototype.to = function() {
-	return bt.squareToString(this._to);
-};
-
-
-MoveDescriptor.prototype.color = function() {
-	return bt.colorToString(this._movingPiece % 2);
-};
-
-
-MoveDescriptor.prototype.movingPiece = function() {
-	return bt.pieceToString(Math.floor(this._movingPiece / 2));
-};
-
-
-MoveDescriptor.prototype.movingColoredPiece = function() {
-	return bt.coloredPieceToString(this._movingPiece);
-};
-
-
-MoveDescriptor.prototype.capturedPiece = function() {
-	if(!this.isCapture()) { throw new exception.IllegalArgument('MoveDescriptor#capturedPiece()'); }
-	return bt.pieceToString(Math.floor(this._optionalPiece / 2));
-};
-
-
-MoveDescriptor.prototype.capturedColoredPiece = function() {
-	if(!this.isCapture()) { throw new exception.IllegalArgument('MoveDescriptor#capturedColoredPiece()'); }
-	return bt.coloredPieceToString(this._optionalPiece);
-};
-
-
-MoveDescriptor.prototype.rookFrom = function() {
-	if(!this.isCastling()) { throw new exception.IllegalArgument('MoveDescriptor#rookFrom()'); }
-	return bt.squareToString(this._optionalSquare1);
-};
-
-
-MoveDescriptor.prototype.rookTo = function() {
-	if(!this.isCastling()) { throw new exception.IllegalArgument('MoveDescriptor#rookTo()'); }
-	return bt.squareToString(this._optionalSquare2);
-};
-
-
-MoveDescriptor.prototype.enPassantSquare = function() {
-	if(!this.isEnPassant()) { throw new exception.IllegalArgument('MoveDescriptor#enPassantSquare()'); }
-	return bt.squareToString(this._optionalSquare1);
-};
-
-
-MoveDescriptor.prototype.promotion = function() {
-	if(!this.isPromotion()) { throw new exception.IllegalArgument('MoveDescriptor#promotion()'); }
-	return bt.pieceToString(Math.floor(this._finalPiece / 2));
-};
-
-
-MoveDescriptor.prototype.coloredPromotion = function() {
-	if(!this.isPromotion()) { throw new exception.IllegalArgument('MoveDescriptor#coloredPromotion()'); }
-	return bt.coloredPieceToString(this._finalPiece);
-};
-
-
 MoveDescriptor.prototype.toString = function() {
 	var result = bt.squareToString(this._from) + bt.squareToString(this._to);
 	if(this.isPromotion()) {
 		result += this.promotion().toUpperCase();
 	}
 	return result;
+};
+
+
+/**
+ * Whether or not the current move is a castling move.
+ *
+ * @returns {boolean}
+ */
+MoveDescriptor.prototype.isCastling = function() {
+	return (this._type /* jshint bitwise:false */ & CASTLING_FLAG /* jshint bitwise:true */) !== 0;
+};
+
+
+/**
+ * Whether or not the current move is a *en-passant* move.
+ *
+ * @returns {boolean}
+ */
+MoveDescriptor.prototype.isEnPassant = function() {
+	return (this._type /* jshint bitwise:false */ & EN_PASSANT_FLAG /* jshint bitwise:true */) !== 0;
+};
+
+
+/**
+ * Whether or not the current move is a capture (either a regular capture or a *en-passant* capture).
+ *
+ * @returns {boolean}
+ */
+MoveDescriptor.prototype.isCapture = function() {
+	return (this._type /* jshint bitwise:false */ & CAPTURE_FLAG /* jshint bitwise:true */) !== 0;
+};
+
+
+/**
+ * Whether or not the current move is a promotion.
+ *
+ * @returns {boolean}
+ */
+MoveDescriptor.prototype.isPromotion = function() {
+	return (this._type /* jshint bitwise:false */ & PROMOTION_FLAG /* jshint bitwise:true */) !== 0;
+};
+
+
+/**
+ * Origin square of the moving piece. In case of castling, this is the origin square of the king.
+ *
+ * @returns {Square}
+ */
+MoveDescriptor.prototype.from = function() {
+	return bt.squareToString(this._from);
+};
+
+
+/**
+ * Destination square of the moving piece. In case of castling, this is the destination square of the king.
+ *
+ * @returns {Square}
+ */
+MoveDescriptor.prototype.to = function() {
+	return bt.squareToString(this._to);
+};
+
+
+/**
+ * Color of the moving piece.
+ *
+ * @returns {Color}
+ */
+MoveDescriptor.prototype.color = function() {
+	return bt.colorToString(this._movingPiece % 2);
+};
+
+
+/**
+ * Type of the moving piece. In case of castling, the moving piece is considered to be the king.
+ *
+ * @returns {Piece}
+ */
+MoveDescriptor.prototype.movingPiece = function() {
+	return bt.pieceToString(Math.floor(this._movingPiece / 2));
+};
+
+
+/**
+ * Color and type of the moving piece. In case of castling, the moving piece is considered to be the king.
+ *
+ * @returns {ColoredPiece}
+ */
+MoveDescriptor.prototype.movingColoredPiece = function() {
+	return bt.coloredPieceToString(this._movingPiece);
+};
+
+
+/**
+ * Type of the captured piece.
+ *
+ * @returns {Piece}
+ * @throws {module:exception.IllegalArgument} If the current move is not a capture (see {@link MoveDescriptor#isCapture}).
+ */
+MoveDescriptor.prototype.capturedPiece = function() {
+	if(!this.isCapture()) { throw new exception.IllegalArgument('MoveDescriptor#capturedPiece()'); }
+	return bt.pieceToString(Math.floor(this._optionalPiece / 2));
+};
+
+
+/**
+ * Color and type of the captured piece.
+ *
+ * @returns {ColoredPiece}
+ * @throws {module:exception.IllegalArgument} If the current move is not a capture (see {@link MoveDescriptor#isCapture}).
+ */
+MoveDescriptor.prototype.capturedColoredPiece = function() {
+	if(!this.isCapture()) { throw new exception.IllegalArgument('MoveDescriptor#capturedColoredPiece()'); }
+	return bt.coloredPieceToString(this._optionalPiece);
+};
+
+
+/**
+ * Origin square of the rook, in case of a castling move.
+ *
+ * @returns {Square}
+ * @throws {module:exception.IllegalArgument} If the current move is not a castling move (see {@link MoveDescriptor#isCastling}).
+ */
+MoveDescriptor.prototype.rookFrom = function() {
+	if(!this.isCastling()) { throw new exception.IllegalArgument('MoveDescriptor#rookFrom()'); }
+	return bt.squareToString(this._optionalSquare1);
+};
+
+
+/**
+ * Destination square of the rook, in case of a castling move.
+ *
+ * @returns {Square}
+ * @throws {module:exception.IllegalArgument} If the current move is not a castling move (see {@link MoveDescriptor#isCastling}).
+ */
+MoveDescriptor.prototype.rookTo = function() {
+	if(!this.isCastling()) { throw new exception.IllegalArgument('MoveDescriptor#rookTo()'); }
+	return bt.squareToString(this._optionalSquare2);
+};
+
+
+/**
+ * Square containing the captured pawn, in case of a *en-passant* move.
+ *
+ * @returns {Square}
+ * @throws {module:exception.IllegalArgument} If the current move is not a *en-passant* move (see {@link MoveDescriptor#isEnPassant}).
+ */
+MoveDescriptor.prototype.enPassantSquare = function() {
+	if(!this.isEnPassant()) { throw new exception.IllegalArgument('MoveDescriptor#enPassantSquare()'); }
+	return bt.squareToString(this._optionalSquare1);
+};
+
+
+/**
+ * Type of the promoted piece, in case of a promotion.
+ *
+ * @returns {Piece}
+ * @throws {module:exception.IllegalArgument} If the current move is not a promotion (see {@link MoveDescriptor#isPromotion}).
+ */
+MoveDescriptor.prototype.promotion = function() {
+	if(!this.isPromotion()) { throw new exception.IllegalArgument('MoveDescriptor#promotion()'); }
+	return bt.pieceToString(Math.floor(this._finalPiece / 2));
+};
+
+
+/**
+ * Color and type of the promoted piece, in case of a promotion.
+ *
+ * @returns {ColoredPiece}
+ * @throws {module:exception.IllegalArgument} If the current move is not a promotion (see {@link MoveDescriptor#isPromotion}).
+ */
+MoveDescriptor.prototype.coloredPromotion = function() {
+	if(!this.isPromotion()) { throw new exception.IllegalArgument('MoveDescriptor#coloredPromotion()'); }
+	return bt.coloredPieceToString(this._finalPiece);
 };
