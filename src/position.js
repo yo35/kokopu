@@ -253,8 +253,8 @@ Position.prototype.enPassant = function(value) {
 /**
  * Check if any piece of the given color attacks a given square.
  *
- * @param {string} square
- * @param {string} byWho Either `'w'` or `'b'`
+ * @param {Square} square
+ * @param {Color} byWho
  * @returns {boolean}
  */
 Position.prototype.isAttacked = function(square, byWho) {
@@ -270,9 +270,9 @@ Position.prototype.isAttacked = function(square, byWho) {
 /**
  * Return the squares from which a piece of the given color attacks a given square.
  *
- * @param {string} square
- * @param {string} byWho Either `'w'` or `'b'`
- * @returns {boolean}
+ * @param {Square} square
+ * @param {Color} byWho
+ * @returns {Square[]}
  */
 Position.prototype.getAttacks = function(square, byWho) {
 	square = bt.squareFromString(square);
@@ -296,12 +296,12 @@ Position.prototype.getAttacks = function(square, byWho) {
  * A position is considered to be legal if all the following conditions are met:
  *
  *  1. There is exactly one white king and one black king on the board.
- *  2. The player that is not about to play is not check.
- *  3. There are no pawn on rows 1 and 8.
+ *  2. The player that is not about to play is not in check.
+ *  3. There are no pawn on ranks 1 and 8.
  *  4. For each colored castle flag set, there is a rook and a king on the
  *     corresponding initial squares.
- *  5. The pawn situation is consistent with the en-passant flag if it is set.
- *     For instance, if it is set to the 'e' column and black is about to play,
+ *  5. The pawn situation is consistent with the *en-passant* flag if it is set.
+ *     For instance, if it is set to the "e" file and black is about to play,
  *     the squares e2 and e3 must be empty, and there must be a white pawn on e4.
  *
  * @returns {boolean}
