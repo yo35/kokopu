@@ -8,6 +8,7 @@
 /npm-debug.log
 
 # Generated files
+/docs
 /kokopu.js
 /kokopu.min.js
 

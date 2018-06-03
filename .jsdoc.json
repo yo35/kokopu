@@ -1,0 +1,12 @@
+{
+	"plugins": ["plugins/markdown"],
+	"source": {
+		"include": "src"
+	},
+	"opts": {
+		"template": "node_modules/ink-docstrap/template"
+	},
+	"templates": {
+		"theme": "cosmo"
+	}
+}
