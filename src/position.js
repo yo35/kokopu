@@ -325,7 +325,7 @@ Position.prototype.kingSquare = function(color) {
 	}
 	legality.refreshLegalFlagAndKingSquares(this._impl);
 	var square = this._impl.king[color];
-	return square < 0 ? '-' : bt.squareToString(square);
+	return square < 0 ? false : bt.squareToString(square);
 };
 
 
