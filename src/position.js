@@ -436,7 +436,7 @@ Position.prototype.play = function(move) {
 			}
 		}
 	}
-	else if(moveDescriptor.isInstanceOf(move)) {
+	else if(moveDescriptor.isMoveDescriptor(move)) {
 		moveGeneration.play(this._impl, move);
 		return true;
 	}
@@ -481,7 +481,7 @@ Position.prototype.playNullMove = function() {
  * @throws {InvalidNotation} If the move parsing fails or if the parsed move would correspond to an illegal move.
  */
 Position.prototype.notation = function() {
-	if(arguments.length === 1 && moveDescriptor.isInstanceOf(arguments[0])) {
+	if(arguments.length === 1 && moveDescriptor.isMoveDescriptor(arguments[0])) {
 		return notation.getNotation(this._impl, arguments[0]);
 	}
 	else if(arguments.length === 1 && typeof arguments[0] === 'string') {

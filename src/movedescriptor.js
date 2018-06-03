@@ -82,7 +82,7 @@ function MoveDescriptor(flags, from, to, movingPiece, finalPiece, optionalPiece,
 /**
  * Whether the given object is a move descriptor or not.
  */
-exports.isInstanceOf = function(obj) {
+exports.isMoveDescriptor = function(obj) {
 	return obj instanceof MoveDescriptor;
 };
 
