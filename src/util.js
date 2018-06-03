@@ -28,14 +28,14 @@ var exception = require('./exception');
 
 
 /**
- * Iterate on each of the 64 squares.
+ * Execute the given callback on each of the 64 squares.
  *
- * @param {function} fun
+ * @param {function(Square)} callback
  */
-exports.forEachSquare = function(fun) {
+exports.forEachSquare = function(callback) {
 	for(var rank=0; rank<8; ++rank) {
 		for(var file=0; file<8; ++file) {
-			fun(bt.squareToString(rank * 16 + file));
+			callback(bt.squareToString(rank * 16 + file));
 		}
 	}
 };
@@ -44,8 +44,8 @@ exports.forEachSquare = function(fun) {
 /**
  * Return the color of a square.
  *
- * @param {string} square
- * @returns {string} Either `'w'` or `'b'`.
+ * @param {Square} square
+ * @returns {Color}
  */
 exports.squareColor = function(square) {
 	square = bt.squareFromString(square);
@@ -59,8 +59,8 @@ exports.squareColor = function(square) {
 /**
  * Return the coordinates of a square.
  *
- * @param {string} square
- * @returns {{rank:number, file:number}}
+ * @param {Square} square
+ * @returns {{rank: number, file: number}} The `rank` and `file` fields have the same meaning as in {@link coordinatesToSquare}.
  */
 exports.squareToCoordinates = function(square) {
 	square = bt.squareFromString(square);
@@ -74,9 +74,10 @@ exports.squareToCoordinates = function(square) {
 /**
  * Return the square corresponding to the given coordinates.
  *
- * @param {number} file
- * @param {number} rank
- * @returns {string}
+ * @param {number} file `0` for file A, `1` for file B, ..., `7` for file H.
+ * @param {number} rank `0` for the first rank, ..., `7` for the eighth rank.
+ * @returns {Square}
+ * @throws {exception.IllegalArgument} If either `file` or `rank` is not between 0 and 7 (inclusive).
  */
 exports.coordinatesToSquare = function(file, rank) {
 	if(file<0 || file>=8 || rank<0 || rank>= 8) {
