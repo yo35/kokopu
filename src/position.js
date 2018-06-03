@@ -140,11 +140,17 @@ Position.prototype.fen = function() {
 
 
 /**
- * Get/set the content of a square.
+ * Get the content of a square.
  *
  * @param {Square} square
- * @param {ColoredPiece|Empty} [value] If provided, the content of the given {@link Square} is set to this value (setter behavior).
- * @returns {ColoredPiece|Empty} Only if the method is called with one argument (getter behavior).
+ * @returns {ColoredPiece|Empty}
+ *
+ *//**
+ *
+ * Set the content of a square.
+ *
+ * @param {Square} square
+ * @param {ColoredPiece|Empty} value
  */
 Position.prototype.square = function(square, value) {
 	square = bt.squareFromString(square);
@@ -172,10 +178,15 @@ Position.prototype.square = function(square, value) {
 
 
 /**
- * Get/set the turn flag (i.e. who is to play).
+ * Get the turn flag (i.e. who is about to play).
  *
- * @param {Color} [value] If provided, the turn flag is set to this value (setter behavior).
- * @returns {Color} Only if the method is called with no argument (getter behavior).
+ * @returns {Color}
+ *
+ *//**
+ *
+ * Set the turn flag (i.e. who is about to play).
+ *
+ * @param {Color} value
  */
 Position.prototype.turn = function(value) {
 	if(arguments.length === 0) {
@@ -193,11 +204,17 @@ Position.prototype.turn = function(value) {
 
 
 /**
- * Get/set a castle flag (i.e. whether or not the corresponding castle is allowed or not). TODO: make it chess-960 compatible.
+ * Get a castle flag (i.e. whether or not the corresponding castle is allowed or not). TODO: make it chess-960 compatible.
  *
  * @param {Castle} castle
- * @param {boolean} [value] If provided, the flag corresponding to the given {@link Castle} is set to this value (setter behavior).
- * @returns {boolean} Only if the method is called with one argument (getter behavior).
+ * @returns {boolean}
+ *
+ *//**
+ *
+ * Set a castle flag (i.e. whether or not the corresponding castle is allowed or not). TODO: make it chess-960 compatible.
+ *
+ * @param {Castle} castle
+ * @param {boolean} value
  */
 Position.prototype.castling = function(castle, value) {
 	if(!/^[wb][qk]$/.test(castle)) {
@@ -221,10 +238,15 @@ Position.prototype.castling = function(castle, value) {
 
 
 /**
- * Get/set the *en-passant* flag (i.e. the file on which *en-passant* is allowed, if any).
+ * Get the *en-passant* flag (i.e. the file on which *en-passant* is allowed, if any).
  *
- * @param {EnPassantFlag} [value] If provided, the *en-passant* flag is set to this value (setter behavior).
- * @returns {EnPassantFlag} Only if the method is called with no argument (getter behavior).
+ * @returns {EnPassantFlag}
+ *
+ *//**
+ *
+ * Set the *en-passant* flag (i.e. the file on which *en-passant* is allowed, if any).
+ *
+ * @param {EnPassantFlag} value
  */
 Position.prototype.enPassant = function(value) {
 	if(arguments.length === 0) {
