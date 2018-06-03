@@ -67,8 +67,8 @@ exports.makePromotion = function(from, to, color, promotion, capturedPiece) {
  * @class
  * @classdesc Describe a legal chess move, with its characteristics.
  *
- * @description This constructor is not exposed in the public Kokopu API. Only internal objects and functions are allowed
- * to instantiate {@link MoveDescriptor} objects.
+ * @description This constructor is not exposed in the public Kokopu API. Only internal objects and functions
+ *              are allowed to instantiate {@link MoveDescriptor} objects.
  */
 function MoveDescriptor(flags, from, to, movingPiece, finalPiece, optionalPiece, optionalSquare1, optionalSquare2) {
 	this._type            = flags          ;
