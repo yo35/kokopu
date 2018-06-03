@@ -24,65 +24,129 @@
 
 
 /**
- * Exception thrown when an invalid argument is passed to a function.
- *
- * @param {string} fun
+ * @module exception
  */
-exports.IllegalArgument = function(fun) {
-	this.fun = fun;
-};
+
 
 
 /**
- * Exception thrown by the FEN parsing function.
- *
- * @param {string} fen String whose parsing leads to an error.
- * @param {string} message Human-readable error message.
- * @param ...
+ * @class
+ * @classdesc Exception thrown when an invalid argument is passed to a function.
+ * @static
  */
-exports.InvalidFEN = function(fen, message) {
-	this.fen = fen;
-	this.message = message;
-	for(var i=2; i<arguments.length; ++i) {
-		var re = new RegExp('%' + (i-1) + '\\$s');
-		this.message = this.message.replace(re, arguments[i]);
-	}
+var IllegalArgument = exports.IllegalArgument = function(functionName) {
+
+	/**
+	 * Name of the function that raises the exception.
+	 * @member {string}
+	 */
+	this.functionName = functionName;
+};
+
+IllegalArgument.prototype.toString = function() {
+	return 'Illegal argument in function ' + this.functionName;
 };
 
 
+
 /**
- * Exception thrown by the move notation parsing function.
- *
- * @param {string} fen FEN-representation of the position used to try to parse the move notation.
- * @param {string} notation String whose parsing leads to an error.
- * @param {string} message Human-readable error message.
- * @param ...
+ * @class
+ * @classdesc Exception thrown by the FEN parsing functions.
+ * @static
  */
-exports.InvalidNotation = function(fen, notation, message) {
+var InvalidFEN = exports.InvalidFEN = function(fen, message) {
+
+	/**
+	 * FEN string that causes the error.
+	 * @member {string}
+	 */
 	this.fen = fen;
+
+	/**
+	 * Human-readable message describing the error.
+	 * @member {string}
+	 */
+	this.message = buildMessage(message, 2, arguments);
+};
+
+InvalidFEN.prototype.toString = function() {
+	return toString('InvalidFEN', this.message);
+};
+
+
+
+/**
+ * @class
+ * @classdesc Exception thrown by the move notation parsing functions.
+ * @static
+ */
+var InvalidNotation = exports.InvalidNotation = function(fen, notation, message) {
+
+	/**
+	 * FEN representation of the position used to interpret the move notation.
+	 * @member {string}
+	 */
+	this.fen = fen;
+
+	/**
+	 * Move notation that causes the error.
+	 * @member {string}
+	 */
 	this.notation = notation;
-	this.message = message;
-	for(var i=3; i<arguments.length; ++i) {
-		var re = new RegExp('%' + (i-2) + '\\$s');
-		this.message = this.message.replace(re, arguments[i]);
-	}
+
+	/**
+	 * Human-readable message describing the error.
+	 * @member {string}
+	 */
+	this.message = buildMessage(message, 3, arguments);
+};
+
+InvalidNotation.prototype.toString = function() {
+	return toString('InvalidNotation', this.message);
 };
 
 
 /**
- * Exception thrown by the PGN parsing functions.
- *
- * @param {string} pgn String whose parsing leads to an error.
- * @param {number} index Character index in the string where the parsing fails (`-1` if no particular character is targeted).
- * @param {string} message Human-readable error message.
- * @param ...
+ * @class
+ * @classdesc Exception thrown by the PGN parsing functions.
+ * @static
  */
-exports.InvalidPGN = function(pgn, index, message) {
+var InvalidPGN = exports.InvalidPGN = function(pgn, index, message) {
+
+	/**
+	 * PGN string that causes the error.
+	 * @member {string}
+	 */
 	this.pgn = pgn;
+
+	/**
+	 * Index of the character in the PGN string where the parsing fails (or a negative value is no particular character is related to the error).
+	 * @member {number}
+	 */
 	this.index = index;
-	this.message = message;
-	for(var i=3; i<arguments.length; ++i) {
-		var re = new RegExp('%' + (i-2) + '\\$s');
-		this.message = this.message.replace(re, arguments[i]);
-	}
+
+	/**
+	 * Human-readable message describing the error.
+	 * @member {string}
+	 */
+	this.message = buildMessage(message, 3, arguments);
 };
+
+InvalidPGN.prototype.toString = function() {
+	return toString('InvalidPGN', this.message);
+};
+
+
+
+function buildMessage(message, offset, tokens) {
+	for(var i = offset; i < tokens.length; ++i) {
+		var re = new RegExp('%' + (i - offset + 1) + '\\$s');
+		message = message.replace(re, tokens[i]);
+	}
+	return message;
+}
+
+
+function toString(exceptionName, message) {
+	return exceptionName + ' -> ' + message;
+}
