@@ -247,11 +247,18 @@ Game.prototype.result = function(value) {
 
 
 /**
- * Get/set the initial position of the game. WARNING: the setter resets the main variation.
+ * Get the initial position of the game.
  *
- * @param {Position} initialPosition (SETTER only)
- * @param {number?} fullMoveNumber (SETTER only)
- * @returns {Position} (GETTER only)
+ * @returns {Position}
+ *
+ *//**
+ *
+ * Set the initial position of the game.
+ *
+ * WARNING: this resets the main variation.
+ *
+ * @param {Position} initialPosition
+ * @param {number} [fullMoveNumber=1]
  */
 Game.prototype.initialPosition = function(initialPosition, fullMoveNumber) {
 	if(arguments.length === 0) {
@@ -275,7 +282,7 @@ Game.prototype.initialPosition = function(initialPosition, fullMoveNumber) {
 
 
 /**
- * Main variation.
+ * The main variation of the game.
  *
  * @returns {Variation}
  */
@@ -290,12 +297,11 @@ Game.prototype.mainVariation = function() {
 // -----------------------------------------------------------------------------
 
 /**
- * Represent one move in the tree structure formed by a chess game with multiple variations.
+ * @class
+ * @classdesc Represent one move in the tree structure formed by a chess game with multiple variations.
  *
- * @param {Variation} parentVariation
- * @param {Node?} previous
- * @param {string} move SAN notation (or `'--'` for a null-move).
- * @throws {InvalidNotation} If the move notation cannot be parsed.
+ * @description This constructor is not exposed in the public Kokopu API. Only internal objects and functions
+ *              are allowed to instantiate {@link Node} objects.
  */
 function Node(parentVariation, previous, move) {
 
@@ -544,11 +550,12 @@ Node.prototype.addVariation = function(isLongVariation) {
 // -----------------------------------------------------------------------------
 
 /**
- * Represent one variation in the tree structure formed by a chess game, meaning
+ * @class
+ * @classdesc Represent one variation in the tree structure formed by a chess game, meaning
  * a starting chess position and list of played consecutively from this position.
  *
- * @param {Node|Game} parent Parent node in the tree structure.
- * @param {boolean} isLongVariation Whether the variation is long or short.
+ * @description This constructor is not exposed in the public Kokopu API. Only internal objects and functions
+ *              are allowed to instantiate {@link Variation} objects.
  */
 function Variation(parent, isLongVariation) {
 
