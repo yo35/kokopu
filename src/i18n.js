@@ -23,6 +23,13 @@
 'use strict';
 
 
+/**
+ * @module i18n
+ * @description This module defines the localizable strings used by the library.
+ */
+
+
+
 // Ordinal integers (from 1 to 8).
 exports.ORDINALS = ['1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th'];
 

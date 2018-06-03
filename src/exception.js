@@ -25,6 +25,7 @@
 
 /**
  * @module exception
+ * @description This module defines the exceptions used by the library.
  */
 
 
