@@ -102,11 +102,19 @@ Position.prototype.ascii = function() {
 
 
 /**
- * `fen()` or `fen({fiftyMoveClock:number, fullMoveNumber:number})`: return the FEN representation of the position (getter behavior).
+ * Get the FEN representation of the current {@link Position}).
  *
- * `fen(string [, boolean])`: parse the given FEN string and set the position accordingly (setter behavior).
+ * @param {{fiftyMoveClock:number, fullMoveNumber:number}} [options] If not provided the `fiftyMoveClock`
+ *        and the `fullMoveNumber` fields of the returned FEN string are set respectively to 0 and 1.
  *
- * TODO reformat fen() for JSDoc
+ *//**
+ *
+ * Parse the given FEN string and set the position accordingly.
+ *
+ * @param {string} fen
+ * @param {boolean} [strict=false] If `true`, only perfectly formatted FEN strings are accepted.
+ * @returns {{fiftyMoveClock:number, fullMoveNumber:number}}
+ * @throws {module:exception.InvalidFEN} If the given string cannot be parsed as a valid FEN string.
  */
 Position.prototype.fen = function() {
 	if(arguments.length === 0) {
@@ -542,11 +550,20 @@ Position.prototype.playNullMove = function() {
 
 
 /**
- * `notation(moveDescriptor)`: return the standard algebraic notation corresponding to the given move descriptor.
+ * Return the standard algebraic notation corresponding to the given move descriptor.
  *
- * `notation(string [, boolean])`: parse the given string as standard algebraic notation and return the corresponding move descriptor.
+ * @param {MoveDescriptor} moveDescriptor
+ * @returns {string}
  *
- * @throws {InvalidNotation} If the move parsing fails or if the parsed move would correspond to an illegal move.
+ *//**
+ *
+ * Parse the given string as standard algebraic notation and return the corresponding move descriptor.
+ *
+ * @param {string} move
+ * @param {boolean} [strict=false] If `true`, only perfectly formatted SAN moves are accepted. If `false`, "small errors" in the input
+ *        such as a missing capture character, an unnecessary disambiguation symbol... do not interrupt the parsing.
+ * @returns {MoveDescriptor}
+ * @throws {module:exception.InvalidNotation} If the move parsing fails or if the parsed move would correspond to an illegal move.
  */
 Position.prototype.notation = function() {
 	if(arguments.length === 1 && moveDescriptor.isMoveDescriptor(arguments[0])) {
