@@ -43,9 +43,10 @@ var notation = require('./private_position/notation');
 /**
  * @class
  * @classdesc Represent a chess position, i.e. the state of a 64-square chessboard with a few additional
- * information (who is about to play, castling rights, en-passant rights).
+ *            information (who is about to play, castling rights, en-passant rights).
  *
- * @param {string|Position} [fen = 'start'] Either `'start'`, `'empty'`, a FEN string representing a chess position, an existing {@link Position} object.
+ * @param {string|Position} [fen = 'start'] Either `'start'`, `'empty'`, a FEN string representing a chess position,
+ *        an existing {@link Position} object.
  * @throws {module:exception.InvalidFEN} If the input parameter is neither a correctly formatted FEN string nor `'start'` or `'empty'`.
  */
 var Position = exports.Position = function() {
@@ -314,9 +315,9 @@ Position.prototype.isLegal = function() {
 /**
  * Return the square on which is located the king of the given color.
  *
- * @param {string} color
- * @returns {string} Square where is located the searched king. `'-'` is returned
- *          if there is no king of the given color or if the are 2 such kings or more.
+ * @param {Color} color
+ * @returns {Square|boolean} Square where is located the searched king. `false` is returned
+ *          if there is no king of the given color, or if the are 2 such kings or more.
  */
 Position.prototype.kingSquare = function(color) {
 	color = bt.colorFromString(color);
