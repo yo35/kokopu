@@ -387,7 +387,7 @@ Node.prototype.fullMoveNumber = function() {
 /**
  * Color the side corresponding to the current move.
  *
- * @returns {string} Either `'w'` or `'b'`.
+ * @returns {Color}
  */
 Node.prototype.moveColor = function() {
 	return this.positionBefore().turn();
@@ -431,7 +431,7 @@ Node.prototype.nags = function() {
 
 
 /**
- * Check whether the current has the given NAG or not.
+ * Check whether the current move has the given NAG or not.
  *
  * @param {number} nag
  * @returns {boolean}
@@ -478,28 +478,39 @@ Node.prototype.tags = function() {
 
 
 /**
- * Get/set the value that is defined for the tag corresponding to the given key on the current move.
+ * Get the value associated to the given tag key on the current move.
  *
- * @param {string} key
- * @param {string} value (SETTER only)
- * @returns {string?} `undefined` if no value is defined for this tag on the current move. (GETTER only)
+ * @param {string} tagKey
+ * @returns {string?} `undefined` if no value is associated to this tag key on the current move.
+ *
+ *//**
+ *
+ * Set the value associated to the given tag key on the current move.
+ *
+ * @param {string} tagKey
+ * @param {string?} value
  */
-Node.prototype.tag = function(key, value) {
+Node.prototype.tag = function(tagKey, value) {
 	if(arguments.length === 1) {
-		return this._tags[key];
+		return this._tags[tagKey];
 	}
 	else {
-		this._tags[key] = value;
+		this._tags[tagKey] = value;
 	}
 };
 
 
 /**
- * Get/set the text comment associated to the current move.
+ * Get the text comment associated to the current move.
  *
- * @param {string} value (SETTER only)
- * @param {boolean?} isLongComment (SETTER only)
- * @returns {string?} `undefined` if no comment is defined for the move. (GETTER only)
+ * @returns {string?} `undefined` if no comment is defined for the move.
+ *
+ *//**
+ *
+ * Set the text comment associated to the current move.
+ *
+ * @param {string} value
+ * @param {boolean} [isLongComment=false]
  */
 Node.prototype.comment = function(value, isLongComment) {
 	if(arguments.length === 0) {
@@ -507,7 +518,7 @@ Node.prototype.comment = function(value, isLongComment) {
 	}
 	else {
 		this._comment = value;
-		this._isLongComment = isLongComment;
+		this._isLongComment = !!isLongComment;
 	}
 };
 
@@ -523,11 +534,11 @@ Node.prototype.isLongComment = function() {
 
 
 /**
- * Play the given move after the current one.
+ * Play the given move, and -- as a result -- create a new {@link Node} after the current one.
  *
  * @param {string} move SAN notation (or `'--'` for a null-move).
  * @returns {Node} A new node object, to represents the new move.
- * @throws {InvalidNotation} If the move notation cannot be parsed.
+ * @throws {module:exception.InvalidNotation} If the move notation cannot be parsed.
  */
 Node.prototype.play = function(move) {
 	this._next = new Node(this._parentVariation, this, move);
@@ -537,6 +548,9 @@ Node.prototype.play = function(move) {
 
 /**
  * Create a new variation that can be played instead of the current move.
+ *
+ * @param {boolean} isLongVariation
+ * @returns {Variation}
  */
 Node.prototype.addVariation = function(isLongVariation) {
 	this._variations.push(new Variation(this, isLongVariation));
@@ -605,7 +619,7 @@ Variation.prototype.initialFullMoveNumber = function() {
 
 
 /**
- * First move within the variation.
+ * First move of the variation.
  *
  * @returns {Node?} `undefined` if the variation is empty.
  */
@@ -632,7 +646,7 @@ Variation.prototype.isLongComment = function() {
  *
  * @param {string} move SAN notation (or `'--'` for a null-move).
  * @returns {Node} A new node object, to represents the new move.
- * @throws {InvalidNotation} If the move notation cannot be parsed.
+ * @throws {module:exception.InvalidNotation} If the move notation cannot be parsed.
  */
 Variation.prototype.play = function(move) {
 	this._first = new Node(this, undefined, move);
