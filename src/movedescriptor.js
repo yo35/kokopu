@@ -65,7 +65,10 @@ exports.makePromotion = function(from, to, color, promotion, capturedPiece) {
 
 /**
  * @class
- * @classdesc Hold the raw information that is required to play a move in a given position.
+ * @classdesc Describe a legal chess move, with its characteristics.
+ *
+ * @description This constructor is not exposed in the public Kokopu API. Only internal objects and functions are allowed
+ * to instantiate {@link MoveDescriptor} objects.
  */
 function MoveDescriptor(flags, from, to, movingPiece, finalPiece, optionalPiece, optionalSquare1, optionalSquare2) {
 	this._type            = flags          ;
@@ -80,7 +83,10 @@ function MoveDescriptor(flags, from, to, movingPiece, finalPiece, optionalPiece,
 
 
 /**
- * Whether the given object is a move descriptor or not.
+ * Whether the given object is a {@link MoveDescriptor} or not.
+ *
+ * @param {Object} obj
+ * @returns {boolean}
  */
 exports.isMoveDescriptor = function(obj) {
 	return obj instanceof MoveDescriptor;
