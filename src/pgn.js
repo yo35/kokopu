@@ -51,8 +51,10 @@ var SPECIAL_NAGS_LOOKUP = {
 
 /**
  * Parse a header value, unescaping special characters.
+ *
  * @param {string} rawHeaderValue
  * @returns {string}
+ * @ignore
  */
 function parseHeaderValue(rawHeaderValue) {
 	return rawHeaderValue.replace(/\\([\\"\[\]])/g, '$1');
@@ -63,7 +65,8 @@ function parseHeaderValue(rawHeaderValue) {
  * Parse a comment, unescaping special characters, and looking for the `[%key value]` tags.
  *
  * @param {string} rawComment String to parse.
- * @returns {{comment:string, tags:object}}
+ * @returns {{comment:string, tags:Object}}
+ * @ignore
  */
 function parseCommentValue(rawComment) {
 	rawComment = rawComment.replace(/\\([\{\}\\])/g, '$1');
@@ -98,7 +101,9 @@ var /* const */ TOKEN_END_OF_GAME     = 7; // 1-0, 0-1, 1/2-1/2 or *
 
 
 /**
- * Stream of tokens.
+ * @class
+ * @classdesc Stream of tokens.
+ * @ignore
  */
 function TokenStream(pgnString) {
 	this.text           = pgnString; // what is being parsed
@@ -138,7 +143,7 @@ TokenStream.prototype._skipBlanks = function() {
  * Try to consume 1 token.
  *
  * @return {boolean} `true` if a token could have been read, `false` if the end of the text has been reached.
- * @throws {InvalidPGN} If the text cannot be interpreted as a valid token.
+ * @throws {module:exception.InvalidPGN} If the text cannot be interpreted as a valid token.
  */
 TokenStream.prototype.consumeToken = function() {
 
@@ -241,9 +246,6 @@ function parseDateHeader(value) {
 }
 
 
-/**
- * Process a TOKEN_HEADER.
- */
 function processHeader(stream, game, key, value) {
 	value = value.trim();
 	switch(key) {
@@ -285,7 +287,8 @@ function processHeader(stream, game, key, value) {
  *
  * @param {TokenStream}
  * @returns {Game?} `null` if the end of the stream has been reached.
- * @throws {InvalidPGN}
+ * @throws {module:exception.InvalidPGN}
+ * @ignore
  */
 function doParseGame(stream) {
 
@@ -395,7 +398,8 @@ function doParseGame(stream) {
  *
  * @param {TokenStream}
  * @returns {boolean} `true` if a game has been skipped, false if the end of the stream has been reached.
- * @throws {InvalidPGN}
+ * @throws {module:exception.InvalidPGN}
+ * @ignore
  */
 function doSkipGame(stream) {
 	while(stream.consumeToken()) {
@@ -411,9 +415,17 @@ function doSkipGame(stream) {
  * PGN parsing function.
  *
  * @param {string} pgnString String to parse.
- * @param {number} [gameIndex] If provided, parse only the game corresponding to this index.
- * @returns {Game[]|Game} Return an array if no game index is provided, or a single `Game` object otherwise.
- * @throws {InvalidPGN}
+ * @returns {Game[]}
+ * @throws {module:exception.InvalidPGN}
+ *
+ *//**
+ *
+ * PGN parsing function.
+ *
+ * @param {string} pgnString String to parse.
+ * @param {number} gameIndex Only the game corresponding to this index is parsed.
+ * @returns {Game}
+ * @throws {module:exception.InvalidPGN}
  */
 exports.pgnRead = function(pgnString, gameIndex) {
 	var stream = new TokenStream(pgnString);
