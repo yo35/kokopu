@@ -36,7 +36,8 @@ var Position = require('./position').Position;
 // -----------------------------------------------------------------------------
 
 /**
- * Chess game, with some headers, a main variation, and a result.
+ * @class
+ * @classdesc Chess game, with some headers, a main variation, and a result.
  */
 var Game = exports.Game = function() {
 	this._playerName  = [undefined, undefined];
@@ -56,7 +57,17 @@ var Game = exports.Game = function() {
 
 
 /**
- * Get/set the player name.
+ * Get the player name.
+ *
+ * @param {Color} color
+ * @returns {string?}
+ *
+ *//**
+ *
+ * Set the player name.
+ *
+ * @param {Color} color
+ * @param {string?} value
  */
 Game.prototype.playerName = function(color, value) {
 	color = bt.colorFromString(color);
@@ -67,7 +78,17 @@ Game.prototype.playerName = function(color, value) {
 
 
 /**
- * Get/set the player elo.
+ * Get the player elo.
+ *
+ * @param {Color} color
+ * @returns {string?}
+ *
+ *//**
+ *
+ * Set the player elo.
+ *
+ * @param {Color} color
+ * @param {string?} value
  */
 Game.prototype.playerElo = function(color, value) {
 	color = bt.colorFromString(color);
@@ -78,7 +99,17 @@ Game.prototype.playerElo = function(color, value) {
 
 
 /**
- * Get/set the player title.
+ * Get the player title.
+ *
+ * @param {Color} color
+ * @returns {string?}
+ *
+ *//**
+ *
+ * Set the player title.
+ *
+ * @param {Color} color
+ * @param {string?} value
  */
 Game.prototype.playerTitle = function(color, value) {
 	color = bt.colorFromString(color);
@@ -89,7 +120,15 @@ Game.prototype.playerTitle = function(color, value) {
 
 
 /**
- * Get/set the event.
+ * Get the event.
+ *
+ * @returns {string?}
+ *
+ *//**
+ *
+ * Set the event.
+ *
+ * @param {string?} value
  */
 Game.prototype.event = function(value) {
 	if(arguments.length === 0) { return this._event; }
@@ -98,7 +137,15 @@ Game.prototype.event = function(value) {
 
 
 /**
- * Get/set the round.
+ * Get the round.
+ *
+ * @returns {string?}
+ *
+ *//**
+ *
+ * Set the round.
+ *
+ * @param {string?} value
  */
 Game.prototype.round = function(value) {
 	if(arguments.length === 0) { return this._round; }
@@ -107,7 +154,16 @@ Game.prototype.round = function(value) {
 
 
 /**
- * Get/set the date of the game.
+ * Get the date of the game.
+ *
+ * @returns {Date|{year:number, month:number}|{year:number}|undefined} Depending on what is defined, the method returns
+ *          the whole date, or just the year and the month, or just the year, or `undefined`.
+ *
+ *//**
+ *
+ * Set the date of the game.
+ *
+ * @param {Date|{year:number, month:number}|{year:number}|undefined} value
  */
 Game.prototype.date = function(value) {
 	if(arguments.length === 0) {
@@ -132,7 +188,15 @@ Game.prototype.date = function(value) {
 
 
 /**
- * Get/set where the game takes place.
+ * Get where the game takes place.
+ *
+ * @returns {string?}
+ *
+ *//**
+ *
+ * Set where the game takes place.
+ *
+ * @param {string?} value
  */
 Game.prototype.site = function(value) {
 	if(arguments.length === 0) { return this._site; }
@@ -141,7 +205,15 @@ Game.prototype.site = function(value) {
 
 
 /**
- * Get/set the annotator.
+ * Get the name of the annotator.
+ *
+ * @returns {string?}
+ *
+ *//**
+ *
+ * Set the name of the annotator.
+ *
+ * @param {string?} value
  */
 Game.prototype.annotator = function(value) {
 	if(arguments.length === 0) { return this._annotator; }
@@ -150,7 +222,15 @@ Game.prototype.annotator = function(value) {
 
 
 /**
- * Get/set the result of the game.
+ * Get the result of the game.
+ *
+ * @returns {GameResult}
+ *
+ *//**
+ *
+ * Set the result of the game.
+ *
+ * @param {GameResult} value
  */
 Game.prototype.result = function(value) {
 	if(arguments.length === 0) {

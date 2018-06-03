@@ -142,3 +142,13 @@ exports.coloredPieceFromString = function(cp) {
  * Two-character string identifying a square: `'a1'`, `'a2'`, ..., `'h8'`.
  * @typedef {string} Square
  */
+
+/**
+ * Result of a chess game. Must be one of the following constant:
+ *  - `'1-0'` (white wins),
+ *  - `'1/2-1/2'` (draw),
+ *  - `'0-1'` (black wins),
+ *  - `'*'` (unfinished game, or undefined result).
+ *
+ * @typedef {string} GameResult
+ */
