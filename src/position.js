@@ -41,11 +41,12 @@ var notation = require('./private_position/notation');
 // -----------------------------------------------------------------------------
 
 /**
- * Represent a chess position, i.e. the state of a 64-square chessboard with a few additional
+ * @class
+ * @classdesc Represent a chess position, i.e. the state of a 64-square chessboard with a few additional
  * information (who is about to play, castling rights, en-passant rights).
  *
- * @param {string|Position} [fen = 'start'] Either `'start'`, `'empty'`, an existing position, or a FEN string representing chess position.
- * @throws InvalidFEN If the input parameter is neither a correctly formatted FEN string nor `'start'` or `'empty'`.
+ * @param {string|Position} [fen = 'start'] Either `'start'`, `'empty'`, a FEN string representing a chess position, an existing {@link Position} object.
+ * @throws {module:exception.InvalidFEN} If the input parameter is neither a correctly formatted FEN string nor `'start'` or `'empty'`.
  */
 var Position = exports.Position = function() {
 	if(arguments.length === 0 || arguments[0] === 'start') {
@@ -103,6 +104,8 @@ Position.prototype.ascii = function() {
  * `fen()` or `fen({fiftyMoveClock:number, fullMoveNumber:number})`: return the FEN representation of the position (getter behavior).
  *
  * `fen(string [, boolean])`: parse the given FEN string and set the position accordingly (setter behavior).
+ *
+ * TODO reformat fen() for JSDoc
  */
 Position.prototype.fen = function() {
 	if(arguments.length === 0) {
@@ -138,8 +141,9 @@ Position.prototype.fen = function() {
 /**
  * Get/set the content of a square.
  *
- * @param {string} square `'e4'` for instance
- * @param {string} [value]
+ * @param {Square} square
+ * @param {ColoredPiece|Empty} [value] If provided, the content of the given {@link Square} is set to this value (setter behavior).
+ * @returns {ColoredPiece|Empty} Only if the method is called with one argument (getter behavior).
  */
 Position.prototype.square = function(square, value) {
 	square = bt.squareFromString(square);
@@ -167,9 +171,10 @@ Position.prototype.square = function(square, value) {
 
 
 /**
- * Get/set the turn flag.
+ * Get/set the turn flag (i.e. who is to play).
  *
- * @param {string} [value]
+ * @param {Color} [value] If provided, the turn flag is set to this value (setter behavior).
+ * @returns {Color} Only if the method is called with no argument (getter behavior).
  */
 Position.prototype.turn = function(value) {
 	if(arguments.length === 0) {
@@ -187,11 +192,11 @@ Position.prototype.turn = function(value) {
 
 
 /**
- * Get/set the castling rights. TODO: make it chess-960 compatible.
+ * Get/set a castle flag (i.e. whether or not the corresponding castle is allowed or not). TODO: make it chess-960 compatible.
  *
- * @param {string} color
- * @param {string} side
- * @param {boolean} [value]
+ * @param {Castle} castle
+ * @param {boolean} [value] If provided, the flag corresponding to the given {@link Castle} is set to this value (setter behavior).
+ * @returns {boolean} Only if the method is called with one argument (getter behavior).
  */
 Position.prototype.castling = function(castle, value) {
 	if(!/^[wb][qk]$/.test(castle)) {
@@ -215,9 +220,10 @@ Position.prototype.castling = function(castle, value) {
 
 
 /**
- * Get/set the en-passant flag.
+ * Get/set the *en-passant* flag (i.e. the file on which *en-passant* is allowed, if any).
  *
- * @param {string} [value]
+ * @param {EnPassantFlag} [value] If provided, the *en-passant* flag is set to this value (setter behavior).
+ * @returns {EnPassantFlag} Only if the method is called with no argument (getter behavior).
  */
 Position.prototype.enPassant = function(value) {
 	if(arguments.length === 0) {

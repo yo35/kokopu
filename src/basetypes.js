@@ -113,13 +113,29 @@ exports.coloredPieceFromString = function(cp) {
  */
 
 /**
- * One-character string identifying a type of piece: `'p'` (pawn), `'n'` (knight), `'b'` (bishop), `'r'` (rook), `'q'` (queen) or `'k'` (king).
+ * One-character string identifying a type of piece: `'p'` (pawn), `'n'`, `'b'`, `'r'`, `'q'` or `'k'`.
  * @typedef {string} Piece
  */
 
 /**
  * Two-character string identifying a colored piece: `'wk'` (white king), `'br'` (black rook), etc...
  * @typedef {string} ColoredPiece
+ */
+
+/**
+ * `'-'` Symbol used to identify an empty square.
+ * @typedef {string} Empty
+ */
+
+/**
+ * Either a one-character string among `'a'`, `'b'`, ..., `'h'` (indicating the file on which *en-passant* is allowed),
+ * or `'-'` (indicating that *en-passant* is not allowed).
+ * @typedef {string} EnPassantFlag
+ */
+
+/**
+ * Two-character string identifying a castle: `'wq'` (white queen-side castle), `'wk'`, `'bq'` or `'bk'`.
+ * @typedef {string} Castle
  */
 
 /**
