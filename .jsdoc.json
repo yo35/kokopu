@@ -4,6 +4,7 @@
 		"include": "src"
 	},
 	"opts": {
+		"package": "package.json",
 		"template": "node_modules/tui-jsdoc-template"
 	},
 	"templates": {
