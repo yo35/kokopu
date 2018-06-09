@@ -8,8 +8,12 @@
 	},
 	"templates": {
 		"default": {
-			"useLongnameInNav": true
+			"useLongnameInNav": true,
+			"staticFiles": {
+				"include": [ "doc_src" ]
+			}
 		},
+		"css": [ "styles/tui-doc-for-kokopu.css" ],
 		"name": "Kokopu documentation",
 		"footerText": "Kokopu documentation"
 	}
