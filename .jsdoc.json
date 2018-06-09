@@ -4,9 +4,13 @@
 		"include": "src"
 	},
 	"opts": {
-		"template": "node_modules/ink-docstrap/template"
+		"template": "node_modules/tui-jsdoc-template"
 	},
 	"templates": {
-		"theme": "cosmo"
+		"default": {
+			"useLongnameInNav": true
+		},
+		"name": "Kokopu documentation",
+		"footerText": "Kokopu documentation"
 	}
 }
