@@ -5,13 +5,14 @@
 	},
 	"opts": {
 		"package": "package.json",
+		"readme": "doc_src/home.md",
 		"template": "node_modules/tui-jsdoc-template"
 	},
 	"templates": {
 		"default": {
 			"useLongnameInNav": true,
 			"staticFiles": {
-				"include": [ "doc_src" ]
+				"include": [ "doc_src/static" ]
 			}
 		},
 		"css": [ "styles/tui-doc-for-kokopu.css" ],
