@@ -37,7 +37,10 @@ var Position = require('./position').Position;
 
 /**
  * @class
- * @classdesc Chess game, with some headers, a main variation, and a result.
+ * @classdesc Chess game, with the move history, the position at each step of the game,
+ *            the comments and annotations (if any), the result of the game,
+ *            and some meta-data such as the name of the players, the date of the game,
+ *            the name of the tournament, etc...
  */
 var Game = exports.Game = function() {
 	this._playerName  = [undefined, undefined];
