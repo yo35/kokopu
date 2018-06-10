@@ -10,3 +10,7 @@ footer {
 #main {
 	margin-bottom: 0px;
 }
+
+.logo {
+	display: none;
+}
