@@ -1,6 +1,10 @@
 ChangeLog
 =========
 
+1.0.0 (June 16, 2018)
+---------------------
+* Add and publish documentation.
+
 0.99.5 (May 27, 2018)
 ---------------------
 * Improve testing pipeline.
