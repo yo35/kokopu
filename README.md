@@ -15,7 +15,7 @@ https://www.npmjs.com/package/kokopu
 Documentation
 -------------
 
-JSDoc-based documentation will be made available soon...
+https://kokopu.yo35.org/
 
 
 
