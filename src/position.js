@@ -212,19 +212,19 @@ Position.prototype.turn = function(value) {
 
 
 /**
- * Get a castle flag (i.e. whether or not the corresponding castle is allowed or not). TODO: make it chess-960 compatible.
+ * Get a castle flag (i.e. whether or not the corresponding castle is allowed or not).
  *
  * @param {Castle} castle
  * @returns {boolean}
  *
  *//**
  *
- * Set a castle flag (i.e. whether or not the corresponding castle is allowed or not). TODO: make it chess-960 compatible.
+ * Set a castle flag (i.e. whether or not the corresponding castle is allowed or not).
  *
  * @param {Castle} castle
  * @param {boolean} value
  */
-Position.prototype.castling = function(castle, value) {
+Position.prototype.castling = function(castle, value) { // TODO: make it chess-960 compatible.
 	if(!/^[wb][qk]$/.test(castle)) {
 		throw new exception.IllegalArgument('Position#castling()');
 	}
