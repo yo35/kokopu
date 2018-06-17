@@ -26,32 +26,47 @@
 var kokopu = require('../index');
 var test = require('unit.js');
 
+var startFEN  = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+var emptyFEN  = '8/8/8/8/8/8/8/8 w - - 0 1';
+var customFEN = 'k7/n1PB4/1K6/8/8/8/8/8 w - - 0 1';
+
 
 describe('Position constructor', function() {
 
-	var startFEN   = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
-	var emptyFEN   = '8/8/8/8/8/8/8/8 w - - 0 1';
-	var customFEN1 = 'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b Kk e3 10 5';
-	var customFEN2 = 'k7/n1PB4/1K6/8/8/8/8/8 w - - 0 60';
+	function doTest(label, expectedVariant, expectedFEN, positionFactory) {
+		it(label, function() {
+			var position = positionFactory();
+			test.value(position.variant()).is(expectedVariant);
+			test.value(position.fen()).is(expectedFEN);
+		});
+	}
 
-	var optsFEN1 = { fiftyMoveClock: 10, fullMoveNumber: 5 };
-	var optsFEN2 = { fullMoveNumber: 60 };
+	doTest('Default constructor'  , 'regular', startFEN , function() { return new kokopu.Position(); });
+	doTest('Constructor \'start\'', 'regular', startFEN , function() { return new kokopu.Position('start'); });
+	doTest('Constructor \'empty\'', 'regular', emptyFEN , function() { return new kokopu.Position('empty'); });
+	doTest('Constructor FEN-based', 'regular', customFEN, function() { return new kokopu.Position(customFEN); });
+});
 
-	it('Default constructor'    , function() { test.value(new kokopu.Position().fen()).is(startFEN); });
-	it('Constructor \'start\''  , function() { test.value(new kokopu.Position('start').fen()).is(startFEN); });
-	it('Constructor \'empty\''  , function() { test.value(new kokopu.Position('empty').fen()).is(emptyFEN); });
-	it('Constructor FEN-based 1', function() { test.value(new kokopu.Position(customFEN1).fen(optsFEN1)).is(customFEN1); });
-	it('Constructor FEN-based 2', function() { test.value(new kokopu.Position(customFEN2).fen(optsFEN2)).is(customFEN2); });
 
-	it('Copy constructor', function() {
-		var p1 = new kokopu.Position(customFEN1);
-		var p2 = new kokopu.Position(p1);
-		p1.clear();
+describe('Position copy constructor', function() {
 
-		test.value(p1.fen()).is(emptyFEN);
-		test.value(p2.fen(optsFEN1)).is(customFEN1);
-	});
+	function doTest(label, expectedVariant, expectedFEN, positionFactory) {
+		it(label, function() {
 
+			// Initialize the positions.
+			var p1 = positionFactory();
+			var p2 = new kokopu.Position(p1);
+			p1.clear();
+
+			// Check their states
+			test.value(p1.variant()).is(expectedVariant);
+			test.value(p2.variant()).is(expectedVariant);
+			test.value(p1.fen()).is(emptyFEN);
+			test.value(p2.fen()).is(expectedFEN);
+		});
+	}
+
+	doTest('Regular position', 'regular', customFEN, function() { return new kokopu.Position(customFEN); });
 });
 
 
