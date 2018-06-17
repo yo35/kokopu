@@ -25,6 +25,7 @@
 
 var kokopu = require('../index');
 var test = require('unit.js');
+var readCSV = require('./common/readcsv');
 
 var startFEN  = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 var emptyFEN  = '8/8/8/8/8/8/8/8 w - - 0 1';
@@ -45,6 +46,26 @@ describe('Position constructor', function() {
 	doTest('Constructor \'start\'', 'regular', startFEN , function() { return new kokopu.Position('start'); });
 	doTest('Constructor \'empty\'', 'regular', emptyFEN , function() { return new kokopu.Position('empty'); });
 	doTest('Constructor FEN-based', 'regular', customFEN, function() { return new kokopu.Position(customFEN); });
+});
+
+
+describe('Position Scharnagl constructor', function() {
+
+	var testData = readCSV('scharnagl.csv', function(fields) {
+		return {
+			scharnaglCode: parseInt(fields[0]),
+			fen: fields[3]
+		};
+	});
+
+	testData.forEach(function(elem) {
+		it('Chess 960 initial position ' + elem.scharnaglCode, function() {
+			var position = new kokopu.Position('chess960', elem.scharnaglCode);
+			test.value(position.variant()).is('chess960');
+			test.value(position.fen()).is(elem.fen);
+		});
+	});
+
 });
 
 

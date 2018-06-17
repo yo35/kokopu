@@ -90,8 +90,8 @@ exports.makeInitial = function() {
  */
 exports.make960FromScharnagl = function(scharnaglCode) {
 	var info = decodeScharnagl(scharnaglCode);
-	var r1 = info.map(function(piece) { return piece*2 + bt.WHITE; });
-	var r8 = info.map(function(piece) { return piece*2 + bt.BLACK; });
+	var r1 = info.scheme.map(function(piece) { return piece*2 + bt.WHITE; });
+	var r8 = info.scheme.map(function(piece) { return piece*2 + bt.BLACK; });
 	return {
 
 		// Board state

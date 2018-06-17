@@ -98,7 +98,7 @@ function castlingToString(position) {
 	if(position.variant === bt.CHESS_960) {
 		var whiteFlags = '';
 		var blackFlags = '';
-		for(var file = 0; file < 7; ++file) {
+		for(var file = 0; file < 8; ++file) {
 			if(position.castling[bt.WHITE] /* jshint bitwise:false */ & 1 << file /* jshint bitwise:true */) { whiteFlags += bt.fileToString(file); }
 			if(position.castling[bt.BLACK] /* jshint bitwise:false */ & 1 << file /* jshint bitwise:true */) { blackFlags += bt.fileToString(file); }
 		}
