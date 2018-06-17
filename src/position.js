@@ -62,7 +62,7 @@ var notation = require('./private_position/notation');
  *
  * @throws {module:exception.InvalidFEN} If the input parameter is not a valid FEN string (can be thrown only in cases 6 and 7).
  *
- * @see FEN notation: {@link https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation}
+ * @see FEN notation: {@link https://en.wikipedia.org/wiki/Forsyth–Edwards_Notation}
  * @see Chess 960 (aka. Fischer Random Chess): {@link https://en.wikipedia.org/wiki/Chess960}
  * @see Chess 960 starting positions: {@link https://chess960.net/start-positions/}
  * @see X-FEN notation: {@link https://en.wikipedia.org/wiki/X-FEN}
