@@ -1,0 +1,7 @@
+LABEL	FEN_IN	VARIANT	STRICT	FIFTY_MOVE_CLOCK	FULL_MOVE_NUMBER	FEN_OUT
+1	rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b Kk e3 10 5	regular	true	10	5	rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b Kk e3 10 5
+2	k7/n1PB4/1K6/8/8/8/8/8 w - - 0 60	regular	true	0	60	k7/n1PB4/1K6/8/8/8/8/8 w - - 0 60
+3a	rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b Kq e3 0 1	regular	true	0	1	rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b Kq e3 0 1
+3b	rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b qK e3 0 1	regular	false	0	1	rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b Kq e3 0 1
+3c	rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b Kq e6 0 1	regular	false	0	1	rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b Kq e3 0 1
+3d	rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b Kq e3 00 1	regular	false	0	1	rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b Kq e3 0 1
