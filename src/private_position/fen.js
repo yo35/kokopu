@@ -51,6 +51,9 @@ exports.ascii = function(position) {
 
 	// Flags
 	result += bt.colorToString(position.turn) + ' ' + castlingToString(position) + ' ' + enPassantToString(position);
+	if(position.variant !== bt.REGULAR_CHESS) {
+		result += ' (' + bt.variantToString(position.variant) + ')';
+	}
 
 	return result;
 };
@@ -92,12 +95,23 @@ exports.getFEN = function(position, fiftyMoveClock, fullMoveNumber) {
 
 
 function castlingToString(position) {
-	var result = '';
-	if(position.castling[bt.WHITE] /* jshint bitwise:false */ & 1<<7 /* jshint bitwise:true */) { result += 'K'; }
-	if(position.castling[bt.WHITE] /* jshint bitwise:false */ & 1<<0 /* jshint bitwise:true */) { result += 'Q'; }
-	if(position.castling[bt.BLACK] /* jshint bitwise:false */ & 1<<7 /* jshint bitwise:true */) { result += 'k'; }
-	if(position.castling[bt.BLACK] /* jshint bitwise:false */ & 1<<0 /* jshint bitwise:true */) { result += 'q'; }
-	return result === '' ? '-' : result;
+	if(position.variant === bt.CHESS_960) {
+		var whiteFlags = '';
+		var blackFlags = '';
+		for(var file = 0; file < 7; ++file) {
+			if(position.castling[bt.WHITE] /* jshint bitwise:false */ & 1 << file /* jshint bitwise:true */) { whiteFlags += bt.fileToString(file); }
+			if(position.castling[bt.BLACK] /* jshint bitwise:false */ & 1 << file /* jshint bitwise:true */) { blackFlags += bt.fileToString(file); }
+		}
+		return whiteFlags === '' && blackFlags === '' ? '-' : whiteFlags.toUpperCase() + blackFlags;
+	}
+	else {
+		var result = '';
+		if(position.castling[bt.WHITE] /* jshint bitwise:false */ & 1<<7 /* jshint bitwise:true */) { result += 'K'; }
+		if(position.castling[bt.WHITE] /* jshint bitwise:false */ & 1<<0 /* jshint bitwise:true */) { result += 'Q'; }
+		if(position.castling[bt.BLACK] /* jshint bitwise:false */ & 1<<7 /* jshint bitwise:true */) { result += 'k'; }
+		if(position.castling[bt.BLACK] /* jshint bitwise:false */ & 1<<0 /* jshint bitwise:true */) { result += 'q'; }
+		return result === '' ? '-' : result;
+	}
 }
 
 
@@ -106,7 +120,7 @@ function enPassantToString(position) {
 }
 
 
-exports.parseFEN = function(fen, strict) {
+exports.parseFEN = function(variant, fen, strict) {
 
 	// Trim the input string and split it into 6 fields.
 	fen = fen.replace(/^\s+|\s+$/g, '');
@@ -122,7 +136,7 @@ exports.parseFEN = function(fen, strict) {
 	}
 
 	// Initialize the position
-	var position = impl.makeEmpty();
+	var position = impl.makeEmpty(variant);
 	position.legal = null;
 
 	// Board parsing
@@ -167,7 +181,7 @@ exports.parseFEN = function(fen, strict) {
 	}
 
 	// Castling rights parsing
-	position.castling = castlingFromString(fields[2], strict);
+	position.castling = castlingFromString(fields[2], strict); // TODO adapt for chess960
 	if(position.castling === null) {
 		throw new exception.InvalidFEN(fen, i18n.INVALID_CASTLING_FIELD);
 	}

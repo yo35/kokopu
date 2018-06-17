@@ -50,20 +50,42 @@ var notation = require('./private_position/notation');
  * @throws {module:exception.InvalidFEN} If the input parameter is neither a correctly formatted FEN string nor `'start'` or `'empty'`.
  */
 var Position = exports.Position = function() {
-	if(arguments.length === 0 || arguments[0] === 'start') {
-		this._impl = impl.makeInitial();
-	}
-	else if(arguments[0] === 'empty') {
-		this._impl = impl.makeEmpty();
-	}
-	else if(arguments[0] instanceof Position) {
+
+	// Copy constructor
+	if(arguments[0] instanceof Position) {
 		this._impl = impl.makeCopy(arguments[0]._impl);
 	}
-	else if(typeof arguments[0] === 'string') {
-		this._impl = fen.parseFEN(arguments[0], false).position;
+
+	// Special constructor codes
+	else if(arguments.length === 0 || arguments[0] === 'start' || (arguments[0] === 'regular' && arguments[1] === 'start')) {
+		this._impl = impl.makeInitial();
+	}
+	else if(arguments[0] === 'empty' || (arguments[0] === 'regular' && arguments[1] === 'empty')) {
+		this._impl = impl.makeEmpty(bt.REGULAR_CHESS);
+	}
+	else if(arguments[0] === 'chess960' && arguments[1] === 'empty') {
+		this._impl = impl.makeEmpty(bt.CHESS_960);
+	}
+	else if(arguments[0] === 'chess960' && typeof arguments[1] === 'number' && arguments[1] >= 0 && arguments[1] <= 959) {
+		this._impl = impl.make960FromScharnagl(arguments[1]);
+	}
+
+	// FEN parsing
+	else if(arguments[0] === 'regular' || arguments[0] === 'chess960') {
+		if(typeof arguments[1] === 'string') {
+			this._impl = fen.parseFEN(bt.variantFromString(arguments[0]), arguments[1], false).position;
+		}
+		else {
+			throw new exception.IllegalArgument('Position()');
+		}
 	}
 	else {
-		throw new exception.IllegalArgument('Position()');
+		if(typeof arguments[0] === 'string') {
+			this._impl = fen.parseFEN(bt.REGULAR_CHESS, arguments[0], false).position;
+		}
+		else {
+			throw new exception.IllegalArgument('Position()');
+		}
 	}
 };
 
@@ -72,7 +94,7 @@ var Position = exports.Position = function() {
  * Set the position to the empty state.
  */
 Position.prototype.clear = function() {
-	this._impl = impl.makeEmpty();
+	this._impl = impl.makeEmpty(this._impl.variant);
 };
 
 
@@ -126,12 +148,12 @@ Position.prototype.fen = function() {
 		return fen.getFEN(this._impl, fiftyMoveClock, fullMoveNumber);
 	}
 	else if(arguments.length === 1 && typeof arguments[0] === 'string') {
-		var result = fen.parseFEN(arguments[0], false);
+		var result = fen.parseFEN(this._impl.variant, arguments[0], false);
 		this._impl = result.position;
 		return { fiftyMoveClock: result.fiftyMoveClock, fullMoveNumber: result.fullMoveNumber };
 	}
 	else if(arguments.length >= 2 && typeof arguments[0] === 'string' && typeof arguments[1] === 'boolean') {
-		var result = fen.parseFEN(arguments[0], arguments[1]);
+		var result = fen.parseFEN(this._impl.variant, arguments[0], arguments[1]);
 		this._impl = result.position;
 		return { fiftyMoveClock: result.fiftyMoveClock, fullMoveNumber: result.fullMoveNumber };
 	}
