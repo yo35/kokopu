@@ -28,6 +28,7 @@ var test = require('unit.js');
 var readCSV = require('./common/readcsv');
 
 var startFEN  = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+var startXFEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w AHah - 0 1';
 var emptyFEN  = '8/8/8/8/8/8/8/8 w - - 0 1';
 var customFEN = 'k7/n1PB4/1K6/8/8/8/8/8 w - - 0 1';
 
@@ -46,6 +47,15 @@ describe('Position constructor', function() {
 	doTest('Constructor \'start\'', 'regular', startFEN , function() { return new kokopu.Position('start'); });
 	doTest('Constructor \'empty\'', 'regular', emptyFEN , function() { return new kokopu.Position('empty'); });
 	doTest('Constructor FEN-based', 'regular', customFEN, function() { return new kokopu.Position(customFEN); });
+
+	doTest('Default constructor (force regular)'  , 'regular', startFEN , function() { return new kokopu.Position('regular'); });
+	doTest('Constructor \'start\' (force regular)', 'regular', startFEN , function() { return new kokopu.Position('regular', 'start'); });
+	doTest('Constructor \'empty\' (force regular)', 'regular', emptyFEN , function() { return new kokopu.Position('regular', 'empty'); });
+	doTest('Constructor FEN-based (force regular)', 'regular', customFEN, function() { return new kokopu.Position('regular', customFEN); });
+
+	doTest('Scharnagl constructor'                 , 'chess960', startXFEN, function() { return new kokopu.Position('chess960', 518); });
+	doTest('Constructor \'empty\' (force chess960)', 'chess960', emptyFEN , function() { return new kokopu.Position('chess960', 'empty'); });
+	doTest('Constructor FEN-based (force chess960)', 'chess960', customFEN, function() { return new kokopu.Position('chess960', customFEN); });
 });
 
 

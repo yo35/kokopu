@@ -57,7 +57,7 @@ var Position = exports.Position = function() {
 	}
 
 	// Special constructor codes
-	else if(arguments.length === 0 || arguments[0] === 'start' || (arguments[0] === 'regular' && arguments[1] === 'start')) {
+	else if(arguments.length === 0 || arguments[0] === 'start' || (arguments[0] === 'regular' && (arguments.length === 1 || arguments[1] === 'start'))) {
 		this._impl = impl.makeInitial();
 	}
 	else if(arguments[0] === 'empty' || (arguments[0] === 'regular' && arguments[1] === 'empty')) {
