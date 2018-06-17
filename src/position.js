@@ -148,6 +148,16 @@ Position.prototype.fen = function() {
 
 
 /**
+ * Get the {@link GameVariant} in use.
+ *
+ * @returns {GameVariant}
+ */
+Position.prototype.variant = function() {
+	return bt.variantToString(this._impl.variant);
+};
+
+
+/**
  * Get the content of a square.
  *
  * @param {Square} square

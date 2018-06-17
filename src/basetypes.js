@@ -53,28 +53,35 @@ exports.BLACK_WINS = 1;
 exports.DRAW = 2;
 exports.LINE = 3;
 
+// Game variant
+exports.REGULAR_CHESS = 0;
+exports.CHESS_960 = 1;
+
 
 // -----------------------------------------------------------------------------
 // Conversion API constants (strings) <-> internal constants (integers)
 // -----------------------------------------------------------------------------
 
-var COLOR_SYMBOL = 'wb'      ;
-var PIECE_SYMBOL = 'kqrbnp'  ;
-var RANK_SYMBOL  = '12345678';
-var FILE_SYMBOL  = 'abcdefgh';
-var RESULT_SYMBOL = ['1-0', '0-1', '1/2-1/2', '*'];
+var COLOR_SYMBOL   = 'wb';
+var PIECE_SYMBOL   = 'kqrbnp';
+var RANK_SYMBOL    = '12345678';
+var FILE_SYMBOL    = 'abcdefgh';
+var RESULT_SYMBOL  = ['1-0', '0-1', '1/2-1/2', '*'];
+var VARIANT_SYMBOL = ['regular', 'chess960'];
 
-exports.colorToString  = function(color ) { return COLOR_SYMBOL [color ]; };
-exports.pieceToString  = function(piece ) { return PIECE_SYMBOL [piece ]; };
-exports.rankToString   = function(rank  ) { return RANK_SYMBOL  [rank  ]; };
-exports.fileToString   = function(file  ) { return FILE_SYMBOL  [file  ]; };
-exports.resultToString = function(result) { return RESULT_SYMBOL[result]; };
+exports.colorToString   = function(color  ) { return COLOR_SYMBOL  [color  ]; };
+exports.pieceToString   = function(piece  ) { return PIECE_SYMBOL  [piece  ]; };
+exports.rankToString    = function(rank   ) { return RANK_SYMBOL   [rank   ]; };
+exports.fileToString    = function(file   ) { return FILE_SYMBOL   [file   ]; };
+exports.resultToString  = function(result ) { return RESULT_SYMBOL [result ]; };
+exports.variantToString = function(variant) { return VARIANT_SYMBOL[variant]; };
 
-exports.colorFromString  = function(color ) { return COLOR_SYMBOL .indexOf(color ); };
-exports.pieceFromString  = function(piece ) { return PIECE_SYMBOL .indexOf(piece ); };
-exports.rankFromString   = function(rank  ) { return RANK_SYMBOL  .indexOf(rank  ); };
-exports.fileFromString   = function(file  ) { return FILE_SYMBOL  .indexOf(file  ); };
-exports.resultFromString = function(result) { return RESULT_SYMBOL.indexOf(result); };
+exports.colorFromString   = function(color  ) { return COLOR_SYMBOL  .indexOf(color  ); };
+exports.pieceFromString   = function(piece  ) { return PIECE_SYMBOL  .indexOf(piece  ); };
+exports.rankFromString    = function(rank   ) { return RANK_SYMBOL   .indexOf(rank   ); };
+exports.fileFromString    = function(file   ) { return FILE_SYMBOL   .indexOf(file   ); };
+exports.resultFromString  = function(result ) { return RESULT_SYMBOL .indexOf(result ); };
+exports.variantFromString = function(variant) { return VARIANT_SYMBOL.indexOf(variant); };
 
 exports.squareToString = function(square) {
 	return FILE_SYMBOL[square % 16] + RANK_SYMBOL[Math.floor(square / 16)];
@@ -151,4 +158,12 @@ exports.coloredPieceFromString = function(cp) {
  *  - `'*'` (unfinished game, or undefined result).
  *
  * @typedef {string} GameResult
+ */
+
+/**
+ * Variant of chess. Must be one of the following constant:
+ *  - `'regular'` (regular chess rules),
+ *  - `'chess960'` ([Chess 960](https://en.wikipedia.org/wiki/Chess960), also known as Fischer Random Chess).
+ *
+ * @typedef {string} GameVariant
  */

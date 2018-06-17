@@ -47,6 +47,7 @@ exports.makeEmpty = function() {
 		turn: bt.WHITE,
 		castling: [0, 0],
 		enPassant: -1,
+		variant: bt.REGULAR_CHESS,
 
 		// Computed attributes
 		legal: false,
@@ -74,6 +75,7 @@ exports.makeInitial = function() {
 		turn: bt.WHITE,
 		castling: [129 /* (1 << A-file) | (1 << H-file) */, 129],
 		enPassant: -1,
+		variant: bt.REGULAR_CHESS,
 
 		// Computed attributes
 		legal: true,
@@ -88,6 +90,7 @@ exports.makeCopy = function(position) {
 		turn     : position.turn,
 		castling : position.castling.slice(),
 		enPassant: position.enPassant,
+		variant  : position.variant,
 		legal    : position.legal,
 		king     : position.king.slice()
 	};
