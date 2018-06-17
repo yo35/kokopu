@@ -124,7 +124,62 @@ function decodeScharnagl(scharnaglCode) {
 	var castling = 0;
 	var kingFile = -1;
 
-	// TODO impl decode
+	function forEachEmpty(fun) {
+		var emptyIndex = 0;
+		for(var file = 0; file < 8; ++file) {
+			if(scheme[file] >= 0) { continue; }
+
+			fun(file, emptyIndex);
+			++emptyIndex;
+		}
+	}
+
+	function setAt(piece, target1, target2) {
+		forEachEmpty(function(file, emptyIndex) {
+			if(emptyIndex === target1 || emptyIndex === target2) {
+				scheme[file] = piece;
+			}
+		});
+	}
+
+	// Light-square bishop
+	scheme[(scharnaglCode % 4) * 2 + 1] = bt.BISHOP;
+	scharnaglCode = Math.floor(scharnaglCode / 4);
+
+	// Dark-square bishop
+	scheme[(scharnaglCode % 4) * 2] = bt.BISHOP;
+	scharnaglCode = Math.floor(scharnaglCode / 4);
+
+	// Queen
+	setAt(bt.QUEEN, scharnaglCode % 6, -1);
+	scharnaglCode = Math.floor(scharnaglCode / 6);
+
+	// Knights
+	switch(scharnaglCode) {
+		case 0: setAt(bt.KNIGHT, 0, 1); break;
+		case 1: setAt(bt.KNIGHT, 0, 2); break;
+		case 2: setAt(bt.KNIGHT, 0, 3); break;
+		case 3: setAt(bt.KNIGHT, 0, 4); break;
+		case 4: setAt(bt.KNIGHT, 1, 2); break;
+		case 5: setAt(bt.KNIGHT, 1, 3); break;
+		case 6: setAt(bt.KNIGHT, 1, 4); break;
+		case 7: setAt(bt.KNIGHT, 2, 3); break;
+		case 8: setAt(bt.KNIGHT, 2, 4); break;
+		case 9: setAt(bt.KNIGHT, 3, 4); break;
+		default: break;
+	}
+
+	// Rooks and king
+	forEachEmpty(function(file, emptyIndex) {
+		if(emptyIndex === 1) {
+			scheme[file] = bt.KING;
+			kingFile = file;
+		}
+		else {
+			scheme[file] = bt.ROOK;
+			castling /* jshint bitwise:false */ |= 1 << file; /* jshint bitwise:true */
+		}
+	});
 
 	return {
 		scheme: scheme,
