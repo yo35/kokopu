@@ -5,3 +5,9 @@ LABEL	FEN_IN	VARIANT	STRICT	FIFTY_MOVE_CLOCK	FULL_MOVE_NUMBER	FEN_OUT
 3b	rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b qK e3 0 1	regular	false	0	1	rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b Kq e3 0 1
 3c	rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b Kq e6 0 1	regular	false	0	1	rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b Kq e3 0 1
 3d	rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b Kq e3 00 1	regular	false	0	1	rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b Kq e3 0 1
+4a	nrkbqrbn/pppppppp/8/8/8/8/PPPPPPPP/NRKBQRBN w BFbf - 0 1	chess960	true	0	1	nrkbqrbn/pppppppp/8/8/8/8/PPPPPPPP/NRKBQRBN w BFbf - 0 1
+4b	nrkbqrbn/pppppppp/8/8/8/8/PPPPPPPP/NRKBQRBN w KQkq - 0 1	chess960	false	0	1	nrkbqrbn/pppppppp/8/8/8/8/PPPPPPPP/NRKBQRBN w BFbf - 0 1
+4c	nrkbqrbn/pppppppp/8/8/8/8/PPPPPPPP/NRKBQRBN w KQbf - 0 1	chess960	false	0	1	nrkbqrbn/pppppppp/8/8/8/8/PPPPPPPP/NRKBQRBN w BFbf - 0 1
+4d	nrkbqrbn/pppppppp/8/8/8/8/PPPPPPPP/NRKBQRBN w BKqf - 0 1	chess960	false	0	1	nrkbqrbn/pppppppp/8/8/8/8/PPPPPPPP/NRKBQRBN w BFbf - 0 1
+5a	rbbkrnqn/pppppppp/8/8/8/8/PPPPPPPP/NRKBQRBN w BFae - 5 24	chess960	true	5	24	rbbkrnqn/pppppppp/8/8/8/8/PPPPPPPP/NRKBQRBN w BFae - 5 24
+5b	rbbkrnqn/pppppppp/8/8/8/8/PPPPPPPP/NRKBQRBN w KQkq - 5 24	chess960	false	5	24	rbbkrnqn/pppppppp/8/8/8/8/PPPPPPPP/NRKBQRBN w BFae - 5 24

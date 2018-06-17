@@ -181,7 +181,8 @@ exports.parseFEN = function(variant, fen, strict) {
 	}
 
 	// Castling rights parsing
-	position.castling = castlingFromString(fields[2], strict); // TODO adapt for chess960
+	position.castling = variant === bt.CHESS_960 ? castlingFromStringXFEN(fields[2], strict, position.board) :
+		castlingFromStringFEN(fields[2], strict);
 	if(position.castling === null) {
 		throw new exception.InvalidFEN(fen, i18n.INVALID_CASTLING_FIELD);
 	}
@@ -210,7 +211,7 @@ exports.parseFEN = function(variant, fen, strict) {
 };
 
 
-function castlingFromString(castling, strict) {
+function castlingFromStringFEN(castling, strict) {
 	var res = [0, 0];
 	if(castling === '-') {
 		return res;
@@ -223,4 +224,63 @@ function castlingFromString(castling, strict) {
 	if(castling.indexOf('k') >= 0) { res[bt.BLACK] /* jshint bitwise:false */ |= 1<<7; /* jshint bitwise:true */ }
 	if(castling.indexOf('q') >= 0) { res[bt.BLACK] /* jshint bitwise:false */ |= 1<<0; /* jshint bitwise:true */ }
 	return res;
+}
+
+
+function castlingFromStringXFEN(castling, strict, board) {
+	var result = [0, 0];
+	if(castling === '-') {
+		return result;
+	}
+	if(!(strict ? /^[A-H]{0,2}[a-h]{0,2}$/ : /^[A-Ha-hKQkq]*$/).test(castling)) {
+		return null;
+	}
+
+	function searchQueenSideRook(color) {
+		var rookFile = -1;
+		var targetRook = bt.ROOK * 2 + color;
+		var targetKing = bt.KING * 2 + color;
+		for(var sq = 112*color; sq < 112*color + 8; ++sq) {
+			if(board[sq] === targetRook) {
+				if(rookFile >= 0) { break; }
+				rookFile = sq % 8;
+			}
+			else if(board[sq] === targetKing) {
+				if(rookFile < 0) { break; }
+				result[color] /* jshint bitwise:false */ |= 1 << rookFile; /* jshint bitwise:true */
+				return true;
+			}
+		}
+		return false;
+	}
+
+	function searchKingSideRook(color) {
+		var rookFile = -1;
+		var targetRook = bt.ROOK * 2 + color;
+		var targetKing = bt.KING * 2 + color;
+		for(var sq = 112*color + 7; sq >= 112*color; --sq) {
+			if(board[sq] === targetRook) {
+				if(rookFile >= 0) { break; }
+				rookFile = sq % 8;
+			}
+			else if(board[sq] === targetKing) {
+				if(rookFile < 0) { break; }
+				result[color] /* jshint bitwise:false */ |= 1 << rookFile; /* jshint bitwise:true */
+				return true;
+			}
+		}
+		return false;
+	}
+
+	if(castling.indexOf('K') >= 0) { if(!searchKingSideRook (bt.WHITE)) { return null; }}
+	if(castling.indexOf('Q') >= 0) { if(!searchQueenSideRook(bt.WHITE)) { return null; }}
+	if(castling.indexOf('k') >= 0) { if(!searchKingSideRook (bt.BLACK)) { return null; }}
+	if(castling.indexOf('q') >= 0) { if(!searchQueenSideRook(bt.BLACK)) { return null; }}
+
+	for(var file = 0; file < 8; ++file) {
+		var s = bt.fileToString(file);
+		if(castling.indexOf(s.toUpperCase()) >= 0) { result[bt.WHITE] /* jshint bitwise:false */ |= 1 << file; /* jshint bitwise:true */ }
+		if(castling.indexOf(s              ) >= 0) { result[bt.BLACK] /* jshint bitwise:false */ |= 1 << file; /* jshint bitwise:true */ }
+	}
+	return result;
 }
