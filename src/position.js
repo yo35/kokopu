@@ -45,9 +45,27 @@ var notation = require('./private_position/notation');
  * @classdesc Represent a chess position, i.e. the state of a 64-square chessboard with a few additional
  *            information (who is about to play, castling rights, en-passant rights).
  *
- * @param {string|Position} [fen = 'start'] Either `'start'`, `'empty'`, a FEN string representing a chess position,
- *        an existing {@link Position} object.
- * @throws {module:exception.InvalidFEN} If the input parameter is neither a correctly formatted FEN string nor `'start'` or `'empty'`.
+ * @description
+ * This constructor can be invoked with different types of arguments:
+ * ```
+ * new kokopu.Position('regular');                 // 1 -> Usual starting position.
+ * new kokopu.Position('regular', 'start');        // 2 -> Same as 1.
+ * new kokopu.Position('regular', 'empty');        // 3 -> Empty board.
+ * new kokopu.Position('chess960', 'empty');       // 4 -> Empty board, configured for Chess 960.
+ * new kokopu.Position('chess960', scharnaglCode); // 5 -> One of the Chess 960 starting position (`scharnaglCode` is a number between 0 and 959 inclusive).
+ * new kokopu.Position('regular', fenString);      // 6 -> Parse the given FEN string.
+ * new kokopu.Position('chess960', fenString);     // 7 -> Parse the given FEN or X-FEN string, and configure for Chess 960.
+ * new kokopu.Position(anotherPosition);           // 8 -> Make a copy of `anotherPosition`.
+ * ```
+ * Please note that the argument `'regular'` can be omitted in cases 1, 2, 3 and 6. In particular, the constructor can be invoked
+ * with no argument: in this case, a new `Position` initialized to the usual starting position is instantiated (as in cases 1 and 2).
+ *
+ * @throws {module:exception.InvalidFEN} If the input parameter is not a valid FEN string (can be thrown only in cases 6 and 7).
+ *
+ * @see FEN notation: {@link https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation}
+ * @see Chess 960 (aka. Fischer Random Chess): {@link https://en.wikipedia.org/wiki/Chess960}
+ * @see Chess 960 starting positions: {@link https://chess960.net/start-positions/}
+ * @see X-FEN notation: {@link https://en.wikipedia.org/wiki/X-FEN}
  */
 var Position = exports.Position = function() {
 
