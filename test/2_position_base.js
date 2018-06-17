@@ -197,6 +197,10 @@ describe('Position getters', function() {
 	it('Get castling 1', function() { var p=new kokopu.Position(); test.value(p.castling('wq')).is(true); });
 	it('Get castling 2', function() { var p=new kokopu.Position(customFEN); test.value(p.castling('bq')).is(false); });
 	it('Get castling 3', function() { var p=new kokopu.Position(customFEN); test.value(p.castling('bk')).is(true); });
+	it('Get castling 4 (chess 960)', function() { var p=new kokopu.Position('chess960', 763); test.value(p.castling('wa')).is(true); });
+	it('Get castling 5 (chess 960)', function() { var p=new kokopu.Position('chess960', 763); test.value(p.castling('wb')).is(false); });
+	it('Get castling 6 (chess 960)', function() { var p=new kokopu.Position('chess960', 763); test.value(p.castling('bf')).is(true); });
+	it('Get castling 7 (chess 960)', function() { var p=new kokopu.Position('chess960', 763); test.value(p.castling('bh')).is(false); });
 
 	it('Get en-passant 1', function() { var p=new kokopu.Position(); test.value(p.enPassant()).is('-'); });
 	it('Get en-passant 2', function() { var p=new kokopu.Position(customFEN); test.value(p.enPassant()).is('e'); });
@@ -214,7 +218,6 @@ describe('Position getters', function() {
 			test.exception(function() { p.castling(elem); }).isInstanceOf(kokopu.exception.IllegalArgument);
 		});
 	});
-
 });
 
 
@@ -222,6 +225,7 @@ describe('Position setters', function() {
 
 	var pos1 = new kokopu.Position('start');
 	var pos2 = new kokopu.Position('empty');
+	var pos3 = new kokopu.Position('chess960', 763);
 
 	it('Set board 1a', function() { pos1.square('a8', '-'); test.value(pos1.fen()).is('1nbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'); });
 	it('Set board 1b', function() { pos1.square('f6', 'wb'); test.value(pos1.fen()).is('1nbqkbnr/pppppppp/5B2/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'); });
@@ -234,14 +238,16 @@ describe('Position setters', function() {
 	it('Set turn 2', function() { pos2.turn('b'); test.value(pos2.fen()).is('8/8/8/6K1/8/8/8/8 b - - 0 1'); });
 
 	it('Set castling 1a', function() { pos1.castling('wk', false); test.value(pos1.fen()).is('1nbqkbnr/pppppppp/5B2/8/8/8/PPPPPPPP/RNBQKBNR w Qkq - 0 1'); });
-	it('Set castling 1b', function() { pos1.castling('bk', true); test.value(pos1.fen()).is('1nbqkbnr/pppppppp/5B2/8/8/8/PPPPPPPP/RNBQKBNR w Qkq - 0 1'); });
+	it('Set castling 1b', function() { pos1.castling('bk', true ); test.value(pos1.fen()).is('1nbqkbnr/pppppppp/5B2/8/8/8/PPPPPPPP/RNBQKBNR w Qkq - 0 1'); });
 	it('Set castling 2a', function() { pos2.castling('wq', false); test.value(pos2.fen()).is('8/8/8/6K1/8/8/8/8 b - - 0 1'); });
-	it('Set castling 2b', function() { pos2.castling('bq', true); test.value(pos2.fen()).is('8/8/8/6K1/8/8/8/8 b q - 0 1'); });
+	it('Set castling 2b', function() { pos2.castling('bq', true ); test.value(pos2.fen()).is('8/8/8/6K1/8/8/8/8 b q - 0 1'); });
+	it('Set castling 3a (chess 960)', function() { pos3.castling('wa', false); test.value(pos3.fen()).is('rknnbrqb/pppppppp/8/8/8/8/PPPPPPPP/RKNNBRQB w Faf - 0 1'); });
+	it('Set castling 3b (chess 960)', function() { pos3.castling('wh', true ); test.value(pos3.fen()).is('rknnbrqb/pppppppp/8/8/8/8/PPPPPPPP/RKNNBRQB w FHaf - 0 1'); });
+	it('Set castling 3c (chess 960)', function() { pos3.castling('bd', true ); test.value(pos3.fen()).is('rknnbrqb/pppppppp/8/8/8/8/PPPPPPPP/RKNNBRQB w FHadf - 0 1'); });
+	it('Set castling 3d (chess 960)', function() { pos3.castling('bf', false); test.value(pos3.fen()).is('rknnbrqb/pppppppp/8/8/8/8/PPPPPPPP/RKNNBRQB w FHad - 0 1'); });
 
 	it('Set en-passant 1a', function() { pos1.enPassant('e'); test.value(pos1.fen()).is('1nbqkbnr/pppppppp/5B2/8/8/8/PPPPPPPP/RNBQKBNR w Qkq e6 0 1'); });
 	it('Set en-passant 1b', function() { pos1.enPassant('-'); test.value(pos1.fen()).is('1nbqkbnr/pppppppp/5B2/8/8/8/PPPPPPPP/RNBQKBNR w Qkq - 0 1'); });
 	it('Set en-passant 2a', function() { pos2.enPassant('a'); test.value(pos2.fen()).is('8/8/8/6K1/8/8/8/8 b q a3 0 1'); });
 	it('Set en-passant 2b', function() { pos2.enPassant('h'); test.value(pos2.fen()).is('8/8/8/6K1/8/8/8/8 b q h3 0 1'); });
-
 });
-

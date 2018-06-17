@@ -146,6 +146,12 @@ exports.coloredPieceFromString = function(cp) {
  */
 
 /**
+ * Two-character string identifying a castle with the Chess 960 rules: `'wa'` (white castle with rook initially on the a-file),
+ * `'wb'`, `'wc'`, ..., `'bh'`.
+ * @typedef {string} Castle960
+ */
+
+/**
  * Two-character string identifying a square: `'a1'`, `'a2'`, ..., `'h8'`.
  * @typedef {string} Square
  */

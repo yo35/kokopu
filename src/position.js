@@ -286,22 +286,27 @@ Position.prototype.turn = function(value) {
 /**
  * Get a castle flag (i.e. whether or not the corresponding castle is allowed or not).
  *
- * @param {Castle} castle
+ * @param {Castle|Castle960} castle Must be {@link Castle} if the {@link Position} is configured for the regular chess rules,
+ *        and {@link Castle960} for chess 960.
  * @returns {boolean}
  *
  *//**
  *
  * Set a castle flag (i.e. whether or not the corresponding castle is allowed or not).
  *
- * @param {Castle} castle
+ * @param {Castle|Castle960} castle Must be {@link Castle} if the {@link Position} is configured for the regular chess rules,
+ *        and {@link Castle960} for chess 960.
  * @param {boolean} value
  */
-Position.prototype.castling = function(castle, value) { // TODO: make it chess-960 compatible.
-	if(!/^[wb][qk]$/.test(castle)) {
+Position.prototype.castling = function(castle, value) {
+	if(
+		(this._impl.variant === bt.REGULAR_CHESS && !/^[wb][qk]$/.test(castle)) ||
+		(this._impl.variant === bt.CHESS_960 && !/^[wb][a-h]$/.test(castle))
+	) {
 		throw new exception.IllegalArgument('Position#castling()');
 	}
 	var color = bt.colorFromString(castle[0]);
-	var file = castle[1]==='k' ? 7 : 0;
+	var file = this._impl.variant === bt.REGULAR_CHESS ? (castle[1]==='k' ? 7 : 0) : bt.fileFromString(castle[1]);
 
 	if(arguments.length === 1) {
 		return (this._impl.castling[color] /* jshint bitwise:false */ & (1 << file) /* jshint bitwise:true */) !== 0;
