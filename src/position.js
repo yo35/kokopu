@@ -110,9 +110,20 @@ var Position = exports.Position = function() {
 
 /**
  * Set the position to the empty state.
+ *
+ * @param {GameVariant} [variant=`'regular'`] Chess game variant to use.
  */
-Position.prototype.clear = function() {
-	this._impl = impl.makeEmpty(this._impl.variant);
+Position.prototype.clear = function(variant) {
+	if(arguments.length === 0) {
+		this._impl = impl.makeEmpty(bt.REGULAR_CHESS);
+	}
+	else {
+		var v = bt.variantFromString(variant);
+		if(v < 0) {
+			throw new exception.IllegalArgument('Position#clear()');
+		}
+		this._impl = impl.makeEmpty(v);
+	}
 };
 
 
@@ -121,6 +132,17 @@ Position.prototype.clear = function() {
  */
 Position.prototype.reset = function() {
 	this._impl = impl.makeInitial();
+};
+
+
+/**
+ * Set the position to one of the Chess 960 starting position.
+ *
+ * @param {number} scharnaglCode Must be between 0 and 959 inclusive (see {@link https://chess960.net/start-positions/}
+ *        or {@link https://chessprogramming.wikispaces.com/Reinhard+Scharnagl} for more details).
+ */
+Position.prototype.reset960 = function(scharnaglCode) {
+	this._impl = impl.make960FromScharnagl(scharnaglCode);
 };
 
 

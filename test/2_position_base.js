@@ -32,6 +32,11 @@ var startXFEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w AHah - 0 1';
 var emptyFEN  = '8/8/8/8/8/8/8/8 w - - 0 1';
 var customFEN = 'k7/n1PB4/1K6/8/8/8/8/8 w - - 0 1';
 
+var builders = [
+	{ label: 'regular', make: function() { return new kokopu.Position(customFEN); } },
+	{ label: 'chess 960', make: function() { return new kokopu.Position('chess960', customFEN); } }
+];
+
 
 describe('Position constructor', function() {
 
@@ -59,6 +64,78 @@ describe('Position constructor', function() {
 });
 
 
+describe('Position copy constructor', function() {
+	builders.forEach(function(builder) {
+		it('Copy from ' + builder.label, function() {
+
+			// Initialize the positions.
+			var p1 = builder.make();
+			var expectedVariant = p1.variant();
+			var p2 = new kokopu.Position(p1);
+			p1.clear(expectedVariant);
+
+			// Check their states
+			test.value(p1.variant()).is(expectedVariant);
+			test.value(p2.variant()).is(expectedVariant);
+			test.value(p1.fen()).is(emptyFEN);
+			test.value(p2.fen()).is(customFEN);
+		});
+	});
+});
+
+
+describe('Clear mutator', function() {
+	builders.forEach(function(builder) {
+
+		it('From ' + builder.label + ' to default', function() {
+			var position = builder.make();
+			position.clear();
+			test.value(position.variant()).is('regular');
+			test.value(position.fen()).is(emptyFEN);
+		});
+
+		it('From ' + builder.label + ' to regular', function() {
+			var position = builder.make();
+			position.clear('regular');
+			test.value(position.variant()).is('regular');
+			test.value(position.fen()).is(emptyFEN);
+		});
+
+		it('From ' + builder.label + ' to chess 960', function() {
+			var position = builder.make();
+			position.clear('chess960');
+			test.value(position.variant()).is('chess960');
+			test.value(position.fen()).is(emptyFEN);
+		});
+
+	});
+});
+
+
+describe('Reset mutator', function() {
+	builders.forEach(function(builder) {
+		it('From ' + builder.label, function() {
+			var position = builder.make();
+			position.reset();
+			test.value(position.variant()).is('regular');
+			test.value(position.fen()).is(startFEN);
+		});
+	});
+});
+
+
+describe('Reset 960 mutator', function() {
+	builders.forEach(function(builder) {
+		it('From ' + builder.label, function() {
+			var position = builder.make();
+			position.reset960(518);
+			test.value(position.variant()).is('chess960');
+			test.value(position.fen()).is(startXFEN);
+		});
+	});
+});
+
+
 describe('Position Scharnagl constructor', function() {
 
 	var testData = readCSV('scharnagl.csv', function(fields) {
@@ -75,29 +152,6 @@ describe('Position Scharnagl constructor', function() {
 			test.value(position.fen()).is(elem.fen);
 		});
 	});
-
-});
-
-
-describe('Position copy constructor', function() {
-
-	function doTest(label, expectedVariant, expectedFEN, positionFactory) {
-		it(label, function() {
-
-			// Initialize the positions.
-			var p1 = positionFactory();
-			var p2 = new kokopu.Position(p1);
-			p1.clear();
-
-			// Check their states
-			test.value(p1.variant()).is(expectedVariant);
-			test.value(p2.variant()).is(expectedVariant);
-			test.value(p1.fen()).is(emptyFEN);
-			test.value(p2.fen()).is(expectedFEN);
-		});
-	}
-
-	doTest('Regular position', 'regular', customFEN, function() { return new kokopu.Position(customFEN); });
 });
 
 
