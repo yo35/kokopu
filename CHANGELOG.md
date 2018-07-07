@@ -1,6 +1,10 @@
 ChangeLog
 =========
 
+1.0.2 (July 7, 2018)
+--------------------
+* Fix URL issue.
+
 1.0.1 (July 7, 2018)
 --------------------
 * Provide a browser-ready package.
