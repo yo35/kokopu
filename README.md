@@ -12,6 +12,13 @@ https://www.npmjs.com/package/kokopu
 
 
 
+Download
+--------
+
+https://kokopu.yo35.org/dist/kokopu.js
+
+
+
 Documentation
 -------------
 
