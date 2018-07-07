@@ -20,6 +20,11 @@
 ################################################################################
 
 
+# Kokopu information
+PACKAGE_AUTHOR = $(shell npm info kokopu author)
+PACKAGE_LICENSE = $(shell npm info kokopu license)
+PACKAGE_VERSION = $(shell npm info kokopu version)
+
 # Source files and folders
 PACKAGE_JSON_FILE = package.json
 SRC_FILES         = index.js $(shell find src)
@@ -34,11 +39,12 @@ DISTRIBUTION_DIR    = dist
 BROWSER_JS_FILE     = dist/kokopu.js
 BROWSER_MIN_JS_FILE = dist/kokopu.min.js
 
+
 # Various commands
 ECHO          = echo
 JSDOC         = ./node_modules/.bin/jsdoc
 BROWSERIFY    = ./node_modules/.bin/browserify
-UGLIFYJS      = ./node_modules/.bin/uglifyjs
+UGLIFYJS      = ./node_modules/.bin/uglifyjs --comments
 COLOR_IN      = \033[34;1m
 COLOR_OUT     = \033[0m
 COLOR_ITEM_IN = \033[35;1m
@@ -91,7 +97,13 @@ $(DOCUMENTATION_DIR): $(DOC_CONFIG_FILE) $(SRC_FILES) $(SRC_DOC_FILES) $(PACKAGE
 $(BROWSER_JS_FILE): $(SRC_FILES) $(NODE_MODULES_DIR)
 	@$(ECHO) "$(COLOR_IN)Generating kokopu.js...$(COLOR_OUT)"
 	@mkdir -p $(DISTRIBUTION_DIR)
-	@$(BROWSERIFY) -s kokopu -o $@ $<
+	@echo '/**' > $@
+	@echo ' * kokopu (https://www.npmjs.com/package/kokopu)' >> $@
+	@echo ' * @version $(PACKAGE_VERSION)' >> $@
+	@echo ' * @author $(PACKAGE_AUTHOR)' >> $@
+	@echo ' * @license $(PACKAGE_LICENSE)' >> $@
+	@echo ' */' >> $@
+	@$(BROWSERIFY) -s kokopu $< >> $@
 
 $(BROWSER_MIN_JS_FILE): $(BROWSER_JS_FILE) $(NODE_MODULES_DIR)
 	@$(ECHO) "$(COLOR_IN)Minifying kokopu.js...$(COLOR_OUT)"
