@@ -26,6 +26,7 @@ SRC_FILES         = index.js $(shell find src)
 SRC_DEV_FILES     = $(shell find demo) $(shell find test)
 SRC_DOC_FILES     = $(shell find doc_src)
 DOC_CONFIG_FILE   = .jsdoc.json
+INFO_FILES        = README.md CHANGELOG.md LICENSE
 
 # Kokopu information
 PACKAGE_AUTHOR = $(shell node -p 'require("./$(PACKAGE_JSON_FILE)").author')
@@ -38,7 +39,7 @@ DOCUMENTATION_DIR   = docs
 DISTRIBUTION_DIR    = dist
 BROWSER_JS_FILE     = dist/kokopu.js
 BROWSER_MIN_JS_FILE = dist/kokopu.min.js
-
+PACKAGE_DIST_FILE   = dist/kokopu-$(PACKAGE_VERSION).zip
 
 # Various commands
 ECHO          = echo
@@ -64,6 +65,7 @@ help:
 	@$(ECHO) " * make $(COLOR_ITEM_IN)lint$(COLOR_ITEM_OUT): run the static analysis tool."
 	@$(ECHO) " * make $(COLOR_ITEM_IN)unit$(COLOR_ITEM_OUT): run the unit tests."
 	@$(ECHO) " * make $(COLOR_ITEM_IN)test$(COLOR_ITEM_OUT): run the whole test and validation suit."
+	@$(ECHO) " * make $(COLOR_ITEM_IN)pack$(COLOR_ITEM_OUT): generate the files needed for a deployment."
 	@$(ECHO) " * make $(COLOR_ITEM_IN)clean$(COLOR_ITEM_OUT): remove the automatically generated files."
 	@$(ECHO) " * make $(COLOR_ITEM_IN)help$(COLOR_ITEM_OUT): show this help."
 	@$(ECHO)
@@ -110,6 +112,12 @@ $(BROWSER_MIN_JS_FILE): $(BROWSER_JS_FILE) $(NODE_MODULES_DIR)
 	@mkdir -p $(DISTRIBUTION_DIR)
 	@$(UGLIFYJS) -o $@ $<
 
+$(PACKAGE_DIST_FILE): $(BROWSER_JS_FILE) $(BROWSER_MIN_JS_FILE) $(INFO_FILES)
+	@$(ECHO) "$(COLOR_IN)Generating kokopu-$(PACKAGE_VERSION).zip...$(COLOR_OUT)"
+	@mkdir -p $(DISTRIBUTION_DIR)
+	@rm -f $(DISTRIBUTION_DIR)/*.zip
+	@zip -jq $@ $^
+
 
 
 # Testing and validation
@@ -127,10 +135,17 @@ unit:
 
 
 
+# Deployment
+# ----------
+
+pack: $(DOCUMENTATION_DIR) $(PACKAGE_DIST_FILE)
+
+
+
 # Cleaning & Make's stuff 
 # -----------------------
 
 clean:
 	@rm -rf $(NODE_MODULES_DIR) npm-debug.log $(DOCUMENTATION_DIR) $(DISTRIBUTION_DIR)
 
-.PHONY: help init lint unit test clean
+.PHONY: help init lint unit test pack clean
