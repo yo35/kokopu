@@ -13,6 +13,9 @@ and provides tools to read/write the standard chess file formats
 Installation
 ------------
 
+- For use within a browser: [download the package](https://kokopu.yo35.org/dist/kokopu.zip)
+and include either file `kokopu.js` or file `kokopu.min.js` in your HTML page.
+- For Node.js:
 ```
 npm install kokopu
 ```
@@ -79,5 +82,16 @@ console.log(moves.map(function(move) { return position.notation(move); }));
 
 // [ 'a6', 'a5', 'b6', 'b5', 'c6', 'c5', 'd6','d5', 'f6', 'f5', 'g6', 'g5', 'h6', 'h5', 'Na6', 'Nc6',
 // 'Qe7', 'Qf6', 'Qg5', 'Qh4', 'Ke7', 'Be7', 'Bd6', 'Bc5', 'Bb4', 'Ba3', 'Nf6', 'Nh6', 'Ne7' ]
+```
 
+Or within a browser:
+
+```
+<script src="kokopu.js"></script>
+<script>
+	var position = new kokopu.Position();
+	position.play('e4');
+	position.play('e5');
+	// etc...
+</script>
 ```

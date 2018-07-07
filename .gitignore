@@ -9,6 +9,5 @@
 
 # Generated files
 /docs
-/kokopu.js
-/kokopu.min.js
+/dist
 

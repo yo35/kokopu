@@ -1,6 +1,6 @@
 {
 	"name": "kokopu",
-	"version": "1.0.0",
+	"version": "1.0.2",
 	"description": "A JavaScript library implementing the chess game rules and providing tools to read/write the standard chess file formats.",
 	"keywords": [ "chess", "fen", "pgn", "games" ],
 	"bugs": "https://github.com/yo35/kokopu/issues",
@@ -20,9 +20,6 @@
 	"scripts": {
 		"lint": "jshint index.js demo src test",
 		"unit": "mocha --bail --sort",
-		"test": "npm run lint && npm run unit",
-		"docs": "rm -rf docs && jsdoc -c .jsdoc.json -d docs",
-		"prebuild": "npm run test",
-		"build": "browserify -s kokopu index.js > kokopu.js && uglifyjs kokopu.js > kokopu.min.js"
+		"test": "npm run lint && npm run unit"
 	}
 }
