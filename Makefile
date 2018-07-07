@@ -88,15 +88,14 @@ $(DOCUMENTATION_DIR): $(DOC_CONFIG_FILE) $(SRC_FILES) $(SRC_DOC_FILES) $(PACKAGE
 # Generate the distributed files
 # ------------------------------
 
-$(DISTRIBUTION_DIR):
-	@mkdir -p $@
-
-$(BROWSER_JS_FILE): $(SRC_FILES) $(NODE_MODULES_DIR) $(DISTRIBUTION_DIR)
+$(BROWSER_JS_FILE): $(SRC_FILES) $(NODE_MODULES_DIR)
 	@$(ECHO) "$(COLOR_IN)Generating kokopu.js...$(COLOR_OUT)"
+	@mkdir -p $(DISTRIBUTION_DIR)
 	@$(BROWSERIFY) -s kokopu -o $@ $<
 
-$(BROWSER_MIN_JS_FILE): $(BROWSER_JS_FILE) $(NODE_MODULES_DIR) $(DISTRIBUTION_DIR)
+$(BROWSER_MIN_JS_FILE): $(BROWSER_JS_FILE) $(NODE_MODULES_DIR)
 	@$(ECHO) "$(COLOR_IN)Minifying kokopu.js...$(COLOR_OUT)"
+	@mkdir -p $(DISTRIBUTION_DIR)
 	@$(UGLIFYJS) -o $@ $<
 
 
