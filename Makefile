@@ -20,17 +20,17 @@
 ################################################################################
 
 
-# Kokopu information
-PACKAGE_AUTHOR = $(shell npm info kokopu author)
-PACKAGE_LICENSE = $(shell npm info kokopu license)
-PACKAGE_VERSION = $(shell npm info kokopu version)
-
 # Source files and folders
 PACKAGE_JSON_FILE = package.json
 SRC_FILES         = index.js $(shell find src)
 SRC_DEV_FILES     = $(shell find demo) $(shell find test)
 SRC_DOC_FILES     = $(shell find doc_src)
 DOC_CONFIG_FILE   = .jsdoc.json
+
+# Kokopu information
+PACKAGE_AUTHOR = $(shell node -p 'require("./$(PACKAGE_JSON_FILE)").author')
+PACKAGE_LICENSE = $(shell node -p 'require("./$(PACKAGE_JSON_FILE)").license')
+PACKAGE_VERSION = $(shell node -p 'require("./$(PACKAGE_JSON_FILE)").version')
 
 # Generated files and folders
 NODE_MODULES_DIR    = node_modules
