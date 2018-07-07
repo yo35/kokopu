@@ -13,7 +13,7 @@ and provides tools to read/write the standard chess file formats
 Installation
 ------------
 
-- For use within a browser: [download the package](https://kokopu.yo35.org/dist/kokopu.js)
+- For use within a browser: [download the package](https://kokopu.yo35.org/dist/kokopu.zip)
 and include either file `kokopu.js` or file `kokopu.min.js` in your HTML page.
 - For Node.js:
 ```
