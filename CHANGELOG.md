@@ -1,6 +1,10 @@
 ChangeLog
 =========
 
+1.0.1 (July 7, 2018)
+--------------------
+* Provide a browser-ready package.
+
 1.0.0 (June 16, 2018)
 ---------------------
 * Add and publish documentation.
