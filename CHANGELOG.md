@@ -1,6 +1,10 @@
 ChangeLog
 =========
 
+1.0.3 (July 9, 2018)
+--------------------
+* Fix invalid move notation issue (see #1).
+
 1.0.2 (July 7, 2018)
 --------------------
 * Fix URL issue.
