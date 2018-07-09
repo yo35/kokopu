@@ -121,11 +121,44 @@ function getDisambiguationSymbol(position, from, to) {
  * Whether the piece on the given square is pinned or not.
  */
 function isPinned(position, sq) {
-	var content = position.board[sq];
-	position.board[sq] = bt.EMPTY;
-	var result = attacks.isAttacked(position, position.king[position.turn], 1-position.turn);
-	position.board[sq] = content;
-	return result;
+	var kingSquare = position.king[position.turn];
+	var vector = Math.abs(kingSquare - sq);
+	if(vector === 0) {
+		return false;
+	}
+
+	var pinnerQueen  = bt.QUEEN  * 2 + 1 - position.turn;
+	var pinnerRook   = bt.ROOK   * 2 + 1 - position.turn;
+	var pinnerBishop = bt.BISHOP * 2 + 1 - position.turn;
+
+	// Potential pinning on file or rank.
+	if(vector < 8) {
+		return pinningLoockup(position, kingSquare, sq, kingSquare < sq ? 1 : -1, pinnerRook, pinnerQueen);
+	}
+	else if(vector % 16 === 0) {
+		return pinningLoockup(position, kingSquare, sq, kingSquare < sq ? 16 : -16, pinnerRook, pinnerQueen);
+	}
+
+	// Potential pinning on diagonal.
+	else if(vector % 15 === 0) {
+		return pinningLoockup(position, kingSquare, sq, kingSquare < sq ? 15 : -15, pinnerBishop, pinnerQueen);
+	}
+	else if(vector % 17 === 0) {
+		return pinningLoockup(position, kingSquare, sq, kingSquare < sq ? 17 : -17, pinnerBishop, pinnerQueen);
+	}
+
+	// No pinning for sure.
+	else {
+		return false;
+	}
+}
+
+function pinningLoockup(position, kingSquare, targetSquare, direction, pinnerColoredPiece1, pinnerColoredPiece2) {
+	for(var sq = kingSquare + direction; (sq /* jshint bitwise:false */ & 0x88 /* jshint bitwise:true */)===0; sq += direction) {
+		if(sq !== targetSquare && position.board[sq] !== bt.EMPTY) {
+			return position.board[sq] === pinnerColoredPiece1 || position.board[sq] === pinnerColoredPiece2;
+		}
+	}
 }
 
 
