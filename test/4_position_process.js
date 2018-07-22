@@ -149,6 +149,7 @@ describe('Move legality check', function() {
 						case 'castle960':
 							moves.push(moveDescriptor('king'));
 							moves.push(moveDescriptor('castle'));
+							break;
 
 						default:
 							break;

@@ -43,7 +43,7 @@ exports.getNotation = function(position, descriptor) {
 
 	// Castling move
 	if(descriptor.isCastling()) {
-		res = descriptor._from < descriptor._to ? 'O-O' : 'O-O-O';
+		res = descriptor._to % 16 === 6 ? 'O-O' : 'O-O-O';
 	}
 
 	// Pawn move
@@ -207,7 +207,7 @@ exports.parseNotation = function(position, notation, strict) {
 	// Parse castling moves
 	if(m[1] || m[2]) {
 		var from = position.king[position.turn];
-		var to = from + (m[2] ? 2 : -2);
+		var to = (m[2] ? 6 : 2) + position.turn*112;
 		descriptor = moveGeneration.isCastlingLegal(position, from, to);
 		if(!descriptor) {
 			var message = m[2] ? i18n.ILLEGAL_KING_SIDE_CASTLING : i18n.ILLEGAL_QUEEN_SIDE_CASTLING;
