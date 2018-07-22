@@ -430,6 +430,7 @@ exports.isMoveLegal = function(position, from, to) {
 exports.play = function(position, descriptor) {
 
 	// Update the board.
+	position.board[descriptor._from] = bt.EMPTY; // WARNING: update `from` before `to` in case both squares are actually the same!
 	if(descriptor.isEnPassant()) {
 		position.board[descriptor._optionalSquare1] = bt.EMPTY;
 	}
@@ -438,7 +439,6 @@ exports.play = function(position, descriptor) {
 		position.board[descriptor._optionalSquare2] = descriptor._optionalPiece;
 	}
 	position.board[descriptor._to] = descriptor._finalPiece;
-	position.board[descriptor._from] = bt.EMPTY;
 
 	var movingPiece = Math.floor(descriptor._movingPiece / 2);
 
