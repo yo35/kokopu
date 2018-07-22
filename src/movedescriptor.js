@@ -98,6 +98,9 @@ MoveDescriptor.prototype.toString = function() {
 	if(this.isPromotion()) {
 		result += this.promotion().toUpperCase();
 	}
+	else if(this.isCastling()) {
+		result += 'O';
+	}
 	return result;
 };
 

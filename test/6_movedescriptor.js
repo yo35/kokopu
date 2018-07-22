@@ -138,7 +138,7 @@ describe('Castling move', function() {
 	it('En-passant square'     , function() { test.exception(function() { descriptor.enPassantSquare(); }).isInstanceOf(kokopu.exception.IllegalArgument); });
 	it('Promotion'             , function() { test.exception(function() { descriptor.promotion(); }).isInstanceOf(kokopu.exception.IllegalArgument); });
 	it('Colored promotion'     , function() { test.exception(function() { descriptor.coloredPromotion(); }).isInstanceOf(kokopu.exception.IllegalArgument); });
-	it('To string'             , function() { test.value(descriptor.toString()).is('e1g1'); });
+	it('To string'             , function() { test.value(descriptor.toString()).is('e1g1O'); });
 });
 
 
