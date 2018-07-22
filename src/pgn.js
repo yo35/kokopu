@@ -246,7 +246,7 @@ function parseDateHeader(value) {
 }
 
 
-function processHeader(stream, game, key, value) {
+function processHeader(stream, game, initialPositionFactory, key, value) {
 	value = value.trim();
 	switch(key) {
 		case 'White': game.playerName('w', parseNullableHeader(value)); break;
@@ -264,20 +264,40 @@ function processHeader(stream, game, key, value) {
 		// The header 'FEN' has a special meaning, in that it is used to define a custom
 		// initial position, that may be different from the usual one.
 		case 'FEN':
-			try {
-				var position = new Position();
-				var moveCounters = position.fen(value);
-				game.initialPosition(position, moveCounters.fullMoveNumber);
+			initialPositionFactory.fen = value;
+			initialPositionFactory.fenTokenPos = stream.tokenPos;
+			break;
+
+		// The header 'Variant' indicates that this is not a regular chess game.
+		case 'Variant':
+			if(value.toLowerCase() === 'chess960' || value.toLowerCase() === 'fischerandom') {
+				initialPositionFactory.variant = 'chess960';
 			}
-			catch(error) {
-				if(error instanceof exception.InvalidFEN) {
-					throw new exception.InvalidPGN(stream.text, stream.tokenPos, i18n.INVALID_FEN_IN_PGN_TEXT, error.message);
-				}
-				else {
-					throw error;
-				}
+			else {
+				throw new exception.InvalidPGN(stream.text, stream.tokenPos, i18n.UNKNOWN_VARIANT, value);
 			}
 			break;
+	}
+}
+
+
+function initializeInitialPosition(stream, game, initialPositionFactory) {
+
+	// Nothing to do if no custom FEN has been defined -> let the default state.
+	if(!initialPositionFactory.fen) { return; }
+
+	try {
+		var position = new Position(initialPositionFactory.variant ? initialPositionFactory.variant : 'regular', 'empty');
+		var moveCounters = position.fen(initialPositionFactory.fen);
+		game.initialPosition(position, moveCounters.fullMoveNumber);
+	}
+	catch(error) {
+		if(error instanceof exception.InvalidFEN) {
+			throw new exception.InvalidPGN(stream.text, initialPositionFactory.fenTokenPos, i18n.INVALID_FEN_IN_PGN_TEXT, error.message);
+		}
+		else {
+			throw error;
+		}
 	}
 }
 
@@ -297,6 +317,7 @@ function doParseGame(stream) {
 	var node            = null;  // current node (or variation) to which the next move should be appended
 	var nodeIsVariation = false; // whether the current node is a variation or not
 	var nodeStack       = [];    // when starting a variation, its parent node (btw., always a "true" node, not a variation) is stacked here
+	var initialPositionFactory = {};
 
 	// Token loop
 	while(stream.consumeToken()) {
@@ -309,6 +330,7 @@ function doParseGame(stream) {
 		// Matching anything else different from a header means that the move section
 		// is going to be parse => set-up the root node.
 		if(stream.token !== TOKEN_HEADER && node === null) {
+			initializeInitialPosition(stream, game, initialPositionFactory);
 			node = game.mainVariation();
 			nodeIsVariation = true;
 		}
@@ -321,7 +343,7 @@ function doParseGame(stream) {
 				if(node !== null) {
 					throw new exception.InvalidPGN(stream.text, stream.tokenPos, i18n.UNEXPECTED_PGN_HEADER);
 				}
-				processHeader(stream, game, stream.tokenValue.key, stream.tokenValue.value);
+				processHeader(stream, game, initialPositionFactory, stream.tokenValue.key, stream.tokenValue.value);
 				break;
 
 			// Move or null-move

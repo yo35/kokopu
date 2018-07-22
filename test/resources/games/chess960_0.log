@@ -1,0 +1,90 @@
+White = {Carlsen, Magnus}
+Black = {Nakamura, Hikaru}
+Event = {Nakamura - Carlsen Chess960 Match}
+Round = {9}
+Site = {Høvikodden, Bærum NOR}
+Date = {Tue Feb 13 2018}
+Variant = {chess960}
++---+---+---+---+---+---+---+---+
+| q | r | k | n | b | b | n | r |
++---+---+---+---+---+---+---+---+
+| p | p | p | p | p | p | p | p |
++---+---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+---+
+| P | P | P | P | P | P | P | P |
++---+---+---+---+---+---+---+---+
+| Q | R | K | N | B | B | N | R |
++---+---+---+---+---+---+---+---+
+w BHbh - (chess960)
+-+<LONG
+(1w) a4
+(1b) e6
+(2w) a5
+(2b) a6
+(3w) e4
+(3b) Nf6
+(4w) e5
+(4b) Nd5
+(5w) Nf3
+(5b) f6
+(6w) exf6
+(6b) gxf6
+(7w) Ne3
+(7b) Nxe3
+(8w) fxe3
+(8b) Bg6
+(9w) b4
+(9b) Be7
+(10w) Bh4
+(10b) Rf8
+(11w) Be2
+(11b) Nc6
+(12w) Qc3
+(12b) b5
+(13w) O-O
+(13b) O-O-O
+(14w) d4
+(14b) Bh5
+(15w) Qd2
+(15b) d5
+(16w) c3
+(16b) Bxf3
+(17w) Rxf3
+(17b) f5
+(18w) Rh3
+(18b) Rd7
+(19w) Bg3
+(19b) Bg5
+(20w) Bf4
+(20b) h6
+(21w) Bxg5
+(21b) hxg5
+(22w) Rh6
+(22b) Re7
+(23w) e4
+(23b) dxe4
+(24w) Qxg5
+(24b) Kb7
+(25w) d5
+(25b) exd5
+(26w) Rxc6
+(26b) Ref7
+(27w) Rc5
+(27b) Rd7
+(28w) Qg6
+(28b) Qd8
+(29w) Qc6+
+(29b) Ka7
+(30w) Bxb5
+(30b) axb5
+(31w) Rxb5
+(31b) Qc8
+(32w) a6
+{White wins}

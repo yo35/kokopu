@@ -1,0 +1,18 @@
+[Event "Nakamura - Carlsen Chess960 Match"]
+[Site "Høvikodden, Bærum NOR"]
+[Date "2018.02.13"]
+[Round "9"]
+[White "Carlsen, Magnus"]
+[Black "Nakamura, Hikaru"]
+[Result "1-0"]
+[EventDate "2018.02.09"]
+[FEN "qrknbbnr/pppppppp/8/8/8/8/PPPPPPPP/QRKNBBNR w KQkq - 0 1"]
+[Setup "1"]
+[TimeControl "600+5"]
+[Variant "Chess960"]
+
+1. a4 e6 2. a5 a6 3. e4 Nf6 4. e5 Nd5 5. Nf3 f6 6. exf6 gxf6 7. Ne3 Nxe3 8. fxe3
+Bg6 9. b4 Be7 10. Bh4 Rf8 11. Be2 Nc6 12. Qc3 b5 13. O-O O-O-O 14. d4 Bh5 15.
+Qd2 d5 16. c3 Bxf3 17. Rxf3 f5 18. Rh3 Rd7 19. Bg3 Bg5 20. Bf4 h6 21. Bxg5 hxg5
+22. Rh6 Re7 23. e4 dxe4 24. Qxg5 Kb7 25. d5 exd5 26. Rxc6 Ref7 27. Rc5 Rd7 28.
+Qg6 Qd8 29. Qc6+ Ka7 30. Bxb5 axb5 31. Rxb5 Qc8 32. a6  1-0

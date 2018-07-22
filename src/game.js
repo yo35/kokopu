@@ -250,6 +250,16 @@ Game.prototype.result = function(value) {
 
 
 /**
+ * Get the {@link GameVariant} of the game.
+ *
+ * @returns {GameVariant}
+ */
+Game.prototype.variant = function() {
+	return this._initialPosition.variant();
+};
+
+
+/**
  * Get the initial position of the game.
  *
  * @returns {Position}

@@ -107,6 +107,12 @@ function dumpGame(game) {
 		res += '}\n';
 	}
 
+	function dumpVariant(variant) {
+		if(variant !== 'regular') {
+			res += 'Variant = {' + variant + '}\n';
+		}
+	}
+
 	function dumpInitialPosition(position) {
 		if(position.fen() !== new kokopu.Position().fen()) {
 			res += position.ascii() + '\n';
@@ -190,6 +196,7 @@ function dumpGame(game) {
 	dumpHeader('Site'      , game.site     ());
 	dumpHeader('Date'      , game.date     ());
 	dumpHeader('Annotator' , game.annotator());
+	dumpVariant(game.variant());
 	dumpInitialPosition(game.initialPosition());
 	dumpVariation(game.mainVariation(), '', '');
 	dumpResult(game.result());
