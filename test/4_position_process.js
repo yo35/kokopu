@@ -50,7 +50,12 @@ function testData() {
 
 
 function createPosition(testDataDescriptor) {
-	return new kokopu.Position(testDataDescriptor.constructor==='fen' ? testDataDescriptor.fen : testDataDescriptor.constructor);
+	switch(testDataDescriptor.constructor) {
+		case 'fen': return new kokopu.Position(testDataDescriptor.fen);
+		case 'xfen': return new kokopu.Position('chess960', testDataDescriptor.fen);
+		default:
+			return new kokopu.Position(testDataDescriptor.constructor);
+	}
 }
 
 

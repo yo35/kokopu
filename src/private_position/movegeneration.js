@@ -200,10 +200,8 @@ function generateMoves(position, fun) {
 
 		// Generate castling moves
 		if(movingPiece === bt.KING && position.castling[position.turn] !== 0) {
-			var to = [from-2, from+2];
-			for(var i=0; i<to.length; ++i) {
-				fun(isCastlingLegal(position, from, to[i]), false);
-			}
+			fun(isCastlingLegal(position, from, 2 + 112*position.turn), false);
+			fun(isCastlingLegal(position, from, 6 + 112*position.turn), false);
 		}
 	}
 }
@@ -257,36 +255,56 @@ var isKingSafeAfterMove = exports.isKingSafeAfterMove = function(position, from,
 
 /**
  * Delegated method for checking whether a castling move is legal or not.
- *
- * TODO: make it chess-960 compatible.
  */
 var isCastlingLegal = exports.isCastlingLegal = function(position, from, to) {
 
-	// Ensure that the given underlying castling is allowed.
-	var column = from < to ? 7 : 0;
-	if((position.castling[position.turn] /* jshint bitwise:false */ & 1<<column /* jshint bitwise:true */) === 0) {
+	// Origin and destination squares of the rook involved in the move.
+	var castleFile = -1;
+	var rookTo = -1;
+	if(to === 2 + position.turn*112) {
+		castleFile = position.variant === bt.CHESS_960 ? findCastleFile(position.castling[position.turn], from % 16, -1) : 0;
+		rookTo = 3 + 112*position.turn;
+	}
+	else if(to === 6 + position.turn*112) {
+		castleFile = position.variant === bt.CHESS_960 ? findCastleFile(position.castling[position.turn], from % 16, 1) : 7;
+		rookTo = 5 + 112*position.turn;
+	}
+	else {
 		return false;
 	}
 
-	// Origin and destination squares of the rook involved in the move.
-	var rookFrom = column + position.turn*112;
-	var rookTo   = (from + to) / 2;
+	// Ensure that the given underlying castling is allowed.
+	if(position.variant === bt.CHESS_960) {
+		if(castleFile === -1) { return false; }
+	}
+	else {
+		if((position.castling[position.turn] /* jshint bitwise:false */ & 1<<castleFile /* jshint bitwise:true */) === 0) { return false; }
+	}
 
-	// Ensure that each square between the king and the rook is empty.
-	var offset = from < rookFrom ? 1 : -1;
-	for(var sq=from+offset; sq!==rookFrom; sq+=offset) {
-		if(position.board[sq] !== bt.EMPTY) { return false; }
+	var rookFrom = castleFile + position.turn*112;
+
+	// Ensure that each square on the trajectory is empty.
+	for(var sq = Math.min(from, to, rookFrom, rookTo); sq <= Math.max(from, to, rookFrom, rookTo); ++sq) {
+		if(sq !== from && sq !== rookFrom && position.board[sq] !== bt.EMPTY) { return false; }
 	}
 
 	// The origin and destination squares of the king, and the square between them must not be attacked.
-	var byWho = 1-position.turn;
-	if(attacks.isAttacked(position, from, byWho) || attacks.isAttacked(position, to, byWho) || attacks.isAttacked(position, rookTo, byWho)) {
-		return false;
+	var byWho = 1 - position.turn;
+	for(var sq = Math.min(from, to); sq <= Math.max(from, to); ++sq) {
+		if(attacks.isAttacked(position, sq, byWho)) { return false; }
 	}
 
 	// The move is legal -> generate the move descriptor.
 	return moveDescriptor.makeCastling(from, to, rookFrom, rookTo, position.turn);
 };
+
+
+function findCastleFile(castlingFlag, kingFile, offset) {
+	for(var file = kingFile + offset; file >= 0 && file < 8; file += offset) {
+		if((castlingFlag /* jshint bitwise:false */ & 1<<file /* jshint bitwise:true */) !== 0) { return file; }
+	}
+	return -1;
+}
 
 
 /**

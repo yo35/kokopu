@@ -53,8 +53,6 @@ exports.isLegal = function(position) {
  *
  * Together with the legal flag, the reference to the squares where the white and
  * black kings lie is updated by this function.
- *
- * TODO: make it chess-960 compatible.
  */
 var refreshLegalFlagAndKingSquares = exports.refreshLegalFlagAndKingSquares = function(position) {
 	if(position.legal !== null) {
@@ -84,13 +82,9 @@ var refreshLegalFlagAndKingSquares = exports.refreshLegalFlagAndKingSquares = fu
 	}
 
 	// Condition (4)
+	var isCastlingFlagLegalFun = position.variant === bt.CHESS_960 ? isCastlingFlagLegalForChess960 : isCastlingFlagLegalForRegularChess;
 	for(var color=0; color<2; ++color) {
-		var skipOO  = (position.castling[color] /* jshint bitwise:false */ & 0x80 /* jshint bitwise:true */) === 0;
-		var skipOOO = (position.castling[color] /* jshint bitwise:false */ & 0x01 /* jshint bitwise:true */) === 0;
-		var rookHOK = skipOO              || position.board[7 + 112*color] === bt.ROOK*2 + color;
-		var rookAOK = skipOOO             || position.board[0 + 112*color] === bt.ROOK*2 + color;
-		var kingOK  = (skipOO && skipOOO) || position.board[4 + 112*color] === bt.KING*2 + color;
-		if(!(kingOK && rookAOK && rookHOK)) {
+		if(!isCastlingFlagLegalFun(position, color)) {
 			return;
 		}
 	}
@@ -133,5 +127,44 @@ function refreshKingSquare(position, color) {
 				return;
 			}
 		}
+	}
+}
+
+
+function isCastlingFlagLegalForRegularChess(position, color) {
+	var skipOO  = (position.castling[color] /* jshint bitwise:false */ & 0x80 /* jshint bitwise:true */) === 0;
+	var skipOOO = (position.castling[color] /* jshint bitwise:false */ & 0x01 /* jshint bitwise:true */) === 0;
+	var rookHOK = skipOO              || position.board[7 + 112*color] === bt.ROOK*2 + color;
+	var rookAOK = skipOOO             || position.board[0 + 112*color] === bt.ROOK*2 + color;
+	var kingOK  = (skipOO && skipOOO) || position.board[4 + 112*color] === bt.KING*2 + color;
+	return kingOK && rookAOK && rookHOK;
+}
+
+
+function isCastlingFlagLegalForChess960(position, color) {
+	var files = [];
+	for(var file=0; file<8; ++file) {
+		if((position.castling[color] /* jshint bitwise:false */ & (1 << file) /* jshint bitwise:true */) === 0) {
+			continue;
+		}
+
+		// Ensure there is a rook on each square for which the corresponding file flag is set.
+		if(position.board[file + 112*color] !== bt.ROOK*2 + color) {
+			return;
+		}
+		files.push(file);
+	}
+
+	// Additional check on the king position, depending on the number of file flags.
+	switch(files.length) {
+		case 0: return true;
+
+		// 1 possible castle -> ensure the king is on the initial rank.
+		case 1: return position.king[color] >= 112*color && position.king[color] <= 7 + 112*color;
+
+		// 2 possible castles -> ensure the king is between the two rooks.
+		case 2: return position.king[color] > files[0] + 112*color && position.king[color] < files[1] + 112*color;
+
+		default: return false;
 	}
 }
