@@ -556,27 +556,45 @@ Position.prototype.isMoveLegal = function(from, to) {
 
 	// Only one legal move (no ambiguity).
 	else if(moveDescriptor.isMoveDescriptor(result)) {
-		var builder = function() { return result; };
-		builder.status = 'regular';
-		return builder;
+		return makeFactory('regular', function() { return result; });
 	}
 
 	// Several legal moves -> ambiguity.
 	else {
-		var builder = function(promotion) {
-			promotion = bt.pieceFromString(promotion);
-			if(promotion >= 0) {
-				var builtMoveDescriptor = result(promotion);
-				if(builtMoveDescriptor) {
-					return builtMoveDescriptor;
-				}
-			}
-			throw new exception.IllegalArgument('Position#isMoveLegal()');
-		};
-		builder.status = 'promotion';
-		return builder;
+		switch(result.type) {
+
+			case 'promotion':
+				return makeFactory('promotion', function(promotion) {
+					promotion = bt.pieceFromString(promotion);
+					if(promotion >= 0) {
+						var builtMoveDescriptor = result.build(promotion);
+						if(builtMoveDescriptor) {
+							return builtMoveDescriptor;
+						}
+					}
+					throw new exception.IllegalArgument('Position#isMoveLegal()');
+				});
+
+			case 'castle960':
+				return makeFactory('castle960', function(type) {
+					switch(type) {
+						case 'king': return result.build(false);
+						case 'castle': return result.build(true);
+						default: throw new exception.IllegalArgument('Position#isMoveLegal()');
+					}
+				});
+
+			default: // This case is not supposed to happen.
+				throw new exception.IllegalArgument('Position#isMoveLegal()');
+		}
 	}
 };
+
+
+function makeFactory(status, factory) {
+	factory.status = status;
+	return factory;
+}
 
 
 /**

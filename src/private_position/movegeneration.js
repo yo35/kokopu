@@ -346,6 +346,12 @@ exports.isMoveLegal = function(position, from, to) {
 	var isTwoSquarePawnMove = false;
 	var isPromotion = movingPiece===bt.PAWN && (to<8 || to>=112);
 
+	// Compute the move descriptor corresponding to castling, if applicable.
+	var castlingDescriptor = false;
+	if(movingPiece === bt.KING && position.castling[position.turn] !== 0) {
+		castlingDescriptor = isCastlingLegal(position, from, to);
+	}
+
 	// Step (4)
 	if((DISPLACEMENT_LOOKUP[displacement] /* jshint bitwise:false */ & 1<<fromContent /* jshint bitwise:true */) === 0) {
 		if(movingPiece === bt.PAWN && displacement === 151-position.turn*64) {
@@ -353,11 +359,8 @@ exports.isMoveLegal = function(position, from, to) {
 			if(from < firstSquareOfRow || from >= firstSquareOfRow+8) { return false; }
 			isTwoSquarePawnMove = true;
 		}
-		else if(movingPiece === bt.KING && (displacement === 117 || displacement === 121)) {
-			return isCastlingLegal(position, from, to);
-		}
 		else {
-			return false;
+			return castlingDescriptor;
 		}
 	}
 
@@ -375,7 +378,7 @@ exports.isMoveLegal = function(position, from, to) {
 		}
 	}
 	else { // piece move
-		if(toContent >= 0 && toContent%2 === position.turn) { return false; }
+		if(toContent >= 0 && toContent%2 === position.turn) { return castlingDescriptor; }
 	}
 
 	// Step (6) -> For sliding pieces, ensure that there is nothing between the origin and the destination squares.
@@ -391,12 +394,33 @@ exports.isMoveLegal = function(position, from, to) {
 
 	// Steps (7) to (9) are delegated to `isKingSafeAfterMove`.
 	var descriptor = isKingSafeAfterMove(position, from, to, enPassantSquare);
-	return descriptor && isPromotion ? function(promotion) {
-		if(promotion !== bt.PAWN && promotion !== bt.KING) {
-			return moveDescriptor.makePromotion(descriptor._from, descriptor._to, descriptor._movingPiece % 2, promotion, descriptor._optionalPiece);
-		}
+	if(descriptor && isPromotion) {
+		return {
+			type: 'promotion',
+			build: function(promotion) {
+				return promotion !== bt.PAWN && promotion !== bt.KING ?
+					moveDescriptor.makePromotion(descriptor._from, descriptor._to, descriptor._movingPiece % 2, promotion, descriptor._optionalPiece) :
+					false;
+			}
+		};
+	}
+	else if(descriptor && castlingDescriptor) {
+		return {
+			type: 'castle960',
+			build: function(type) {
+				return type ? castlingDescriptor : descriptor;
+			}
+		};
+	}
+	else if(descriptor) {
+		return descriptor;
+	}
+	else if(castlingDescriptor) {
+		return castlingDescriptor;
+	}
+	else {
 		return false;
-	} : descriptor;
+	}
 };
 
 
