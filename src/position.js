@@ -504,10 +504,11 @@ Position.prototype.moves = function() {
  * Depending on the situation, the method returns:
  *   - `false` if it is not possible to move from `from` to `to` (either because the move itself is not legal, or because the underlying
  *     position is not legal).
- *   - a {@link MoveDescriptor} object if the move is legal, and if it does not correspond to a promotion.
- *   - a `function` that takes in input a {@link Piece} (among `'q'`, `'r'`, `'b'` and `'n'`) and returns a {@link MoveDescriptor}
- *     if the move is legal and corresponds to a promotion. In this case, the {@link Piece} passed to this `function` corresponds
- *     to the promoted piece. Furthermore, the attribute `needPromotion` is set to `true` on the returned `function`.
+ *   - a function that returns a {@link MoveDescriptor} otherwise. When there is only one possible move between the given squares
+ *     `from` and `to` (i.e. in most cases), this function must be invoked with no argument. When there is a "move ambiguity"
+ *     (i.e. squares `from` and `to` are not sufficient to fully describe a move), an argument must be passed to the this function
+ *     in order to discriminate between the possible moves. A field `status` is added to the function in order to indicate whether
+ *     there is a move ambiguity or not.
  *
  * A code interpreting the result returned by {@link Position#isMoveLegal} would typically look like this:
  *
@@ -516,19 +517,29 @@ Position.prototype.moves = function() {
  * if(!result) {
  *   // The move "from -> to" is not legal.
  * }
- * else if(result.needPromotion) {
- *   // The move "from -> to" is legal, but it corresponds to a promotion,
- *   // so the promoted piece must be specified. The corresponding move descriptors
- *   // are `result('q')`, `result('r')`, `result('b')` and `result('n')`.
- * }
  * else {
- *   // The move "from -> to" is legal, and the corresponding move descriptor is `result`.
+ *   switch(result.status) {
+ *
+ *     case 'regular':
+ *       // The move "from -> to" is legal, and the corresponding move descriptor is `result()`.
+ *       break;
+ *
+ *     case 'promotion':
+ *       // The move "from -> to" is legal, but it corresponds to a promotion,
+ *       // so the promoted piece must be specified. The corresponding move descriptors
+ *       // are `result('q')`, `result('r')`, `result('b')` and `result('n')`.
+ *       break;
+ *
+ *     default:
+ *       // This case is not supposed to happen.
+ *       break;
+ *   }
  * }
  * ```
  *
  * @param {Square} from
  * @param {Square} to
- * @returns {boolean|MoveDescriptor|function(Piece):MoveDescriptor}
+ * @returns {boolean|function}
  */
 Position.prototype.isMoveLegal = function(from, to) {
 	from = bt.squareFromString(from);
@@ -538,8 +549,20 @@ Position.prototype.isMoveLegal = function(from, to) {
 	}
 	var result = moveGeneration.isMoveLegal(this._impl, from, to);
 
-	// A promoted piece needs to be chosen to build a valid move descriptor.
-	if(typeof result === 'function') {
+	// No legal move.
+	if(!result) {
+		return false;
+	}
+
+	// Only one legal move (no ambiguity).
+	else if(moveDescriptor.isMoveDescriptor(result)) {
+		var builder = function() { return result; };
+		builder.status = 'regular';
+		return builder;
+	}
+
+	// Several legal moves -> ambiguity.
+	else {
 		var builder = function(promotion) {
 			promotion = bt.pieceFromString(promotion);
 			if(promotion >= 0) {
@@ -550,13 +573,8 @@ Position.prototype.isMoveLegal = function(from, to) {
 			}
 			throw new exception.IllegalArgument('Position#isMoveLegal()');
 		};
-		builder.needPromotion = true;
+		builder.status = 'promotion';
 		return builder;
-	}
-
-	// The result is either false or is a valid move descriptor.
-	else {
-		return result;
 	}
 };
 

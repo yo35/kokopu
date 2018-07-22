@@ -128,14 +128,21 @@ describe('Move legality check', function() {
 						return;
 					}
 
-					if(moveDescriptor.needPromotion) {
-						moves.push(moveDescriptor('q'));
-						moves.push(moveDescriptor('r'));
-						moves.push(moveDescriptor('b'));
-						moves.push(moveDescriptor('n'));
-					}
-					else {
-						moves.push(moveDescriptor);
+					switch(moveDescriptor.status) {
+
+						case 'regular':
+							moves.push(moveDescriptor());
+							break;
+
+						case 'promotion':
+							moves.push(moveDescriptor('q'));
+							moves.push(moveDescriptor('r'));
+							moves.push(moveDescriptor('b'));
+							moves.push(moveDescriptor('n'));
+							break;
+
+						default:
+							break;
 					}
 				});
 			});

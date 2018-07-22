@@ -53,15 +53,22 @@ function makeDescriptor(from, to) {
 }
 
 
-describe('Normal move', function() {
-	var descriptor = makeDescriptor('b1', 'a3');
+describe('Illegal move', function() {
+	it('Status?', function() { test.value(makeDescriptor('c1', 'a3')).is(false); });
+});
 
-	it('Is descriptor?' , function() { test.value(kokopu.isMoveDescriptor(descriptor)).is(true); });
-	it('Need promotion?', function() { test.value(descriptor.needPromotion).isNotTrue(); });
-	it('Is castling?'   , function() { test.value(descriptor.isCastling()).is(false); });
-	it('Is en-passant?' , function() { test.value(descriptor.isEnPassant()).is(false); });
-	it('Is capture?'    , function() { test.value(descriptor.isCapture()).is(false); });
-	it('Is promotion?'  , function() { test.value(descriptor.isPromotion()).is(false); });
+
+describe('Normal move', function() {
+	var preDescriptor = makeDescriptor('b1', 'a3');
+
+	it('Status?', function() { test.value(preDescriptor.status).is('regular'); });
+	var descriptor = preDescriptor();
+
+	it('Is descriptor?', function() { test.value(kokopu.isMoveDescriptor(descriptor)).is(true); });
+	it('Is castling?'  , function() { test.value(descriptor.isCastling()).is(false); });
+	it('Is en-passant?', function() { test.value(descriptor.isEnPassant()).is(false); });
+	it('Is capture?'   , function() { test.value(descriptor.isCapture()).is(false); });
+	it('Is promotion?' , function() { test.value(descriptor.isPromotion()).is(false); });
 
 	it('Square from'           , function() { test.value(descriptor.from()).is('b1'); });
 	it('Square to'             , function() { test.value(descriptor.to()).is('a3'); });
@@ -80,14 +87,16 @@ describe('Normal move', function() {
 
 
 describe('Normal move with capture', function() {
-	var descriptor = makeDescriptor('c3', 'c7');
+	var preDescriptor = makeDescriptor('c3', 'c7');
 
-	it('Is descriptor?' , function() { test.value(kokopu.isMoveDescriptor(descriptor)).is(true); });
-	it('Need promotion?', function() { test.value(descriptor.needPromotion).isNotTrue(); });
-	it('Is castling?'   , function() { test.value(descriptor.isCastling()).is(false); });
-	it('Is en-passant?' , function() { test.value(descriptor.isEnPassant()).is(false); });
-	it('Is capture?'    , function() { test.value(descriptor.isCapture()).is(true); });
-	it('Is promotion?'  , function() { test.value(descriptor.isPromotion()).is(false); });
+	it('Status?', function() { test.value(preDescriptor.status).is('regular'); });
+	var descriptor = preDescriptor();
+
+	it('Is descriptor?', function() { test.value(kokopu.isMoveDescriptor(descriptor)).is(true); });
+	it('Is castling?'  , function() { test.value(descriptor.isCastling()).is(false); });
+	it('Is en-passant?', function() { test.value(descriptor.isEnPassant()).is(false); });
+	it('Is capture?'   , function() { test.value(descriptor.isCapture()).is(true); });
+	it('Is promotion?' , function() { test.value(descriptor.isPromotion()).is(false); });
 
 	it('Square from'           , function() { test.value(descriptor.from()).is('c3'); });
 	it('Square to'             , function() { test.value(descriptor.to()).is('c7'); });
@@ -106,14 +115,16 @@ describe('Normal move with capture', function() {
 
 
 describe('Castling move', function() {
-	var descriptor = makeDescriptor('e1', 'g1');
+	var preDescriptor = makeDescriptor('e1', 'g1');
 
-	it('Is descriptor?' , function() { test.value(kokopu.isMoveDescriptor(descriptor)).is(true); });
-	it('Need promotion?', function() { test.value(descriptor.needPromotion).isNotTrue(); });
-	it('Is castling?'   , function() { test.value(descriptor.isCastling()).is(true); });
-	it('Is en-passant?' , function() { test.value(descriptor.isEnPassant()).is(false); });
-	it('Is capture?'    , function() { test.value(descriptor.isCapture()).is(false); });
-	it('Is promotion?'  , function() { test.value(descriptor.isPromotion()).is(false); });
+	it('Status?', function() { test.value(preDescriptor.status).is('regular'); });
+	var descriptor = preDescriptor();
+
+	it('Is descriptor?', function() { test.value(kokopu.isMoveDescriptor(descriptor)).is(true); });
+	it('Is castling?'  , function() { test.value(descriptor.isCastling()).is(true); });
+	it('Is en-passant?', function() { test.value(descriptor.isEnPassant()).is(false); });
+	it('Is capture?'   , function() { test.value(descriptor.isCapture()).is(false); });
+	it('Is promotion?' , function() { test.value(descriptor.isPromotion()).is(false); });
 
 	it('Square from'           , function() { test.value(descriptor.from()).is('e1'); });
 	it('Square to'             , function() { test.value(descriptor.to()).is('g1'); });
@@ -132,14 +143,16 @@ describe('Castling move', function() {
 
 
 describe('En-passant move', function() {
-	var descriptor = makeDescriptor('g5', 'f6');
+	var preDescriptor = makeDescriptor('g5', 'f6');
 
-	it('Is descriptor?' , function() { test.value(kokopu.isMoveDescriptor(descriptor)).is(true); });
-	it('Need promotion?', function() { test.value(descriptor.needPromotion).isNotTrue(); });
-	it('Is castling?'   , function() { test.value(descriptor.isCastling()).is(false); });
-	it('Is en-passant?' , function() { test.value(descriptor.isEnPassant()).is(true); });
-	it('Is capture?'    , function() { test.value(descriptor.isCapture()).is(true); });
-	it('Is promotion?'  , function() { test.value(descriptor.isPromotion()).is(false); });
+	it('Status?', function() { test.value(preDescriptor.status).is('regular'); });
+	var descriptor = preDescriptor();
+
+	it('Is descriptor?', function() { test.value(kokopu.isMoveDescriptor(descriptor)).is(true); });
+	it('Is castling?'  , function() { test.value(descriptor.isCastling()).is(false); });
+	it('Is en-passant?', function() { test.value(descriptor.isEnPassant()).is(true); });
+	it('Is capture?'   , function() { test.value(descriptor.isCapture()).is(true); });
+	it('Is promotion?' , function() { test.value(descriptor.isPromotion()).is(false); });
 
 	it('Square from'           , function() { test.value(descriptor.from()).is('g5'); });
 	it('Square to'             , function() { test.value(descriptor.to()).is('f6'); });
@@ -160,16 +173,14 @@ describe('En-passant move', function() {
 describe('Promotion move', function() {
 	var preDescriptor = makeDescriptor('a7', 'a8');
 
-	it('Is descriptor? (first pass)' , function() { test.value(kokopu.isMoveDescriptor(preDescriptor)).is(false); });
-	it('Need promotion? (first pass)', function() { test.value(preDescriptor.needPromotion).isTrue(); });
+	it('Status?', function() { test.value(preDescriptor.status).is('promotion'); });
 	var descriptor = preDescriptor('q');
 
-	it('Is descriptor?' , function() { test.value(kokopu.isMoveDescriptor(descriptor)).is(true); });
-	it('Need promotion?', function() { test.value(descriptor.needPromotion).isNotTrue(); });
-	it('Is castling?'   , function() { test.value(descriptor.isCastling()).is(false); });
-	it('Is en-passant?' , function() { test.value(descriptor.isEnPassant()).is(false); });
-	it('Is capture?'    , function() { test.value(descriptor.isCapture()).is(false); });
-	it('Is promotion?'  , function() { test.value(descriptor.isPromotion()).is(true); });
+	it('Is descriptor?', function() { test.value(kokopu.isMoveDescriptor(descriptor)).is(true); });
+	it('Is castling?'  , function() { test.value(descriptor.isCastling()).is(false); });
+	it('Is en-passant?', function() { test.value(descriptor.isEnPassant()).is(false); });
+	it('Is capture?'   , function() { test.value(descriptor.isCapture()).is(false); });
+	it('Is promotion?' , function() { test.value(descriptor.isPromotion()).is(true); });
 
 	it('Square from'           , function() { test.value(descriptor.from()).is('a7'); });
 	it('Square to'             , function() { test.value(descriptor.to()).is('a8'); });
@@ -190,16 +201,14 @@ describe('Promotion move', function() {
 describe('Promotion move with capture', function() {
 	var preDescriptor = makeDescriptor('a7', 'b8');
 
-	it('Is descriptor? (first pass)' , function() { test.value(kokopu.isMoveDescriptor(preDescriptor)).is(false); });
-	it('Need promotion? (first pass)', function() { test.value(preDescriptor.needPromotion).isTrue(); });
+	it('Status?', function() { test.value(preDescriptor.status).is('promotion'); });
 	var descriptor = preDescriptor('r');
 
-	it('Is descriptor?' , function() { test.value(kokopu.isMoveDescriptor(descriptor)).is(true); });
-	it('Need promotion?', function() { test.value(descriptor.needPromotion).isNotTrue(); });
-	it('Is castling?'   , function() { test.value(descriptor.isCastling()).is(false); });
-	it('Is en-passant?' , function() { test.value(descriptor.isEnPassant()).is(false); });
-	it('Is capture?'    , function() { test.value(descriptor.isCapture()).is(true); });
-	it('Is promotion?'  , function() { test.value(descriptor.isPromotion()).is(true); });
+	it('Is descriptor?', function() { test.value(kokopu.isMoveDescriptor(descriptor)).is(true); });
+	it('Is castling?'  , function() { test.value(descriptor.isCastling()).is(false); });
+	it('Is en-passant?', function() { test.value(descriptor.isEnPassant()).is(false); });
+	it('Is capture?'   , function() { test.value(descriptor.isCapture()).is(true); });
+	it('Is promotion?' , function() { test.value(descriptor.isPromotion()).is(true); });
 
 	it('Square from'           , function() { test.value(descriptor.from()).is('a7'); });
 	it('Square to'             , function() { test.value(descriptor.to()).is('b8'); });
