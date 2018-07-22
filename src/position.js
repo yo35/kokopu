@@ -530,6 +530,12 @@ Position.prototype.moves = function() {
  *       // are `result('q')`, `result('r')`, `result('b')` and `result('n')`.
  *       break;
  *
+ *     case 'castle960':
+ *       // The move "from -> to" is legal, but it corresponds either to a castling move
+ *       // or to a regular king move (this case can only happen at Chess 960).
+ *       // The corresponding move descriptors are `result('castle')` and `result('king')`.
+ *       break;
+ *
  *     default:
  *       // This case is not supposed to happen.
  *       break;
