@@ -9,7 +9,7 @@
 	"author": "Yoann Le Montagner <yo35@melix.net>",
 	"main": "index.js",
 	"devDependencies": {
-		"mocha": "~5.1.1",
+		"mocha": "~5.2.0",
 		"unit.js": "~2.0.0",
 		"jshint": "~2.9.5",
 		"jsdoc": "~3.5.5",
