@@ -18,3 +18,7 @@ footer {
 .signature-attributes {
 	display: none;
 }
+
+.description li {
+	list-style:initial;
+}
