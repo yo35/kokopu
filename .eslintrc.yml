@@ -1,0 +1,23 @@
+env:
+  node: true
+
+extends: 'eslint:recommended'
+
+parserOptions:
+  ecmaVersion: 5
+
+rules:
+
+  # Style
+  indent:          [ error, tab, { SwitchCase: 1 } ]
+  linebreak-style: [ error, unix ]
+  quotes:          [ error, single ]
+  semi:            [ error, always ]
+
+  # Additional rules
+  strict:                [ error, global ]
+  no-constant-condition: [ error, { checkLoops: false } ]
+
+  # Relaxed rules
+  no-redeclare: [ off ]
+
