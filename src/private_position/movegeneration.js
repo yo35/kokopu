@@ -29,6 +29,8 @@ var attacks = require('./attacks');
 var legality = require('./legality');
 
 
+/* eslint-disable no-mixed-spaces-and-tabs, indent */
+
 // Displacement lookup per square index difference.
 var /* const */ DISPLACEMENT_LOOKUP = [
  204,    0,    0,    0,    0,    0,    0,   60,    0,    0,    0,    0,    0,    0,  204,    0,
@@ -66,6 +68,8 @@ var /* const */ SLIDING_DIRECTION = [
 		0,  15,   0,   0,   0,   0,   0,  16,   0,   0,   0,   0,   0,  17,   0,   0,
 	 15,   0,   0,   0,   0,   0,   0,  16,   0,   0,   0,   0,   0,   0,  17,   0
 ];
+
+/* eslint-enable no-mixed-spaces-and-tabs, indent */
 
 
 exports.isCheck = function(position) {

@@ -57,7 +57,7 @@ var SPECIAL_NAGS_LOOKUP = {
  * @ignore
  */
 function parseHeaderValue(rawHeaderValue) {
-	return rawHeaderValue.replace(/\\([\\"\[\]])/g, '$1');
+	return rawHeaderValue.replace(/\\([\\"[\]])/g, '$1');
 }
 
 
@@ -69,12 +69,12 @@ function parseHeaderValue(rawHeaderValue) {
  * @ignore
  */
 function parseCommentValue(rawComment) {
-	rawComment = rawComment.replace(/\\([\{\}\\])/g, '$1');
+	rawComment = rawComment.replace(/\\([{}\\])/g, '$1');
 
 	var tags = {};
 
 	// Find and remove the tags from the raw comment.
-	var comment = rawComment.replace(/\[%([a-zA-Z]+) ([^\[\]]+)\]/g, function(match, p1, p2) {
+	var comment = rawComment.replace(/\[%([a-zA-Z]+) ([^[\]]+)\]/g, function(match, p1, p2) {
 		tags[p1] = p2;
 		return ' ';
 	});
@@ -158,28 +158,28 @@ TokenStream.prototype.consumeToken = function() {
 	this.tokenPos = this._pos;
 
 	// Match a game header (ex: [White "Kasparov, G."])
-	if(/^(\[\s*(\w+)\s+\"((?:[^\\"\[\]]|\\[\\"\[\]])*)\"\s*\])/.test(s)) {
+	if(/^(\[\s*(\w+)\s+"((?:[^\\"[\]]|\\[\\"[\]])*)"\s*\])/.test(s)) {
 		this._pos      += RegExp.$1.length;
 		this.token      = TOKEN_HEADER;
 		this.tokenValue = {key: RegExp.$2, value: parseHeaderValue(RegExp.$3)};
 	}
 
 	// Match a move or a null-move
-	else if(/^((?:[1-9][0-9]*\s*\.(?:\.\.)?\s*)?((?:O-O-O|O-O|[KQRBN][a-h]?[1-8]?x?[a-h][1-8]|(?:[a-h]x?)?[a-h][1-8](?:=?[KQRBNP])?)[\+#]?|--))/.test(s)) {
+	else if(/^((?:[1-9][0-9]*\s*\.(?:\.\.)?\s*)?((?:O-O-O|O-O|[KQRBN][a-h]?[1-8]?x?[a-h][1-8]|(?:[a-h]x?)?[a-h][1-8](?:=?[KQRBNP])?)[+#]?|--))/.test(s)) {
 		this._pos      += RegExp.$1.length;
 		this.token      = TOKEN_MOVE;
 		this.tokenValue = RegExp.$2;
 	}
 
 	// Match a NAG
-	else if(/^(([!\?][!\?]?|\+\/?[\-=]|[\-=]\/?\+|=|inf|~)|\$([1-9][0-9]*))/.test(s)) {
+	else if(/^(([!?][!?]?|\+\/?[-=]|[-=]\/?\+|=|inf|~)|\$([1-9][0-9]*))/.test(s)) {
 		this._pos      += RegExp.$1.length;
 		this.token      = TOKEN_NAG;
 		this.tokenValue = RegExp.$3.length === 0 ? SPECIAL_NAGS_LOOKUP[RegExp.$2] : parseInt(RegExp.$3, 10);
 	}
 
 	// Match a comment
-	else if(/^(\{((?:[^\{\}\\]|\\[\{\}\\])*)\})/.test(s)) {
+	else if(/^(\{((?:[^{}\\]|\\[{}\\])*)\})/.test(s)) {
 		this._pos      += RegExp.$1.length;
 		this.token      = TOKEN_COMMENT;
 		this.tokenValue = parseCommentValue(RegExp.$2);
@@ -200,7 +200,7 @@ TokenStream.prototype.consumeToken = function() {
 	}
 
 	// Match a end-of-game marker
-	else if(/^(1\-0|0\-1|1\/2\-1\/2|\*)/.test(s)) {
+	else if(/^(1-0|0-1|1\/2-1\/2|\*)/.test(s)) {
 		this._pos      += RegExp.$1.length;
 		this.token      = TOKEN_END_OF_GAME;
 		this.tokenValue = RegExp.$1;
