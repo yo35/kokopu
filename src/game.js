@@ -450,7 +450,7 @@ Node.prototype.nags = function() {
  * @returns {boolean}
  */
 Node.prototype.hasNag = function(nag) {
-	return !!this._nags[nag];
+	return Boolean(this._nags[nag]);
 };
 
 
@@ -531,7 +531,7 @@ Node.prototype.comment = function(value, isLongComment) {
 	}
 	else {
 		this._comment = value;
-		this._isLongComment = !!isLongComment;
+		this._isLongComment = Boolean(isLongComment);
 	}
 };
 

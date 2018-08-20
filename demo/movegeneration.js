@@ -29,7 +29,7 @@ var program = require('commander');
 
 
 function align(data, width) {
-	var result = '' + data;
+	var result = String(data);
 	while(result.length < width) {
 		result = ' ' + result;
 	}

@@ -71,7 +71,7 @@ var InvalidFEN = exports.InvalidFEN = function(fen, message) {
 };
 
 InvalidFEN.prototype.toString = function() {
-	return toString('InvalidFEN', this.message);
+	return toStringImpl('InvalidFEN', this.message);
 };
 
 
@@ -103,7 +103,7 @@ var InvalidNotation = exports.InvalidNotation = function(fen, notation, message)
 };
 
 InvalidNotation.prototype.toString = function() {
-	return toString('InvalidNotation', this.message);
+	return toStringImpl('InvalidNotation', this.message);
 };
 
 
@@ -134,7 +134,7 @@ var InvalidPGN = exports.InvalidPGN = function(pgn, index, message) {
 };
 
 InvalidPGN.prototype.toString = function() {
-	return toString('InvalidPGN', this.message);
+	return toStringImpl('InvalidPGN', this.message);
 };
 
 
@@ -148,6 +148,6 @@ function buildMessage(message, offset, tokens) {
 }
 
 
-function toString(exceptionName, message) {
+function toStringImpl(exceptionName, message) {
 	return exceptionName + ' -> ' + message;
 }

@@ -112,7 +112,7 @@ describe('Check / checkmate / stalemate', function() {
 describe('Move generation', function() {
 	testData().forEach(function(elem) {
 		it('Position ' + elem.label, function() {
-			var moves = createPosition(elem).moves().map(function(elem) { return elem.toString(); }).sort();
+			var moves = createPosition(elem).moves().map(function(move) { return move.toString(); }).sort();
 			test.value(moves.join('/')).is(elem.moves);
 		});
 	});
@@ -157,7 +157,7 @@ describe('Move legality check', function() {
 				});
 			});
 
-			test.value(moves.map(function(elem) { return elem.toString(); }).sort().join('/')).is(elem.moves);
+			test.value(moves.map(function(move) { return move.toString(); }).sort().join('/')).is(elem.moves);
 		});
 	});
 });
@@ -244,7 +244,7 @@ describe('Algebraic notation parsing', function() {
 
 			// Sort the moves and remove the duplicates.
 			moves.sort();
-			moves = moves.filter(function(elem, index, tab) { return index===0 || elem!==tab[index-1]; });
+			moves = moves.filter(function(move, index, tab) { return index === 0 || move !== tab[index-1]; });
 
 			test.value(moves.join('/')).is(elem.moves);
 		});

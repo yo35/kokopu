@@ -157,25 +157,25 @@ describe('Position Scharnagl constructor', function() {
 
 describe('Position getters', function() {
 
-	var customFEN = 'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b Kk e3 0 1';
+	var currentFEN = 'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b Kk e3 0 1';
 
 	it('Get board 1', function() { var p=new kokopu.Position(); test.value(p.square('e1')).is('wk'); });
 	it('Get board 2', function() { var p=new kokopu.Position(); test.value(p.square('f7')).is('bp'); });
 	it('Get board 3', function() { var p=new kokopu.Position(); test.value(p.square('b4')).is('-'); });
 
 	it('Get turn 1', function() { var p=new kokopu.Position(); test.value(p.turn()).is('w'); });
-	it('Get turn 2', function() { var p=new kokopu.Position(customFEN); test.value(p.turn()).is('b'); });
+	it('Get turn 2', function() { var p=new kokopu.Position(currentFEN); test.value(p.turn()).is('b'); });
 
 	it('Get castling 1', function() { var p=new kokopu.Position(); test.value(p.castling('wq')).is(true); });
-	it('Get castling 2', function() { var p=new kokopu.Position(customFEN); test.value(p.castling('bq')).is(false); });
-	it('Get castling 3', function() { var p=new kokopu.Position(customFEN); test.value(p.castling('bk')).is(true); });
+	it('Get castling 2', function() { var p=new kokopu.Position(currentFEN); test.value(p.castling('bq')).is(false); });
+	it('Get castling 3', function() { var p=new kokopu.Position(currentFEN); test.value(p.castling('bk')).is(true); });
 	it('Get castling 4 (chess 960)', function() { var p=new kokopu.Position('chess960', 763); test.value(p.castling('wa')).is(true); });
 	it('Get castling 5 (chess 960)', function() { var p=new kokopu.Position('chess960', 763); test.value(p.castling('wb')).is(false); });
 	it('Get castling 6 (chess 960)', function() { var p=new kokopu.Position('chess960', 763); test.value(p.castling('bf')).is(true); });
 	it('Get castling 7 (chess 960)', function() { var p=new kokopu.Position('chess960', 763); test.value(p.castling('bh')).is(false); });
 
 	it('Get en-passant 1', function() { var p=new kokopu.Position(); test.value(p.enPassant()).is('-'); });
-	it('Get en-passant 2', function() { var p=new kokopu.Position(customFEN); test.value(p.enPassant()).is('e'); });
+	it('Get en-passant 2', function() { var p=new kokopu.Position(currentFEN); test.value(p.enPassant()).is('e'); });
 
 	['j1', 'f9'].forEach(function(elem) {
 		it('Error for board with ' + elem, function() {
