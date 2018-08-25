@@ -177,7 +177,7 @@ function decodeScharnagl(scharnaglCode) {
 		}
 		else {
 			scheme[file] = bt.ROOK;
-			castling /* jshint bitwise:false */ |= 1 << file; /* jshint bitwise:true */
+			castling |= 1 << file;
 		}
 	});
 

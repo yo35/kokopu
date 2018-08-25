@@ -99,17 +99,17 @@ function castlingToString(position) {
 		var whiteFlags = '';
 		var blackFlags = '';
 		for(var file = 0; file < 8; ++file) {
-			if(position.castling[bt.WHITE] /* jshint bitwise:false */ & 1 << file /* jshint bitwise:true */) { whiteFlags += bt.fileToString(file); }
-			if(position.castling[bt.BLACK] /* jshint bitwise:false */ & 1 << file /* jshint bitwise:true */) { blackFlags += bt.fileToString(file); }
+			if(position.castling[bt.WHITE] & 1 << file) { whiteFlags += bt.fileToString(file); }
+			if(position.castling[bt.BLACK] & 1 << file) { blackFlags += bt.fileToString(file); }
 		}
 		return whiteFlags === '' && blackFlags === '' ? '-' : whiteFlags.toUpperCase() + blackFlags;
 	}
 	else {
 		var result = '';
-		if(position.castling[bt.WHITE] /* jshint bitwise:false */ & 1<<7 /* jshint bitwise:true */) { result += 'K'; }
-		if(position.castling[bt.WHITE] /* jshint bitwise:false */ & 1<<0 /* jshint bitwise:true */) { result += 'Q'; }
-		if(position.castling[bt.BLACK] /* jshint bitwise:false */ & 1<<7 /* jshint bitwise:true */) { result += 'k'; }
-		if(position.castling[bt.BLACK] /* jshint bitwise:false */ & 1<<0 /* jshint bitwise:true */) { result += 'q'; }
+		if(position.castling[bt.WHITE] & 1<<7) { result += 'K'; }
+		if(position.castling[bt.WHITE] & 1<<0) { result += 'Q'; }
+		if(position.castling[bt.BLACK] & 1<<7) { result += 'k'; }
+		if(position.castling[bt.BLACK] & 1<<0) { result += 'q'; }
 		return result === '' ? '-' : result;
 	}
 }
@@ -219,10 +219,10 @@ function castlingFromStringFEN(castling, strict) {
 	if(!(strict ? /^K?Q?k?q?$/ : /^[KQkq]*$/).test(castling)) {
 		return null;
 	}
-	if(castling.indexOf('K') >= 0) { res[bt.WHITE] /* jshint bitwise:false */ |= 1<<7; /* jshint bitwise:true */ }
-	if(castling.indexOf('Q') >= 0) { res[bt.WHITE] /* jshint bitwise:false */ |= 1<<0; /* jshint bitwise:true */ }
-	if(castling.indexOf('k') >= 0) { res[bt.BLACK] /* jshint bitwise:false */ |= 1<<7; /* jshint bitwise:true */ }
-	if(castling.indexOf('q') >= 0) { res[bt.BLACK] /* jshint bitwise:false */ |= 1<<0; /* jshint bitwise:true */ }
+	if(castling.indexOf('K') >= 0) { res[bt.WHITE] |= 1<<7; }
+	if(castling.indexOf('Q') >= 0) { res[bt.WHITE] |= 1<<0; }
+	if(castling.indexOf('k') >= 0) { res[bt.BLACK] |= 1<<7; }
+	if(castling.indexOf('q') >= 0) { res[bt.BLACK] |= 1<<0; }
 	return res;
 }
 
@@ -247,7 +247,7 @@ function castlingFromStringXFEN(castling, strict, board) {
 			}
 			else if(board[sq] === targetKing) {
 				if(rookFile < 0) { break; }
-				result[color] /* jshint bitwise:false */ |= 1 << rookFile; /* jshint bitwise:true */
+				result[color] |= 1 << rookFile;
 				return true;
 			}
 		}
@@ -265,7 +265,7 @@ function castlingFromStringXFEN(castling, strict, board) {
 			}
 			else if(board[sq] === targetKing) {
 				if(rookFile < 0) { break; }
-				result[color] /* jshint bitwise:false */ |= 1 << rookFile; /* jshint bitwise:true */
+				result[color] |= 1 << rookFile;
 				return true;
 			}
 		}
@@ -279,8 +279,8 @@ function castlingFromStringXFEN(castling, strict, board) {
 
 	for(var file = 0; file < 8; ++file) {
 		var s = bt.fileToString(file);
-		if(castling.indexOf(s.toUpperCase()) >= 0) { result[bt.WHITE] /* jshint bitwise:false */ |= 1 << file; /* jshint bitwise:true */ }
-		if(castling.indexOf(s              ) >= 0) { result[bt.BLACK] /* jshint bitwise:false */ |= 1 << file; /* jshint bitwise:true */ }
+		if(castling.indexOf(s.toUpperCase()) >= 0) { result[bt.WHITE] |= 1 << file; }
+		if(castling.indexOf(s              ) >= 0) { result[bt.BLACK] |= 1 << file; }
 	}
 	return result;
 }

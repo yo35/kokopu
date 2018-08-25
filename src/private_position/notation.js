@@ -154,7 +154,7 @@ function isPinned(position, sq) {
 }
 
 function pinningLoockup(position, kingSquare, targetSquare, direction, pinnerColoredPiece1, pinnerColoredPiece2) {
-	for(var sq = kingSquare + direction; (sq /* jshint bitwise:false */ & 0x88 /* jshint bitwise:true */)===0; sq += direction) {
+	for(var sq = kingSquare + direction; (sq & 0x88) === 0; sq += direction) {
 		if(sq !== targetSquare && position.board[sq] !== bt.EMPTY) {
 			return position.board[sq] === pinnerColoredPiece1 || position.board[sq] === pinnerColoredPiece2;
 		}
@@ -334,7 +334,7 @@ function getPawnCaptureDescriptor(position, notation, columnFrom, to) {
 
 	// Ensure that `to` is not on the 1st row.
 	var from = to - 16 + position.turn*32;
-	if((from /* jshint bitwise:false */ & 0x88 /* jshint bitwise:true */)!==0) {
+	if((from & 0x88) !== 0) {
 		throw new exception.InvalidNotation(fen.getFEN(position, 0, 1), notation, i18n.INVALID_CAPTURING_PAWN_MOVE);
 	}
 
@@ -376,7 +376,7 @@ function getPawnAdvanceDescriptor(position, notation, to) {
 	// Ensure that `to` is not on the 1st row.
 	var offset = 16 - position.turn*32;
 	var from = to - offset;
-	if((from /* jshint bitwise:false */ & 0x88 /* jshint bitwise:true */)!==0) {
+	if((from & 0x88) !== 0) {
 		throw new exception.InvalidNotation(fen.getFEN(position, 0, 1), notation, i18n.INVALID_NON_CAPTURING_PAWN_MOVE);
 	}
 

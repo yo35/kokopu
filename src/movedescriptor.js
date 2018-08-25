@@ -48,7 +48,7 @@ exports.makeCastling = function(from, to, rookFrom, rookTo, color) {
 
 
 exports.makeEnPassant = function(from, to, enPassantSquare, color) {
-	var flags = EN_PASSANT_FLAG /* jshint bitwise:false */ | CAPTURE_FLAG /* jshint bitwise:true */;
+	var flags = EN_PASSANT_FLAG | CAPTURE_FLAG;
 	var movingPawn = bt.PAWN*2 + color;
 	var capturedPawn = bt.PAWN*2 + 1 - color;
 	return new MoveDescriptor(flags, from, to, movingPawn, movingPawn, capturedPawn, enPassantSquare, -1);
@@ -56,7 +56,7 @@ exports.makeEnPassant = function(from, to, enPassantSquare, color) {
 
 
 exports.makePromotion = function(from, to, color, promotion, capturedPiece) {
-	var flags = PROMOTION_FLAG /* jshint bitwise:false */ | (capturedPiece >= 0 ? CAPTURE_FLAG : 0x00) /* jshint bitwise:true */;
+	var flags = PROMOTION_FLAG | (capturedPiece >= 0 ? CAPTURE_FLAG : 0x00);
 	var movingPawn = bt.PAWN*2 + color;
 	var finalPiece = promotion*2 + color;
 	return new MoveDescriptor(flags, from, to, movingPawn, finalPiece, capturedPiece, -1, -1);
@@ -111,7 +111,7 @@ MoveDescriptor.prototype.toString = function() {
  * @returns {boolean}
  */
 MoveDescriptor.prototype.isCastling = function() {
-	return (this._type /* jshint bitwise:false */ & CASTLING_FLAG /* jshint bitwise:true */) !== 0;
+	return (this._type & CASTLING_FLAG) !== 0;
 };
 
 
@@ -121,7 +121,7 @@ MoveDescriptor.prototype.isCastling = function() {
  * @returns {boolean}
  */
 MoveDescriptor.prototype.isEnPassant = function() {
-	return (this._type /* jshint bitwise:false */ & EN_PASSANT_FLAG /* jshint bitwise:true */) !== 0;
+	return (this._type & EN_PASSANT_FLAG) !== 0;
 };
 
 
@@ -131,7 +131,7 @@ MoveDescriptor.prototype.isEnPassant = function() {
  * @returns {boolean}
  */
 MoveDescriptor.prototype.isCapture = function() {
-	return (this._type /* jshint bitwise:false */ & CAPTURE_FLAG /* jshint bitwise:true */) !== 0;
+	return (this._type & CAPTURE_FLAG) !== 0;
 };
 
 
@@ -141,7 +141,7 @@ MoveDescriptor.prototype.isCapture = function() {
  * @returns {boolean}
  */
 MoveDescriptor.prototype.isPromotion = function() {
-	return (this._type /* jshint bitwise:false */ & PROMOTION_FLAG /* jshint bitwise:true */) !== 0;
+	return (this._type & PROMOTION_FLAG) !== 0;
 };
 
 

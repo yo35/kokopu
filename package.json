@@ -12,14 +12,13 @@
 		"mocha": "~5.2.0",
 		"unit.js": "~2.0.0",
 		"eslint": "~5.3.0",
-		"jshint": "~2.9.5",
 		"jsdoc": "~3.5.5",
 		"tui-jsdoc-template": "~1.2.2",
 		"uglify-js": "~3.4.0",
 		"browserify": "~16.2.0"
 	},
 	"scripts": {
-		"lint": "jshint index.js demo src test",
+		"lint": "eslint index.js demo src test",
 		"unit": "mocha --bail --sort",
 		"test": "npm run lint && npm run unit"
 	}

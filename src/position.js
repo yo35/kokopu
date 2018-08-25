@@ -309,14 +309,14 @@ Position.prototype.castling = function(castle, value) {
 	var file = this._impl.variant === bt.REGULAR_CHESS ? (castle[1]==='k' ? 7 : 0) : bt.fileFromString(castle[1]);
 
 	if(arguments.length === 1) {
-		return (this._impl.castling[color] /* jshint bitwise:false */ & (1 << file) /* jshint bitwise:true */) !== 0;
+		return (this._impl.castling[color] & 1 << file) !== 0;
 	}
 	else if(value) {
-		this._impl.castling[color] /* jshint bitwise:false */ |= 1 << file; /* jshint bitwise:true */
+		this._impl.castling[color] |= 1 << file;
 		this._impl.legal = null;
 	}
 	else {
-		this._impl.castling[color] /* jshint bitwise:false */ &= ~(1 << file); /* jshint bitwise:true */
+		this._impl.castling[color] &= ~(1 << file);
 		this._impl.legal = null;
 	}
 };

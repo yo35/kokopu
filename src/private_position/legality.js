@@ -110,7 +110,7 @@ var refreshLegalFlagAndKingSquares = exports.refreshLegalFlagAndKingSquares = fu
 function refreshKingSquare(position, color) {
 	var target = bt.KING*2 + color;
 	position.king[color] = -1;
-	for(var sq=0; sq<120; sq += (sq /* jshint bitwise:false */ & 0x7 /* jshint bitwise:true */)===7 ? 9 : 1) {
+	for(var sq=0; sq<120; sq += (sq & 0x7)===7 ? 9 : 1) {
 		if(position.board[sq] === target) {
 
 			// If the targeted king is detected on the square sq, two situations may occur:
@@ -132,8 +132,8 @@ function refreshKingSquare(position, color) {
 
 
 function isCastlingFlagLegalForRegularChess(position, color) {
-	var skipOO  = (position.castling[color] /* jshint bitwise:false */ & 0x80 /* jshint bitwise:true */) === 0;
-	var skipOOO = (position.castling[color] /* jshint bitwise:false */ & 0x01 /* jshint bitwise:true */) === 0;
+	var skipOO  = (position.castling[color] & 0x80) === 0;
+	var skipOOO = (position.castling[color] & 0x01) === 0;
 	var rookHOK = skipOO              || position.board[7 + 112*color] === bt.ROOK*2 + color;
 	var rookAOK = skipOOO             || position.board[0 + 112*color] === bt.ROOK*2 + color;
 	var kingOK  = (skipOO && skipOOO) || position.board[4 + 112*color] === bt.KING*2 + color;
@@ -144,7 +144,7 @@ function isCastlingFlagLegalForRegularChess(position, color) {
 function isCastlingFlagLegalForChess960(position, color) {
 	var files = [];
 	for(var file=0; file<8; ++file) {
-		if((position.castling[color] /* jshint bitwise:false */ & (1 << file) /* jshint bitwise:true */) === 0) {
+		if((position.castling[color] & 1 << file) === 0) {
 			continue;
 		}
 

@@ -130,7 +130,7 @@ function generateMoves(position, fun) {
 	if(!legality.isLegal(position)) { return; }
 
 	// For all potential 'from' square...
-	for(var from=0; from<120; from += (from /* jshint bitwise:false */ & 0x7 /* jshint bitwise:true */)===7 ? 9 : 1) {
+	for(var from=0; from<120; from += (from & 0x7)===7 ? 9 : 1) {
 
 		// Nothing to do if the current square does not contain a piece of the right color.
 		var fromContent = position.board[from];
@@ -146,7 +146,7 @@ function generateMoves(position, fun) {
 			var attackDirections = attacks.ATTACK_DIRECTIONS[fromContent];
 			for(var i=0; i<attackDirections.length; ++i) {
 				var to = from + attackDirections[i];
-				if((to /* jshint bitwise:false */ & 0x88 /* jshint bitwise:true */)===0) {
+				if((to & 0x88) === 0) {
 					var toContent = position.board[to];
 					if(toContent >= 0 && toContent%2 !== position.turn) { // regular capturing move
 						fun(isKingSafeAfterMove(position, from, to, -1), to<8 || to>=112);
@@ -179,7 +179,7 @@ function generateMoves(position, fun) {
 			var directions = attacks.ATTACK_DIRECTIONS[fromContent];
 			for(var i=0; i<directions.length; ++i) {
 				var to = from + directions[i];
-				if((to /* jshint bitwise:false */ & 0x88 /* jshint bitwise:true */)===0) {
+				if((to & 0x88) === 0) {
 					var toContent = position.board[to];
 					if(toContent < 0 || toContent%2 !== position.turn) {
 						fun(isKingSafeAfterMove(position, from, to, -1), false);
@@ -192,7 +192,7 @@ function generateMoves(position, fun) {
 		else {
 			var directions = attacks.ATTACK_DIRECTIONS[fromContent];
 			for(var i=0; i<directions.length; ++i) {
-				for(var to=from+directions[i]; (to /* jshint bitwise:false */ & 0x88 /* jshint bitwise:true */)===0; to+=directions[i]) {
+				for(var to = from + directions[i]; (to & 0x88) === 0; to += directions[i]) {
 					var toContent = position.board[to];
 					if(toContent < 0 || toContent%2 !== position.turn) {
 						fun(isKingSafeAfterMove(position, from, to, -1), false);
@@ -282,7 +282,7 @@ var isCastlingLegal = exports.isCastlingLegal = function(position, from, to) {
 		if(castleFile === -1) { return false; }
 	}
 	else {
-		if((position.castling[position.turn] /* jshint bitwise:false */ & 1<<castleFile /* jshint bitwise:true */) === 0) { return false; }
+		if((position.castling[position.turn] & 1<<castleFile) === 0) { return false; }
 	}
 
 	var rookFrom = castleFile + position.turn*112;
@@ -305,7 +305,7 @@ var isCastlingLegal = exports.isCastlingLegal = function(position, from, to) {
 
 function findCastleFile(castlingFlag, kingFile, offset) {
 	for(var file = kingFile + offset; file >= 0 && file < 8; file += offset) {
-		if((castlingFlag /* jshint bitwise:false */ & 1<<file /* jshint bitwise:true */) !== 0) { return file; }
+		if((castlingFlag & 1 << file) !== 0) { return file; }
 	}
 	return -1;
 }
@@ -357,7 +357,7 @@ exports.isMoveLegal = function(position, from, to) {
 	}
 
 	// Step (4)
-	if((DISPLACEMENT_LOOKUP[displacement] /* jshint bitwise:false */ & 1<<fromContent /* jshint bitwise:true */) === 0) {
+	if((DISPLACEMENT_LOOKUP[displacement] & 1 << fromContent) === 0) {
 		if(movingPiece === bt.PAWN && displacement === 151-position.turn*64) {
 			var firstSquareOfRow = (1 + position.turn*5) * 16;
 			if(from < firstSquareOfRow || from >= firstSquareOfRow+8) { return false; }
@@ -450,19 +450,19 @@ exports.play = function(position, descriptor) {
 	if(movingPiece === bt.KING) {
 		position.castling[position.turn] = 0;
 	}
-	if(descriptor._from <    8) { position.castling[bt.WHITE] /* jshint bitwise:false */ &= ~(1 <<  descriptor._from    ); /* jshint bitwise:true */ }
-	if(descriptor._to   <    8) { position.castling[bt.WHITE] /* jshint bitwise:false */ &= ~(1 <<  descriptor._to      ); /* jshint bitwise:true */ }
-	if(descriptor._from >= 112) { position.castling[bt.BLACK] /* jshint bitwise:false */ &= ~(1 << (descriptor._from%16)); /* jshint bitwise:true */ }
-	if(descriptor._to   >= 112) { position.castling[bt.BLACK] /* jshint bitwise:false */ &= ~(1 << (descriptor._to  %16)); /* jshint bitwise:true */ }
+	if(descriptor._from <    8) { position.castling[bt.WHITE] &= ~(1 <<  descriptor._from    ); }
+	if(descriptor._to   <    8) { position.castling[bt.WHITE] &= ~(1 <<  descriptor._to      ); }
+	if(descriptor._from >= 112) { position.castling[bt.BLACK] &= ~(1 << (descriptor._from%16)); }
+	if(descriptor._to   >= 112) { position.castling[bt.BLACK] &= ~(1 << (descriptor._to  %16)); }
 
 	// Update the en-passant flag.
 	position.enPassant = -1;
 	if(movingPiece === bt.PAWN && Math.abs(descriptor._from - descriptor._to)===32) {
-		var otherPawn = descriptor._movingPiece /* jshint bitwise:false */ ^ 0x01 /* jshint bitwise:true */;
+		var otherPawn = descriptor._movingPiece ^ 0x01;
 		var squareBefore = descriptor._to - 1;
 		var squareAfter = descriptor._to + 1;
-		if(((squareBefore /* jshint bitwise:false */ & 0x88 /* jshint bitwise:true */)===0 && position.board[squareBefore]===otherPawn) ||
-			((squareAfter /* jshint bitwise:false */ & 0x88 /* jshint bitwise:true */)===0 && position.board[squareAfter]===otherPawn)) {
+		if(((squareBefore & 0x88) === 0 && position.board[squareBefore] === otherPawn) ||
+			((squareAfter & 0x88) === 0 && position.board[squareAfter]===otherPawn)) {
 			position.enPassant = descriptor._to % 16;
 		}
 	}
