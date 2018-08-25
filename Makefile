@@ -125,11 +125,11 @@ $(PACKAGE_DIST_FILE): $(BROWSER_JS_FILE) $(BROWSER_MIN_JS_FILE) $(INFO_FILES)
 
 test: lint unit
 
-lint:
+lint: $(NODE_MODULES_DIR)
 	@$(ECHO) "$(COLOR_IN)Running static analysis...$(COLOR_OUT)"
 	@npm run lint
 
-unit:
+unit: $(NODE_MODULES_DIR)
 	@$(ECHO) "$(COLOR_IN)Running unit tests...$(COLOR_OUT)"
 	@npm run unit
 
