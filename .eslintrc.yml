@@ -9,7 +9,7 @@ parserOptions:
 rules:
 
   # Style
-  indent:          [ error, tab, { SwitchCase: 1 } ]
+  indent:          [ error, tab, { SwitchCase: 1 }]
   linebreak-style: [ error, unix ]
   quotes:          [ error, single ]
   semi:            [ error, always ]
@@ -40,11 +40,11 @@ rules:
   no-unused-expressions:        [ error ]
   no-useless-concat:            [ error ]
   no-useless-return:            [ error ]
-  no-warning-comments:          [ warn, { location: anywhere, terms: [ TODO ] } ]
-  no-shadow:                    [ error, { builtinGlobals: true } ]
+  no-warning-comments:          [ warn, { location: anywhere, terms: [ TODO ] }]
+  no-shadow:                    [ error, { builtinGlobals: true }]
   no-shadow-restricted-names:   [ error ]
 
   # Relaxed rules
   no-redeclare:          [ off ]
-  no-constant-condition: [ error, { checkLoops: false } ]
+  no-constant-condition: [ error, { checkLoops: false }]
 

@@ -2,5 +2,5 @@ env:
   mocha: true
 
 rules:
-  no-shadow: [ error, { builtinGlobals: true, allow: [ test ] } ]
+  no-shadow: [ error, { builtinGlobals: true, allow: [ test ] }]
 
