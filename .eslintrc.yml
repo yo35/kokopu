@@ -13,9 +13,11 @@ rules:
   linebreak-style: [ error, unix ]
   quotes:          [ error, single ]
   semi:            [ error, always ]
+  camelcase:       [ error ]
 
   # Additional rules
   strict:                       [ error, global ]
+  curly:                        [ error, all ]
   eqeqeq:                       [ error, always ]
   guard-for-in:                 [ error ]
   no-alert:                     [ error ]
