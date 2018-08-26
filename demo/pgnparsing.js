@@ -53,25 +53,24 @@ function pgnReadSafely(text) {
 
 
 /**
- * Load a text file, parse its content as PGN, and display the time it takes to do that.
+ * Load the text files, parse their content as PGN, and display the time it takes to do that.
  */
-function run(path) {
+function run(paths, pathAlignment) {
+	paths.forEach(function(path) {
 
-	var step0At = Date.now();
-	var text = fs.readFileSync(path, 'utf8');
-	var step1At = Date.now();
-	var games = pgnReadSafely(text);
-	var step2At = Date.now();
+		var text = fs.readFileSync(path, 'utf8');
+		var startAt = Date.now();
+		var games = pgnReadSafely(text);
+		var stopAt = Date.now();
 
-	var duration = step2At - step0At;
-	var durationParsing = step2At - step1At;
+		var duration = stopAt - startAt;
 
-	var sep = '     ';
-	console.log(
-		'File: ' + align(path, 2) + sep +
-		'Games: ' + align(games === null ? '--' : games.length, 7) + sep +
-		'Duration: ' + align(duration, 8) + ' ms' + sep +
-		'Duration parsing: ' + align(durationParsing, 8) + ' ms');
+		var sep = '     ';
+		console.log(
+			'File: ' + align(path, pathAlignment) + sep +
+			'Games: ' + align(games === null ? '--' : games.length, 7) + sep +
+			'Duration: ' + align(duration, 8) + ' ms');
+	});
 }
 
 
@@ -87,5 +86,6 @@ if(program.args.length === 0) {
 	console.log('No PGN file to analyze.');
 }
 else {
-	run(program.args[0]);
+	var pathAlignment = program.args.map(function(path) { return path.length; }).reduce(function(l1, l2) { return Math.max(l1, l2); });
+	run(program.args, pathAlignment);
 }
