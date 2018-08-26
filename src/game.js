@@ -325,7 +325,7 @@ function Node(parentVariation, previous, move) {
 
 	// Null move.
 	if(move === '--') {
-		this._notation = '--';
+		this._isNullMove = true;
 		if(!this._position.playNullMove()) {
 			throw new exception.InvalidNotation(this._position, '--', i18n.ILLEGAL_NULL_MOVE);
 		}
@@ -333,9 +333,9 @@ function Node(parentVariation, previous, move) {
 
 	// Regular move.
 	else {
-		var moveDescriptor = this._position.notation(move);
-		this._notation = this._position.notation(moveDescriptor);
-		this._position.play(moveDescriptor);
+		this._isNullMove = false;
+		this._moveDescriptor = this._position.notation(move);
+		this._position.play(this._moveDescriptor);
 	}
 
 	// Full-move number
@@ -363,7 +363,7 @@ function Node(parentVariation, previous, move) {
  * @returns {string}
  */
 Node.prototype.notation = function() {
-	return this._notation;
+	return this._isNullMove ? '--' : this.positionBefore().notation(this._moveDescriptor);
 };
 
 
