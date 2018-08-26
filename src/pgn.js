@@ -112,21 +112,67 @@ function TokenStream(pgnString) {
 	this.token          = 0;         // current token
 	this.tokenValue     = null;      // current token value (if any)
 	this.tokenPos       = 0;         // position of the current token in the string
+
+	// Space-like matchers
+	this._matchSpaces = /[ \f\t\v]+/g;
+	this._matchLineBreak = /\r?\n|\r/g;
+
+	// Token matchers
+	this._matchHeader = /\[\s*(\w+)\s+"((?:[^\\"[\]]|\\[\\"[\]])*)"\s*\]/g;
+	this._matchMove = /(?:[1-9][0-9]*\s*\.(?:\.\.)?\s*)?((?:O-O-O|O-O|[KQRBN][a-h]?[1-8]?x?[a-h][1-8]|(?:[a-h]x?)?[a-h][1-8](?:=?[KQRBNP])?)[+#]?|--)/g;
+	this._matchNag = /([!?][!?]?|\+\/?[-=]|[-=]\/?\+|=|inf|~)|\$([1-9][0-9]*)/g;
+	this._matchComment = /\{((?:[^{}\\]|\\[{}\\])*)\}/g;
+	this._matchBeginVariation = /\(/g;
+	this._matchEndVariation = /\)/g;
+	this._matchEndOfGame = /1-0|0-1|1\/2-1\/2|\*/g;
+
+	this._matchSpaces.matchedIndex = -1;
+	this._matchLineBreak.matchedIndex = -1;
+	this._matchHeader.matchedIndex = -1;
+	this._matchMove.matchedIndex = -1;
+	this._matchNag.matchedIndex = -1;
+	this._matchComment.matchedIndex = -1;
+	this._matchBeginVariation.matchedIndex = -1;
+	this._matchEndVariation.matchedIndex = -1;
+	this._matchEndOfGame.matchedIndex = -1;
+}
+
+
+/**
+ * Try to match the given regular expression at the current position.
+ *
+ * @param {TokenStream} stream
+ * @param {RegExp} re
+ * @returns {boolean}
+ */
+function testAtPos(stream, re) {
+	if(re.matchedIndex < stream._pos) {
+		re.lastIndex = stream._pos;
+		re.matched = re.exec(stream.text);
+		re.matchedIndex = re.matched === null ? stream.text.length : re.matched.index;
+	}
+	if(re.matchedIndex === stream._pos) {
+		stream._pos = re.lastIndex;
+		return true;
+	}
+	else {
+		return false;
+	}
 }
 
 
 /**
  * Advance until the first non-blank character.
+ *
+ * @param {TokenStream} stream
  */
-TokenStream.prototype._skipBlanks = function() {
+function skipBlanks(stream) {
 	var newLineCount = 0;
-	while(this._pos < this.text.length) {
-		var s = this.text.substr(this._pos);
-		if(/^([ \f\t\v])+/.test(s)) { // match spaces
-			this._pos += RegExp.$1.length;
+	while(stream._pos < stream.text.length) {
+		if(testAtPos(stream, stream._matchSpaces)) {
+			// Nothing to do...
 		}
-		else if(/^(\r?\n|\r)/.test(s)) { // match line-breaks
-			this._pos += RegExp.$1.length;
+		else if(testAtPos(stream, stream._matchLineBreak)) {
 			++newLineCount;
 		}
 		else {
@@ -135,8 +181,8 @@ TokenStream.prototype._skipBlanks = function() {
 	}
 
 	// An empty line was encountered if and only if at least to line breaks were found.
-	this.emptyLineFound = newLineCount >= 2;
-};
+	stream.emptyLineFound = newLineCount >= 2;
+}
 
 
 /**
@@ -148,62 +194,54 @@ TokenStream.prototype._skipBlanks = function() {
 TokenStream.prototype.consumeToken = function() {
 
 	// Consume blank (i.e. meaning-less) characters
-	this._skipBlanks();
+	skipBlanks(this);
 	if(this._pos >= this.text.length) {
 		return false; // -> `false` means that the end of the string have been reached
 	}
 
 	// Remaining part of the string
-	var s = this.text.substr(this._pos);
 	this.tokenPos = this._pos;
 
 	// Match a game header (ex: [White "Kasparov, G."])
-	if(/^(\[\s*(\w+)\s+"((?:[^\\"[\]]|\\[\\"[\]])*)"\s*\])/.test(s)) {
-		this._pos      += RegExp.$1.length;
+	if(testAtPos(this, this._matchHeader)) {
 		this.token      = TOKEN_HEADER;
-		this.tokenValue = {key: RegExp.$2, value: parseHeaderValue(RegExp.$3)};
+		this.tokenValue = { key: this._matchHeader.matched[1], value: parseHeaderValue(this._matchHeader.matched[2]) };
 	}
 
 	// Match a move or a null-move
-	else if(/^((?:[1-9][0-9]*\s*\.(?:\.\.)?\s*)?((?:O-O-O|O-O|[KQRBN][a-h]?[1-8]?x?[a-h][1-8]|(?:[a-h]x?)?[a-h][1-8](?:=?[KQRBNP])?)[+#]?|--))/.test(s)) {
-		this._pos      += RegExp.$1.length;
+	else if(testAtPos(this, this._matchMove)) {
 		this.token      = TOKEN_MOVE;
-		this.tokenValue = RegExp.$2;
+		this.tokenValue = this._matchMove.matched[1];
 	}
 
 	// Match a NAG
-	else if(/^(([!?][!?]?|\+\/?[-=]|[-=]\/?\+|=|inf|~)|\$([1-9][0-9]*))/.test(s)) {
-		this._pos      += RegExp.$1.length;
+	else if(testAtPos(this, this._matchNag)) {
 		this.token      = TOKEN_NAG;
-		this.tokenValue = RegExp.$3.length === 0 ? SPECIAL_NAGS_LOOKUP[RegExp.$2] : parseInt(RegExp.$3, 10);
+		this.tokenValue = this._matchNag.matched[2] === undefined ? SPECIAL_NAGS_LOOKUP[this._matchNag.matched[1]] : parseInt(this._matchNag.matched[2], 10);
 	}
 
 	// Match a comment
-	else if(/^(\{((?:[^{}\\]|\\[{}\\])*)\})/.test(s)) {
-		this._pos      += RegExp.$1.length;
+	else if(testAtPos(this, this._matchComment)) {
 		this.token      = TOKEN_COMMENT;
-		this.tokenValue = parseCommentValue(RegExp.$2);
+		this.tokenValue = parseCommentValue(this._matchComment.matched[1]);
 	}
 
 	// Match the beginning of a variation
-	else if(/^(\()/.test(s)) {
-		this._pos      += RegExp.$1.length;
+	else if(testAtPos(this, this._matchBeginVariation)) {
 		this.token      = TOKEN_BEGIN_VARIATION;
 		this.tokenValue = null;
 	}
 
 	// Match the end of a variation
-	else if(/^(\))/.test(s)) {
-		this._pos      += RegExp.$1.length;
+	else if(testAtPos(this, this._matchEndVariation)) {
 		this.token      = TOKEN_END_VARIATION;
 		this.tokenValue = null;
 	}
 
 	// Match a end-of-game marker
-	else if(/^(1-0|0-1|1\/2-1\/2|\*)/.test(s)) {
-		this._pos      += RegExp.$1.length;
+	else if(testAtPos(this, this._matchEndOfGame)) {
 		this.token      = TOKEN_END_OF_GAME;
-		this.tokenValue = RegExp.$1;
+		this.tokenValue = this._matchEndOfGame.matched[0];
 	}
 
 	// Otherwise, the string is badly formatted with respect to the PGN syntax
