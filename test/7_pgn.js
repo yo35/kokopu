@@ -222,18 +222,24 @@ describe('Game content (direct access)', function() {
 });
 
 
-function checkGameContentDatabase(testDataDescriptor, gameIndex) {
+function checkGameContentDatabase(testDataDescriptor, database, gameIndex) {
 	it('File ' + testDataDescriptor.label + ' - Game ' + gameIndex, function() {
 		var expectedDump = readText('games/' + testDataDescriptor.label + '_' + gameIndex + '.log');
-		test.value(dumpGame(kokopu.pgnRead(testDataDescriptor.pgn).game(gameIndex)).trim()).is(expectedDump.trim());
+		test.value(dumpGame(database.game(gameIndex)).trim()).is(expectedDump.trim());
 	});
 }
 
 
 describe('Game content (database)', function() {
 	testData().forEach(function(elem) {
+		var database = kokopu.pgnRead(elem.pgn);
 		for(var gameIndex = 0; gameIndex < elem.gameCount; ++gameIndex) {
-			checkGameContentDatabase(elem, gameIndex);
+			if(gameIndex % 3 === 2) { continue; }
+			checkGameContentDatabase(elem, database, gameIndex);
+		}
+		for(var gameIndex = 0; gameIndex < elem.gameCount; ++gameIndex) {
+			if(gameIndex % 3 !== 2) { continue; }
+			checkGameContentDatabase(elem, database, gameIndex);
 		}
 	});
 });

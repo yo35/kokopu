@@ -262,8 +262,13 @@ function gameCountGetterImpl(impl) {
 
 
 function gameGetterImpl(impl, gameIndex) {
-	var stream = new TokenStream(impl.text, impl.games[gameIndex]);
-	return doParseGame(stream);
+	if(impl.currentGameIndex !== gameIndex) {
+		impl.stream = new TokenStream(impl.text, impl.games[gameIndex]);
+	}
+	impl.currentGameIndex = -1;
+	var result = doParseGame(impl.stream);
+	impl.currentGameIndex = gameIndex + 1;
+	return result;
 }
 
 
@@ -296,7 +301,7 @@ exports.pgnRead = function(pgnString, gameIndex) {
 			}
 			games.push(currentPos);
 		}
-		return new Database({ text: pgnString, games: games }, gameCountGetterImpl, gameGetterImpl);
+		return new Database({ text: pgnString, games: games, currentGameIndex: -1 }, gameCountGetterImpl, gameGetterImpl);
 	}
 
 	// Parse one game...
