@@ -28,7 +28,16 @@ var fs = require('fs');
 var program = require('commander');
 
 
-function align(data, width) {
+function alignLeft(data, width) {
+	var result = String(data);
+	while(result.length < width) {
+		result = result + ' ';
+	}
+	return result;
+}
+
+
+function alignRight(data, width) {
 	var result = String(data);
 	while(result.length < width) {
 		result = ' ' + result;
@@ -37,13 +46,13 @@ function align(data, width) {
 }
 
 
-function loadDatabase(text, errorHolder) {
+function loadDatabase(text, path, errors) {
 	try {
 		return kokopu.pgnRead(text);
 	}
 	catch(error) {
 		if(error instanceof kokopu.exception.InvalidPGN) {
-			errorHolder.content = error;
+			errors[path] = error;
 			return null;
 		}
 		else {
@@ -53,8 +62,12 @@ function loadDatabase(text, errorHolder) {
 }
 
 
-function loadGames(database, errorHolder) {
+function loadGames(database, path, errors) {
 	try {
+		if(database === null) {
+			return;
+		}
+
 		var gameCount = database.gameCount();
 		for(var i=0; i<gameCount; ++i) {
 			database.game(i);
@@ -62,7 +75,7 @@ function loadGames(database, errorHolder) {
 	}
 	catch(error) {
 		if(error instanceof kokopu.exception.InvalidPGN) {
-			errorHolder.content = error;
+			errors[path] = error;
 		}
 		else {
 			throw error;
@@ -71,19 +84,32 @@ function loadGames(database, errorHolder) {
 }
 
 
+function displayInvalidPGNError(path, error) {
+	console.log('\nError in file ' + path + ':\n' + error.message);
+	if(error.index >= error.pgn.length) {
+		console.log('Occurred at the end of the string.');
+	}
+	else {
+		var endOfExtract = Math.min(error.index + 40, error.pgn.length);
+		var extract = error.pgn.substring(error.index, endOfExtract).replace(/\n|\t|\r/g, ' ');
+		console.log('Occurred at character ' + error.index + ': ' + extract);
+	}
+}
+
+
 /**
  * Load the text files, parse their content as PGN, and display the time it takes to do that.
  */
 function run(paths, pathAlignment) {
+	var errors = {};
 	paths.forEach(function(path) {
 
 		var text = fs.readFileSync(path, 'utf8');
-		var errorHolder = {};
 
 		var startAt = Date.now();
-		var database = loadDatabase(text, errorHolder);
+		var database = loadDatabase(text, path, errors);
 		var stop1 = Date.now();
-		loadGames(database, errorHolder);
+		loadGames(database, path, errors);
 		var stop2 = Date.now();
 
 		var duration1 = stop1 - startAt;
@@ -91,12 +117,17 @@ function run(paths, pathAlignment) {
 
 		var sep = '     ';
 		console.log(
-			'File: ' + align(path, pathAlignment) + sep +
-			'Games: ' + align(database === null ? '--' : database.gameCount(), 7) + sep +
-			'Duration (indexing): ' + align(duration1, 8) + ' ms' + sep +
-			'Duration (all): ' + align(duration2, 8) + ' ms'
-		);
+			'File: ' + alignLeft(path, pathAlignment) + sep +
+			'Games: ' + alignRight(database === null ? '--' : database.gameCount(), 7) + sep +
+			'Indexing: ' + alignRight(duration1, 6) + ' ms' + sep +
+			'Loading: ' + alignRight(duration2, 6) + ' ms');
 	});
+
+	for(var path in errors) {
+		if(errors.hasOwnProperty(path)) {
+			displayInvalidPGNError(path, errors[path]);
+		}
+	}
 }
 
 
@@ -113,5 +144,6 @@ if(program.args.length === 0) {
 }
 else {
 	var pathAlignment = program.args.map(function(path) { return path.length; }).reduce(function(l1, l2) { return Math.max(l1, l2); });
+	console.log('Analyzing ' + program.args.length + ' PGN file(s)...');
 	run(program.args, pathAlignment);
 }
