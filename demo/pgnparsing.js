@@ -37,13 +37,32 @@ function align(data, width) {
 }
 
 
-function pgnReadSafely(text) {
+function loadDatabase(text, errorHolder) {
 	try {
 		return kokopu.pgnRead(text);
 	}
 	catch(error) {
 		if(error instanceof kokopu.exception.InvalidPGN) {
+			errorHolder.content = error;
 			return null;
+		}
+		else {
+			throw error;
+		}
+	}
+}
+
+
+function loadGames(database, errorHolder) {
+	try {
+		var gameCount = database.gameCount();
+		for(var i=0; i<gameCount; ++i) {
+			database.game(i);
+		}
+	}
+	catch(error) {
+		if(error instanceof kokopu.exception.InvalidPGN) {
+			errorHolder.content = error;
 		}
 		else {
 			throw error;
@@ -59,17 +78,24 @@ function run(paths, pathAlignment) {
 	paths.forEach(function(path) {
 
 		var text = fs.readFileSync(path, 'utf8');
-		var startAt = Date.now();
-		var games = pgnReadSafely(text);
-		var stopAt = Date.now();
+		var errorHolder = {};
 
-		var duration = stopAt - startAt;
+		var startAt = Date.now();
+		var database = loadDatabase(text, errorHolder);
+		var stop1 = Date.now();
+		loadGames(database, errorHolder);
+		var stop2 = Date.now();
+
+		var duration1 = stop1 - startAt;
+		var duration2 = stop2 - startAt;
 
 		var sep = '     ';
 		console.log(
 			'File: ' + align(path, pathAlignment) + sep +
-			'Games: ' + align(games === null ? '--' : games.length, 7) + sep +
-			'Duration: ' + align(duration, 8) + ' ms');
+			'Games: ' + align(database === null ? '--' : database.gameCount(), 7) + sep +
+			'Duration (indexing): ' + align(duration1, 8) + ' ms' + sep +
+			'Duration (all): ' + align(duration2, 8) + ' ms'
+		);
 	});
 }
 
