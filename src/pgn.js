@@ -144,6 +144,7 @@ function TokenStream(pgnString) {
  * @param {TokenStream} stream
  * @param {RegExp} re
  * @returns {boolean}
+ * @ignore
  */
 function testAtPos(stream, re) {
 	if(re.matchedIndex < stream._pos) {
@@ -165,6 +166,7 @@ function testAtPos(stream, re) {
  * Advance until the first non-blank character.
  *
  * @param {TokenStream} stream
+ * @ignore
  */
 function skipBlanks(stream) {
 	var newLineCount = 0;
@@ -343,7 +345,7 @@ function initializeInitialPosition(stream, game, initialPositionFactory) {
 /**
  * Try to parse 1 game from the given stream.
  *
- * @param {TokenStream}
+ * @param {TokenStream} stream
  * @returns {Game?} `null` if the end of the stream has been reached.
  * @throws {module:exception.InvalidPGN}
  * @ignore
@@ -456,7 +458,7 @@ function doParseGame(stream) {
 /**
  * Skip 1 game in the given stream.
  *
- * @param {TokenStream}
+ * @param {TokenStream} stream
  * @returns {boolean} `true` if a game has been skipped, false if the end of the stream has been reached.
  * @throws {module:exception.InvalidPGN}
  * @ignore
