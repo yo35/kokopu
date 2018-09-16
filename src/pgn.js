@@ -28,6 +28,7 @@ var i18n = require('./i18n');
 
 var Position = require('./position').Position;
 var Game = require('./game').Game;
+var Database = require('./database').Database;
 var TokenStream = require('./private_pgn/tokenstream').TokenStream;
 
 
@@ -119,10 +120,10 @@ function initializeInitialPosition(stream, game, initialPositionFactory) {
 
 
 /**
- * Try to parse 1 game from the given stream.
+ * Parse exactly 1 game from the given stream.
  *
  * @param {TokenStream} stream
- * @returns {Game?} `null` if the end of the stream has been reached.
+ * @returns {Game}
  * @throws {module:exception.InvalidPGN}
  * @ignore
  */
@@ -225,10 +226,7 @@ function doParseGame(stream) {
 
 	} // while(stream.consumeToken())
 
-	if(game !== null) {
-		throw stream.invalidPGNException(i18n.UNEXPECTED_END_OF_TEXT);
-	}
-	return null;
+	throw stream.invalidPGNException(i18n.UNEXPECTED_END_OF_TEXT);
 }
 
 
@@ -241,12 +239,31 @@ function doParseGame(stream) {
  * @ignore
  */
 function doSkipGame(stream) {
+	var atLeastOneTokenFound = false;
 	while(stream.consumeToken()) {
+		atLeastOneTokenFound = true;
 		if(stream.token() === TokenStream.END_OF_GAME) {
 			return true;
 		}
 	}
+
+	// If the end of the stream has been reached without seeing any END_OF_GAME token, then no token should have been seen at all.
+	// Throw an exception if this is not the case.
+	if(atLeastOneTokenFound) {
+		throw stream.invalidPGNException(i18n.UNEXPECTED_END_OF_TEXT);
+	}
 	return false;
+}
+
+
+function gameCountGetterImpl(impl) {
+	return impl.games.length;
+}
+
+
+function gameGetterImpl(impl, gameIndex) {
+	var stream = new TokenStream(impl.text, impl.games[gameIndex]);
+	return doParseGame(stream);
 }
 
 
@@ -254,7 +271,7 @@ function doSkipGame(stream) {
  * PGN parsing function.
  *
  * @param {string} pgnString String to parse.
- * @returns {Game[]}
+ * @returns {Database}
  * @throws {module:exception.InvalidPGN}
  *
  *//**
@@ -269,16 +286,17 @@ function doSkipGame(stream) {
 exports.pgnRead = function(pgnString, gameIndex) {
 	var stream = new TokenStream(pgnString, 0);
 
-	// Parse all games...
+	// Parse all games (and return a Database object)...
 	if(arguments.length === 1) {
-		var result = [];
+		var games = [];
 		while(true) {
-			var currentGame = doParseGame(stream);
-			if(currentGame === null) {
-				return result;
+			var currentPos = stream.currentPosition();
+			if(!doSkipGame(stream)) {
+				break;
 			}
-			result.push(currentGame);
+			games.push(currentPos);
 		}
+		return new Database({ text: pgnString, games: games }, gameCountGetterImpl, gameGetterImpl);
 	}
 
 	// Parse one game...
@@ -292,11 +310,6 @@ exports.pgnRead = function(pgnString, gameIndex) {
 				throw new exception.InvalidPGN(pgnString, -1, i18n.INVALID_GAME_INDEX, gameIndex, gameCounter);
 			}
 		}
-
-		var result = doParseGame(stream);
-		if(result === null) {
-			throw new exception.InvalidPGN(pgnString, -1, i18n.INVALID_GAME_INDEX, gameIndex, gameCounter);
-		}
-		return result;
+		return doParseGame(stream);
 	}
 };

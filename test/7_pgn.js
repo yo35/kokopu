@@ -43,7 +43,7 @@ function testData() {
 describe('Game count', function() {
 	testData().forEach(function(elem) {
 		it('File ' + elem.label, function() {
-			test.value(kokopu.pgnRead(elem.pgn).length).is(elem.gameCount);
+			test.value(kokopu.pgnRead(elem.pgn).gameCount()).is(elem.gameCount);
 		});
 	});
 });
@@ -205,7 +205,7 @@ function dumpGame(game) {
 }
 
 
-function checkGameContent(testDataDescriptor, gameIndex) {
+function checkGameContentDirect(testDataDescriptor, gameIndex) {
 	it('File ' + testDataDescriptor.label + ' - Game ' + gameIndex, function() {
 		var expectedDump = readText('games/' + testDataDescriptor.label + '_' + gameIndex + '.log');
 		test.value(dumpGame(kokopu.pgnRead(testDataDescriptor.pgn, gameIndex)).trim()).is(expectedDump.trim());
@@ -213,10 +213,27 @@ function checkGameContent(testDataDescriptor, gameIndex) {
 }
 
 
-describe('Game content', function() {
+describe('Game content (direct access)', function() {
 	testData().forEach(function(elem) {
 		for(var gameIndex = 0; gameIndex < elem.gameCount; ++gameIndex) {
-			checkGameContent(elem, gameIndex);
+			checkGameContentDirect(elem, gameIndex);
+		}
+	});
+});
+
+
+function checkGameContentDatabase(testDataDescriptor, gameIndex) {
+	it('File ' + testDataDescriptor.label + ' - Game ' + gameIndex, function() {
+		var expectedDump = readText('games/' + testDataDescriptor.label + '_' + gameIndex + '.log');
+		test.value(dumpGame(kokopu.pgnRead(testDataDescriptor.pgn).game(gameIndex)).trim()).is(expectedDump.trim());
+	});
+}
+
+
+describe('Game content (database)', function() {
+	testData().forEach(function(elem) {
+		for(var gameIndex = 0; gameIndex < elem.gameCount; ++gameIndex) {
+			checkGameContentDatabase(elem, gameIndex);
 		}
 	});
 });

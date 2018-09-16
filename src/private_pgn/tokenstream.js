@@ -31,13 +31,13 @@ var i18n = require('../i18n');
  * @class
  * @classdesc Stream of tokens.
  */
-var TokenStream = exports.TokenStream = function(pgnString, initialPos) {
-	this._text           = pgnString;  // what is being parsed
-	this._pos            = initialPos; // current position in the string
-	this._emptyLineFound = false;      // whether an empty line has been encountered while parsing the current token
-	this._token          = 0;          // current token
-	this._tokenValue     = null;       // current token value (if any)
-	this._tokenIndex     = 0;          // position of the current token in the string
+var TokenStream = exports.TokenStream = function(pgnString, initialPosition) {
+	this._text           = pgnString;       // what is being parsed
+	this._pos            = initialPosition; // current position in the string
+	this._emptyLineFound = false;           // whether an empty line has been encountered while parsing the current token
+	this._token          = 0;               // current token
+	this._tokenValue     = null;            // current token value (if any)
+	this._tokenIndex     = 0;               // position of the current token in the string
 
 	// Space-like matchers
 	this._matchSpaces = /[ \f\t\v]+/g;
@@ -247,6 +247,11 @@ TokenStream.prototype.consumeToken = function() {
 	}
 
 	return true;
+};
+
+
+TokenStream.prototype.currentPosition = function() {
+	return this._pos;
 };
 
 
