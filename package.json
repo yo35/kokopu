@@ -11,11 +11,11 @@
 	"devDependencies": {
 		"mocha": "~5.2.0",
 		"unit.js": "~2.0.0",
-		"eslint": "~5.4.0",
+		"eslint": "~5.6.1",
 		"jsdoc": "~3.5.5",
 		"tui-jsdoc-template": "~1.2.2",
-		"uglify-js": "~3.4.0",
-		"browserify": "~16.2.0"
+		"uglify-js": "~3.4.9",
+		"browserify": "~16.2.3"
 	},
 	"scripts": {
 		"lint": "eslint index.js demo src test",
