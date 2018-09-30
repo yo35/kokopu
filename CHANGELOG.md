@@ -1,6 +1,12 @@
 ChangeLog
 =========
 
+1.2.0 (September 30, 2018)
+--------------------------
+* Optimization: reduce the memory footprint of object Game.
+* PGN parsing is now robust to ill-formed header tags.
+* Replace JSHint with ESLint.
+
 1.1.0 (July 22, 2018)
 ---------------------
 * Add support for [Chess 960](https://en.wikipedia.org/wiki/Chess960) (aka. Fischer Random Chess).
