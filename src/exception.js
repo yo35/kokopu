@@ -134,7 +134,7 @@ var InvalidPGN = exports.InvalidPGN = function(pgn, index, message) {
 };
 
 InvalidPGN.prototype.toString = function() {
-	return toStringImpl('InvalidPGN', this.message);
+	return toStringImpl('InvalidPGN', '[' + this.index + '] ' + this.message);
 };
 
 
