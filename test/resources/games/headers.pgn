@@ -38,7 +38,7 @@
 [Site "Special character ' (quote)"]
 [Date "2018.04.15"]
 [Round "1.2"]
-[White "Special characters \[\] (square brackets)"]
+[White "Special characters [] (square brackets)"]
 [Black "Special character \\ (backslash)"]
 [Result "*"]
 *
@@ -57,3 +57,9 @@
 [FEN "rnb1k1nr/pppp1ppp/8/2b1p3/2B1P2q/2N2N2/PPPP1PPP/R1BQK2R b KQkq - 5 4"]
 [Result "0-1"]
 4... Qxf2# 0-1
+
+[Event "Ill-formed tag " (unescaped double quote)"]
+[White "Ill-formed tag \ (unescaped backslash)"]
+[Black "Ill-formed tag "] (unescaped tag-end-like sequence)"]
+[Result "*"]
+*

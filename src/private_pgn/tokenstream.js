@@ -44,7 +44,7 @@ var TokenStream = exports.TokenStream = function(pgnString, initialPosition) {
 	this._matchLineBreak = /\r?\n|\r/g;
 
 	// Token matchers
-	this._matchHeader = /\[\s*(\w+)\s+"((?:[^\\"[\]]|\\[\\"[\]])*)"\s*\]/g;
+	this._matchHeader = /^\[\s*(\w+)\s+"(.*)"\s*\]$/mg;
 	this._matchMove = /(?:[1-9][0-9]*\s*\.(?:\.\.)?\s*)?((?:O-O-O|O-O|[KQRBN][a-h]?[1-8]?x?[a-h][1-8]|(?:[a-h]x?)?[a-h][1-8](?:=?[KQRBNP])?)[+#]?|--)/g;
 	this._matchNag = /([!?][!?]?|\+\/?[-=]|[-=]\/?\+|=|inf|~)|\$([1-9][0-9]*)/g;
 	this._matchComment = /\{((?:[^{}\\]|\\[{}\\])*)\}/g;
@@ -129,7 +129,7 @@ function skipBlanks(stream) {
  * @returns {string}
  */
 function parseHeaderValue(rawHeaderValue) {
-	return rawHeaderValue.replace(/\\([\\"[\]])/g, '$1');
+	return rawHeaderValue.replace(/\\([\\"])/g, '$1');
 }
 
 
