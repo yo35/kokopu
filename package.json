@@ -11,7 +11,7 @@
 	"devDependencies": {
 		"mocha": "~5.2.0",
 		"unit.js": "~2.0.0",
-		"eslint": "~5.6.1",
+		"eslint": "~5.11.1",
 		"jsdoc": "~3.5.5",
 		"tui-jsdoc-template": "~1.2.2",
 		"uglify-js": "~3.4.9",
