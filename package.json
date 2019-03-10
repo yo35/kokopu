@@ -9,9 +9,9 @@
 	"author": "Yoann Le Montagner <yo35@melix.net>",
 	"main": "index.js",
 	"devDependencies": {
-		"mocha": "~5.2.0",
-		"unit.js": "~2.0.0",
-		"eslint": "~5.11.1",
+		"mocha": "~6.0.2",
+		"unit.js": "~2.1.0",
+		"eslint": "~5.15.1",
 		"jsdoc": "~3.5.5",
 		"tui-jsdoc-template": "~1.2.2",
 		"uglify-js": "~3.4.9",
