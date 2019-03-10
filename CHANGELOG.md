@@ -1,6 +1,10 @@
 ChangeLog
 =========
 
+1.2.1 (March 10, 2019)
+----------------------
+* Fix invalid move notation issue (see #2).
+
 1.2.0 (September 30, 2018)
 --------------------------
 * Optimization: reduce the memory footprint of object Game.
