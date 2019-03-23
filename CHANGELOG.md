@@ -1,6 +1,10 @@
 ChangeLog
 =========
 
+1.2.2 (March 23, 2019)
+----------------------
+* Fix parsing for games having a variant tag set to "Standard" (see #3).
+
 1.2.1 (March 10, 2019)
 ----------------------
 * Fix invalid move notation issue (see #2).
