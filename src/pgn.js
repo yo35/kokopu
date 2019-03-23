@@ -87,8 +87,12 @@ function processHeader(stream, game, initialPositionFactory, key, value) {
 
 		// The header 'Variant' indicates that this is not a regular chess game.
 		case 'Variant':
-			if(value.toLowerCase() === 'chess960' || value.toLowerCase() === 'fischerandom') {
+			var variant = value.toLowerCase();
+			if(variant === 'chess960' || variant === 'fischerandom') {
 				initialPositionFactory.variant = 'chess960';
+			}
+			else if(variant === 'regular' || variant === 'standard') {
+				initialPositionFactory.variant = false;
 			}
 			else {
 				throw stream.invalidPGNException(i18n.UNKNOWN_VARIANT, value);
