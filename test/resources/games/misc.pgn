@@ -100,3 +100,19 @@ the combination was sound and that he had a forced win in every variation.}
 ({[%key value] More usual is} 1...c5 { })
 2.d4 {[%key value1] Cannot have several tags with the same key here! [%key value2]}
 2...a5 {No tag here.} *
+
+
+
+[Event "Game with variant tag 1"]
+[Variant "Standard"]
+
+1. a3 *
+
+
+
+[Event "Game with variant tag 2"]
+[FEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1"]
+[SetUp "1"]
+[Variant "Regular"]
+
+1... h6 *
