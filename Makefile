@@ -142,7 +142,7 @@ pack: $(DOCUMENTATION_DIR) $(PACKAGE_DIST_FILE)
 
 
 
-# Cleaning & Make's stuff 
+# Cleaning & Make's stuff
 # -----------------------
 
 clean:
