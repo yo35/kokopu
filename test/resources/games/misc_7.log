@@ -8,4 +8,6 @@ Event = {Game with tags}
  |
 (2w) d4 [key = {value2}] {Cannot have several tags with the same key here!}
 (2b) a5 {No tag here.}
+(3w) c4 [key = {value}] {This is a comment.}
+(3b) g5 [key1 = {value1}] [key2 = {value2}] {This is another comment.}
 {Line}

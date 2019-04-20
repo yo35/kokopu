@@ -99,7 +99,9 @@ the combination was sound and that he had a forced win in every variation.}
 1.e4 {[%cal Ge2e4]} 1...h5 {[%cal Gh7h5] Odd move:    the pawn in h5 [%csl Rh5] is weak.}
 ({[%key value] More usual is} 1...c5 { })
 2.d4 {[%key value1] Cannot have several tags with the same key here! [%key value2]}
-2...a5 {No tag here.} *
+2...a5 {No tag here.}
+3.c4 { This is a comment. } { [%key value] }
+3...g5 {[%key2 value2][%key1 value1]} { This is another comment. } *
 
 
 
