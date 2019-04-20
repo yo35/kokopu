@@ -1,6 +1,10 @@
 ChangeLog
 =========
 
+1.2.3 (April 20, 2019)
+----------------------
+* Fix parsing of lichess syntax for %csl/%cal (see #4).
+
 1.2.2 (March 23, 2019)
 ----------------------
 * Fix parsing for games having a variant tag set to "Standard" (see #3).
