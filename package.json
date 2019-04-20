@@ -9,13 +9,13 @@
 	"author": "Yoann Le Montagner <yo35@melix.net>",
 	"main": "index.js",
 	"devDependencies": {
-		"mocha": "~6.0.2",
+		"eslint": "~5.16.0",
+		"mocha": "~6.1.4",
 		"unit.js": "~2.1.0",
-		"eslint": "~5.15.1",
+		"browserify": "~16.2.3",
+		"uglify-js": "~3.5.5",
 		"jsdoc": "~3.5.5",
-		"tui-jsdoc-template": "~1.2.2",
-		"uglify-js": "~3.4.9",
-		"browserify": "~16.2.3"
+		"tui-jsdoc-template": "~1.2.2"
 	},
 	"scripts": {
 		"lint": "eslint index.js demo src test",
