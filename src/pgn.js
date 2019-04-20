@@ -196,7 +196,9 @@ function doParseGame(stream) {
 						node.tag(key, tags[key]);
 					}
 				}
-				node.comment(stream.tokenValue().comment, stream.emptyLineFound());
+				if(stream.tokenValue().comment !== undefined) {
+					node.comment(stream.tokenValue().comment, stream.emptyLineFound());
+				}
 				break;
 
 			// Begin of variation
