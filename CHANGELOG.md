@@ -1,6 +1,10 @@
 ChangeLog
 =========
 
+1.2.4 (April 21, 2019)
+----------------------
+* Fix disambiguation issue (see #5).
+
 1.2.3 (April 20, 2019)
 ----------------------
 * Fix parsing of lichess syntax for %csl/%cal (see #4).
