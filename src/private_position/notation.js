@@ -134,18 +134,18 @@ function isPinned(position, sq, aimingAtSq) {
 
 	// Potential pinning on file or rank.
 	if(vector < 8) {
-		return aimingAtVector >= 8 && pinningLoockup(position, sq, kingSquare < sq ? 1 : -1, pinnerRook, pinnerQueen);
+		return aimingAtVector >= 8 && pinningLoockup(position, kingSquare, sq, kingSquare < sq ? 1 : -1, pinnerRook, pinnerQueen);
 	}
 	else if(vector % 16 === 0) {
-		return aimingAtVector % 16 !==0 && pinningLoockup(position, sq, kingSquare < sq ? 16 : -16, pinnerRook, pinnerQueen);
+		return aimingAtVector % 16 !==0 && pinningLoockup(position, kingSquare, sq, kingSquare < sq ? 16 : -16, pinnerRook, pinnerQueen);
 	}
 
 	// Potential pinning on diagonal.
 	else if(vector % 15 === 0) {
-		return aimingAtVector % 15 !==0 && pinningLoockup(position, sq, kingSquare < sq ? 15 : -15, pinnerBishop, pinnerQueen);
+		return aimingAtVector % 15 !==0 && pinningLoockup(position, kingSquare, sq, kingSquare < sq ? 15 : -15, pinnerBishop, pinnerQueen);
 	}
 	else if(vector % 17 === 0) {
-		return aimingAtVector % 17 !==0 && pinningLoockup(position, sq, kingSquare < sq ? 17 : -17, pinnerBishop, pinnerQueen);
+		return aimingAtVector % 17 !==0 && pinningLoockup(position, kingSquare, sq, kingSquare < sq ? 17 : -17, pinnerBishop, pinnerQueen);
 	}
 
 	// No pinning for sure.
@@ -154,7 +154,12 @@ function isPinned(position, sq, aimingAtSq) {
 	}
 }
 
-function pinningLoockup(position, targetSquare, direction, pinnerColoredPiece1, pinnerColoredPiece2) {
+function pinningLoockup(position, kingSquare, targetSquare, direction, pinnerColoredPiece1, pinnerColoredPiece2) {
+	for(var sq = kingSquare + direction; sq !== targetSquare; sq += direction) {
+		if(position.board[sq] !== bt.EMPTY) {
+			return false;
+		}
+	}
 	for(var sq = targetSquare + direction; (sq & 0x88) === 0; sq += direction) {
 		if(position.board[sq] !== bt.EMPTY) {
 			return position.board[sq] === pinnerColoredPiece1 || position.board[sq] === pinnerColoredPiece2;
