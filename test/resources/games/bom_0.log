@@ -1,0 +1,70 @@
+White = {Torres, Luis J}
+Black = {Tasic, Branislav}
+Event = {Olympiad-21 Final D}
+Round = {1}
+Site = {Nice}
+Date = {Sat Jun 15 1974}
+Annotator = {Hannes Langrock}
+-+<LONG
+(1w) e4
+(1b) c5
+(2w) d4
+(2b) cxd4
+(3w) c3
+(3b) dxc3
+(4w) Nxc3
+(4b) Nc6
+(5w) Nf3
+(5b) d6
+(6w) Bc4
+(6b) e6
+(7w) O-O
+(7b) Be7
+(8w) Qe2
+(8b) a6
+(9w) Rd1
+(9b) Qc7
+(10w) Bf4
+(10b) Ne5 $2
+(11w) Bxe5
+(11b) dxe5
+(12w) Rac1
+(12b) Qb8
+(13w) Bb5+
+(13b) axb5
+(14w) Nxb5
+(14b) f6
+(15w) Nc7+
+(15b) Kf7
+(16w) Nxa8
+(16b) Qxa8
+(17w) Rc7
+(17b) b6
+(18w) Rd8
+(18b) Ba6
+(19w) Nxe5+
+(19b) fxe5
+(20w) Qh5+
+(20b) g6
+(21w) Rxa8
+(21b) gxh5
+(22w) Rxa6
+(22b) Nf6
+(23w) Raa7
+(23b) Re8
+(24w) f3
+(24b) Ng8
+(25w) Kf1
+(25b) Kg6
+(26w) Ke2
+(26b) Bc5
+(27w) Rg7+
+(27b) Kh6
+(28w) Rxh7+
+(28b) Kg6
+(29w) Rag7+
+(29b) Kf6
+(30w) g4
+(30b) hxg4
+(31w) fxg4
+{White wins}
