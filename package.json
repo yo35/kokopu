@@ -13,8 +13,8 @@
 		"mocha": "~6.1.4",
 		"unit.js": "~2.1.0",
 		"browserify": "~16.2.3",
-		"uglify-js": "~3.5.5",
-		"jsdoc": "~3.5.5",
+		"uglify-js": "~3.6.0",
+		"jsdoc": "~3.6.2",
 		"tui-jsdoc-template": "~1.2.2"
 	},
 	"scripts": {
