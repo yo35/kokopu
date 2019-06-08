@@ -118,3 +118,12 @@ the combination was sound and that he had a forced win in every variation.}
 [Variant "Regular"]
 
 1... h6 *
+
+
+
+[Event "Game with linebreaks in comments"]
+
+1.e4 {[%clk
+01:56:25]} 1...e5 {I am comment
+with a linebreak.}
+*

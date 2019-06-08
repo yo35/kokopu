@@ -1,0 +1,5 @@
+Event = {Game with linebreaks in comments}
+-+<LONG
+(1w) e4 [clk = {01:56:25}]
+(1b) e5 {I am comment with a linebreak.}
+{Line}
