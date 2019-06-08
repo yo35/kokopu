@@ -32,6 +32,12 @@ var i18n = require('../i18n');
  * @classdesc Stream of tokens.
  */
 var TokenStream = exports.TokenStream = function(pgnString, initialPosition) {
+
+	// Remove the BOM (byte order mark) if any.
+	if(pgnString.codePointAt(0) === 0xFEFF) {
+		pgnString = pgnString.substr(1);
+	}
+
 	this._text           = pgnString;       // what is being parsed
 	this._pos            = initialPosition; // current position in the string
 	this._emptyLineFound = false;           // whether an empty line has been encountered while parsing the current token
