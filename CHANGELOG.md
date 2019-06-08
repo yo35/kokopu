@@ -1,6 +1,11 @@
 ChangeLog
 =========
 
+1.2.5 (June 8, 2019)
+--------------------
+* Fix PGN parsing in presence of byte order mark (see #7).
+* Fix parsing of comment tags spanning on more than one line (see #8).
+
 1.2.4 (April 21, 2019)
 ----------------------
 * Fix disambiguation issue (see #5).
