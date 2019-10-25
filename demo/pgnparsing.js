@@ -124,7 +124,7 @@ function run(paths, pathAlignment) {
 	});
 
 	for(var path in errors) {
-		if(errors.hasOwnProperty(path)) {
+		if(path in errors) {
 			displayInvalidPGNError(path, errors[path]);
 		}
 	}
