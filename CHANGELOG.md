@@ -1,6 +1,10 @@
 ChangeLog
 =========
 
+1.2.6 (December 15, 2019)
+-------------------------
+* Add some missing documentation (see #10).
+
 1.2.5 (June 8, 2019)
 --------------------
 * Fix PGN parsing in presence of byte order mark (see #7).
