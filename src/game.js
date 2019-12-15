@@ -709,14 +709,93 @@ Variation.prototype.first = function() {
 };
 
 
-// Methods inherited from `Node`.
-Variation.prototype.nags          = Node.prototype.nags         ;
-Variation.prototype.hasNag        = Node.prototype.hasNag       ;
-Variation.prototype.addNag        = Node.prototype.addNag       ;
-Variation.prototype.removeNag     = Node.prototype.removeNag    ;
-Variation.prototype.tags          = Node.prototype.tags         ;
-Variation.prototype.tag           = Node.prototype.tag          ;
-Variation.prototype.comment       = Node.prototype.comment      ;
+/**
+ * Return the NAGs associated to the current variation.
+ *
+ * @returns {number[]}
+ * @function
+ */
+Variation.prototype.nags = Node.prototype.nags;
+
+
+/**
+ * Check whether the current variation has the given NAG or not.
+ *
+ * @param {number} nag
+ * @returns {boolean}
+ * @function
+ */
+Variation.prototype.hasNag = Node.prototype.hasNag;
+
+
+/**
+ * Add the given NAG to the current variation.
+ *
+ * @param {number} nag
+ * @function
+ */
+Variation.prototype.addNag = Node.prototype.addNag;
+
+
+/**
+ * Remove the given NAG from the current variation.
+ *
+ * @param {number} nag
+ * @function
+ */
+Variation.prototype.removeNag = Node.prototype.removeNag;
+
+
+/**
+ * Return the keys of the tags associated to the current variation.
+ *
+ * @returns {string[]}
+ * @function
+ */
+Variation.prototype.tags = Node.prototype.tags;
+
+
+/**
+ * Get the value associated to the given tag key on the current variation.
+ *
+ * @param {string} tagKey
+ * @returns {string?} `undefined` if no value is associated to this tag key on the current variation.
+ * @function
+ *
+ *//**
+ *
+ * Set the value associated to the given tag key on the current variation.
+ *
+ * @param {string} tagKey
+ * @param {string?} value
+ * @function
+ */
+Variation.prototype.tag = Node.prototype.tag;
+
+
+/**
+ * Get the text comment associated to the current variation.
+ *
+ * @returns {string?} `undefined` if no comment is defined for the variation.
+ * @function
+ *
+ *//**
+ *
+ * Set the text comment associated to the current variation.
+ *
+ * @param {string} value
+ * @param {boolean} [isLongComment=false]
+ * @function
+ */
+Variation.prototype.comment = Node.prototype.comment;
+
+
+/**
+ * Whether the text comment associated to the current variation is long or short.
+ *
+ * @returns {boolean}
+ * @function
+ */
 Variation.prototype.isLongComment = Node.prototype.isLongComment;
 
 
