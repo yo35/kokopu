@@ -340,11 +340,51 @@ function createNodeInfo(moveDescriptor) {
  * @description This constructor is not exposed in the public Kokopu API. Only internal objects and functions
  *              are allowed to instantiate {@link Node} objects.
  */
-function Node(info, fullMoveNumber, positionBefore, withinLongVariation) {
+function Node(info, parentVariation, fullMoveNumber, positionBefore) {
 	this._info = info;
+	this._parentVariation = parentVariation;
 	this._fullMoveNumber = fullMoveNumber;
 	this._positionBefore = positionBefore;
-	this._withinLongVariation = withinLongVariation;
+}
+
+
+/**
+ * Play the move descriptor encoded in the given node info structure, or play null-move if no move descriptor is defined.
+ *
+ * @param {Position} position
+ * @param {object} info
+ * @ignore
+ */
+function applyMoveDescriptor(position, info) {
+	if(info.moveDescriptor === undefined) {
+		position.playNullMove();
+	}
+	else {
+		position.play(info.moveDescriptor);
+	}
+}
+
+
+/**
+ * Regenerate `_positionBefore` if necessary on the given node.
+ *
+ * @param {Node} node
+ * @returns {Position}
+ * @ignore
+ */
+function rebuildPositionBeforeIfNecessary(node) {
+	if(!node._positionBefore) {
+		node._positionBefore = new Position(node._parentVariation._initialPosition);
+		var currentInfo = node._parentVariation._info.first;
+		while(currentInfo !== node._info) {
+			if(currentInfo === undefined) {
+				throw new exception.IllegalArgument('The current node is invalid.');
+			}
+			applyMoveDescriptor(node._positionBefore, currentInfo);
+			currentInfo = currentInfo.next;
+		}
+	}
+	return node._positionBefore;
 }
 
 
@@ -354,7 +394,7 @@ function Node(info, fullMoveNumber, positionBefore, withinLongVariation) {
  * @returns {string}
  */
 Node.prototype.notation = function() {
-	return this._info.moveDescriptor === undefined ? '--' : this._positionBefore.notation(this._info.moveDescriptor);
+	return this._info.moveDescriptor === undefined ? '--' : rebuildPositionBeforeIfNecessary(this).notation(this._info.moveDescriptor);
 };
 
 
@@ -364,7 +404,7 @@ Node.prototype.notation = function() {
  * @returns {Position}
  */
 Node.prototype.positionBefore = function() {
-	return new Position(this._positionBefore);
+	return new Position(rebuildPositionBeforeIfNecessary(this));
 };
 
 
@@ -374,7 +414,7 @@ Node.prototype.positionBefore = function() {
  * @returns {Position}
  */
 Node.prototype.position = function() {
-	var position = new Position(this._positionBefore);
+	var position = this.positionBefore();
 	if(this._info.moveDescriptor === undefined) {
 		position.playNullMove();
 	}
@@ -401,43 +441,42 @@ Node.prototype.fullMoveNumber = function() {
  * @returns {Color}
  */
 Node.prototype.moveColor = function() {
-	return this._positionBefore.turn();
+	return rebuildPositionBeforeIfNecessary(this).turn();
 };
 
 
 /**
- * Play the underlying move descriptor on the internal object `_positionBefore`, and update `_fullMoveNumber` accordingly.
+ * Compute the "position-before" and "full-move-number" applicable to the node after the given one.
  *
  * @param {Node} node
+ * @returns {{positionBefore:Position, fullMoveNumber:number}}
  * @ignore
  */
-function goToNextPosition(node) {
+function computePositionBeforeAndFullMoveNumberForNextNode(node) {
 
-	// Update `_positionBefore`.
-	if(node._info.moveDescriptor === undefined) {
-		node._positionBefore.playNullMove();
-	}
-	else {
-		node._positionBefore.play(node._info.moveDescriptor);
-	}
+	// Compute the position-before applicable on the next node.
+	var positionBefore = rebuildPositionBeforeIfNecessary(node);
+	applyMoveDescriptor(positionBefore, node._info);
 
-	// Increment the full-move number if necessary.
-	if(node._positionBefore.turn() === 'w') {
-		++node._fullMoveNumber;
-	}
+	// Compute the full-move-number applicable to the next node.
+	var fullMoveNumber = positionBefore.turn() === 'w' ? node._fullMoveNumber + 1 : node._fullMoveNumber;
+
+	// Invalidate the position-before on the current node.
+	node._positionBefore = null;
+
+	return { positionBefore:positionBefore, fullMoveNumber:fullMoveNumber };
 }
 
 
 /**
  * Go to the next move within the same variation.
  *
- * @returns {Node?} `undefined` if the current move is the last move of the variation, or the current node pointing at the next move otherwise.
+ * @returns {Node?} `undefined` if the current move is the last move of the variation, or a node corresponding to the next move otherwise.
  */
 Node.prototype.next = function() {
 	if(!this._info.next) { return undefined; }
-	goToNextPosition(this);
-	this._info = this._info.next;
-	return this;
+	var next = computePositionBeforeAndFullMoveNumberForNextNode(this);
+	return new Node(this._info.next, this._parentVariation, next.fullMoveNumber, next.positionBefore);
 };
 
 
@@ -447,9 +486,14 @@ Node.prototype.next = function() {
  * @returns {Variation[]}
  */
 Node.prototype.variations = function() {
+	if(this._info.variations.length === 0) {
+		return [];
+	}
+
 	var result = [];
+	var positionBefore = this.positionBefore();
 	for(var i = 0; i < this._info.variations.length; ++i) {
-		result.push(new Variation(this._info.variations[i], this._fullMoveNumber, new Position(this._positionBefore), this._withinLongVariation));
+		result.push(new Variation(this._info.variations[i], this._fullMoveNumber, positionBefore, this._parentVariation._withinLongVariation));
 	}
 	return result;
 };
@@ -570,7 +614,7 @@ Node.prototype.comment = function(value, isLongComment) {
  * @returns {boolean}
  */
 Node.prototype.isLongComment = function() {
-	return this._withinLongVariation && this._info.isLongComment;
+	return this._parentVariation._withinLongVariation && this._info.isLongComment;
 };
 
 
@@ -597,17 +641,16 @@ function computeMoveDescriptor(position, move) {
 
 
 /**
- * Play the given move, and make the current {@link Node} point at the resulting position.
+ * Play the given move, and return a new {@link Node} point at the resulting position.
  *
  * @param {string} move SAN notation (or `'--'` for a null-move).
- * @returns {Node} The current node, pointing at the new position.
+ * @returns {Node} A new node, pointing at the new position.
  * @throws {module:exception.InvalidNotation} If the move notation cannot be parsed.
  */
 Node.prototype.play = function(move) {
-	goToNextPosition(this);
-	this._info.next = createNodeInfo(computeMoveDescriptor(this._positionBefore, move));
-	this._info = this._info.next;
-	return this;
+	var next = computePositionBeforeAndFullMoveNumberForNextNode(this);
+	this._info.next = createNodeInfo(computeMoveDescriptor(next.positionBefore, move));
+	return new Node(this._info.next, this._parentVariation, next.fullMoveNumber, next.positionBefore);
 };
 
 
@@ -619,8 +662,7 @@ Node.prototype.play = function(move) {
  */
 Node.prototype.addVariation = function(isLongVariation) {
 	this._info.variations.push(createVariationInfo(isLongVariation));
-	return new Variation(this._info.variations[this._info.variations.length - 1], this._fullMoveNumber, new Position(this._positionBefore),
-		this._withinLongVariation);
+	return new Variation(this._info.variations[this._info.variations.length - 1], this._fullMoveNumber, this.positionBefore(), this._parentVariation._withinLongVariation);
 };
 
 
@@ -705,7 +747,7 @@ Variation.prototype.initialFullMoveNumber = function() {
  */
 Variation.prototype.first = function() {
 	if(!this._info.first) { return undefined; }
-	return new Node(this._info.first, this._initialFullMoveNumber, new Position(this._initialPosition), this._withinLongVariation);
+	return new Node(this._info.first, this, this._initialFullMoveNumber, new Position(this._initialPosition));
 };
 
 
@@ -794,9 +836,10 @@ Variation.prototype.comment = Node.prototype.comment;
  * Whether the text comment associated to the current variation is long or short.
  *
  * @returns {boolean}
- * @function
  */
-Variation.prototype.isLongComment = Node.prototype.isLongComment;
+Variation.prototype.isLongComment = function() {
+	return this._withinLongVariation && this._info.isLongComment;
+};
 
 
 /**
@@ -809,5 +852,5 @@ Variation.prototype.isLongComment = Node.prototype.isLongComment;
 Variation.prototype.play = function(move) {
 	var positionBefore = new Position(this._initialPosition);
 	this._info.first = createNodeInfo(computeMoveDescriptor(positionBefore, move));
-	return new Node(this._info.first, this._initialFullMoveNumber, positionBefore, this._withinLongVariation);
+	return new Node(this._info.first, this, this._initialFullMoveNumber, positionBefore);
 };
