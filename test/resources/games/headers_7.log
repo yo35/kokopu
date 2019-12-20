@@ -1,5 +1,4 @@
-White = {Ill-formed tag \ (unescaped backslash)}
-Black = {Ill-formed tag "] (unescaped tag-end-like sequence)}
-Event = {Ill-formed tag " (unescaped double quote)}
+White = {Ill-formed tag " (unescaped double quote, should be \")}
+Black = {Ill-formed tag \ (unescaped backslash, should be \\)}
 -+<LONG
 {Line}

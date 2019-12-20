@@ -2,7 +2,7 @@ LABEL	GAME_COUNT
 empty	0
 mini1	1
 mini2	1
-headers	8
+headers	9
 misc	11
 chess960	1
 bom	1

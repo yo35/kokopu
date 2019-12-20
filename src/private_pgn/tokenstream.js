@@ -50,7 +50,8 @@ var TokenStream = exports.TokenStream = function(pgnString, initialPosition) {
 	this._matchLineBreak = /\r?\n|\r/g;
 
 	// Token matchers
-	this._matchHeader = /^\[\s*(\w+)\s+"(.*)"\s*\]$/mg;
+	this._matchHeaderRegular = /\[\s*(\w+)\s+"((?:[^\\"]|\\[\\"])*)"\s*\]/g;
+	this._matchHeaderDegenerated = /^\[\s*(\w+)\s+"(.*)"\s*\]$/mg;
 	this._matchMove = /(?:[1-9][0-9]*\s*\.(?:\.\.)?\s*)?((?:O-O-O|O-O|[KQRBN][a-h]?[1-8]?x?[a-h][1-8]|(?:[a-h]x?)?[a-h][1-8](?:=?[KQRBNP])?)[+#]?|--)/g;
 	this._matchNag = /([!?][!?]?|\+\/?[-=]|[-=]\/?\+|=|inf|~)|\$([1-9][0-9]*)/g;
 	this._matchComment = /\{((?:[^{}\\]|\\[{}\\])*)\}/g;
@@ -60,7 +61,8 @@ var TokenStream = exports.TokenStream = function(pgnString, initialPosition) {
 
 	this._matchSpaces.matchedIndex = -1;
 	this._matchLineBreak.matchedIndex = -1;
-	this._matchHeader.matchedIndex = -1;
+	this._matchHeaderRegular.matchedIndex = -1;
+	this._matchHeaderDegenerated.matchedIndex = -1;
 	this._matchMove.matchedIndex = -1;
 	this._matchNag.matchedIndex = -1;
 	this._matchComment.matchedIndex = -1;
@@ -205,9 +207,13 @@ TokenStream.prototype.consumeToken = function() {
 	this._tokenIndex = this._pos;
 
 	// Match a game header (ex: [White "Kasparov, G."])
-	if(testAtPos(this, this._matchHeader)) {
+	if(testAtPos(this, this._matchHeaderRegular)) {
 		this._token      = TOKEN_HEADER;
-		this._tokenValue = { key: this._matchHeader.matched[1], value: parseHeaderValue(this._matchHeader.matched[2]) };
+		this._tokenValue = { key: this._matchHeaderRegular.matched[1], value: parseHeaderValue(this._matchHeaderRegular.matched[2]) };
+	}
+	else if(testAtPos(this, this._matchHeaderDegenerated)) {
+		this._token      = TOKEN_HEADER;
+		this._tokenValue = { key: this._matchHeaderDegenerated.matched[1], value: this._matchHeaderDegenerated.matched[2] };
 	}
 
 	// Match a move or a null-move

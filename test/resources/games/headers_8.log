@@ -1,0 +1,5 @@
+White = {Player 1}
+Black = {Player 2}
+Event = {Full inline PGN}
+-+<LONG
+{Line}

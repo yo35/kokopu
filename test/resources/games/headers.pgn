@@ -58,8 +58,9 @@
 [Result "0-1"]
 4... Qxf2# 0-1
 
-[Event "Ill-formed tag " (unescaped double quote)"]
-[White "Ill-formed tag \ (unescaped backslash)"]
-[Black "Ill-formed tag "] (unescaped tag-end-like sequence)"]
+[White "Ill-formed tag " (unescaped double quote, should be \")"]
+[Black "Ill-formed tag \ (unescaped backslash, should be \\)"]
 [Result "*"]
 *
+
+[Event "Full inline PGN"][White "Player 1"][Black "Player 2"][Result "*"] *
