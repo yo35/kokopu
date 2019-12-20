@@ -1,6 +1,12 @@
 ChangeLog
 =========
 
+1.3.0 (December 20, 2019)
+-------------------------
+* Improve PGN parsing robustness to linebreak issues (see #11).
+* Introduce `Variations#nodes()` (see #9). WARNING! This impacts the lifecycle of the `Node` objects returned by `Node#next()` and
+`Node#play(..)`: now, these functions always return a new instance of `Node`, instead of reusing the current one.
+
 1.2.6 (December 15, 2019)
 -------------------------
 * Add some missing documentation (see #10).
