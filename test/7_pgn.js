@@ -53,9 +53,10 @@ describe('Game count', function() {
  * Dump the content of a Game object read from a `.pgn` file.
  *
  * @param {Game} game
+ * @param {string} iterationStyle Either `'using-next'` or `'using-nodes'`
  * @returns {string}
  */
-function dumpGame(game) {
+function dumpGame(game, iterationStyle) {
 	var res = '\n';
 
 	function dumpHeader(key, value) {
@@ -146,6 +147,26 @@ function dumpGame(game) {
 		}
 	}
 
+	function dumpNode(node, indent) {
+
+		// Describe the move
+		res += indent + '(' + node.fullMoveNumber() + node.moveColor() + ') ' + node.notation();
+		dumpNags(node);
+		dumpTags(node);
+		dumpComment(node);
+		res += '\n';
+
+		// Print the sub-variations
+		var subVariations = node.variations();
+		for(var k=0; k<subVariations.length; ++k) {
+			res += indent + ' |\n';
+			dumpVariation(subVariations[k], indent + ' |  ', indent + ' +--');
+		}
+		if(subVariations.length > 0) {
+			res += indent + ' |\n';
+		}
+	}
+
 	// Recursive function to dump a variation.
 	function dumpVariation(variation, indent, indentFirst) {
 
@@ -160,28 +181,17 @@ function dumpGame(game) {
 		res += '\n';
 
 		// List of moves
-		var node = variation.first();
-		while(node !== undefined) {
-
-			// Describe the move
-			res += indent + '(' + node.fullMoveNumber() + node.moveColor() + ') ' + node.notation();
-			dumpNags(node);
-			dumpTags(node);
-			dumpComment(node);
-			res += '\n';
-
-			// Print the sub-variations
-			var subVariations = node.variations();
-			for(var k=0; k<subVariations.length; ++k) {
-				res += indent + ' |\n';
-				dumpVariation(subVariations[k], indent + ' |  ', indent + ' +--');
+		if(iterationStyle === 'using-next') {
+			var node = variation.first();
+			while(node !== undefined) {
+				dumpNode(node, indent);
+				node = node.next();
 			}
-			if(subVariations.length > 0) {
-				res += indent + ' |\n';
-			}
-
-			// Go to the next move
-			node = node.next();
+		}
+		else if(iterationStyle === 'using-nodes') {
+			variation.nodes().forEach(function(nodeInArray) {
+				dumpNode(nodeInArray, indent);
+			});
 		}
 	}
 
@@ -208,7 +218,7 @@ function dumpGame(game) {
 function checkGameContentDirect(testDataDescriptor, gameIndex) {
 	it('File ' + testDataDescriptor.label + ' - Game ' + gameIndex, function() {
 		var expectedDump = readText('games/' + testDataDescriptor.label + '_' + gameIndex + '.log');
-		test.value(dumpGame(kokopu.pgnRead(testDataDescriptor.pgn, gameIndex)).trim()).is(expectedDump.trim());
+		test.value(dumpGame(kokopu.pgnRead(testDataDescriptor.pgn, gameIndex), 'using-next').trim()).is(expectedDump.trim());
 	});
 }
 
@@ -239,7 +249,7 @@ function checkGameContentDatabase(testDataDescriptor, holder, gameIndex) {
 	it('File ' + testDataDescriptor.label + ' - Game ' + gameIndex, function() {
 		var database = holder.database();
 		var expectedDump = readText('games/' + testDataDescriptor.label + '_' + gameIndex + '.log');
-		test.value(dumpGame(database.game(gameIndex)).trim()).is(expectedDump.trim());
+		test.value(dumpGame(database.game(gameIndex), 'using-nodes').trim()).is(expectedDump.trim());
 	});
 }
 

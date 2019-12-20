@@ -752,6 +752,41 @@ Variation.prototype.first = function() {
 
 
 /**
+ * Generate the nodes corresponding to the moves of the current variation.
+ *
+ * @returns {Node[]} An empty array is returned if the variation is empty.
+ */
+Variation.prototype.nodes = function() {
+	var result = [];
+
+	var currentNodeInfo = this._info.first;
+	var previousNodeInfo = null;
+	var previousPositionBefore = this._initialPosition;
+	var previousFullMoveNumber = this._initialFullMoveNumber;
+	while(currentNodeInfo) {
+
+		// Compute the "position-before" attribute the current node.
+		var previousPositionBefore = new Position(previousPositionBefore);
+		if(previousNodeInfo !== null) {
+			applyMoveDescriptor(previousPositionBefore, previousNodeInfo);
+		}
+
+		// Compute the "full-move-number" attribute the current node.
+		previousFullMoveNumber = previousNodeInfo !== null && previousPositionBefore.turn() === 'w' ? previousFullMoveNumber + 1 : previousFullMoveNumber;
+
+		// Push the current node.
+		result.push(new Node(currentNodeInfo, this, previousFullMoveNumber, previousPositionBefore));
+
+		// Increment the counters.
+		previousNodeInfo = currentNodeInfo;
+		currentNodeInfo = currentNodeInfo.next;
+	}
+
+	return result;
+};
+
+
+/**
  * Return the NAGs associated to the current variation.
  *
  * @returns {number[]}
