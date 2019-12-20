@@ -641,7 +641,7 @@ function computeMoveDescriptor(position, move) {
 
 
 /**
- * Play the given move, and return a new {@link Node} point at the resulting position.
+ * Play the given move, and return a new {@link Node} pointing at the resulting position.
  *
  * @param {string} move SAN notation (or `'--'` for a null-move).
  * @returns {Node} A new node, pointing at the new position.
