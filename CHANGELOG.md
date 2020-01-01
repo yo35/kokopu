@@ -1,6 +1,10 @@
 ChangeLog
 =========
 
+1.3.1 (January 1, 2020)
+-----------------------
+* Add some tutorials (see #10).
+
 1.3.0 (December 20, 2019)
 -------------------------
 * Improve PGN parsing robustness to linebreak issues (see #11).
