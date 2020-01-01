@@ -6,6 +6,7 @@
 	"opts": {
 		"package": "package.json",
 		"readme": "doc_src/home.md",
+		"tutorials": "doc_src/tutorials",
 		"template": "node_modules/tui-jsdoc-template"
 	},
 	"templates": {

@@ -1,0 +1,11 @@
+{
+	"01_getting_started": {
+		"title": "Getting started"
+	},
+	"02_set_up_position": {
+		"title": "Set-up a position"
+	},
+	"03_loading_pgn": {
+		"title": "Loading a PGN file"
+	}
+}
