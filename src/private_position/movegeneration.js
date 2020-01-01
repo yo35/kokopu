@@ -266,11 +266,11 @@ var isCastlingLegal = exports.isCastlingLegal = function(position, from, to) {
 	var castleFile = -1;
 	var rookTo = -1;
 	if(to === 2 + position.turn*112) {
-		castleFile = position.variant === bt.CHESS_960 ? findCastleFile(position.castling[position.turn], from % 16, -1) : 0;
+		castleFile = position.variant === bt.CHESS960 ? findCastleFile(position.castling[position.turn], from % 16, -1) : 0;
 		rookTo = 3 + 112*position.turn;
 	}
 	else if(to === 6 + position.turn*112) {
-		castleFile = position.variant === bt.CHESS_960 ? findCastleFile(position.castling[position.turn], from % 16, 1) : 7;
+		castleFile = position.variant === bt.CHESS960 ? findCastleFile(position.castling[position.turn], from % 16, 1) : 7;
 		rookTo = 5 + 112*position.turn;
 	}
 	else {
@@ -278,7 +278,7 @@ var isCastlingLegal = exports.isCastlingLegal = function(position, from, to) {
 	}
 
 	// Ensure that the given underlying castling is allowed.
-	if(position.variant === bt.CHESS_960) {
+	if(position.variant === bt.CHESS960) {
 		if(castleFile === -1) { return false; }
 	}
 	else {

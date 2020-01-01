@@ -40,7 +40,7 @@ ChangeLog
 
 1.1.0 (July 22, 2018)
 ---------------------
-* Add support for [Chess 960](https://en.wikipedia.org/wiki/Chess960) (aka. Fischer Random Chess).
+* Add support for [Chess960](https://en.wikipedia.org/wiki/Chess960) (aka. Fischer Random Chess).
 
 1.0.3 (July 9, 2018)
 --------------------

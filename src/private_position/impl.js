@@ -85,7 +85,7 @@ exports.makeInitial = function() {
 
 
 /**
- * Chess 960 initial position, following the numbering scheme proposed by Reinhard Scharnagl (see for instance
+ * Chess960 initial position, following the numbering scheme proposed by Reinhard Scharnagl (see for instance
  * https://chessprogramming.wikispaces.com/Reinhard+Scharnagl and https://chess960.net/start-positions/).
  */
 exports.make960FromScharnagl = function(scharnaglCode) {
@@ -110,7 +110,7 @@ exports.make960FromScharnagl = function(scharnaglCode) {
 		turn: bt.WHITE,
 		castling: [info.castling, info.castling],
 		enPassant: -1,
-		variant: bt.CHESS_960,
+		variant: bt.CHESS960,
 
 		// Computed attributes
 		legal: true,

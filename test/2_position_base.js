@@ -34,7 +34,7 @@ var customFEN = 'k7/n1PB4/1K6/8/8/8/8/8 w - - 0 1';
 
 var builders = [
 	{ label: 'regular', make: function() { return new kokopu.Position(customFEN); } },
-	{ label: 'chess 960', make: function() { return new kokopu.Position('chess960', customFEN); } }
+	{ label: 'Chess960', make: function() { return new kokopu.Position('chess960', customFEN); } }
 ];
 
 
@@ -59,8 +59,8 @@ describe('Position constructor', function() {
 	doTest('Constructor FEN-based (force regular)', 'regular', customFEN, function() { return new kokopu.Position('regular', customFEN); });
 
 	doTest('Scharnagl constructor'                 , 'chess960', startXFEN, function() { return new kokopu.Position('chess960', 518); });
-	doTest('Constructor \'empty\' (force chess960)', 'chess960', emptyFEN , function() { return new kokopu.Position('chess960', 'empty'); });
-	doTest('Constructor FEN-based (force chess960)', 'chess960', customFEN, function() { return new kokopu.Position('chess960', customFEN); });
+	doTest('Constructor \'empty\' (force Chess960)', 'chess960', emptyFEN , function() { return new kokopu.Position('chess960', 'empty'); });
+	doTest('Constructor FEN-based (force Chess960)', 'chess960', customFEN, function() { return new kokopu.Position('chess960', customFEN); });
 });
 
 
@@ -101,7 +101,7 @@ describe('Clear mutator', function() {
 			test.value(position.fen()).is(emptyFEN);
 		});
 
-		it('From ' + builder.label + ' to chess 960', function() {
+		it('From ' + builder.label + ' to Chess960', function() {
 			var position = builder.make();
 			position.clear('chess960');
 			test.value(position.variant()).is('chess960');
@@ -146,7 +146,7 @@ describe('Position Scharnagl constructor', function() {
 	});
 
 	testData.forEach(function(elem) {
-		it('Chess 960 initial position ' + elem.scharnaglCode, function() {
+		it('Chess960 initial position ' + elem.scharnaglCode, function() {
 			var position = new kokopu.Position('chess960', elem.scharnaglCode);
 			test.value(position.variant()).is('chess960');
 			test.value(position.fen()).is(elem.fen);
@@ -169,10 +169,10 @@ describe('Position getters', function() {
 	it('Get castling 1', function() { var p=new kokopu.Position(); test.value(p.castling('wq')).is(true); });
 	it('Get castling 2', function() { var p=new kokopu.Position(currentFEN); test.value(p.castling('bq')).is(false); });
 	it('Get castling 3', function() { var p=new kokopu.Position(currentFEN); test.value(p.castling('bk')).is(true); });
-	it('Get castling 4 (chess 960)', function() { var p=new kokopu.Position('chess960', 763); test.value(p.castling('wa')).is(true); });
-	it('Get castling 5 (chess 960)', function() { var p=new kokopu.Position('chess960', 763); test.value(p.castling('wb')).is(false); });
-	it('Get castling 6 (chess 960)', function() { var p=new kokopu.Position('chess960', 763); test.value(p.castling('bf')).is(true); });
-	it('Get castling 7 (chess 960)', function() { var p=new kokopu.Position('chess960', 763); test.value(p.castling('bh')).is(false); });
+	it('Get castling 4 (Chess960)', function() { var p=new kokopu.Position('chess960', 763); test.value(p.castling('wa')).is(true); });
+	it('Get castling 5 (Chess960)', function() { var p=new kokopu.Position('chess960', 763); test.value(p.castling('wb')).is(false); });
+	it('Get castling 6 (Chess960)', function() { var p=new kokopu.Position('chess960', 763); test.value(p.castling('bf')).is(true); });
+	it('Get castling 7 (Chess960)', function() { var p=new kokopu.Position('chess960', 763); test.value(p.castling('bh')).is(false); });
 
 	it('Get en-passant 1', function() { var p=new kokopu.Position(); test.value(p.enPassant()).is('-'); });
 	it('Get en-passant 2', function() { var p=new kokopu.Position(currentFEN); test.value(p.enPassant()).is('e'); });
@@ -213,10 +213,10 @@ describe('Position setters', function() {
 	it('Set castling 1b', function() { pos1.castling('bk', true ); test.value(pos1.fen()).is('1nbqkbnr/pppppppp/5B2/8/8/8/PPPPPPPP/RNBQKBNR w Qkq - 0 1'); });
 	it('Set castling 2a', function() { pos2.castling('wq', false); test.value(pos2.fen()).is('8/8/8/6K1/8/8/8/8 b - - 0 1'); });
 	it('Set castling 2b', function() { pos2.castling('bq', true ); test.value(pos2.fen()).is('8/8/8/6K1/8/8/8/8 b q - 0 1'); });
-	it('Set castling 3a (chess 960)', function() { pos3.castling('wa', false); test.value(pos3.fen()).is('rknnbrqb/pppppppp/8/8/8/8/PPPPPPPP/RKNNBRQB w Faf - 0 1'); });
-	it('Set castling 3b (chess 960)', function() { pos3.castling('wh', true ); test.value(pos3.fen()).is('rknnbrqb/pppppppp/8/8/8/8/PPPPPPPP/RKNNBRQB w FHaf - 0 1'); });
-	it('Set castling 3c (chess 960)', function() { pos3.castling('bd', true ); test.value(pos3.fen()).is('rknnbrqb/pppppppp/8/8/8/8/PPPPPPPP/RKNNBRQB w FHadf - 0 1'); });
-	it('Set castling 3d (chess 960)', function() { pos3.castling('bf', false); test.value(pos3.fen()).is('rknnbrqb/pppppppp/8/8/8/8/PPPPPPPP/RKNNBRQB w FHad - 0 1'); });
+	it('Set castling 3a (Chess960)', function() { pos3.castling('wa', false); test.value(pos3.fen()).is('rknnbrqb/pppppppp/8/8/8/8/PPPPPPPP/RKNNBRQB w Faf - 0 1'); });
+	it('Set castling 3b (Chess960)', function() { pos3.castling('wh', true ); test.value(pos3.fen()).is('rknnbrqb/pppppppp/8/8/8/8/PPPPPPPP/RKNNBRQB w FHaf - 0 1'); });
+	it('Set castling 3c (Chess960)', function() { pos3.castling('bd', true ); test.value(pos3.fen()).is('rknnbrqb/pppppppp/8/8/8/8/PPPPPPPP/RKNNBRQB w FHadf - 0 1'); });
+	it('Set castling 3d (Chess960)', function() { pos3.castling('bf', false); test.value(pos3.fen()).is('rknnbrqb/pppppppp/8/8/8/8/PPPPPPPP/RKNNBRQB w FHad - 0 1'); });
 
 	it('Set en-passant 1a', function() { pos1.enPassant('e'); test.value(pos1.fen()).is('1nbqkbnr/pppppppp/5B2/8/8/8/PPPPPPPP/RNBQKBNR w Qkq e6 0 1'); });
 	it('Set en-passant 1b', function() { pos1.enPassant('-'); test.value(pos1.fen()).is('1nbqkbnr/pppppppp/5B2/8/8/8/PPPPPPPP/RNBQKBNR w Qkq - 0 1'); });

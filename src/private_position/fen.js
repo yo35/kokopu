@@ -95,7 +95,7 @@ exports.getFEN = function(position, fiftyMoveClock, fullMoveNumber) {
 
 
 function castlingToString(position) {
-	if(position.variant === bt.CHESS_960) {
+	if(position.variant === bt.CHESS960) {
 		var whiteFlags = '';
 		var blackFlags = '';
 		for(var file = 0; file < 8; ++file) {
@@ -181,7 +181,7 @@ exports.parseFEN = function(variant, fen, strict) {
 	}
 
 	// Castling rights parsing
-	position.castling = variant === bt.CHESS_960 ? castlingFromStringXFEN(fields[2], strict, position.board) :
+	position.castling = variant === bt.CHESS960 ? castlingFromStringXFEN(fields[2], strict, position.board) :
 		castlingFromStringFEN(fields[2], strict);
 	if(position.castling === null) {
 		throw new exception.InvalidFEN(fen, i18n.INVALID_CASTLING_FIELD);

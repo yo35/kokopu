@@ -55,7 +55,7 @@ exports.LINE = 3;
 
 // Game variant
 exports.REGULAR_CHESS = 0;
-exports.CHESS_960 = 1;
+exports.CHESS960 = 1;
 
 
 // -----------------------------------------------------------------------------
@@ -146,7 +146,7 @@ exports.coloredPieceFromString = function(cp) {
  */
 
 /**
- * Two-character string identifying a castle with the Chess 960 rules: `'wa'` (white castle with rook initially on the a-file),
+ * Two-character string identifying a castle with the Chess960 rules: `'wa'` (white castle with rook initially on the a-file),
  * `'wb'`, `'wc'`, ..., `'bh'`.
  * @typedef {string} Castle960
  */
@@ -169,7 +169,7 @@ exports.coloredPieceFromString = function(cp) {
 /**
  * Variant of chess. Must be one of the following constant:
  *  - `'regular'` (regular chess rules),
- *  - `'chess960'` ([Chess 960](https://en.wikipedia.org/wiki/Chess960), also known as Fischer Random Chess).
+ *  - `'chess960'` ([Chess960](https://en.wikipedia.org/wiki/Chess960), also known as Fischer Random Chess).
  *
  * @typedef {string} GameVariant
  */

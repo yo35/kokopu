@@ -51,10 +51,10 @@ var notation = require('./private_position/notation');
  * new kokopu.Position('regular');                 // 1 -> Usual starting position.
  * new kokopu.Position('regular', 'start');        // 2 -> Same as 1.
  * new kokopu.Position('regular', 'empty');        // 3 -> Empty board.
- * new kokopu.Position('chess960', 'empty');       // 4 -> Empty board, configured for Chess 960.
- * new kokopu.Position('chess960', scharnaglCode); // 5 -> One of the Chess 960 starting position (`scharnaglCode` is a number between 0 and 959 inclusive).
+ * new kokopu.Position('chess960', 'empty');       // 4 -> Empty board, configured for Chess960.
+ * new kokopu.Position('chess960', scharnaglCode); // 5 -> One of the Chess960 starting position (`scharnaglCode` is a number between 0 and 959 inclusive).
  * new kokopu.Position('regular', fenString);      // 6 -> Parse the given FEN string.
- * new kokopu.Position('chess960', fenString);     // 7 -> Parse the given FEN or X-FEN string, and configure for Chess 960.
+ * new kokopu.Position('chess960', fenString);     // 7 -> Parse the given FEN or X-FEN string, and configure for Chess960.
  * new kokopu.Position(anotherPosition);           // 8 -> Make a copy of `anotherPosition`.
  * ```
  * Please note that the argument `'regular'` can be omitted in cases 1, 2, 3 and 6. In particular, the constructor can be invoked
@@ -63,8 +63,8 @@ var notation = require('./private_position/notation');
  * @throws {module:exception.InvalidFEN} If the input parameter is not a valid FEN string (can be thrown only in cases 6 and 7).
  *
  * @see FEN notation: {@link https://en.wikipedia.org/wiki/Forsyth–Edwards_Notation}
- * @see Chess 960 (aka. Fischer Random Chess): {@link https://en.wikipedia.org/wiki/Chess960}
- * @see Chess 960 starting positions: {@link https://chess960.net/start-positions/}
+ * @see Chess960 (aka. Fischer Random Chess): {@link https://en.wikipedia.org/wiki/Chess960}
+ * @see Chess960 starting positions: {@link https://chess960.net/start-positions/}
  * @see X-FEN notation: {@link https://en.wikipedia.org/wiki/X-FEN}
  */
 var Position = exports.Position = function() {
@@ -82,7 +82,7 @@ var Position = exports.Position = function() {
 		this._impl = impl.makeEmpty(bt.REGULAR_CHESS);
 	}
 	else if(arguments[0] === 'chess960' && arguments[1] === 'empty') {
-		this._impl = impl.makeEmpty(bt.CHESS_960);
+		this._impl = impl.makeEmpty(bt.CHESS960);
 	}
 	else if(arguments[0] === 'chess960' && typeof arguments[1] === 'number' && arguments[1] >= 0 && arguments[1] <= 959) {
 		this._impl = impl.make960FromScharnagl(arguments[1]);
@@ -136,7 +136,7 @@ Position.prototype.reset = function() {
 
 
 /**
- * Set the position to one of the Chess 960 starting position.
+ * Set the position to one of the Chess960 starting position.
  *
  * @param {number} scharnaglCode Must be between 0 and 959 inclusive (see {@link https://chess960.net/start-positions/}
  *        or {@link https://chessprogramming.wikispaces.com/Reinhard+Scharnagl} for more details).
@@ -287,7 +287,7 @@ Position.prototype.turn = function(value) {
  * Get a castle flag (i.e. whether or not the corresponding castle is allowed or not).
  *
  * @param {Castle|Castle960} castle Must be {@link Castle} if the {@link Position} is configured for the regular chess rules,
- *        and {@link Castle960} for chess 960.
+ *        and {@link Castle960} for Chess960.
  * @returns {boolean}
  *
  *//**
@@ -295,13 +295,13 @@ Position.prototype.turn = function(value) {
  * Set a castle flag (i.e. whether or not the corresponding castle is allowed or not).
  *
  * @param {Castle|Castle960} castle Must be {@link Castle} if the {@link Position} is configured for the regular chess rules,
- *        and {@link Castle960} for chess 960.
+ *        and {@link Castle960} for Chess960.
  * @param {boolean} value
  */
 Position.prototype.castling = function(castle, value) {
 	if(
 		(this._impl.variant === bt.REGULAR_CHESS && !/^[wb][qk]$/.test(castle)) ||
-		(this._impl.variant === bt.CHESS_960 && !/^[wb][a-h]$/.test(castle))
+		(this._impl.variant === bt.CHESS960 && !/^[wb][a-h]$/.test(castle))
 	) {
 		throw new exception.IllegalArgument('Position#castling()');
 	}
@@ -532,7 +532,7 @@ Position.prototype.moves = function() {
  *
  *     case 'castle960':
  *       // The move "from -> to" is legal, but it corresponds either to a castling move
- *       // or to a regular king move (this case can only happen at Chess 960).
+ *       // or to a regular king move (this case can only happen at Chess960).
  *       // The corresponding move descriptors are `result('castle')` and `result('king')`.
  *       break;
  *

@@ -82,7 +82,7 @@ var refreshLegalFlagAndKingSquares = exports.refreshLegalFlagAndKingSquares = fu
 	}
 
 	// Condition (4)
-	var isCastlingFlagLegalFun = position.variant === bt.CHESS_960 ? isCastlingFlagLegalForChess960 : isCastlingFlagLegalForRegularChess;
+	var isCastlingFlagLegalFun = position.variant === bt.CHESS960 ? isCastlingFlagLegalForChess960 : isCastlingFlagLegalForRegularChess;
 	for(var color=0; color<2; ++color) {
 		if(!isCastlingFlagLegalFun(position, color)) {
 			return;
