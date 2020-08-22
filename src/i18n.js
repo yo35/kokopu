@@ -79,3 +79,4 @@ exports.UNEXPECTED_END_OF_GAME          = 'Unexpected end of game: there are pen
 exports.UNEXPECTED_END_OF_TEXT          = 'Unexpected end of text: there is a pending game.';
 exports.INVALID_GAME_INDEX              = 'Game index %1$s is invalid (only %2$s game(s) found in the PGN data).';
 exports.UNKNOWN_VARIANT                 = 'Unknown chess game variant (%1$s).';
+exports.VARIANT_WITHOUT_FEN             = 'For non-standard game variant, the FEN header is mandatory.';

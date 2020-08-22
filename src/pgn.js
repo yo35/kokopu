@@ -63,6 +63,26 @@ function parseDateHeader(value) {
 }
 
 
+function parseVariant(value) {
+	switch(value.toLowerCase()) {
+		case 'regular':
+		case 'standard':
+			return 'regular';
+		case 'chess960':
+		case 'fischerandom':
+			return 'chess960';
+		case 'no king':
+			return 'no-king';
+		case 'white king only':
+			return 'white-king-only';
+		case 'black king only':
+			return 'black-king-only';
+		default:
+			return undefined;
+	}
+}
+
+
 function processHeader(stream, game, initialPositionFactory, key, value) {
 	value = value.trim();
 	switch(key) {
@@ -87,14 +107,8 @@ function processHeader(stream, game, initialPositionFactory, key, value) {
 
 		// The header 'Variant' indicates that this is not a regular chess game.
 		case 'Variant':
-			var variant = value.toLowerCase();
-			if(variant === 'chess960' || variant === 'fischerandom') {
-				initialPositionFactory.variant = 'chess960';
-			}
-			else if(variant === 'regular' || variant === 'standard') {
-				initialPositionFactory.variant = false;
-			}
-			else {
+			initialPositionFactory.variant = parseVariant(value);
+			if(!initialPositionFactory.variant) {
 				throw stream.invalidPGNException(i18n.UNKNOWN_VARIANT, value);
 			}
 			break;
@@ -105,7 +119,12 @@ function processHeader(stream, game, initialPositionFactory, key, value) {
 function initializeInitialPosition(stream, game, initialPositionFactory) {
 
 	// Nothing to do if no custom FEN has been defined -> let the default state.
-	if(!initialPositionFactory.fen) { return; }
+	if(!initialPositionFactory.fen) {
+		if(initialPositionFactory.variant && initialPositionFactory.variant !== 'regular') {
+			throw stream.invalidPGNException(i18n.VARIANT_WITHOUT_FEN);
+		}
+		return;
+	}
 
 	try {
 		var position = new Position(initialPositionFactory.variant ? initialPositionFactory.variant : 'regular', 'empty');
