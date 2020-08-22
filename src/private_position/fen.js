@@ -232,50 +232,42 @@ function castlingFromStringXFEN(castling, strict, board) {
 	if(castling === '-') {
 		return result;
 	}
-	if(!(strict ? /^[A-H]{0,2}[a-h]{0,2}$/ : /^[A-Ha-hKQkq]*$/).test(castling)) {
+	if(!(strict ? /^[A-H]{0,2}[a-h]{0,2}$/ : /^[A-Ha-h]*|[KQkq]*$/).test(castling)) {
 		return null;
 	}
 
 	function searchQueenSideRook(color) {
-		var rookFile = -1;
 		var targetRook = bt.ROOK * 2 + color;
 		var targetKing = bt.KING * 2 + color;
 		for(var sq = 112*color; sq < 112*color + 8; ++sq) {
 			if(board[sq] === targetRook) {
-				if(rookFile >= 0) { break; }
-				rookFile = sq % 8;
+				return sq % 8;
 			}
 			else if(board[sq] === targetKing) {
-				if(rookFile < 0) { break; }
-				result[color] |= 1 << rookFile;
-				return true;
+				break;
 			}
 		}
-		return false;
+		return 0;
 	}
 
 	function searchKingSideRook(color) {
-		var rookFile = -1;
 		var targetRook = bt.ROOK * 2 + color;
 		var targetKing = bt.KING * 2 + color;
 		for(var sq = 112*color + 7; sq >= 112*color; --sq) {
 			if(board[sq] === targetRook) {
-				if(rookFile >= 0) { break; }
-				rookFile = sq % 8;
+				return sq % 8;
 			}
 			else if(board[sq] === targetKing) {
-				if(rookFile < 0) { break; }
-				result[color] |= 1 << rookFile;
-				return true;
+				break;
 			}
 		}
-		return false;
+		return 7;
 	}
 
-	if(castling.indexOf('K') >= 0) { if(!searchKingSideRook (bt.WHITE)) { return null; }}
-	if(castling.indexOf('Q') >= 0) { if(!searchQueenSideRook(bt.WHITE)) { return null; }}
-	if(castling.indexOf('k') >= 0) { if(!searchKingSideRook (bt.BLACK)) { return null; }}
-	if(castling.indexOf('q') >= 0) { if(!searchQueenSideRook(bt.BLACK)) { return null; }}
+	if(castling.indexOf('K') >= 0) { result[bt.WHITE] |= 1 << searchKingSideRook (bt.WHITE); }
+	if(castling.indexOf('Q') >= 0) { result[bt.WHITE] |= 1 << searchQueenSideRook(bt.WHITE); }
+	if(castling.indexOf('k') >= 0) { result[bt.BLACK] |= 1 << searchKingSideRook (bt.BLACK); }
+	if(castling.indexOf('q') >= 0) { result[bt.BLACK] |= 1 << searchQueenSideRook(bt.BLACK); }
 
 	for(var file = 0; file < 8; ++file) {
 		var s = bt.fileToString(file);
