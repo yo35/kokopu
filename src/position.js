@@ -48,17 +48,26 @@ var notation = require('./private_position/notation');
  * @description
  * This constructor can be invoked with different types of arguments:
  * ```
- * new kokopu.Position('regular');                 // 1 -> Usual starting position.
- * new kokopu.Position('regular', 'start');        // 2 -> Same as 1.
- * new kokopu.Position('regular', 'empty');        // 3 -> Empty board.
- * new kokopu.Position('chess960', 'empty');       // 4 -> Empty board, configured for Chess960.
- * new kokopu.Position('chess960', scharnaglCode); // 5 -> One of the Chess960 starting position (`scharnaglCode` is a number between 0 and 959 inclusive).
- * new kokopu.Position('regular', fenString);      // 6 -> Parse the given FEN string.
- * new kokopu.Position('chess960', fenString);     // 7 -> Parse the given FEN or X-FEN string, and configure for Chess960.
- * new kokopu.Position(anotherPosition);           // 8 -> Make a copy of `anotherPosition`.
+ * new kokopu.Position('regular');                  //  1 -> Usual starting position.
+ * new kokopu.Position('regular', 'start');         //  2 -> Same as 1.
+ * new kokopu.Position('regular', 'empty');         //  3 -> Empty board.
+ * new kokopu.Position('no-king', 'empty');         //  4 -> Empty board, configured to be considered as legal without any king.
+ * new kokopu.Position('white-king-only', 'empty'); //  5 -> Empty board, configured to be considered as legal with no black king.
+ * new kokopu.Position('black-king-only', 'empty'); //  6 -> Empty board, configured to be considered as legal with no white king.
+ * new kokopu.Position('chess960', 'empty');        //  7 -> Empty board, configured for Chess960.
+ * new kokopu.Position('chess960', scharnaglCode);  //  8 -> One of the Chess960 starting position (`scharnaglCode` is a number between 0 and 959 inclusive).
+ * new kokopu.Position(variant, fenString);         //  9 -> Parse the given FEN string, assuming the given game variant.
+ * new kokopu.Position(anotherPosition);            // 10 -> Make a copy of `anotherPosition`.
  * ```
- * Please note that the argument `'regular'` can be omitted in cases 1, 2, 3 and 6. In particular, the constructor can be invoked
- * with no argument: in this case, a new `Position` initialized to the usual starting position is instantiated (as in cases 1 and 2).
+ * Please note that the argument `'regular'` can be omitted in forms 1, 2, 3. In particular, the constructor can be invoked
+ * with no argument, as in `new kokopu.Position()`: in this case, a new `Position` initialized to the usual starting position
+ * is instantiated (as in forms 1 and 2).
+ *
+ * In form 9, `variant` must be one of the game variant proposed in {@link GameVariant}. The `variant` argument can be omitted,
+ * as in `new kokopu.Position(fenString)`: in this case, the usual chess rules are assumed (as if `variant` where set to `'regular'`).
+ * If `variant` is set to `'chess960'`, then the X-FEN syntax can be used for `fenString'`.
+ *
+ * In form 10, `anotherPosition` must be another {@link Position} object.
  *
  * @throws {module:exception.InvalidFEN} If the input parameter is not a valid FEN string (can be thrown only in cases 6 and 7).
  *
@@ -87,23 +96,35 @@ var Position = exports.Position = function() {
 	else if(arguments[0] === 'chess960' && typeof arguments[1] === 'number' && arguments[1] >= 0 && arguments[1] <= 959) {
 		this._impl = impl.make960FromScharnagl(arguments[1]);
 	}
+	else if(arguments[0] === 'no-king' && arguments[1] === 'empty') {
+		this._impl = impl.makeEmpty(bt.NO_KING);
+	}
+	else if(arguments[0] === 'white-king-only' && arguments[1] === 'empty') {
+		this._impl = impl.makeEmpty(bt.WHITE_KING_ONLY);
+	}
+	else if(arguments[0] === 'black-king-only' && arguments[1] === 'empty') {
+		this._impl = impl.makeEmpty(bt.BLACK_KING_ONLY);
+	}
 
 	// FEN parsing
-	else if(arguments[0] === 'regular' || arguments[0] === 'chess960') {
-		if(typeof arguments[1] === 'string') {
-			this._impl = fen.parseFEN(bt.variantFromString(arguments[0]), arguments[1], false).position;
+	else if(typeof arguments[0] === 'string') {
+		var variant = bt.variantFromString(arguments[0]);
+		if(variant >= 0) {
+			if(typeof arguments[1] === 'string') {
+				this._impl = fen.parseFEN(variant, arguments[1], false).position;
+			}
+			else {
+				throw new exception.IllegalArgument('Position()');
+			}
 		}
 		else {
-			throw new exception.IllegalArgument('Position()');
-		}
-	}
-	else {
-		if(typeof arguments[0] === 'string') {
 			this._impl = fen.parseFEN(bt.REGULAR_CHESS, arguments[0], false).position;
 		}
-		else {
-			throw new exception.IllegalArgument('Position()');
-		}
+	}
+
+	// Wrong argument scheme
+	else {
+		throw new exception.IllegalArgument('Position()');
 	}
 };
 
@@ -286,27 +307,22 @@ Position.prototype.turn = function(value) {
 /**
  * Get a castle flag (i.e. whether or not the corresponding castle is allowed or not).
  *
- * @param {Castle|Castle960} castle Must be {@link Castle} if the {@link Position} is configured for the regular chess rules,
- *        and {@link Castle960} for Chess960.
+ * @param {Castle|Castle960} castle Must be {@link Castle960} if the {@link Position} is configured for Chess960, or {@link Castle} otherwise.
  * @returns {boolean}
  *
  *//**
  *
  * Set a castle flag (i.e. whether or not the corresponding castle is allowed or not).
  *
- * @param {Castle|Castle960} castle Must be {@link Castle} if the {@link Position} is configured for the regular chess rules,
- *        and {@link Castle960} for Chess960.
+ * @param {Castle|Castle960} castle Must be {@link Castle960} if the {@link Position} is configured for Chess960, or {@link Castle} otherwise.
  * @param {boolean} value
  */
 Position.prototype.castling = function(castle, value) {
-	if(
-		(this._impl.variant === bt.REGULAR_CHESS && !/^[wb][qk]$/.test(castle)) ||
-		(this._impl.variant === bt.CHESS960 && !/^[wb][a-h]$/.test(castle))
-	) {
+	if(!(this._impl.variant === bt.CHESS960 ? /^[wb][a-h]$/ : /^[wb][qk]$/).test(castle)) {
 		throw new exception.IllegalArgument('Position#castling()');
 	}
 	var color = bt.colorFromString(castle[0]);
-	var file = this._impl.variant === bt.REGULAR_CHESS ? (castle[1]==='k' ? 7 : 0) : bt.fileFromString(castle[1]);
+	var file = this._impl.variant === bt.CHESS960 ? bt.fileFromString(castle[1]) : castle[1]==='k' ? 7 : 0;
 
 	if(arguments.length === 1) {
 		return (this._impl.castling[color] & 1 << file) !== 0;

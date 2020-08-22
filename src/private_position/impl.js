@@ -50,7 +50,7 @@ exports.makeEmpty = function(variant) {
 		variant: variant,
 
 		// Computed attributes
-		legal: false,
+		legal: variant === bt.NO_KING,
 		king: [-1, -1]
 	};
 };

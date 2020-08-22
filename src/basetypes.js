@@ -56,6 +56,9 @@ exports.LINE = 3;
 // Game variant
 exports.REGULAR_CHESS = 0;
 exports.CHESS960 = 1;
+exports.NO_KING = 2;
+exports.WHITE_KING_ONLY = 3;
+exports.BLACK_KING_ONLY = 4;
 
 
 // -----------------------------------------------------------------------------
@@ -67,7 +70,7 @@ var PIECE_SYMBOL   = 'kqrbnp';
 var RANK_SYMBOL    = '12345678';
 var FILE_SYMBOL    = 'abcdefgh';
 var RESULT_SYMBOL  = ['1-0', '0-1', '1/2-1/2', '*'];
-var VARIANT_SYMBOL = ['regular', 'chess960'];
+var VARIANT_SYMBOL = ['regular', 'chess960', 'no-king', 'white-king-only', 'black-king-only'];
 
 exports.colorToString   = function(color  ) { return COLOR_SYMBOL  [color  ]; };
 exports.pieceToString   = function(piece  ) { return PIECE_SYMBOL  [piece  ]; };
@@ -170,6 +173,12 @@ exports.coloredPieceFromString = function(cp) {
  * Variant of chess. Must be one of the following constant:
  *  - `'regular'` (regular chess rules),
  *  - `'chess960'` ([Chess960](https://en.wikipedia.org/wiki/Chess960), also known as Fischer Random Chess).
+ *  - `'no-king'` (chess position without any king)
+ *  - `'white-king-only'` (chess position with no black king)
+ *  - `'black-king-only'` (chess position with no white king)
+ *
+ * Variants `'no-king'`, `'white-king-only'` and `'black-king-only'` do not correspond to "real" games. They are mainly provided
+ * to create games explaining a particular piece scheme, concept, or sequence of moves... with a reduced number of pieces.
  *
  * @typedef {string} GameVariant
  */
