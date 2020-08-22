@@ -33,17 +33,18 @@ function testData() {
 		return {
 			label      : fields[ 0],
 			constructor: fields[ 1],
-			fen        : fields[ 2],
-			isLegal    : fields[ 3]==='true',
-			whiteKing  : fields[ 4]==='-' ? false : fields[4],
-			blackKing  : fields[ 5]==='-' ? false : fields[5],
-			isCheck    : fields[ 6]==='true',
-			isCheckmate: fields[ 7]==='true',
-			isStalemate: fields[ 8]==='true',
-			hasMove    : fields[ 9]==='true',
-			moves      : fields[10],
-			notations  : fields[11],
-			successors : fields[12]
+			variant    : fields[ 2],
+			fen        : fields[ 3],
+			isLegal    : fields[ 4]==='true',
+			whiteKing  : fields[ 5]==='-' ? false : fields[5],
+			blackKing  : fields[ 6]==='-' ? false : fields[6],
+			isCheck    : fields[ 7]==='true',
+			isCheckmate: fields[ 8]==='true',
+			isStalemate: fields[ 9]==='true',
+			hasMove    : fields[10]==='true',
+			moves      : fields[11],
+			notations  : fields[12],
+			successors : fields[13]
 		};
 	});
 }
@@ -51,8 +52,9 @@ function testData() {
 
 function createPosition(testDataDescriptor) {
 	switch(testDataDescriptor.constructor) {
-		case 'fen': return new kokopu.Position(testDataDescriptor.fen);
-		case 'xfen': return new kokopu.Position('chess960', testDataDescriptor.fen);
+		case 'fen':
+		case 'xfen':
+			return new kokopu.Position(testDataDescriptor.variant, testDataDescriptor.fen);
 		default:
 			return new kokopu.Position(testDataDescriptor.constructor);
 	}
