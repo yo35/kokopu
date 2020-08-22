@@ -122,6 +122,10 @@ function getDisambiguationSymbol(position, from, to) {
  */
 function isPinned(position, sq, aimingAtSq) {
 	var kingSquare = position.king[position.turn];
+	if(kingSquare < 0) {
+		return false;
+	}
+
 	var vector = Math.abs(kingSquare - sq);
 	if(vector === 0) {
 		return false;
@@ -214,6 +218,10 @@ exports.parseNotation = function(position, notation, strict) {
 	// Parse castling moves
 	if(m[1] || m[2]) {
 		var from = position.king[position.turn];
+		if(from < 0) {
+			throw new exception.InvalidNotation(fen.getFEN(position, 0, 1), notation, i18n.ILLEGAL_NO_KING_CASTLING);
+		}
+
 		var to = (m[2] ? 6 : 2) + position.turn*112;
 		descriptor = moveGeneration.isCastlingLegal(position, from, to);
 		if(!descriptor) {

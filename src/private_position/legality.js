@@ -32,7 +32,8 @@ var attacks = require('./attacks');
  *
  * A position is considered to be legal if all the following conditions are met:
  *
- *  1. There is exactly one white king and one black king on the board.
+ *  1. There is exactly one white king and one black king on the board (or more generally,
+	     the number of kings on the board matches the game variant of the position).
  *  2. The player that is not about to play is not check.
  *  3. There are no pawn on rows 1 and 8.
  *  4. For each colored castle flag set, there is a rook and a king on the
@@ -61,14 +62,14 @@ var refreshLegalFlagAndKingSquares = exports.refreshLegalFlagAndKingSquares = fu
 	position.legal = false;
 
 	// Condition (1)
-	refreshKingSquare(position, bt.WHITE);
-	refreshKingSquare(position, bt.BLACK);
-	if(position.king[bt.WHITE] < 0 || position.king[bt.BLACK] < 0) {
+	var whiteKingOK = refreshKingSquare(position, bt.WHITE);
+	var blackKingOK = refreshKingSquare(position, bt.BLACK);
+	if(!whiteKingOK || !blackKingOK) {
 		return;
 	}
 
 	// Condition (2)
-	if(attacks.isAttacked(position, position.king[1-position.turn], position.turn)) {
+	if(position.king[1-position.turn] >= 0 && attacks.isAttacked(position, position.king[1-position.turn], position.turn)) {
 		return;
 	}
 
@@ -124,10 +125,11 @@ function refreshKingSquare(position, color) {
 			//    is set to the invalid state (-1), and the loop is interrupted.
 			else {
 				position.king[color] = -1;
-				return;
+				return false;
 			}
 		}
 	}
+	return position.variant === bt.NO_KING || position.variant === bt.BLACK_KING_ONLY - color ? position.king[color] < 0 : position.king[color] >= 0;
 }
 
 

@@ -47,6 +47,7 @@ exports.INVALID_MOVE_COUNTING_FIELD               = 'The %1$s field of a FEN str
 // Notation parsing error messages
 exports.INVALID_MOVE_NOTATION_SYNTAX        = 'The syntax of the move notation is invalid.';
 exports.ILLEGAL_POSITION                    = 'The position is not legal.';
+exports.ILLEGAL_NO_KING_CASTLING            = 'Casting is not legal in the considered position as it has no king.';
 exports.ILLEGAL_QUEEN_SIDE_CASTLING         = 'Queen-side castling is not legal in the considered position.';
 exports.ILLEGAL_KING_SIDE_CASTLING          = 'King-side castling is not legal in the considered position.';
 exports.NO_PIECE_CAN_MOVE_TO                = 'No %1$s can move to %2$s.';

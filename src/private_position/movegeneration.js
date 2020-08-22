@@ -72,18 +72,23 @@ var /* const */ SLIDING_DIRECTION = [
 /* eslint-enable no-mixed-spaces-and-tabs, indent */
 
 
+function isKingToMoveAttacked(position) {
+	return position.king[position.turn] >= 0 && attacks.isAttacked(position, position.king[position.turn], 1-position.turn);
+}
+
+
 exports.isCheck = function(position) {
-	return legality.isLegal(position) && attacks.isAttacked(position, position.king[position.turn], 1-position.turn);
+	return legality.isLegal(position) && isKingToMoveAttacked(position);
 };
 
 
 exports.isCheckmate = function(position) {
-	return legality.isLegal(position) && !hasMove(position) && attacks.isAttacked(position, position.king[position.turn], 1-position.turn);
+	return legality.isLegal(position) && !hasMove(position) && isKingToMoveAttacked(position);
 };
 
 
 exports.isStalemate = function(position) {
-	return legality.isLegal(position) && !hasMove(position) && !attacks.isAttacked(position, position.king[position.turn], 1-position.turn);
+	return legality.isLegal(position) && !hasMove(position) && !isKingToMoveAttacked(position);
 };
 
 
@@ -220,26 +225,30 @@ function generateMoves(position, fun) {
  * @returns {boolean|MoveDescriptor} The move descriptor if the move is legal, `false` otherwise.
  */
 var isKingSafeAfterMove = exports.isKingSafeAfterMove = function(position, from, to, enPassantSquare) {
-	var fromContent = position.board[from];
-	var toContent   = position.board[to  ];
-	var movingPiece = Math.floor(fromContent / 2);
-
-	// Step (7) -> Execute the displacement (castling moves are processed separately).
-	position.board[to  ] = fromContent;
-	position.board[from] = bt.EMPTY;
-	if(enPassantSquare >= 0) {
-		position.board[enPassantSquare] = bt.EMPTY;
-	}
-
-	// Step (8) -> Is the king safe after the displacement?
+	var fromContent   = position.board[from];
+	var toContent     = position.board[to  ];
+	var movingPiece   = Math.floor(fromContent / 2);
 	var kingSquare    = movingPiece===bt.KING ? to : position.king[position.turn];
-	var kingIsInCheck = attacks.isAttacked(position, kingSquare, 1-position.turn);
+	var kingIsInCheck = false;
 
-	// Step (9) -> Reverse the displacement.
-	position.board[from] = fromContent;
-	position.board[to  ] = toContent;
-	if(enPassantSquare >= 0) {
-		position.board[enPassantSquare] = bt.PAWN*2 + 1-position.turn;
+	if(kingSquare >= 0) {
+
+		// Step (7) -> Execute the displacement (castling moves are processed separately).
+		position.board[to  ] = fromContent;
+		position.board[from] = bt.EMPTY;
+		if(enPassantSquare >= 0) {
+			position.board[enPassantSquare] = bt.EMPTY;
+		}
+
+		// Step (8) -> Is the king safe after the displacement?
+		kingIsInCheck = attacks.isAttacked(position, kingSquare, 1-position.turn);
+
+		// Step (9) -> Reverse the displacement.
+		position.board[from] = fromContent;
+		position.board[to  ] = toContent;
+		if(enPassantSquare >= 0) {
+			position.board[enPassantSquare] = bt.PAWN*2 + 1-position.turn;
+		}
 	}
 
 	// Final result
@@ -482,7 +491,7 @@ exports.play = function(position, descriptor) {
  * A null-move is possible if the position is legal and if the current player about to play is not in check.
  */
 var isNullMoveLegal = exports.isNullMoveLegal = function(position) {
-	return legality.isLegal(position) && !attacks.isAttacked(position, position.king[position.turn], 1-position.turn);
+	return legality.isLegal(position) && !isKingToMoveAttacked(position);
 };
 
 
