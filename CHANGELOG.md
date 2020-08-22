@@ -1,6 +1,10 @@
 ChangeLog
 =========
 
+1.4.0 (August 22, 2020)
+-----------------------
+* Add variants "No king" and "White/Black king only" (see #12).
+
 1.3.1 (January 1, 2020)
 -----------------------
 * Add some tutorials (see #10).
