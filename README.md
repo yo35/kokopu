@@ -8,7 +8,7 @@ and provides tools to read/write the standard chess file formats
 
 https://www.npmjs.com/package/kokopu
 
-[![Build Status](https://travis-ci.org/yo35/kokopu.svg?branch=master)](https://travis-ci.org/yo35/kokopu)
+[![Build Status](https://travis-ci.com/yo35/kokopu.svg?branch=master)](https://travis-ci.com/yo35/kokopu)
 
 
 
