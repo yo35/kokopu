@@ -14,11 +14,11 @@
 	"author": "Yoann Le Montagner <yo35@melix.net>",
 	"main": "index.js",
 	"devDependencies": {
-		"eslint": "~7.7.0",
-		"mocha": "~8.1.1",
+		"eslint": "~7.9.0",
+		"mocha": "~8.1.3",
 		"unit.js": "~2.1.1",
 		"browserify": "~16.5.1",
-		"uglify-js": "~3.10.1",
+		"uglify-js": "~3.10.4",
 		"jsdoc": "~3.6.4",
 		"tui-jsdoc-template": "~1.2.2"
 	},
