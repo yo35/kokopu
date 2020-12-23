@@ -337,7 +337,7 @@ exports.pgnRead = function(pgnString, gameIndex) {
 				++gameCounter;
 			}
 			else {
-				throw new exception.InvalidPGN(pgnString, pgnString.length, i18n.INVALID_GAME_INDEX, gameIndex, gameCounter);
+				throw new exception.InvalidPGN(pgnString, pgnString.length, stream._lineCount, i18n.INVALID_GAME_INDEX, gameIndex, gameCounter);
 			}
 		}
 		return doParseGame(stream);

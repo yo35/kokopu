@@ -41,6 +41,7 @@ var TokenStream = exports.TokenStream = function(pgnString, initialPosition) {
 	this._text           = pgnString;       // what is being parsed
 	this._pos            = initialPosition; // current position in the string
 	this._emptyLineFound = false;           // whether an empty line has been encountered while parsing the current token
+	this._lineCount      = 1;               // the current line number starting at 1
 	this._token          = 0;               // current token
 	this._tokenValue     = null;            // current token value (if any)
 	this._tokenIndex     = 0;               // position of the current token in the string
@@ -52,7 +53,7 @@ var TokenStream = exports.TokenStream = function(pgnString, initialPosition) {
 	// Token matchers
 	this._matchHeaderRegular = /\[\s*(\w+)\s+"((?:[^\\"]|\\[\\"])*)"\s*\]/g;
 	this._matchHeaderDegenerated = /^\[\s*(\w+)\s+"(.*)"\s*\]$/mg;
-	this._matchMove = /(?:[1-9][0-9]*\s*\.(?:\.\.)?\s*)?((?:O-O-O|O-O|[KQRBN][a-h]?[1-8]?x?[a-h][1-8]|(?:[a-h]x?)?[a-h][1-8](?:=?[KQRBNP])?)[+#]?|--)/g;
+	this._matchMove = /(?:[1-9][0-9]*\s*\.(?:\.\.)?\s*)?((?:O-O-O|0-0-0|O-O|0-0|[KQRBN][a-h]?[1-8]?x?[a-h][1-8]|(?:[a-h]x?)?[a-h][1-8](?:=?[KQRBNP])?)[+#]?|--)/g;
 	this._matchNag = /([!?][!?]?|\+\/?[-=]|[-=]\/?\+|=|inf|~)|\$([1-9][0-9]*)/g;
 	this._matchComment = /\{((?:[^{}\\]|\\[{}\\])*)\}/g;
 	this._matchBeginVariation = /\(/g;
@@ -118,6 +119,7 @@ function skipBlanks(stream) {
 			// Nothing to do...
 		}
 		else if(testAtPos(stream, stream._matchLineBreak)) {
+			++stream._lineCount;
 			++newLineCount;
 		}
 		else {
@@ -144,10 +146,11 @@ function parseHeaderValue(rawHeaderValue) {
 /**
  * Parse a comment, unescaping special characters, and looking for the `[%key value]` tags.
  *
+ * @param {TokenStream} stream
  * @param {string} rawComment String to parse.
  * @returns {{comment:string, tags:Object}}
  */
-function parseCommentValue(rawComment) {
+function parseCommentValue(stream, rawComment) {
 	rawComment = rawComment.replace(/\\([{}\\])/g, '$1');
 
 	var tags = {};
@@ -157,6 +160,9 @@ function parseCommentValue(rawComment) {
 		tags[p1] = p2;
 		return ' ';
 	});
+
+	// count number of new lines in the comments
+	stream._lineCount += comment.match(stream._matchLineBreak).length
 
 	// Trim the comment and collapse sequences of space characters into 1 character only.
 	comment = comment.replace(/^\s+|\s+$/g, '').replace(/\s+/g, ' ');
@@ -219,7 +225,13 @@ TokenStream.prototype.consumeToken = function() {
 	// Match a move or a null-move
 	else if(testAtPos(this, this._matchMove)) {
 		this._token      = TOKEN_MOVE;
-		this._tokenValue = this._matchMove.matched[1];
+		if (this._matchMove.matched[1] == '0-0') {
+			this._tokenValue = 'O-O';
+		} else if (this._matchMove.matched[1] == '0-0-0') {
+			this._tokenValue = 'O-O-O';
+		} else {
+			this._tokenValue = this._matchMove.matched[1];
+		}
 	}
 
 	// Match a NAG
@@ -232,7 +244,7 @@ TokenStream.prototype.consumeToken = function() {
 	// Match a comment
 	else if(testAtPos(this, this._matchComment)) {
 		this._token      = TOKEN_COMMENT;
-		this._tokenValue = parseCommentValue(this._matchComment.matched[1]);
+		this._tokenValue = parseCommentValue(this, this._matchComment.matched[1]);
 	}
 
 	// Match the beginning of a variation
@@ -255,7 +267,7 @@ TokenStream.prototype.consumeToken = function() {
 
 	// Otherwise, the string is badly formatted with respect to the PGN syntax
 	else {
-		throw new exception.InvalidPGN(this._text, this._pos, i18n.INVALID_PGN_TOKEN);
+		throw new exception.InvalidPGN(this._text, this._pos, this._lineCount, i18n.INVALID_PGN_TOKEN);
 	}
 
 	return true;
