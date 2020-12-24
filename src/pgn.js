@@ -321,10 +321,18 @@ exports.pgnRead = function(pgnString, gameIndex) {
 		var games = [];
 		while(true) {
 			var currentPos = stream.currentPosition();
-			if(!doSkipGame(stream)) {
-				break;
+			try {
+				if(!doSkipGame(stream)) {
+					break;
+				}
+				games.push(currentPos);
 			}
-			games.push(currentPos);
+			catch (err) {
+				if (err instanceof exception.InvalidPGN) {
+					// skip this game, but continue
+					stream.skipGame();
+				}
+			}
 		}
 		return new Database({ text: pgnString, games: games, currentGameIndex: -1 }, gameCountGetterImpl, gameGetterImpl);
 	}

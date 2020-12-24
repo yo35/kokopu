@@ -131,7 +131,6 @@ function skipBlanks(stream) {
 	stream._emptyLineFound = newLineCount >= 2;
 }
 
-
 /**
  * Parse a header value, unescaping special characters.
  *
@@ -273,6 +272,14 @@ TokenStream.prototype.consumeToken = function() {
 	return true;
 };
 
+TokenStream.prototype.skipGame = function() {
+   while(this._pos < this._text.length) {
+	   if(testAtPos(this, this._matchEndOfGame)) {
+		   break;
+	   }
+	   ++this._pos;
+	}
+}
 
 TokenStream.prototype.currentPosition = function() {
 	return this._pos;
