@@ -112,6 +112,11 @@ function processHeader(stream, game, initialPositionFactory, key, value) {
 				throw stream.invalidPGNException(i18n.UNKNOWN_VARIANT, value);
 			}
 			break;
+		default:
+			var obj = {};
+			obj[key] = value;
+			game.tags(obj);
+			break;
 	}
 }
 

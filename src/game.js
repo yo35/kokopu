@@ -52,6 +52,7 @@ var Game = exports.Game = function() {
 	this._site      = undefined;
 	this._annotator = undefined;
 	this._result    = bt.LINE;
+	this._tags      = []
 
 	this._initialPosition = new Position();
 	this._fullMoveNumber = 1;
@@ -258,6 +259,13 @@ Game.prototype.variant = function() {
 	return this._initialPosition.variant();
 };
 
+Game.prototype.tags = function(obj) {
+	if (arguments.length == 0) {
+		return this._tags;
+	} else {
+		return this._tags.push(obj);
+	}
+}
 
 /**
  * Get the initial position of the game.
