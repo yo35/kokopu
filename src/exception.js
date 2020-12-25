@@ -130,7 +130,7 @@ var InvalidPGN = exports.InvalidPGN = function(pgn, index, lineNumber, message) 
 	 * Current line number
 	 */
 	this.lineNumber = lineNumber;
-	
+
 	/**
 	 * Human-readable message describing the error.
 	 * @member {string}

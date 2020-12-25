@@ -151,6 +151,9 @@ function parseHeaderValue(rawHeaderValue) {
  */
 function parseCommentValue(stream, rawComment) {
 	rawComment = rawComment.replace(/\\([{}\\])/g, '$1');
+	// count number of new lines in the comments (don't use .match as it breaks regex)
+	var parts = rawComment.split(stream._matchLineBreak);
+	stream._lineCount += parts.length - 1;
 
 	var tags = {};
 
@@ -159,9 +162,6 @@ function parseCommentValue(stream, rawComment) {
 		tags[p1] = p2;
 		return ' ';
 	});
-
-	// count number of new lines in the comments
-	stream._lineCount += comment.match(stream._matchLineBreak).length
 
 	// Trim the comment and collapse sequences of space characters into 1 character only.
 	comment = comment.replace(/^\s+|\s+$/g, '').replace(/\s+/g, ' ');
@@ -224,9 +224,9 @@ TokenStream.prototype.consumeToken = function() {
 	// Match a move or a null-move
 	else if(testAtPos(this, this._matchMove)) {
 		this._token      = TOKEN_MOVE;
-		if (this._matchMove.matched[1] == '0-0') {
+		if (this._matchMove.matched[1] === '0-0') {
 			this._tokenValue = 'O-O';
-		} else if (this._matchMove.matched[1] == '0-0-0') {
+		} else if (this._matchMove.matched[1] === '0-0-0') {
 			this._tokenValue = 'O-O-O';
 		} else {
 			this._tokenValue = this._matchMove.matched[1];
@@ -273,13 +273,13 @@ TokenStream.prototype.consumeToken = function() {
 };
 
 TokenStream.prototype.skipGame = function() {
-   while(this._pos < this._text.length) {
-	   if(testAtPos(this, this._matchEndOfGame)) {
-		   break;
-	   }
-	   ++this._pos;
+	while(this._pos < this._text.length) {
+		if(testAtPos(this, this._matchEndOfGame)) {
+			break;
+		}
+		++this._pos;
 	}
-}
+};
 
 TokenStream.prototype.currentPosition = function() {
 	return this._pos;

@@ -1,6 +1,6 @@
 {
 	"name": "kokopu",
-	"version": "1.4.0",
+	"version": "1.4.1",
 	"description": "A JavaScript library implementing the chess game rules and providing tools to read/write the standard chess file formats.",
 	"keywords": [
 		"chess",
@@ -12,6 +12,9 @@
 	"repository": "github:yo35/kokopu",
 	"license": "LGPL-3.0-or-later",
 	"author": "Yoann Le Montagner <yo35@melix.net>",
+	"contributors": [
+		"Atin Malaviya <atinm.dev@gmail.com>"
+	],
 	"main": "index.js",
 	"devDependencies": {
 		"eslint": "~7.9.0",
