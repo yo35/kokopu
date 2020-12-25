@@ -49,6 +49,7 @@ var TokenStream = exports.TokenStream = function(pgnString, initialPosition) {
 	// Space-like matchers
 	this._matchSpaces = /[ \f\t\v]+/g;
 	this._matchLineBreak = /\r?\n|\r/g;
+	this._matchCommentLineBreak = /\r?\n|\r/g; // allow matching comment linebreaks separately
 
 	// Token matchers
 	this._matchHeaderRegular = /\[\s*(\w+)\s+"((?:[^\\"]|\\[\\"])*)"\s*\]/g;
@@ -151,9 +152,10 @@ function parseHeaderValue(rawHeaderValue) {
  */
 function parseCommentValue(stream, rawComment) {
 	rawComment = rawComment.replace(/\\([{}\\])/g, '$1');
-	// count number of new lines in the comments (don't use .match as it breaks regex)
-	var parts = rawComment.split(stream._matchLineBreak);
-	stream._lineCount += parts.length - 1;
+
+	// count number of new lines in the comments, if any
+	var matches = rawComment.match(stream._matchCommentLineBreak);
+	stream._lineCount += matches !== null ? matches.length : 0;
 
 	var tags = {};
 

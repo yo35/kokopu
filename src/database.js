@@ -56,3 +56,10 @@ Database.prototype.gameCount = function() {
 Database.prototype.game = function(index) {
 	return this._gameGetter(this._impl, index);
 };
+
+/**
+ * Return the errors generated when creating the database.
+ */
+Database.prototype.errors = function() {
+	return this._impl.errors;
+};

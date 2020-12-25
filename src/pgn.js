@@ -112,12 +112,10 @@ function processHeader(stream, game, initialPositionFactory, key, value) {
 				throw stream.invalidPGNException(i18n.UNKNOWN_VARIANT, value);
 			}
 			break;
-		default:
-			var obj = {};
-			obj[key] = value;
-			game.tags(obj);
-			break;
 	}
+
+	// also add the header to game tags, includes the above tags as well as unknown tags
+	game.tags[key] = value;
 }
 
 
@@ -320,6 +318,7 @@ function gameGetterImpl(impl, gameIndex) {
  */
 exports.pgnRead = function(pgnString, gameIndex) {
 	var stream = new TokenStream(pgnString, 0);
+	var errors = [];
 
 	// Parse all games (and return a Database object)...
 	if(arguments.length === 1) {
@@ -334,12 +333,13 @@ exports.pgnRead = function(pgnString, gameIndex) {
 			}
 			catch (err) {
 				if (err instanceof exception.InvalidPGN) {
+					errors.push({message: err.message, lineno: err.lineNumber});
 					// skip this game, but continue
 					stream.skipGame();
 				}
 			}
 		}
-		return new Database({ text: pgnString, games: games, currentGameIndex: -1 }, gameCountGetterImpl, gameGetterImpl);
+		return new Database({ text: pgnString, games: games, currentGameIndex: -1, errors: errors }, gameCountGetterImpl, gameGetterImpl);
 	}
 
 	// Parse one game...
