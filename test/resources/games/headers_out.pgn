@@ -1,0 +1,95 @@
+[Event '?']
+[Site '?']
+[Date '????.??.??']
+[Round '?']
+[White '?']
+[Black '?']
+[Result '*']
+
+*
+
+[Event '?']
+[Site '?']
+[Date '????.??.??']
+[Round '?']
+[White '?']
+[Black '?']
+[Result '1-0']
+
+1-0
+
+[Event 'Some championship']
+[Site 'Paris, France']
+[Date '2018.??.??']
+[Round '1']
+[White 'Player 1']
+[Black 'Player 2']
+[Result '0-1']
+
+0-1
+
+[Event 'Some championship']
+[Site 'Paris, France']
+[Date '2018.4.??']
+[Round '1']
+[White 'Player 1']
+[Black 'Player 2']
+[Result '1/2-1/2']
+
+1/2-1/2
+
+[Event 'Special character " (double quote)']
+[Site 'Special character ' (quote)']
+[Date '2018.3.0']
+[Round '1.2']
+[White 'Special characters [] (square brackets)']
+[Black 'Special character \ (backslash)']
+[Result '*']
+
+*
+
+[Event '?']
+[Site '?']
+[Date '????.??.??']
+[Round '?']
+[White 'Player 1']
+[Black 'Player 2']
+[Result '*']
+[WhiteElo '2450']
+[WhiteTitle 'IM']
+[BlackElo '2530']
+[BlackTitle 'GM']
+[Annotator 'Kibitz']
+
+*
+
+[Event 'Custom startup position']
+[Site '?']
+[Date '????.??.??']
+[Round '?']
+[White '?']
+[Black '?']
+[Result '0-1']
+[FEN 'rnb1k1nr/pppp1ppp/8/2b1p3/2B1P2q/2N2N2/PPPP1PPP/R1BQK2R b KQkq - 5 4']
+
+4...Qxf2# 0-1
+
+[Event '?']
+[Site '?']
+[Date '????.??.??']
+[Round '?']
+[White 'Ill-formed tag " (unescaped double quote, should be \")']
+[Black 'Ill-formed tag \ (unescaped backslash, should be \\)']
+[Result '*']
+
+*
+
+[Event 'Full inline PGN']
+[Site '?']
+[Date '????.??.??']
+[Round '?']
+[White 'Player 1']
+[Black 'Player 2']
+[Result '*']
+
+*

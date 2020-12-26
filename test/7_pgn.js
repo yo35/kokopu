@@ -28,7 +28,6 @@ var readCSV = require('./common/readcsv');
 var readText = require('./common/readtext');
 var test = require('unit.js');
 
-
 function testData() {
 	return readCSV('games.csv', function(fields) {
 		return {
@@ -231,7 +230,6 @@ describe('Game content (direct access)', function() {
 	});
 });
 
-
 function DatabaseHolder(pgn) {
 	this._pgn = pgn;
 }
@@ -253,6 +251,14 @@ function checkGameContentDatabase(testDataDescriptor, holder, gameIndex) {
 	});
 }
 
+function checkGamePgnContent(testDataDescriptor, holder) {
+	it('Write PGN ' + testDataDescriptor.label, function() {
+		var database = holder.database();
+		var expectedPgn = readText('games/' + testDataDescriptor.label + '_out.pgn');
+		var pgn = kokopu.pgnWrite(database);
+		test.value(pgn).is(expectedPgn);
+	});
+}
 
 describe('Game content (database)', function() {
 	testData().forEach(function(elem) {
@@ -265,5 +271,7 @@ describe('Game content (database)', function() {
 			if(gameIndex % 3 !== 2) { continue; }
 			checkGameContentDatabase(elem, holder, gameIndex);
 		}
+
+		checkGamePgnContent(elem, holder);
 	});
 });

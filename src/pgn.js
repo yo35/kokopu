@@ -31,6 +31,7 @@ var Game = require('./game').Game;
 var Database = require('./database').Database;
 var TokenStream = require('./private_pgn/tokenstream').TokenStream;
 
+var Separator = '\n';
 
 function parseNullableHeader(value) {
 	return value === '?' ? undefined : value;
@@ -78,7 +79,11 @@ function parseVariant(value) {
 		case 'black king only':
 			return 'black-king-only';
 		default:
-			return undefined;
+			if (value.substring('960') >= 0) { // allow other styles of Chess960 variant specification
+				return 'chess960';
+			} else {
+				return undefined;
+			}
 	}
 }
 
@@ -115,7 +120,7 @@ function processHeader(stream, game, initialPositionFactory, key, value) {
 	}
 
 	// also add the header to game tags, includes the above tags as well as unknown tags
-	game.tags[key] = value;
+	game.tags(key, value);
 }
 
 
@@ -159,7 +164,7 @@ function doParseGame(stream) {
 	var game            = null;  // the result
 	var node            = null;  // current node (or variation) to which the next move should be appended
 	var nodeIsVariation = false; // whether the current node is a variation or not
-	var nodeStack       = [];    // when starting a variation, its parent node (btw., always a "true" node, not a variation) is stacked here
+	var nodeStack       = [];    // when starting a variation, its parent node (btw., always a 'true' node, not a variation) is stacked here
 	var initialPositionFactory = {};
 
 	// Token loop
@@ -355,4 +360,328 @@ exports.pgnRead = function(pgnString, gameIndex) {
 		}
 		return doParseGame(stream);
 	}
+};
+
+/**
+ * Write the date in PGN format
+ *
+ * @param {Date|{year:number, month:number}|{year:number}|undefined}} date
+ *
+ * @returns {string}
+ */
+function writeDate(date) {
+	if (date === undefined) {
+		return '[Date \'????.??.??\']' + Separator;
+	} else if (date instanceof Date) {
+		return '[Date \'' +
+			date.getFullYear() + '.' +
+			((date.getMonth().length === 1) ? ('0' + date.getMonth()) : date.getMonth()) + '.' +
+			((date.getDay().length === 1) ? ('0' + date.getDay()) : date.getDay()) +
+			'\']' + Separator;
+	} else {
+		return '[Date \'' +
+			((date.year === undefined) ? '????' : date.year) + '.' +
+			((date.month === undefined) ? '??' : date.month) + '.' +
+			((date.date === undefined) ? '??' : date.date) +
+			'\']' + Separator;
+	}
+}
+
+/**
+ * Write non Seven Tag Roster tags
+ * @param {Game} game
+ *
+ * @returns {string}
+ */
+function writeNonSTRTags(game) {
+	var res = '';
+	var STR = ['Event', 'Site', 'Date', 'Round', 'White', 'Black', 'Result'];
+	if (Object.keys(game.tags()).length > 0) {
+		var tags = game.tags();
+		for (var tag in game.tags()) {
+			if (Object.prototype.hasOwnProperty.call(tags, tag)) {
+				var value = tags[tag];
+				if (!STR.includes(tag)) {
+					res += ('[' + tag + ' \'' + value + '\']' + Separator);
+				}
+			}
+		}
+		/*Object.entries(game.tags()).forEach((tag, value) => {
+			if (!STR.includes(tag)) {
+				res += ('[' + tag + ' \'' + value + '\']' + Separator);
+			}
+		});*/
+	}
+	return res;
+}
+
+/**
+ * Write the headers in order, first the standard ones, then any others
+ *
+ * @param {Game} game
+ *
+ * @returns {string}
+ */
+function writeHeaders(game) {
+	var res = '';
+	res += '[Event \'' + ((game.event() === undefined) ? '?' : game.event()) + '\']' + Separator;
+	res += '[Site \'' + ((game.site() === undefined) ? '?' : game.site()) + '\']' + Separator;
+	res += writeDate(game.date());
+	res += '[Round \'' + ((game.round() === undefined) ? '?' : game.round()) + '\']' + Separator;
+	res += '[White \'' + ((game.playerName('w') === undefined) ? '?' : game.playerName('w')) + '\']' + Separator;
+	res += '[Black \'' + ((game.playerName('b') === undefined) ? '?' : game.playerName('b')) + '\']' + Separator;
+	res += '[Result \'' + ((game.result() === undefined) ? '*' : game.result()) + '\']' + Separator;
+	res += writeNonSTRTags(game);
+	return res;
+}
+
+/**
+ * Write the move number if w, or b if previous node had comments, or variations, or tags
+ *
+ * @param {Node} node
+ * @param {Node} prev
+ *
+ * @returns {string}
+ */
+function writeMoveNumber(node, prev) {
+	if (node.moveColor() === 'w') {
+		return node.fullMoveNumber() + '.';
+	} else {
+		// black move, only write if the previous node had comments, tags, variations on it
+		if (prev === undefined) {
+			// black move, without a preceding move
+			return node.fullMoveNumber() + '...';
+		} else {
+			if (prev.comment() !== undefined || prev.tags().length > 0 || prev.variations().length > 0) {
+				return node.fullMoveNumber() + '...';
+			}
+		}
+	}
+	return ''; // no move number needs to be written out
+}
+
+/**
+ * Write out the move, comments, annotations and variations for this node
+ *
+ * @param {Node} node
+ * @param {Node} prev
+ *
+ * @returns {string}
+ */
+function writeNode(node, prev) {
+	var res = '';
+	// write move number if w, or b if previous node had comments, or variations, or tags
+	res += writeMoveNumber(node, prev);
+	res += node.notation() + ' ';
+
+	// wrute the nags for this node
+	if (node.nags().length > 0) {
+		node.nags().forEach(function (nag) { res += '$' + nag + ' '; });
+	}
+
+	// write comment with embedded tags for this node
+	if (node.comment() !== undefined) {
+		if (node.isLongComment()) {
+			res += Separator + '{';
+		} else {
+			res += '{';
+		}
+		// write the tags within the comment
+		if (node.tags().length > 0) {
+			node.tags().forEach(function(key) { res += '[%' + key + ' ' + node.tag(key) + ']'; });
+			res += ' ';
+		}
+
+		res += node.comment();
+		if (node.isLongComment()) {
+			res += '}' + Separator;
+		} else {
+			res += '} ';
+		}
+	} else {
+		// no comments, but might still have tags
+		if (node.tags().length > 0) {
+			res += '{';
+			node.tags().forEach(function(key) { res += '[%' + key + ' ' + node.tag(key) + ']'; });
+			res += '} ';
+		}
+	}
+
+	if (node.variations().length > 0) {
+		node.variations().forEach(function(variation) {
+			if (variation.isLongVariation()) {
+				res += Separator + '(';
+			} else {
+				res += '(';
+			}
+
+			res += writeVariation(variation);
+
+			if (variation.isLongVariation()) {
+				res += ')' + Separator;
+			} else {
+				res += ') ';
+			}
+		});
+	}
+	return res;
+}
+
+/**
+ * Write the moves, annotations, comments and variations within this variation
+ *
+ * @param {Variation} variation
+ *
+ * @returns {string}
+ */
+function writeVariation(variation) {
+	var res = '';
+	// write the comment, if any
+	if (variation.comment() !== undefined) {
+		if (variation.isLongComment()) {
+			res += Separator + '{';
+		} else {
+			res += '{';
+		}
+		// write the tags within the comment
+		if (variation.tags().length > 0) {
+			variation.tags().forEach(function(key) { res += '[%' + key + ' ' + variation.tag(key) + ']'; });
+			res += ' ';
+		}
+
+		res += variation.comment();
+		if (variation.isLongComment()) {
+			res += '}' + Separator;
+		} else {
+			res += '} ';
+		}
+	} else {
+		// no comments, but might still have tags
+		if (variation.tags().length > 0) {
+			res += '{';
+			variation.tags.forEach(function(key) { res += '[%' + key + ' ' + variation.tag(key) + ']'; });
+			res += '} ';
+		}
+	}
+
+	// write the moves, node by node
+	var prev = undefined;
+	variation.nodes().forEach(function(node) { res += writeNode(node, prev); prev = node; });
+
+	// write the nags
+	if (variation.nags().length > 0) {
+		variation.nags().forEach(function(nag) { res += '$' + nag + ' '; });
+	}
+	return res;
+}
+
+/**
+ * Write the PGN movetext section with embedded annotations, comments and variations
+ *
+ * @param {Game} game
+ *
+ * @returns {string}
+ */
+function writeMovetext(game) {
+	var res = '';
+	// we have one main variation, all other variations hang off nodes from it
+	res += writeVariation(game.mainVariation());
+	return res;
+}
+
+/**
+ * Break lines to a maximum of lineLength
+ *
+ * @param {String} str
+ * @param {number} n
+ *
+ * @returns {string}
+ */
+function breakLines(str, n) {
+	if (str.length < n) {
+		return str;
+	}
+	var text = '';
+	var segments = str.split(Separator);
+	for (var s=0; s < segments.length; s++) {
+		if (segments[s].length < n) {
+			if (text.length > 0) {
+				text += Separator + segments[s].trimEnd();
+			} else {
+				text = segments[s].trimEnd();
+			}
+		} else {
+			var lines = segments[s].split(' ');
+			var res = [];
+			for (var i=0; lines.length > 0 && i<lines.length; ) {
+				for (var l = 0, line = []; i<lines.length && l + lines[i].length <= n; i++) {
+					l += 1 + lines[i].length;
+					line.push(lines[i]);
+				}
+				res.push(line.join(' '));
+			}
+			if (text.length > 0) {
+				text += Separator + res.join(Separator).trimEnd();
+			} else {
+				text = res.join(Separator).trimEnd();
+			}
+		}
+	}
+	return text + ' ';
+}
+
+/**
+ * Writes a single game and returns as a {string}
+ *
+ * @param {Game} game
+ *
+ * @returns {string} the PGN for the game
+ */
+function pgnWriteSingleGame(game, lineLength) {
+	var res = '';
+	res += writeHeaders(game);
+	res += Separator; // write the separator between headers and movetext
+	var moveText = writeMovetext(game);
+	res += breakLines(moveText, lineLength || 80);
+	res += ((game.result() === undefined) ? '*' : game.result());
+	return res;
+}
+
+/**
+ * Write out the object as PGN
+ *
+ * @param {Database|Game} obj
+ * @param {number} gameIndex
+ * @param {number} lineLength (80 default)
+ *
+ * @returns {string} PGN
+ */
+exports.pgnWrite = function(obj, gameIndex, lineLength) {
+	var res = '';
+	gameIndex = gameIndex || 0;
+	lineLength = lineLength || 80;
+	if (obj instanceof Database) {
+		if(arguments.length === 1) {
+			// write all games from the database
+			var start = true;
+			for (var i = 0; i < obj.gameCount(); i++) {
+				if (!start) {
+					res += Separator + Separator;
+				}
+				res += pgnWriteSingleGame(obj.game(i), lineLength);
+				start = false;
+			}
+		} else if (gameIndex < obj.gameCount()) {
+			// write the gameIndex game from database
+			res += pgnWriteSingleGame(obj.game(gameIndex), lineLength);
+		} else {
+			throw new exception.IllegalArgument('pgnWrite');
+		}
+	} else if (obj instanceof Game) {
+		// write one game
+		res += pgnWriteSingleGame(obj, lineLength);
+	} else {
+		throw new exception.IllegalArgument('pgnWrite');
+	}
+	return res;
 };

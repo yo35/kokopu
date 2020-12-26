@@ -39,3 +39,4 @@ exports.Game = require('./src/game').Game;
 
 var pgn = require('./src/pgn');
 exports.pgnRead = pgn.pgnRead;
+exports.pgnWrite = pgn.pgnWrite;

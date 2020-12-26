@@ -259,11 +259,13 @@ Game.prototype.variant = function() {
 	return this._initialPosition.variant();
 };
 
-Game.prototype.tags = function(obj) {
+Game.prototype.tags = function(key, value) {
 	if (arguments.length === 0) {
 		return this._tags;
+	} else if (arguments.length === 1) {
+		return this._tags[key];
 	} else {
-		return this._tags.push(obj);
+		this._tags[key] = value;
 	}
 };
 

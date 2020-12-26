@@ -39,7 +39,11 @@ the date of the game, the name of the tournament, etc...
 Method {@link pgnRead} allows to parse
 a [PGN file](https://en.wikipedia.org/wiki/Portable_Game_Notation):
 this method returns {@link Game} objects representing the content of the file.
-
+Method {@link pgnWrite} allows to write
+a [PGN file](https://en.wikipedia.org/wiki/Portable_Game_Notation):
+this method takes either {@link Database} or {@link Game} objects and writes them out
+as a string representing the contents of a PGN file. This string could be written out
+to file using the system's writeFile functions.
 
 
 Example
