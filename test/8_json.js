@@ -28,16 +28,6 @@ var readCSV = require('./common/readcsv');
 var readText = require('./common/readtext');
 var test = require('unit.js');
 
-function testPgnData() {
-	return readCSV('games.csv', function(fields) {
-		return {
-			label: fields[0],
-			gameCount: parseInt(fields[1]),
-			pgn: readText('games/' + fields[0] + '.pgn')
-		};
-	});
-}
-
 function testJsonData() {
 	return readCSV('games.csv', function(fields) {
 		return {
@@ -221,24 +211,14 @@ function checkJsonGameContentDirect(testDataDescriptor, gameIndex) {
 	});
 }
 
-function DatabasePgnHolder(pgn) {
-	this._pgn = pgn;
-}
-
-DatabasePgnHolder.prototype.database = function() {
-	if(!(this._database)) {
-		this._database = kokopu.pgnRead(this._pgn);
-	}
-	return this._database;
-};
 function DatabaseJsonHolder(json) {
-	this._json = json;
+	this.text = json;
 }
 
 
 DatabaseJsonHolder.prototype.database = function() {
 	if(!(this._database)) {
-		this._database = kokopu.jsonDecode(this._json);
+		this._database = kokopu.jsonDecode(this.text);
 	}
 	return this._database;
 };
@@ -262,12 +242,12 @@ function checkGameJsonEncode(testDataDescriptor, holder) {
 }
 
 describe('Game JSON content (database)', function() {
-	testPgnData().forEach(function(elem) {
-		var holder = new DatabasePgnHolder(elem.pgn);
+	testJsonData().forEach(function(elem) {
+		var holder = new DatabaseJsonHolder(elem.json);
 
-        checkGameJsonEncode(elem, holder);
+		checkGameJsonEncode(elem, holder);
 
-        for(var gameIndex = 0; gameIndex < elem.gameCount; ++gameIndex) {
+		for(var gameIndex = 0; gameIndex < elem.gameCount; ++gameIndex) {
 			if(gameIndex % 3 === 2) { continue; }
 			checkGameContentDatabase(elem, holder, gameIndex);
 		}

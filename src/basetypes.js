@@ -106,7 +106,7 @@ exports.squareToBoardOffset = function(square) {
 	var file = FILE_SYMBOL.indexOf(square[0]);
 	var rank = RANK_SYMBOL.indexOf(square[1]);
 	return (rank * 8) + file;
-}
+};
 
 exports.boardOffsetToSquare = function(off) {
 	if(off < 0 || off > 63) {
@@ -115,7 +115,7 @@ exports.boardOffsetToSquare = function(off) {
 	var rank = Math.floor(off / 8);
 	var file = off % 8;
 	return rank*16 + file;
-}
+};
 
 exports.boardOffsetToFile = function(off) {
 	if(off < 0 || off > 63) {
@@ -123,7 +123,7 @@ exports.boardOffsetToFile = function(off) {
 	}
 	var file = off % 8;
 	return FILE_SYMBOL[file];
-}
+};
 
 exports.boardOffsetToRank = function(off) {
 	if(off < 0 || off > 63) {
@@ -131,7 +131,7 @@ exports.boardOffsetToRank = function(off) {
 	}
 	var rank = Math.floor(off / 8);
 	return RANK_SYMBOL[rank];
-}
+};
 
 exports.coloredPieceToString = function(cp) {
 	return COLOR_SYMBOL[cp % 2] + PIECE_SYMBOL[Math.floor(cp / 2)];

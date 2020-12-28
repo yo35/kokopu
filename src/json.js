@@ -39,17 +39,17 @@ var MoveSpecial = 455;
 
 // Special moves:
 var Annotation = ((0x1 << 12) | MoveSpecial);
-var BlackWins =  ((0x2 << 12) | MoveSpecial);
-var Draw =  ((0x3 << 12) | MoveSpecial);
-var WhiteWins =  ((0x4 << 12) | MoveSpecial);
-var Unknown =  ((0x5 << 12) | MoveSpecial);
-var TextComment =  ((0x6 << 12) | MoveSpecial);
-var LongTextComment =  ((0x7 << 12) | MoveSpecial);
-var Tag =  ((0x8 << 12) | MoveSpecial);
-var StartVariation =  ((0x9 << 12) | MoveSpecial);
-var StartLongVariation =  ((0xA << 12) | MoveSpecial);
-var EndVariation =  ((0xB << 12) | MoveSpecial);
-var EndMoveText =  ((0xF << 12) | MoveSpecial);
+var BlackWins = ((0x2 << 12) | MoveSpecial);
+var Draw = ((0x3 << 12) | MoveSpecial);
+var WhiteWins = ((0x4 << 12) | MoveSpecial);
+var Unknown = ((0x5 << 12) | MoveSpecial);
+var TextComment = ((0x6 << 12) | MoveSpecial);
+var LongTextComment = ((0x7 << 12) | MoveSpecial);
+var Tag = ((0x8 << 12) | MoveSpecial);
+var StartVariation = ((0x9 << 12) | MoveSpecial);
+var StartLongVariation = ((0xA << 12) | MoveSpecial);
+var EndVariation = ((0xB << 12) | MoveSpecial);
+var EndMoveText = ((0xF << 12) | MoveSpecial);
 
 /**
 * Write the date in PGN format
@@ -60,17 +60,17 @@ var EndMoveText =  ((0xF << 12) | MoveSpecial);
 * @returns {Object}
 */
 function writeDate(date, res) {
-    if (date === undefined) {
-        res.Date = '';
-    } else if (date instanceof Date) {
-        res.Date = date.getFullYear().toString() +
-        ((date.getMonth() + 1 < 10) ? ('0' + (date.getMonth() + 1).toString()) : (date.getMonth() + 1).toString())  +
-        ((date.getDate() < 10) ? ('0' + date.getDate()).toString() : date.getDate().toString());
-    } else {
-        res.Date = ((date.year === undefined) ? '0000' : date.year) +
-        ((date.month === undefined) ? '00' : (date.month < 10) ? '0' + date.month.toString() : date.month.toString()) + '00';
-    }
-    return res;
+	if (date === undefined) {
+		res.Date = '';
+	} else if (date instanceof Date) {
+		res.Date = date.getFullYear().toString() +
+			((date.getMonth() + 1 < 10) ? ('0' + (date.getMonth() + 1).toString()) : (date.getMonth() + 1).toString()) +
+			((date.getDate() < 10) ? ('0' + date.getDate()).toString() : date.getDate().toString());
+	} else {
+		res.Date = ((date.year === undefined) ? '0000' : date.year) +
+			((date.month === undefined) ? '00' : (date.month < 10) ? '0' + date.month.toString() : date.month.toString()) + '00';
+	}
+	return res;
 }
 
 /**
@@ -81,24 +81,24 @@ function writeDate(date, res) {
 * @returns {Object}
 */
 function writeNonSTRTags(game, res) {
-    var STR = ['Event', 'Site', 'Date', 'Round', 'White', 'Black', 'Result'];
-    if (Object.keys(game.tags()).length > 0) {
-        var tags = game.tags();
-        for (var tag in game.tags()) {
-            if (Object.prototype.hasOwnProperty.call(tags, tag)) {
-                var value = tags[tag];
-                if (!STR.includes(tag)) {
-                    res[tag] = value;
-                }
-            }
-        }
-        /*Object.entries(game.tags()).forEach((tag, value) => {
-            if (!STR.includes(tag)) {
-                res += ('[' + tag + ' \'' + value + '\']' + Separator);
-            }
-        });*/
-    }
-    return res;
+	var STR = ['Event', 'Site', 'Date', 'Round', 'White', 'Black', 'Result'];
+	if (Object.keys(game.tags()).length > 0) {
+		var tags = game.tags();
+		for (var tag in game.tags()) {
+			if (Object.prototype.hasOwnProperty.call(tags, tag)) {
+				var value = tags[tag];
+				if (!STR.includes(tag)) {
+					res[tag] = value;
+				}
+			}
+		}
+		/*Object.entries(game.tags()).forEach((tag, value) => {
+			if (!STR.includes(tag)) {
+				res += ('[' + tag + ' \'' + value + '\']' + Separator);
+			}
+		});*/
+	}
+	return res;
 }
 
 /**
@@ -110,15 +110,15 @@ function writeNonSTRTags(game, res) {
 * @returns {Object}
 */
 function writeHeaders(game, res) {
-    res.Event = ((game.event() === undefined) ? '?' : game.event());
-    res.Site = ((game.site() === undefined) ? '?' : game.site())
-    res = writeDate(game.date(), res);
-    res.Round = ((game.round() === undefined) ? '?' : game.round());
-    res.White = ((game.playerName('w') === undefined) ? '?' : game.playerName('w'));
-    res.Black = ((game.playerName('b') === undefined) ? '?' : game.playerName('b'));
-    res.Result = ((game.result() === undefined) ? '*' : game.result());
-    res = writeNonSTRTags(game, res);
-    return res;
+	res.Event = ((game.event() === undefined) ? '?' : game.event());
+	res.Site = ((game.site() === undefined) ? '?' : game.site());
+	res = writeDate(game.date(), res);
+	res.Round = ((game.round() === undefined) ? '?' : game.round());
+	res.White = ((game.playerName('w') === undefined) ? '?' : game.playerName('w'));
+	res.Black = ((game.playerName('b') === undefined) ? '?' : game.playerName('b'));
+	res.Result = ((game.result() === undefined) ? '*' : game.result());
+	res = writeNonSTRTags(game, res);
+	return res;
 }
 
 /**
@@ -130,13 +130,13 @@ function writeHeaders(game, res) {
 * @returns {Object}
 */
 function writeComment(comment, isLongComment, res) {
-    var buf = Buffer.allocUnsafe(MoveSize + comment.length + 1);
-    var offset = 0;
-    buf.writeUInt16BE(isLongComment ? LongTextComment : TextComment, offset); offset += MoveSize;
-    buf.write(comment, offset); offset += comment.length;
-    buf.writeUInt8(0, offset);
-    res.buf = Buffer.concat([res.buf, buf]);
-    return res;
+	var buf = Buffer.allocUnsafe(MoveSize + comment.length + 1);
+	var offset = 0;
+	buf.writeUInt16BE(isLongComment ? LongTextComment : TextComment, offset); offset += MoveSize;
+	buf.write(comment, offset); offset += comment.length;
+	buf.writeUInt8(0, offset);
+	res.buf = Buffer.concat([res.buf, buf]);
+	return res;
 }
 
 /**
@@ -148,15 +148,15 @@ function writeComment(comment, isLongComment, res) {
 * @returns {Object}
 */
 function writeTag(tag, value, res) {
-    var buf = Buffer.allocUnsafe(MoveSize + tag.length + 1 + value.length + 1);
-    var offset = 0;
-    buf.writeUInt16BE(Tag, offset); offset += MoveSize;
-    buf.write(tag, offset); offset += tag.length;
-    buf.writeUInt8(0, offset); offset++;
-    buf.write(value, offset); offset += value.length;
-    buf.writeUInt8(0, offset); offset++;
-    res.buf = Buffer.concat([res.buf, buf]);
-    return res;
+	var buf = Buffer.allocUnsafe(MoveSize + tag.length + 1 + value.length + 1);
+	var offset = 0;
+	buf.writeUInt16BE(Tag, offset); offset += MoveSize;
+	buf.write(tag, offset); offset += tag.length;
+	buf.writeUInt8(0, offset); offset++;
+	buf.write(value, offset); offset += value.length;
+	buf.writeUInt8(0, offset); offset++;
+	res.buf = Buffer.concat([res.buf, buf]);
+	return res;
 }
 
 /**
@@ -167,12 +167,12 @@ function writeTag(tag, value, res) {
 * @returns {Object}
 */
 function writeNag(nag, res) {
-    var buf = Buffer.allocUnsafe(MoveSize + 1);
-    var offset = 0;
-    buf.writeUInt16BE(Annotation, offset); offset += MoveSize;
-    buf.writeUInt8(Number(nag), offset);
-    res.buf = Buffer.concat([res.buf, buf]);
-    return res;
+	var buf = Buffer.allocUnsafe(MoveSize + 1);
+	var offset = 0;
+	buf.writeUInt16BE(Annotation, offset); offset += MoveSize;
+	buf.writeUInt8(Number(nag), offset);
+	res.buf = Buffer.concat([res.buf, buf]);
+	return res;
 }
 
 /**
@@ -183,44 +183,44 @@ function writeNag(nag, res) {
 * @return {Object}
 */
 function writeMove(move, res) {
-    // A move needs 16 bits to be stored
+	// A move needs 16 bits to be stored
 
-    // bit  0- 5: destination square (from 0 to 63)
-    // bit  6-11: origin square (from 0 to 63)
-    // bit 12-13: promotion piece type (from KNIGHT-0, BISHOP-1, ROOK-2, QUEEN-3)
-    // bit 14-15: special move flag: normal (0), promotion (1), en passant (2), castling (3)
-    // NOTE: EN-PASSANT bit is set only when a pawn can be captured
+	// bit  0- 5: destination square (from 0 to 63)
+	// bit  6-11: origin square (from 0 to 63)
+	// bit 12-13: promotion piece type (from KNIGHT-0, BISHOP-1, ROOK-2, QUEEN-3)
+	// bit 14-15: special move flag: normal (0), promotion (1), en passant (2), castling (3)
+	// NOTE: EN-PASSANT bit is set only when a pawn can be captured
 
-    var buf = Buffer.alloc(MoveSize);
+	var buf = Buffer.alloc(MoveSize);
 
-    if (move === undefined) {
-        buf.writeUInt16BE(MoveNull);
-    } else {
-        var from = bt.squareToBoardOffset(move.from());
-        var to = bt.squareToBoardOffset(move.to());
-        var type = (move.isPromotion() ? 1 : ((move.isEnPassant() ? 2 : (move.isCastling() ? 3 : 0))));
-        var piece = 0;
+	if (move === undefined) {
+		buf.writeUInt16BE(MoveNull);
+	} else {
+		var from = bt.squareToBoardOffset(move.from());
+		var to = bt.squareToBoardOffset(move.to());
+		var type = (move.isPromotion() ? 1 : ((move.isEnPassant() ? 2 : (move.isCastling() ? 3 : 0))));
+		var piece = 0;
 
-        if (move.isPromotion()) {
-            switch (move.promotion()) {
-                case 'q':
-                piece = 3;
-                break;
-                case 'r':
-                piece = 2;
-                break;
-                case 'b':
-                piece = 1;
-                break;
-                case 'n':
-                piece = 0;
-                break;
-            }
-        }
-        buf.writeUInt16BE((type << 14 | piece << 12 | from << 6 | to), 0);
-    }
-    res.buf = Buffer.concat([res.buf, buf]);
-    return res;
+		if (move.isPromotion()) {
+			switch (move.promotion()) {
+				case 'q':
+					piece = 3;
+					break;
+				case 'r':
+					piece = 2;
+					break;
+				case 'b':
+					piece = 1;
+					break;
+				case 'n':
+					piece = 0;
+					break;
+			}
+		}
+		buf.writeUInt16BE((type << 14 | piece << 12 | from << 6 | to), 0);
+	}
+	res.buf = Buffer.concat([res.buf, buf]);
+	return res;
 }
 
 /**
@@ -234,30 +234,30 @@ function writeMove(move, res) {
 */
 function writeNode(node, prev, res) {
 
-    // write move
-    res = writeMove(node.move(), res);
+	// write move
+	res = writeMove(node.move(), res);
 
-    // wrute the nags for this node
-    if (node.nags().length > 0) {
-        node.nags().forEach(function (nag) { res = writeNag(nag, res); });
-    }
+	// wrute the nags for this node
+	if (node.nags().length > 0) {
+		node.nags().forEach(function (nag) { res = writeNag(nag, res); });
+	}
 
-    // write the comment, if any
-    if (node.comment() !== undefined) {
-        res = writeComment(node.comment(), node.isLongComment(), res);
-    }
+	// write the comment, if any
+	if (node.comment() !== undefined) {
+		res = writeComment(node.comment(), node.isLongComment(), res);
+	}
 
-    // write the tags
-    if (node.tags().length > 0) {
-        node.tags().forEach(function(key) { res = writeTag(key, node.tag(key), res); });
-    }
+	// write the tags
+	if (node.tags().length > 0) {
+		node.tags().forEach(function (key) { res = writeTag(key, node.tag(key), res); });
+	}
 
-    if (node.variations().length > 0) {
-        node.variations().forEach(function(variation) {
-            res = writeVariation(variation, variation.isLongVariation(), false, res);
-        });
-    }
-    return res;
+	if (node.variations().length > 0) {
+		node.variations().forEach(function (variation) {
+			res = writeVariation(variation, variation.isLongVariation(), false, res);
+		});
+	}
+	return res;
 }
 
 /**
@@ -270,38 +270,38 @@ function writeNode(node, prev, res) {
 * @returns {Object}
 */
 function writeVariation(variation, isLongVariation, isMainVariation, res) {
-    if (!isMainVariation) {
-        var buf = Buffer.allocUnsafe(MoveSize);
-        buf.writeUInt16BE(isLongVariation ? StartLongVariation : StartVariation, 0);
-        res.buf = Buffer.concat([res.buf, buf]);
-    }
+	if (!isMainVariation) {
+		var buf = Buffer.allocUnsafe(MoveSize);
+		buf.writeUInt16BE(isLongVariation ? StartLongVariation : StartVariation, 0);
+		res.buf = Buffer.concat([res.buf, buf]);
+	}
 
-    // write the comment, if any
-    if (variation.comment() !== undefined) {
-        res = writeComment(variation.comment(), variation.isLongComment(), res);
-    }
+	// write the comment, if any
+	if (variation.comment() !== undefined) {
+		res = writeComment(variation.comment(), variation.isLongComment(), res);
+	}
 
-    // write the tags
-    if (variation.tags().length > 0) {
-        variation.tags().forEach(function(key) { res = writeTag(key, variation.tag(key), res); });
-    }
+	// write the tags
+	if (variation.tags().length > 0) {
+		variation.tags().forEach(function (key) { res = writeTag(key, variation.tag(key), res); });
+	}
 
-    // write the nags
-    if (variation.nags().length > 0) {
-        variation.nags().forEach(function(nag) { res = writeNag(nag, res); });
-    }
+	// write the nags
+	if (variation.nags().length > 0) {
+		variation.nags().forEach(function (nag) { res = writeNag(nag, res); });
+	}
 
-    // write the moves, node by node
-    var prev = undefined;
-    variation.nodes().forEach(function(node) { res = writeNode(node, prev, res); prev = node; });
+	// write the moves, node by node
+	var prev = undefined;
+	variation.nodes().forEach(function (node) { res = writeNode(node, prev, res); prev = node; });
 
-    if (!isMainVariation) {
-        // end variation
-        buf = Buffer.allocUnsafe(MoveSize);
-        buf.writeUInt16BE(EndVariation, 0);
-        res.buf = Buffer.concat([res.buf, buf]);
-    }
-    return res;
+	if (!isMainVariation) {
+		// end variation
+		buf = Buffer.allocUnsafe(MoveSize);
+		buf.writeUInt16BE(EndVariation, 0);
+		res.buf = Buffer.concat([res.buf, buf]);
+	}
+	return res;
 }
 
 /**
@@ -312,26 +312,26 @@ function writeVariation(variation, isLongVariation, isMainVariation, res) {
 * @return {Object}
 */
 function writeResult(game, res) {
-    var result = ((game.result() === undefined) ? '*' : game.result());
-    var buf = Buffer.allocUnsafe(MoveSize);
+	var result = ((game.result() === undefined) ? '*' : game.result());
+	var buf = Buffer.allocUnsafe(MoveSize);
 
-    switch (result) {
-        case '1-0':
-        buf.writeUInt16BE(WhiteWins, 0);
-        break;
-        case '0-1':
-        buf.writeUInt16BE(BlackWins, 0);
-        break;
-        case '1/2-1/2':
-        buf.writeUInt16BE(Draw, 0);
-        break;
-        case '*':
-        default:
-        buf.writeUInt16BE(Unknown, 0);
-        break;
-    }
-    res.buf = Buffer.concat([res.buf, buf]);
-    return res;
+	switch (result) {
+		case '1-0':
+			buf.writeUInt16BE(WhiteWins, 0);
+			break;
+		case '0-1':
+			buf.writeUInt16BE(BlackWins, 0);
+			break;
+		case '1/2-1/2':
+			buf.writeUInt16BE(Draw, 0);
+			break;
+		case '*':
+		default:
+			buf.writeUInt16BE(Unknown, 0);
+			break;
+	}
+	res.buf = Buffer.concat([res.buf, buf]);
+	return res;
 }
 
 /**
@@ -342,18 +342,18 @@ function writeResult(game, res) {
 * @returns {Object} JSON object for the movetext - this is a binary base64 encoded string
 */
 function writeMovetext(game, res) {
-    var buf = Buffer.allocUnsafe(MoveSize);
-    buf.writeUInt16BE(MoveNone, 0);
-    res.buf = buf;
+	var buf = Buffer.allocUnsafe(MoveSize);
+	buf.writeUInt16BE(MoveNone, 0);
+	res.buf = buf;
 
-    // we have one main variation, all other variations hang off nodes from it
-    res = writeVariation(game.mainVariation(), true, true, res);
-    res = writeResult(game, res);
+	// we have one main variation, all other variations hang off nodes from it
+	res = writeVariation(game.mainVariation(), true, true, res);
+	res = writeResult(game, res);
 
-    // end movetext
-    buf.writeUInt16BE(EndMoveText, 0);
-    res.buf = Buffer.concat([res.buf, buf]);
-    return res;
+	// end movetext
+	buf.writeUInt16BE(EndMoveText, 0);
+	res.buf = Buffer.concat([res.buf, buf]);
+	return res;
 }
 
 /**
@@ -365,11 +365,11 @@ function writeMovetext(game, res) {
 * @returns {Object} JSON object for the game
 */
 function jsonEncodeSingleGame(game, res) {
-    res = writeHeaders(game, res);
-    res = writeMovetext(game, res);
-    res.MoveText = res.buf.toString('base64');
-    delete res.buf;
-    return res;
+	res = writeHeaders(game, res);
+	res = writeMovetext(game, res);
+	res.MoveText = res.buf.toString('base64');
+	delete res.buf;
+	return res;
 }
 
 /**
@@ -380,33 +380,33 @@ function jsonEncodeSingleGame(game, res) {
 *
 * @returns {Array} Array of JSON objects
 */
-exports.jsonEncode = function(obj, gameIndex) {
-    var res = [];
-    var start = {};
-    gameIndex = gameIndex || 0;
-    if (obj instanceof Database) {
-        if(arguments.length === 1) {
-            // jsonify all games from the database
-            for (var i = 0; i < obj.gameCount(); i++) {
-                start = {};
-                res.push(jsonEncodeSingleGame(obj.game(i), start));
-            }
-        } else if (gameIndex < obj.gameCount()) {
-            // jsonify the gameIndex game from database
-            start = {};
-            start.buf = Buffer.alloc(2, MoveNull);
-            res.push(jsonEncodeSingleGame(obj.game(gameIndex), start));
-        } else {
-            throw new exception.IllegalArgument('jsonEncodeSingleGame');
-        }
-    } else if (obj instanceof Game) {
-        // jsonify one game
-        start.buf = Buffer.alloc(2, MoveNull);
-        res.push(jsonEncodeSingleGame(obj, start));
-    } else {
-        throw new exception.IllegalArgument('jsonEncodeSingleGame');
-    }
-    return res;
+exports.jsonEncode = function (obj, gameIndex) {
+	var res = [];
+	var start = {};
+	gameIndex = gameIndex || 0;
+	if (obj instanceof Database) {
+		if (arguments.length === 1) {
+			// jsonify all games from the database
+			for (var i = 0; i < obj.gameCount(); i++) {
+				start = {};
+				res.push(jsonEncodeSingleGame(obj.game(i), start));
+			}
+		} else if (gameIndex < obj.gameCount()) {
+			// jsonify the gameIndex game from database
+			start = {};
+			start.buf = Buffer.alloc(2, MoveNull);
+			res.push(jsonEncodeSingleGame(obj.game(gameIndex), start));
+		} else {
+			throw new exception.IllegalArgument('jsonEncodeSingleGame');
+		}
+	} else if (obj instanceof Game) {
+		// jsonify one game
+		start.buf = Buffer.alloc(2, MoveNull);
+		res.push(jsonEncodeSingleGame(obj, start));
+	} else {
+		throw new exception.IllegalArgument('jsonEncodeSingleGame');
+	}
+	return res;
 };
 
 function parseNullableHeader(value) {
@@ -414,27 +414,27 @@ function parseNullableHeader(value) {
 }
 
 function parseDateHeader(value) {
-    var year = value.slice(0, 4);
-    var month = value.slice(4, 6);
-    var day = value.slice(6, 8);
+	var year = value.slice(0, 4);
+	var month = value.slice(4, 6);
+	var day = value.slice(6, 8);
 
-    var res = {
-        year: (year === '0000' || year.length == 0 ? undefined : Number(year)),
-        month: (month === '00' || month.length == 0 ? undefined : Number(month)),
-        day: (day === '00' || day.length == 0 ? undefined : Number(day))
-    };
-    if (res.year === undefined) {
-        return undefined;
-    } else if (res.year !== undefined && res.month !== undefined && res.day !== undefined) {
-        return new Date(res.year, res.month - 1, res.day);
-    } else {
-        delete res.day;
-        return res;
-    }
+	var res = {
+		year: (year === '0000' || year.length === 0 ? undefined : Number(year)),
+		month: (month === '00' || month.length === 0 ? undefined : Number(month)),
+		day: (day === '00' || day.length === 0 ? undefined : Number(day))
+	};
+	if (res.year === undefined) {
+		return undefined;
+	} else if (res.year !== undefined && res.month !== undefined && res.day !== undefined) {
+		return new Date(res.year, res.month - 1, res.day);
+	} else {
+		delete res.day;
+		return res;
+	}
 }
 
 function parseVariant(value) {
-	switch(value.toLowerCase()) {
+	switch (value.toLowerCase()) {
 		case 'regular':
 		case 'standard':
 			return 'regular';
@@ -458,7 +458,7 @@ function parseVariant(value) {
 
 function processHeader(game, initialPositionFactory, key, value) {
 	value = value.trim();
-	switch(key) {
+	switch (key) {
 		case 'White': game.playerName('w', parseNullableHeader(value)); break;
 		case 'Black': game.playerName('b', parseNullableHeader(value)); break;
 		case 'WhiteElo': game.playerElo('w', value); break;
@@ -480,7 +480,7 @@ function processHeader(game, initialPositionFactory, key, value) {
 		// The header 'Variant' indicates that this is not a regular chess game.
 		case 'Variant':
 			initialPositionFactory.variant = parseVariant(value);
-			if(!initialPositionFactory.variant) {
+			if (!initialPositionFactory.variant) {
 				throw new exception.InvalidJSON(null, null, i18n.UNKNOWN_VARIANT, value);
 			}
 			break;
@@ -493,8 +493,8 @@ function processHeader(game, initialPositionFactory, key, value) {
 function initializeInitialPosition(game, initialPositionFactory) {
 
 	// Nothing to do if no custom FEN has been defined -> let the default state.
-	if(!initialPositionFactory.fen) {
-		if(initialPositionFactory.variant && initialPositionFactory.variant !== 'regular') {
+	if (!initialPositionFactory.fen) {
+		if (initialPositionFactory.variant && initialPositionFactory.variant !== 'regular') {
 			throw new exception.InvalidJSON(null, null, i18n.VARIANT_WITHOUT_FEN);
 		}
 		return;
@@ -505,9 +505,9 @@ function initializeInitialPosition(game, initialPositionFactory) {
 		var moveCounters = position.fen(initialPositionFactory.fen);
 		game.initialPosition(position, moveCounters.fullMoveNumber);
 	}
-	catch(error) {
-		if(error instanceof exception.InvalidFEN) {
-			throw stream.invalidPGNException(initialPositionFactory.fenTokenIndex, i18n.INVALID_FEN_IN_PGN_TEXT, error.message);
+	catch (error) {
+		if (error instanceof exception.InvalidFEN) {
+			throw new exception.InvalidJSON(null, initialPositionFactory.fenTokenIndex, i18n.INVALID_FEN_IN_PGN_TEXT, error.message);
 		}
 		else {
 			throw error;
@@ -516,279 +516,278 @@ function initializeInitialPosition(game, initialPositionFactory) {
 }
 
 /**
- * Parse exactly 1 game from the given stream.
- *
- * @param {Object} obj
- * @returns {Game}
- * @throws {module:exception.InvalidJSON}
- * @ignore
- */
+* Parse exactly 1 game from the given stream.
+*
+* @param {Object} obj
+* @returns {Game}
+* @throws {module:exception.InvalidJSON}
+* @ignore
+*/
 function doParseGame(obj) {
 
 	// State variable for syntaxic analysis.
-	var game            = null;  // the result
-	var node            = null;  // current node (or variation) to which the next move should be appended
+	var game = null;  // the result
+	var node = null;  // current node (or variation) to which the next move should be appended
 	var nodeIsVariation = false; // whether the current node is a variation or not
-	var nodeStack       = [];    // when starting a variation, its parent node (btw., always a 'true' node, not a variation) is stacked here
+	var nodeStack = [];    // when starting a variation, its parent node (btw., always a 'true' node, not a variation) is stacked here
 	var initialPositionFactory = {};
 
-    // Keys loop
-    if (Object.keys(obj).length > 0) {
+	// Keys loop
+	if (Object.keys(obj).length > 0) {
 		var keys = Object.keys(obj);
-		keys.forEach(function(key) {
-            if (key === 'MoveText') {
-                return; // movetext is done separately
-            }
+		keys.forEach(function (key) {
+			if (key === 'MoveText') {
+				return; // movetext is done separately
+			}
 
-    		// Create a new game if necessary
-	    	if(game === null) {
-		    	game = new Game();
-		    }
+			// Create a new game if necessary
+			if (game === null) {
+				game = new Game();
+			}
 
-            if (Object.prototype.hasOwnProperty.call(obj, key)) {
-                var value = obj[key];
+			if (Object.prototype.hasOwnProperty.call(obj, key)) {
+				var value = obj[key];
 
-				if(node !== null) {
-                    exception.InvalidJSON(null, null, i18n.UNEXPECTED_JSON_FIELD);
+				if (node !== null) {
+					exception.InvalidJSON(null, null, i18n.UNEXPECTED_JSON_FIELD);
 				}
 				processHeader(game, initialPositionFactory, key, value);
-				return;
 			}
 		});
-    }
+	}
 
-    if (obj.MoveText === undefined) {
-        return game; // there are no moves
-    }
+	if (obj.MoveText === undefined) {
+		return game; // there are no moves
+	}
 
-    var movetext = Buffer.from(obj.MoveText, 'base64');
-    var pos = 0;
-    while (pos < movetext.length) {
+	var movetext = Buffer.from(obj.MoveText, 'base64');
+	var pos = 0;
+	while (pos < movetext.length) {
 		// Create a new game if necessary
-		if(game === null) {
+		if (game === null) {
 			game = new Game();
 		}
 
 		// Matching anything else different from a header means that the move section
 		// is going to be parse => set-up the root node.
-		if(node === null) {
+		if (node === null) {
 			initializeInitialPosition(game, initialPositionFactory);
 			node = game.mainVariation();
 			nodeIsVariation = true;
 		}
 
-        // Move type switch
-        var moveType = movetext.readUInt16BE(pos);
+		// Move type switch
+		var moveType = movetext.readUInt16BE(pos);
 		switch (moveType) {
-            case EndMoveText:
-                return game;
-            case MoveNone:
-                pos += MoveSize;
-                break;
-            case WhiteWins:
-                pos += MoveSize;
-                game.result('1-0');
-                break;
-            case BlackWins:
-                game.result('0-1');
-                pos += MoveSize;
-                break;
-            case Draw:
-                game.result('1/2-1/2');
-                pos += MoveSize;
-                break;
-            case Unknown:
-                game.result('*');
-                pos += MoveSize;
-                break;
-            case MoveNull:
-                // create null move node
-                node = node.play('--');
-                pos += MoveSize;
-                break;
+			case EndMoveText:
+				return game;
+			case MoveNone:
+				pos += MoveSize;
+				break;
+			case WhiteWins:
+				pos += MoveSize;
+				game.result('1-0');
+				break;
+			case BlackWins:
+				game.result('0-1');
+				pos += MoveSize;
+				break;
+			case Draw:
+				game.result('1/2-1/2');
+				pos += MoveSize;
+				break;
+			case Unknown:
+				game.result('*');
+				pos += MoveSize;
+				break;
+			case MoveNull:
+				// create null move node
+				node = node.play('--');
+				pos += MoveSize;
+				break;
 
-            // NAG
+			// NAG
 			case Annotation:
-                pos += MoveSize;
-                node.addNag(movetext.readUInt8(pos));
-                pos += 1;
+				pos += MoveSize;
+				node.addNag(movetext.readUInt8(pos));
+				pos += 1;
 				break;
 
 			// Comment
 			case LongTextComment:
-            case TextComment:
-                pos += MoveSize;
-                var comment = '';
-                var ch = movetext.readUInt8(pos);
-                while (ch !== 0) {
-                    comment += String.fromCharCode(ch);
-                    pos++;
-                    ch = movetext.readUInt8(pos);
-                }
-                node.comment(comment, moveType === LongTextComment);
-                pos++;
+			case TextComment:
+				pos += MoveSize;
+				var comment = '';
+				var ch = movetext.readUInt8(pos);
+				while (ch !== 0) {
+					comment += String.fromCharCode(ch);
+					pos++;
+					ch = movetext.readUInt8(pos);
+				}
+				node.comment(comment, moveType === LongTextComment);
+				pos++;
 				break;
 
-            case Tag:
-                pos += MoveSize;
-                var tag = '';
-                var value = '';
-                var ch = movetext.readUInt8(pos);
-                while (ch !== 0) {
-                    tag += String.fromCharCode(ch);
-                    pos++;
-                    ch = movetext.readUInt8(pos);
-                }
-                pos++;
-                ch = movetext.readUInt8(pos);
-                while (ch !== 0) {
-                    value += String.fromCharCode(ch);
-                    pos++;
-                    ch = movetext.readUInt8(pos);
-                }
-                node.tag(tag, value);
-                pos++;
-                break;
+			case Tag:
+				pos += MoveSize;
+				var tag = '';
+				var value = '';
+				var ch = movetext.readUInt8(pos);
+				while (ch !== 0) {
+					tag += String.fromCharCode(ch);
+					pos++;
+					ch = movetext.readUInt8(pos);
+				}
+				pos++;
+				ch = movetext.readUInt8(pos);
+				while (ch !== 0) {
+					value += String.fromCharCode(ch);
+					pos++;
+					ch = movetext.readUInt8(pos);
+				}
+				node.tag(tag, value);
+				pos++;
+				break;
 
 
-                // Begin of variation
+			// Begin of variation
 			case StartLongVariation:
-            case StartVariation:
-                // main variation already set node at the start
-                if(nodeIsVariation) {
-   				    throw new exception.InvalidJSON(null, null, i18n.UNEXPECTED_BEGIN_OF_VARIATION);
-		    	}
-			    nodeStack.push(node);
+			case StartVariation:
+				// main variation already set node at the start
+				if (nodeIsVariation) {
+					throw new exception.InvalidJSON(null, null, i18n.UNEXPECTED_BEGIN_OF_VARIATION);
+				}
+				nodeStack.push(node);
 				node = node.addVariation(moveType === StartLongVariation);
-                nodeIsVariation = true;
-                pos += MoveSize;
+				nodeIsVariation = true;
+				pos += MoveSize;
 				break;
 
 			// End of variation
 			case EndVariation:
-   				if(nodeStack.length === 0) {
-    				throw new exception.InvalidJSON(null, null, i18n.UNEXPECTED_END_OF_VARIATION);
-	    		}
-   				node = nodeStack.pop();
-                nodeIsVariation = false;
-                pos += MoveSize;
+				if (nodeStack.length === 0) {
+					throw new exception.InvalidJSON(null, null, i18n.UNEXPECTED_END_OF_VARIATION);
+				}
+				node = nodeStack.pop();
+				nodeIsVariation = false;
+				pos += MoveSize;
 				break;
 
-            default: // normal move
+			default: // normal move
 				try {
-                    var tOff = moveType & 0x3F;
-                    var toSq = bt.boardOffsetToSquare(tOff);
-                    var to = bt.squareToString(toSq);
-                    var fOff = (moveType >> 6) & 0x3F;
-                    var fromSq = bt.boardOffsetToSquare(fOff);
-                    var from = bt.squareToString(fromSq);
-                    var piece = (moveType >> 12) & 0x3;
-                    var flag = (moveType >> 14) & 0x3;
-                    var move = '';
-                    var position = nodeIsVariation ? node.initialPosition() : node.position();
+					var tOff = moveType & 0x3F;
+					var toSq = bt.boardOffsetToSquare(tOff);
+					var to = bt.squareToString(toSq);
+					var fOff = (moveType >> 6) & 0x3F;
+					var fromSq = bt.boardOffsetToSquare(fOff);
+					var from = bt.squareToString(fromSq);
+					var piece = (moveType >> 12) & 0x3;
+					var flag = (moveType >> 14) & 0x3;
+					var move = '';
+					var position = nodeIsVariation ? node.initialPosition() : node.position();
 
-                    switch (flag) {
-                        case 0: // normal move
-                            var f = position.square(from);
-                            if (f !== '-') { // we are moving a piece/pawn (good!)
-                                if (f[1] !== 'p') { // it is a piece
-                                    move += f[1].toUpperCase(); // KQBNR
-                                    if (f[1] !== 'k') {
-                                        move += from; // disambiguate the piece
-                                    }
-                                }
-                            }
-                            var t = position.square(to);
-                            if (t !== '-') { // there is a piece/pawn here (capture!)
-                                // if the capturing entity is a pawn, we need to put in the file
-                                if (f[1] === 'p') {
-                                    move += bt.boardOffsetToFile(fOff);
-                                }
-                                move += 'x' + to;
-                            } else { // square is empty
-                                move += to;
-                            }
-                            node = node.play(move);
-                            break;
+					switch (flag) {
+						case 0: // normal move
+							var f = position.square(from);
+							if (f !== '-') { // we are moving a piece/pawn (good!)
+								if (f[1] !== 'p') { // it is a piece
+									move += f[1].toUpperCase(); // KQBNR
+									if (f[1] !== 'k') {
+										move += from; // disambiguate the piece
+									}
+								}
+							}
+							var t = position.square(to);
+							if (t !== '-') { // there is a piece/pawn here (capture!)
+								// if the capturing entity is a pawn, we need to put in the file
+								if (f[1] === 'p') {
+									move += bt.boardOffsetToFile(fOff);
+								}
+								move += 'x' + to;
+							} else { // square is empty
+								move += to;
+							}
+							node = node.play(move);
+							break;
 
-                        case 1: // promotion
-                            var f = position.square(from);
-                            if (f[1] !== 'p') { // ??
-                                throw new exception.InvalidJSON(null, null, i18n.ILLEGAL_PROMOTION);
-                            }
-                            var t = position.square(to);
-                            if (t !== '-') { // there is a piece/pawn here (capture!)
-                                move += bt.boardOffsetToFile(fOff);
-                                move += 'x' + to;
-                            } else { // square is empty
-                                move += to;
-                            }
+						case 1: // promotion
+							var f = position.square(from);
+							if (f[1] !== 'p') { // ??
+								throw new exception.InvalidJSON(null, null, i18n.ILLEGAL_PROMOTION);
+							}
+							var t = position.square(to);
+							if (t !== '-') { // there is a piece/pawn here (capture!)
+								move += bt.boardOffsetToFile(fOff);
+								move += 'x' + to;
+							} else { // square is empty
+								move += to;
+							}
 
-                            move += '=';
+							move += '=';
 
-                            switch (piece) {
-                                case 0:
-                                    move += 'N';
-                                    break;
-                                case 1:
-                                    move += 'B';
-                                    break;
-                                case 2:
-                                    move += 'R';
-                                    break;
-                                case 3:
-                                    move += 'Q';
-                                    break;
-                            }
-                            node = node.play(move);
-                            break;
+							switch (piece) {
+								case 0:
+									move += 'N';
+									break;
+								case 1:
+									move += 'B';
+									break;
+								case 2:
+									move += 'R';
+									break;
+								case 3:
+									move += 'Q';
+									break;
+							}
+							node = node.play(move);
+							break;
 
-                        case 2: // en-passant
-                            move = bt.boardOffsetToFile(fOff) + 'x' + toSq;
-                            node = node.play(move);
-                            break;
-                        case 3: // castling
-                            if (to === 'c1' || to === 'c8') {
-                                move += 'O-O-O';
-                            } else {
-                                move += 'O-O';
-                            }
-                            node = node.play(move);
-                            break;
-                    }
+						case 2: // en-passant
+							move = bt.boardOffsetToFile(fOff) + 'x' + toSq;
+							node = node.play(move);
+							break;
+						case 3: // castling
+							if (to === 'c1' || to === 'c8') {
+								move += 'O-O-O';
+							} else {
+								move += 'O-O';
+							}
+							node = node.play(move);
+							break;
+					}
 					nodeIsVariation = false;
 				}
-				catch(error) {
-					if(error instanceof exception.InvalidNotation) {
+				catch (error) {
+					if (error instanceof exception.InvalidNotation) {
 						throw new exception.InvalidJSON(null, null, i18n.INVALID_MOVE_IN_PGN_TEXT, error.notation, error.message);
 					}
 					else {
 						throw error;
 					}
-                }
-                pos += MoveSize;
+				}
+				pos += MoveSize;
 				break;
 
 
 		} // switch(moveType)
 	} // while(pos < movetext.length)
 
-	throw stream.invalidPGNException(i18n.UNEXPECTED_END_OF_TEXT);
+	throw new exception.invalidJSON(null, null, i18n.UNEXPECTED_END_OF_TEXT);
 }
 
 function gameCountGetterImpl(impl) {
-    return impl.games.length;
+	return impl.games.length;
 }
 
 
 function gameGetterImpl(impl, gameIndex) {
-    if(impl.currentGameIndex !== gameIndex) {
-        impl.jsonArray = JSON.parse(impl._json);
-    }
-    impl.currentGameIndex = -1;
-    var result = doParseGame(impl.jsonArray[gameIndex]);
-    impl.currentGameIndex = gameIndex + 1;
-    return result;
+	if (impl.currentGameIndex !== gameIndex) {
+		impl.jsonArray = JSON.parse(impl.text);
+	}
+	impl.currentGameIndex = -1;
+	var result = doParseGame(impl.jsonArray[gameIndex]);
+	impl.currentGameIndex = gameIndex + 1;
+	return result;
 }
 
 /**
@@ -807,31 +806,31 @@ function gameGetterImpl(impl, gameIndex) {
 * @returns {Game}
 * @throws {module:exception.InvalidJSON}
 */
-exports.jsonDecode = function(jsonString, gameIndex) {
-    try {
-        var obj = JSON.parse(jsonString);
+exports.jsonDecode = function (jsonString, gameIndex) {
+	try {
+		var obj = JSON.parse(jsonString);
 
-        // Parse all games (and return a Database object)...
-        if(arguments.length === 1) {
-            if (obj instanceof Array) {
-                var games = [];
-                for (var i = 0; i < obj.length; i++) {
-                    games.push(i);
-                }
-                return new Database({ text: jsonString, games: games, currentGameIndex: -1, errors: [] }, gameCountGetterImpl, gameGetterImpl);
-            } else {
-                throw new exception.InvalidJSON(jsonString, jsonString.length, i18n.INVALID_JSON, gameIndex, obj.length);
-            }
-        }
+		// Parse all games (and return a Database object)...
+		if (arguments.length === 1) {
+			if (obj instanceof Array) {
+				var games = [];
+				for (var i = 0; i < obj.length; i++) {
+					games.push(i);
+				}
+				return new Database({ text: jsonString, games: games, currentGameIndex: -1, errors: [] }, gameCountGetterImpl, gameGetterImpl);
+			} else {
+				throw new exception.InvalidJSON(jsonString, jsonString.length, i18n.INVALID_JSON, gameIndex, obj.length);
+			}
+		}
 
-        // Parse one game...
-        else {
-            if (!(obj instanceof Array) || obj.length < gameIndex) {
-                throw new exception.InvalidJSON(jsonString, jsonString.length, i18n.INVALID_GAME_INDEX, gameIndex, obj.length);
-            }
-            return doParseGame(obj[gameIndex]);
-        }
-    } catch (err) {
-        throw new exception.InvalidJSON(jsonString, 0, 'Invalid JSON');
-    }
+		// Parse one game...
+		else {
+			if (!(obj instanceof Array) || obj.length < gameIndex) {
+				throw new exception.InvalidJSON(jsonString, jsonString.length, i18n.INVALID_GAME_INDEX, gameIndex, obj.length);
+			}
+			return doParseGame(obj[gameIndex]);
+		}
+	} catch (err) {
+		throw new exception.InvalidJSON(jsonString, 0, 'Invalid JSON');
+	}
 };

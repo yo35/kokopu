@@ -375,7 +375,7 @@ function writeDate(date) {
 	} else if (date instanceof Date) {
 		return '[Date \'' +
 			date.getFullYear().toString() + '.' +
-			((date.getMonth() + 1 < 10) ? ('0' + date.getMonth() + 1).toString() : date.getMonth() + 1).toString() + '.' +
+			((date.getMonth() + 1 < 10) ? ('0' + (date.getMonth() + 1).toString()) : (date.getMonth() + 1)).toString() + '.' +
 			((date.getDate() < 10) ? ('0' + date.getDate().toString()) : date.getDate().toString()) +
 			'\']' + Separator;
 	} else {
