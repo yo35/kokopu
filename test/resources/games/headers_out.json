@@ -7,7 +7,7 @@
     "White": "?",
     "Black": "?",
     "Result": "*",
-    "MoveText": "AABRx/HH"
+    "MoveText": "AACBxwDxxw=="
   },
   {
     "Event": "?",
@@ -17,7 +17,7 @@
     "White": "?",
     "Black": "?",
     "Result": "1-0",
-    "MoveText": "AABBx/HH"
+    "MoveText": "AACBxwLxxw=="
   },
   {
     "Event": "Some championship",
@@ -27,7 +27,7 @@
     "White": "Player 1",
     "Black": "Player 2",
     "Result": "0-1",
-    "MoveText": "AAAhx/HH"
+    "MoveText": "AACBxwHxxw=="
   },
   {
     "Event": "Some championship",
@@ -37,7 +37,7 @@
     "White": "Player 1",
     "Black": "Player 2",
     "Result": "1/2-1/2",
-    "MoveText": "AAAxx/HH"
+    "MoveText": "AACBxwPxxw=="
   },
   {
     "Event": "Special character \" (double quote)",
@@ -47,7 +47,7 @@
     "White": "Special characters [] (square brackets)",
     "Black": "Special character \\ (backslash)",
     "Result": "*",
-    "MoveText": "AABRx/HH"
+    "MoveText": "AACBxwDxxw=="
   },
   {
     "Event": "?",
@@ -62,7 +62,7 @@
     "BlackElo": "2530",
     "BlackTitle": "GM",
     "Annotator": "Kibitz",
-    "MoveText": "AABRx/HH"
+    "MoveText": "AACBxwDxxw=="
   },
   {
     "Event": "Custom startup position",
@@ -73,7 +73,7 @@
     "Black": "?",
     "Result": "0-1",
     "FEN": "rnb1k1nr/pppp1ppp/8/2b1p3/2B1P2q/2N2N2/PPPP1PPP/R1BQK2R b KQkq - 5 4",
-    "MoveText": "AAAHzSHH8cc="
+    "MoveText": "AAAHzYHHAfHH"
   },
   {
     "Event": "?",
@@ -83,7 +83,7 @@
     "White": "Ill-formed tag \" (unescaped double quote, should be \\\")",
     "Black": "Ill-formed tag \\ (unescaped backslash, should be \\\\)",
     "Result": "*",
-    "MoveText": "AABRx/HH"
+    "MoveText": "AACBxwDxxw=="
   },
   {
     "Event": "Full inline PGN",
@@ -93,6 +93,6 @@
     "White": "Player 1",
     "Black": "Player 2",
     "Result": "*",
-    "MoveText": "AABRx/HH"
+    "MoveText": "AACBxwDxxw=="
   }
 ]

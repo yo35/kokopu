@@ -7,7 +7,7 @@
     "White": "Player 1",
     "Black": "Player 2",
     "Result": "1-0",
-    "MoveText": "AAADHA0kAVoOagDnD60J9UHH8cc="
+    "MoveText": "AAADHA0kAVoOagDnD60J9YHHAvHH"
   },
   {
     "Event": "Game with comments and NAGs",
@@ -17,7 +17,7 @@
     "White": "?",
     "Black": "?",
     "Result": "*",
-    "MoveText": "AABxx0EgY29tbWVudCB3aXRoIGJyYWNlczogYWJ7Y2R9ZWZcZ2hpaiAzIGJhY2tzbGFzaGVzOiBcXFwAAxwRxwENLBHHBmHHVGhpcyBvcGVuaW5nIGlzIGNhbGxlZCB0aGUgRnJlbmNoLgAC2xHHDlHH8cc="
+    "MoveText": "AAAxx0EgY29tbWVudCB3aXRoIGJyYWNlczogYWJ7Y2R9ZWZcZ2hpaiAzIGJhY2tzbGFzaGVzOiBcXFwAAxwRxwENLBHHBiHHVGhpcyBvcGVuaW5nIGlzIGNhbGxlZCB0aGUgRnJlbmNoLgAC2xHHDoHHAPHH"
   },
   {
     "Event": "Game with variations",
@@ -27,7 +27,7 @@
     "White": "?",
     "Black": "?",
     "Result": "1/2-1/2",
-    "MoveText": "AAADHA0kkccNLBHHErHHAZUOagFhkcdhx0l0YWxpYW4gZ2FtZToAAVoPYrHHkccC2wkbBVuRxxHHKgFaEccFD60Rxw2xxw9isccMKAhqDOoxx/HH"
+    "MoveText": "AAADHA0kUccNLBHHEnHHAZUOagFhUcchx0l0YWxpYW4gZ2FtZToAAVoPYnHHUccC2wkbBVtRxxHHKgFaEccFD60Rxw1xxw9icccMKAhqDOqBxwPxxw=="
   },
   {
     "Event": "1<sup>st</sup> American Chess Congress",
@@ -37,7 +37,7 @@
     "White": "Paulsen, Louis",
     "Black": "Morphy, Paul",
     "Result": "0-1",
-    "MoveText": "AAADHA0kAZUOagBSD60BYQ9iwQbPPgVkD3wJKgzqCFoMYQaMC1wEnA8cAxUHLAKSDtMCWQipAhgIWADYDrMACA48Bihxx01vcnBoeSB0b29rIHR3ZWx2ZSBtaW51dGVzIG92ZXIgaGlzIG5leHQgbW92ZSwgcHJvYmFibHkgdG8gYXNzdXJlIGhpbXNlbGYgdGhhdCB0aGUgY29tYmluYXRpb24gd2FzIHNvdW5kIGFuZCB0aGF0IGhlIGhhZCBhIGZvcmNlZCB3aW4gaW4gZXZlcnkgdmFyaWF0aW9uLgAE1RHHAwOVCy4BhwzXAUORx2HHTm90AAFGC4YBxg8EEccTsccFzgHGA5UBhQVOoccLjhHHAWHHd291bGQgaGF2ZSB3b24gbW9yZSBxdWlja2x5LiBGb3IgaW5zdGFuY2U6AAoTA40BRgNOAYcDhrHHAUYDlwGHCk0KBWHHQWJzb2x1dGVseSBmb3JjZWQuAAXFAMUPDAIAC68C2wNUIcfxxw=="
+    "MoveText": "AAADHA0kAZUOagBSD60BYQ9iwQbPPgVkD3wJKgzqCFoMYQaMC1wEnA8cAxUHLAKSDtMCWQipAhgIWADYDrMACA48Bigxx01vcnBoeSB0b29rIHR3ZWx2ZSBtaW51dGVzIG92ZXIgaGlzIG5leHQgbW92ZSwgcHJvYmFibHkgdG8gYXNzdXJlIGhpbXNlbGYgdGhhdCB0aGUgY29tYmluYXRpb24gd2FzIHNvdW5kIGFuZCB0aGF0IGhlIGhhZCBhIGZvcmNlZCB3aW4gaW4gZXZlcnkgdmFyaWF0aW9uLgAE1RHHAwOVCy4BhwzXAUNRxyHHTm90AAFGC4YBxg8EEccTcccFzgHGA5UBhQVOYccLjhHHASHHd291bGQgaGF2ZSB3b24gbW9yZSBxdWlja2x5LiBGb3IgaW5zdGFuY2U6AAoTA40BRgNOAYcDhnHHAUYDlwGHCk0KBSHHQWJzb2x1dGVseSBmb3JjZWQuAAXFAMUPDAIAC68C2wNUgccB8cc="
   },
   {
     "Event": "?",
@@ -50,7 +50,7 @@
     "Annotator": "gokhan007",
     "FEN": "r2q1b1r/ppn2kpp/2p1b3/3nP3/2BPQ3/P1N5/1PP3PP/R1B1K2R w KQ - 1 14",
     "SetUp": "1",
-    "MoveText": "AADBBg18Ucfxxw=="
+    "MoveText": "AADBBg18gccA8cc="
   },
   {
     "Event": "Game with long/short comment descriptors",
@@ -60,7 +60,7 @@
     "White": "?",
     "Black": "?",
     "Result": "1/2-1/2",
-    "MoveText": "AABhx05vIGVtcHR5IGxpbmUgPT4gU0hPUlQuAAMcDSSRx2HHV2l0aGluIHNob3J0IHZhcmlhdGlvbiwgYWx3YXlzIFNIT1JULgANLBHHEmHHV2l0aGluIHNob3J0IHZhcmlhdGlvbiwgYWx3YXlzIFNIT1JULgCxxwGVDmoBYaHHYcdObyBlbXB0eSBsaW5lID0+IFNIT1JULgABWg9iYcdObyBlbXB0eSBsaW5lID0+IFNIT1JULgCxxwwoCGqhx3HHRW1wdHkgbGluZSA9PiBMT05HLgAIWAxhccdFbXB0eSBsaW5lID0+IExPTkcuALHHDOoxx/HH"
+    "MoveText": "AAAhx05vIGVtcHR5IGxpbmUgPT4gU0hPUlQuAAMcDSRRxyHHV2l0aGluIHNob3J0IHZhcmlhdGlvbiwgYWx3YXlzIFNIT1JULgANLBHHEiHHV2l0aGluIHNob3J0IHZhcmlhdGlvbiwgYWx3YXlzIFNIT1JULgBxxwGVDmoBYWHHIcdObyBlbXB0eSBsaW5lID0+IFNIT1JULgABWg9iIcdObyBlbXB0eSBsaW5lID0+IFNIT1JULgBxxwwoCGphxzHHRW1wdHkgbGluZSA9PiBMT05HLgAIWAxhMcdFbXB0eSBsaW5lID0+IExPTkcuAHHHDOqBxwPxxw=="
   },
   {
     "Event": "Game with null-moves",
@@ -70,7 +70,7 @@
     "White": "?",
     "Black": "?",
     "Result": "*",
-    "MoveText": "AAADHABBAtsM4wBBDSRRx/HH"
+    "MoveText": "AAADHABBAtsM4wBBDSSBxwDxxw=="
   },
   {
     "Event": "Game with tags",
@@ -80,7 +80,7 @@
     "White": "?",
     "Black": "?",
     "Result": "*",
-    "MoveText": "AAADHIHHY2FsAEdlMmU0AA3nYcdPZGQgbW92ZTogdGhlIHBhd24gaW4gaDUgaXMgd2Vhay4AgcdjYWwAR2g3aDUAgcdjc2wAUmg1AJHHYcdNb3JlIHVzdWFsIGlzAIHHa2V5AHZhbHVlAAyisccC22HHQ2Fubm90IGhhdmUgc2V2ZXJhbCB0YWdzIHdpdGggdGhlIHNhbWUga2V5IGhlcmUhAIHHa2V5AHZhbHVlMgAMIGHHTm8gdGFnIGhlcmUuAAKaYcdUaGlzIGlzIGEgY29tbWVudC4AgcdrZXkAdmFsdWUADaZhx1RoaXMgaXMgYW5vdGhlciBjb21tZW50LgCBx2tleTIAdmFsdWUyAIHHa2V5MQB2YWx1ZTEAUcfxxw=="
+    "MoveText": "AAADHEHHY2FsAEdlMmU0AA3nIcdPZGQgbW92ZTogdGhlIHBhd24gaW4gaDUgaXMgd2Vhay4AQcdjYWwAR2g3aDUAQcdjc2wAUmg1AFHHIcdNb3JlIHVzdWFsIGlzAEHHa2V5AHZhbHVlAAyicccC2yHHQ2Fubm90IGhhdmUgc2V2ZXJhbCB0YWdzIHdpdGggdGhlIHNhbWUga2V5IGhlcmUhAEHHa2V5AHZhbHVlMgAMICHHTm8gdGFnIGhlcmUuAAKaIcdUaGlzIGlzIGEgY29tbWVudC4AQcdrZXkAdmFsdWUADaYhx1RoaXMgaXMgYW5vdGhlciBjb21tZW50LgBBx2tleTIAdmFsdWUyAEHHa2V5MQB2YWx1ZTEAgccA8cc="
   },
   {
     "Event": "Game with variant tag 1",
@@ -91,7 +91,7 @@
     "Black": "?",
     "Result": "*",
     "Variant": "Standard",
-    "MoveText": "AAACEFHH8cc="
+    "MoveText": "AAACEIHHAPHH"
   },
   {
     "Event": "Game with variant tag 2",
@@ -104,7 +104,7 @@
     "FEN": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1",
     "SetUp": "1",
     "Variant": "Regular",
-    "MoveText": "AAAN71HH8cc="
+    "MoveText": "AAAN74HHAPHH"
   },
   {
     "Event": "Game with linebreaks in comments",
@@ -114,6 +114,6 @@
     "White": "?",
     "Black": "?",
     "Result": "*",
-    "MoveText": "AAADHIHHY2xrADAxOjU2OjI1AA0kYcdJIGFtIGNvbW1lbnQgd2l0aCBhIGxpbmVicmVhay4AUcfxxw=="
+    "MoveText": "AAADHEHHY2xrADAxOjU2OjI1AA0kIcdJIGFtIGNvbW1lbnQgd2l0aCBhIGxpbmVicmVhay4AgccA8cc="
   }
 ]

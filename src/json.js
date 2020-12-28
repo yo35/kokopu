@@ -39,17 +39,21 @@ var MoveSpecial = 455;
 
 // Special moves:
 var Annotation = ((0x1 << 12) | MoveSpecial);
-var BlackWins = ((0x2 << 12) | MoveSpecial);
-var Draw = ((0x3 << 12) | MoveSpecial);
-var WhiteWins = ((0x4 << 12) | MoveSpecial);
-var Unknown = ((0x5 << 12) | MoveSpecial);
-var TextComment = ((0x6 << 12) | MoveSpecial);
-var LongTextComment = ((0x7 << 12) | MoveSpecial);
-var Tag = ((0x8 << 12) | MoveSpecial);
-var StartVariation = ((0x9 << 12) | MoveSpecial);
-var StartLongVariation = ((0xA << 12) | MoveSpecial);
-var EndVariation = ((0xB << 12) | MoveSpecial);
+var TextComment = ((0x2 << 12) | MoveSpecial);
+var LongTextComment = ((0x3 << 12) | MoveSpecial);
+var Tag = ((0x4 << 12) | MoveSpecial);
+var StartVariation = ((0x5 << 12) | MoveSpecial);
+var StartLongVariation = ((0x6 << 12) | MoveSpecial);
+var EndVariation = ((0x7 << 12) | MoveSpecial);
+var Result = ((0x8 << 12) | MoveSpecial);
+var Extension = ((0xE << 12) | MoveSpecial);
 var EndMoveText = ((0xF << 12) | MoveSpecial);
+
+// Results
+var Unknown = 0; // 0b00
+var BlackWins = 1; // 0b01
+var WhiteWins = 2; // 0b10
+var Draw = 3; // 0b11
 
 /**
 * Write the date in PGN format
@@ -313,21 +317,22 @@ function writeVariation(variation, isLongVariation, isMainVariation, res) {
 */
 function writeResult(game, res) {
 	var result = ((game.result() === undefined) ? '*' : game.result());
-	var buf = Buffer.allocUnsafe(MoveSize);
-
+	var buf = Buffer.allocUnsafe(MoveSize + 1);
+	var offset = 0;
+	buf.writeUInt16BE(Result, 0); offset += MoveSize;
 	switch (result) {
 		case '1-0':
-			buf.writeUInt16BE(WhiteWins, 0);
+			buf.writeUInt8(WhiteWins, offset);
 			break;
 		case '0-1':
-			buf.writeUInt16BE(BlackWins, 0);
+			buf.writeUInt8(BlackWins, offset);
 			break;
 		case '1/2-1/2':
-			buf.writeUInt16BE(Draw, 0);
+			buf.writeUInt8(Draw, offset);
 			break;
 		case '*':
 		default:
-			buf.writeUInt16BE(Unknown, 0);
+			buf.writeUInt8(Unknown, offset);
 			break;
 	}
 	res.buf = Buffer.concat([res.buf, buf]);
@@ -584,21 +589,44 @@ function doParseGame(obj) {
 			case MoveNone:
 				pos += MoveSize;
 				break;
-			case WhiteWins:
+			case Extension:
 				pos += MoveSize;
-				game.result('1-0');
+				var cmd = movetext.readUInt8(pos);
+				pos++;
+				var length = 0;
+				switch (cmd) {
+					case 0:
+						break;
+					case 1: // embedded audio
+						length = movetext.readBigUInt64BE(pos);
+						pos += 8 + length;
+						break;
+					case 2: // embedded video
+						length = movetext.readBigUInt64BE(pos);
+						pos += 8 + length;
+						break;
+					default:
+						throw new exception.InvalidJSON(null, null, i18n.UNKNOWN_EXTENSION_FIELD);
+				}
 				break;
-			case BlackWins:
-				game.result('0-1');
+			case Result:
 				pos += MoveSize;
-				break;
-			case Draw:
-				game.result('1/2-1/2');
-				pos += MoveSize;
-				break;
-			case Unknown:
-				game.result('*');
-				pos += MoveSize;
+				var result = movetext.readUInt8(pos);
+				switch (result) {
+					case WhiteWins:
+						game.result('1-0');
+						break;
+					case BlackWins:
+						game.result('0-1');
+						break;
+					case Draw:
+						game.result('1/2-1/2');
+						break;
+					case Unknown:
+						game.result('*');
+						break;
+				}
+				pos += 1;
 				break;
 			case MoveNull:
 				// create null move node

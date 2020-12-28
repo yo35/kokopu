@@ -38,6 +38,27 @@ function testJsonData() {
 	});
 }
 
+function testPgnData() {
+	return readCSV('games.csv', function(fields) {
+		return {
+			label: fields[0],
+			gameCount: parseInt(fields[1]),
+			pgn: readText('games/' + fields[0] + '.pgn')
+		};
+	});
+}
+
+function DatabasePgnHolder(pgn) {
+	this._pgn = pgn;
+}
+
+DatabasePgnHolder.prototype.database = function() {
+	if(!(this._database)) {
+		this._database = kokopu.pgnRead(this._pgn);
+	}
+	return this._database;
+};
+
 /**
  * Dump the content of a Game object read from a `.pgn` file.
  *
@@ -241,7 +262,25 @@ function checkGameJsonEncode(testDataDescriptor, holder) {
 	});
 }
 
-describe('Game JSON content (database)', function() {
+describe('Game JSON content from PGN (database)', function() {
+	testPgnData().forEach(function(elem) {
+		var holder = new DatabasePgnHolder(elem.pgn);
+
+		checkGameJsonEncode(elem, holder);
+
+		for(var gameIndex = 0; gameIndex < elem.gameCount; ++gameIndex) {
+			if(gameIndex % 3 === 2) { continue; }
+			checkGameContentDatabase(elem, holder, gameIndex);
+		}
+		for(var gameIndex = 0; gameIndex < elem.gameCount; ++gameIndex) {
+			if(gameIndex % 3 !== 2) { continue; }
+			checkGameContentDatabase(elem, holder, gameIndex);
+		}
+
+	});
+});
+
+describe('Game JSON content from JSON (database)', function() {
 	testJsonData().forEach(function(elem) {
 		var holder = new DatabaseJsonHolder(elem.json);
 

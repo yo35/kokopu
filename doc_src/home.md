@@ -44,7 +44,87 @@ a [PGN file](https://en.wikipedia.org/wiki/Portable_Game_Notation):
 this method takes either {@link Database} or {@link Game} objects and writes them out
 as a string representing the contents of a PGN file. This string could be written out
 to file using the system's writeFile functions.
+Method {@link jsonEncode} allows to write JSON with moves encoded into base64 binary
+as described below.
+Method {@link jsonDecode} allows to read JSON with moves encoded into base64 binary
+as described below.
 
+JSON MoveText encoding
+----------------------
+
+```
+1. Byte Codes
+
+A move needs 16 bits to be stored
+
+bit  0- 5: destination square (from 0 to 63)
+bit  6-11: origin square (from 0 to 63)
+bit 12-13: promotion piece type: KNIGHT (0), BISHOP (1), ROOK (2), QUEEN (3)
+bit 14-15: special move flag: promotion (1), en passant (2), castling (3)
+NOTE: EN-PASSANT bit is set only when a pawn can be captured
+
+Special cases are MOVE_NONE, MOVE_NULL, MOVE_SPECIAL. We can sneak these in
+because in any normal move, destination square is almost always different from
+origin square while MOVE_NONE, MOVE_NULL, MOVE_SPECIAL have the same origin
+and destination square on squares where we can never have a piece stay on the
+same square (MOVE_NONE=A1, MOVE_NULL=A2, MOVE_SPECIAL=A8).
+
+enum Move : {
+  MOVE_NONE = 0,
+  MOVE_NULL = 65,
+  MOVE_SPECIAL = 455
+};
+
+enum MoveType {
+  NORMAL,
+  PROMOTION = 1 << 14,
+  ENPASSANT = 2 << 14,
+  CASTLING  = 3 << 14
+};
+
+Special moves are MOVE_SPECIAL or'ed with:
+
+0x1 << 12 [+]	annotation
+				NAG code stored in next byte
+
+0x0 .. 0xFF	    annotation (NAG codes 0 to 255)
+
+0x2 << 12 [+]	text comment
+				followed by text data (see 3.)
+0x3 << 12 [+]	long text comment
+				followed by text data (see 3.)
+
+0x4 << 12 [+]	tag
+				followed by tag as text (see 3.)
+                followed by value as text (see 3.)
+
+0x5 << 12		start of variation:
+				following move data is a variation to the previous move
+0x6 << 12		start of long variation:
+				following move data is a variation to the previous move
+0x7 << 12		end of variation
+
+0x8 << 12 [+]	result
+				result stored in next byte
+				0 unknown, 1 black wins, 2 white wins, 3 draw
+
+0xE << 12 [+]	extensions
+				255 possible extension commands stored in next byte (1-255), 0 is reserved
+				0	reserved
+				1 [+] 	embedded audio
+					UInt64BE length in bytes followed by the embedded binary audio bytes that may have encoding etc (up to implementation)
+				2 [+]	embedded video
+					UInt64BE length in bytes followed by the embedded binary video bytes that may have encoding etc (up to implementation)
+				3-255	unused
+
+0xF << 12		end of data
+
+2. Encoding of text data
+
+Comment text is stored as a sequence of UTF-8 encoded bytes, terminated by 0x00
+
+| b1 | b2 | ... | 0x00 |
+```
 
 Example
 -------

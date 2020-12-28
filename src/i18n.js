@@ -82,3 +82,4 @@ exports.UNKNOWN_VARIANT                 = 'Unknown chess game variant (%1$s).';
 exports.VARIANT_WITHOUT_FEN             = 'For non-standard game variant, the FEN header is mandatory.';
 exports.INVALID_JSON                    = 'Invalid JSON data.';
 exports.INVALID_JSON_FIELD              = 'Unexpected JSON field.';
+exports.UNKNOWN_EXTENSION_FIELD         = 'Unknown JSON extension field.';
