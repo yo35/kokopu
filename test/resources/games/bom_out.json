@@ -1,0 +1,29 @@
+[
+  {
+    "Event": "Olympiad-21 Final D",
+    "Site": "Nice",
+    "Date": "19740615",
+    "Round": "1",
+    "White": "Torres, Luis J",
+    "Black": "Tasic, Branislav",
+    "Result": "1-0",
+    "ECO": "B21",
+    "Annotator": "Hannes Langrock",
+    "PlyCount": "61",
+    "EventDate": "1974.06.15",
+    "EventType": "team-tourn",
+    "EventRounds": "15",
+    "EventCountry": "FRA",
+    "SourceTitle": "EXT 2000",
+    "Source": "ChessBase",
+    "SourceDate": "1999.11.16",
+    "SourceVersion": "1",
+    "SourceVersionDate": "1999.11.16",
+    "SourceQuality": "1",
+    "WhiteTeam": "Puerto Rico",
+    "BlackTeam": "Monaco",
+    "WhiteTeamCountry": "PUR",
+    "BlackTeamCountry": "MNC",
+    "MoveText": "AAADHAyiAtsImwKSBtIAUg5qAZUM6wFaDSzBBg90AMwMKAFDDvIAnQqkEccCB2QK5AACDLkGoQohBKENbQhyDzUMuA54ALIMaQD7DqgFZAtkAycNrg74C6cOKA+tCjAP/ANVC34BhQ1uAUwNIgy2C68NtwvuDDYLrQOeCd4FXkHH8cc="
+  }
+]

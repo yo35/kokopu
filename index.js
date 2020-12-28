@@ -40,3 +40,7 @@ exports.Game = require('./src/game').Game;
 var pgn = require('./src/pgn');
 exports.pgnRead = pgn.pgnRead;
 exports.pgnWrite = pgn.pgnWrite;
+
+var json = require('./src/json');
+exports.jsonEncode = json.jsonEncode;
+exports.jsonDecode = json.jsonDecode;

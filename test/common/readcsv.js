@@ -35,8 +35,8 @@ module.exports = function(filename, parser) {
 
 	lines.forEach(function(elem, index) {
 
-		// Skip header and empty lines.
-		if(elem === '' || index === 0) {
+		// Skip header and empty lines or commented out lines
+		if(elem === '' || index === 0 || elem.startsWith('#')) {
 			return;
 		}
 

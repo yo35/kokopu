@@ -38,13 +38,15 @@ function testPgnData() {
 	});
 }
 
-describe('PGN Game count', function() {
-	testPgnData().forEach(function(elem) {
-		it('File ' + elem.label, function() {
-			test.value(kokopu.pgnRead(elem.pgn).gameCount()).is(elem.gameCount);
-		});
+function testJsonData() {
+	return readCSV('games.csv', function(fields) {
+		return {
+			label: fields[0],
+			gameCount: parseInt(fields[1]),
+			json: readText('games/' + fields[0] + '.json')
+		};
 	});
-});
+}
 
 /**
  * Dump the content of a Game object read from a `.pgn` file.
@@ -212,21 +214,12 @@ function dumpGame(game, iterationStyle) {
 }
 
 
-function checkPgnGameContentDirect(testDataDescriptor, gameIndex) {
+function checkJsonGameContentDirect(testDataDescriptor, gameIndex) {
 	it('File ' + testDataDescriptor.label + ' - Game ' + gameIndex, function() {
 		var expectedDump = readText('games/' + testDataDescriptor.label + '_' + gameIndex + '.log');
-		test.value(dumpGame(kokopu.pgnRead(testDataDescriptor.pgn, gameIndex), 'using-next').trim()).is(expectedDump.trim());
+		test.value(dumpGame(kokopu.jsonDecode(testDataDescriptor.json, gameIndex), 'using-next').trim()).is(expectedDump.trim());
 	});
 }
-
-
-describe('PGN Game content (direct access)', function() {
-	testPgnData().forEach(function(elem) {
-		for(var gameIndex = 0; gameIndex < elem.gameCount; ++gameIndex) {
-			checkPgnGameContentDirect(elem, gameIndex);
-		}
-	});
-});
 
 function DatabasePgnHolder(pgn) {
 	this._pgn = pgn;
@@ -238,6 +231,18 @@ DatabasePgnHolder.prototype.database = function() {
 	}
 	return this._database;
 };
+function DatabaseJsonHolder(json) {
+	this._json = json;
+}
+
+
+DatabaseJsonHolder.prototype.database = function() {
+	if(!(this._database)) {
+		this._database = kokopu.jsonDecode(this._json);
+	}
+	return this._database;
+};
+
 
 function checkGameContentDatabase(testDataDescriptor, holder, gameIndex) {
 	it('File ' + testDataDescriptor.label + ' - Game ' + gameIndex, function() {
@@ -247,19 +252,22 @@ function checkGameContentDatabase(testDataDescriptor, holder, gameIndex) {
 	});
 }
 
-function checkGamePgnContent(testDataDescriptor, holder) {
-	it('Write PGN ' + testDataDescriptor.label, function() {
+function checkGameJsonEncode(testDataDescriptor, holder) {
+	it('Write JSON ' + testDataDescriptor.label, function() {
 		var database = holder.database();
-		var expectedPgn = readText('games/' + testDataDescriptor.label + '_out.pgn');
-		var pgn = kokopu.pgnWrite(database);
-		test.value(pgn).is(expectedPgn);
+		var expectedJson = readText('games/' + testDataDescriptor.label + '_out.json');
+		var json = JSON.stringify(kokopu.jsonEncode(database), null, 2);
+		test.value(json).is(expectedJson);
 	});
 }
 
-describe('Game PGN content (database)', function() {
+describe('Game JSON content (database)', function() {
 	testPgnData().forEach(function(elem) {
 		var holder = new DatabasePgnHolder(elem.pgn);
-		for(var gameIndex = 0; gameIndex < elem.gameCount; ++gameIndex) {
+
+        checkGameJsonEncode(elem, holder);
+
+        for(var gameIndex = 0; gameIndex < elem.gameCount; ++gameIndex) {
 			if(gameIndex % 3 === 2) { continue; }
 			checkGameContentDatabase(elem, holder, gameIndex);
 		}
@@ -268,6 +276,22 @@ describe('Game PGN content (database)', function() {
 			checkGameContentDatabase(elem, holder, gameIndex);
 		}
 
-		checkGamePgnContent(elem, holder);
+	});
+});
+
+describe('JSON Game count', function() {
+	testJsonData().forEach(function(elem) {
+		it('File ' + elem.label, function() {
+			test.value(kokopu.jsonDecode(elem.json).gameCount()).is(elem.gameCount);
+		});
+	});
+});
+
+
+describe('JSON Game content (direct access)', function() {
+	testJsonData().forEach(function(elem) {
+		for(var gameIndex = 0; gameIndex < elem.gameCount; ++gameIndex) {
+			checkJsonGameContentDirect(elem, gameIndex);
+		}
 	});
 });

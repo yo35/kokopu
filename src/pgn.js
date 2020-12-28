@@ -374,9 +374,9 @@ function writeDate(date) {
 		return '[Date \'????.??.??\']' + Separator;
 	} else if (date instanceof Date) {
 		return '[Date \'' +
-			date.getFullYear() + '.' +
-			((date.getMonth().length === 1) ? ('0' + date.getMonth()) : date.getMonth()) + '.' +
-			((date.getDay().length === 1) ? ('0' + date.getDay()) : date.getDay()) +
+			date.getFullYear().toString() + '.' +
+			((date.getMonth() + 1 < 10) ? ('0' + date.getMonth() + 1).toString() : date.getMonth() + 1).toString() + '.' +
+			((date.getDate() < 10) ? ('0' + date.getDate().toString()) : date.getDate().toString()) +
 			'\']' + Separator;
 	} else {
 		return '[Date \'' +
@@ -564,14 +564,15 @@ function writeVariation(variation) {
 		}
 	}
 
-	// write the moves, node by node
-	var prev = undefined;
-	variation.nodes().forEach(function(node) { res += writeNode(node, prev); prev = node; });
-
 	// write the nags
 	if (variation.nags().length > 0) {
 		variation.nags().forEach(function(nag) { res += '$' + nag + ' '; });
 	}
+
+	// write the moves, node by node
+	var prev = undefined;
+	variation.nodes().forEach(function(node) { res += writeNode(node, prev); prev = node; });
+
 	return res;
 }
 

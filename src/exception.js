@@ -142,6 +142,37 @@ InvalidPGN.prototype.toString = function() {
 	return toStringImpl('InvalidPGN', '[' + this.index + '] ' + this.message);
 };
 
+/**
+ * @class
+ * @classdesc Exception thrown by the JSON parsing functions.
+ * @static
+ */
+var InvalidJSON = exports.InvalidJSON = function(json, index, message) {
+
+	/**
+	 * JSON string that causes the error.
+	 * @member {string}
+	 */
+	this.json = json;
+
+	/**
+	 * Index of the character in the JSON string where the parsing fails (or a negative value is no particular character is related to the error).
+	 * @member {number}
+	 */
+	this.index = index;
+
+
+	/**
+	 * Human-readable message describing the error.
+	 * @member {string}
+	 */
+	this.message = buildMessage(message, 3, arguments);
+};
+
+InvalidJSON.prototype.toString = function() {
+	return toStringImpl('InvalidJSON', '[' + this.index + '] ' + this.message);
+};
+
 
 
 function buildMessage(message, offset, tokens) {

@@ -1,0 +1,98 @@
+[
+  {
+    "Event": "?",
+    "Site": "?",
+    "Date": "",
+    "Round": "?",
+    "White": "?",
+    "Black": "?",
+    "Result": "*",
+    "MoveText": "AABRx/HH"
+  },
+  {
+    "Event": "?",
+    "Site": "?",
+    "Date": "",
+    "Round": "?",
+    "White": "?",
+    "Black": "?",
+    "Result": "1-0",
+    "MoveText": "AABBx/HH"
+  },
+  {
+    "Event": "Some championship",
+    "Site": "Paris, France",
+    "Date": "20180000",
+    "Round": "1",
+    "White": "Player 1",
+    "Black": "Player 2",
+    "Result": "0-1",
+    "MoveText": "AAAhx/HH"
+  },
+  {
+    "Event": "Some championship",
+    "Site": "Paris, France",
+    "Date": "20180400",
+    "Round": "1",
+    "White": "Player 1",
+    "Black": "Player 2",
+    "Result": "1/2-1/2",
+    "MoveText": "AAAxx/HH"
+  },
+  {
+    "Event": "Special character \" (double quote)",
+    "Site": "Special character ' (quote)",
+    "Date": "20180415",
+    "Round": "1.2",
+    "White": "Special characters [] (square brackets)",
+    "Black": "Special character \\ (backslash)",
+    "Result": "*",
+    "MoveText": "AABRx/HH"
+  },
+  {
+    "Event": "?",
+    "Site": "?",
+    "Date": "",
+    "Round": "?",
+    "White": "Player 1",
+    "Black": "Player 2",
+    "Result": "*",
+    "WhiteElo": "2450",
+    "WhiteTitle": "IM",
+    "BlackElo": "2530",
+    "BlackTitle": "GM",
+    "Annotator": "Kibitz",
+    "MoveText": "AABRx/HH"
+  },
+  {
+    "Event": "Custom startup position",
+    "Site": "?",
+    "Date": "",
+    "Round": "?",
+    "White": "?",
+    "Black": "?",
+    "Result": "0-1",
+    "FEN": "rnb1k1nr/pppp1ppp/8/2b1p3/2B1P2q/2N2N2/PPPP1PPP/R1BQK2R b KQkq - 5 4",
+    "MoveText": "AAAHzSHH8cc="
+  },
+  {
+    "Event": "?",
+    "Site": "?",
+    "Date": "",
+    "Round": "?",
+    "White": "Ill-formed tag \" (unescaped double quote, should be \\\")",
+    "Black": "Ill-formed tag \\ (unescaped backslash, should be \\\\)",
+    "Result": "*",
+    "MoveText": "AABRx/HH"
+  },
+  {
+    "Event": "Full inline PGN",
+    "Site": "?",
+    "Date": "",
+    "Round": "?",
+    "White": "Player 1",
+    "Black": "Player 2",
+    "Result": "*",
+    "MoveText": "AABRx/HH"
+  }
+]

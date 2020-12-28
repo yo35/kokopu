@@ -1,0 +1,36 @@
+[
+  {
+    "Event": "Nakamura - Carlsen Chess960 Match",
+    "Site": "Høvikodden, Bærum NOR",
+    "Date": "20180213",
+    "Round": "9",
+    "White": "Carlsen, Magnus",
+    "Black": "Nakamura, Hikaru",
+    "Result": "1-0",
+    "EventDate": "2018.02.09",
+    "FEN": "qrknbbnr/pppppppp/8/8/8/8/PPPPPPPP/QRKNBBNR w KQkq - 0 1",
+    "Setup": "1",
+    "TimeControl": "600+5",
+    "Variant": "Chess960",
+    "MoveText": "AAACGA0sBiAMKAMcD60HJAtjAZUNbQktDa0A1AjUA1QPLgJZD3QBHw/9AUwO6gASDGHAhs66AtsLpwSLDOMCkgnVAVULZQVXDvMH1g0mBZ0N7wdmC+YF7wz0BRwI3ALmDrEG4wsjC+oNNQqiDXMJrg47C6oMcAMhCiEIoQ76CChBx/HH"
+  },
+  {
+    "Event": "GM Blitz Battle Chp - chess 960",
+    "Site": "Chess.com",
+    "Date": "20160823",
+    "Round": "?",
+    "White": "Grischuk",
+    "Black": "MagnusCarlsen",
+    "Result": "0-1",
+    "ECO": "A00",
+    "WhiteElo": "2774",
+    "BlackElo": "2878",
+    "Variant": "chess 960",
+    "SetUp": "1",
+    "FEN": "rnnkrbbq/pppppppp/8/8/8/8/PPPPPPPP/RNNKRBBQ w EAea - 0 1",
+    "PlyCount": "40",
+    "EventDate": "2016.??.??",
+    "TimeControl": "180+2",
+    "MoveText": "AAADlg5qAFINZQNdDa4AkQ6pwMLO+gMcCVwEnA65AU4M4wciDSQHZA8kAtsJBADED2IG4gpYApIGEgJSD9IAgwqZAQwI2wRbD4gDCwIaAMQGSiHH8cc="
+  }
+]

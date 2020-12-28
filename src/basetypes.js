@@ -99,6 +99,40 @@ exports.squareFromString = function(square) {
 	return rank*16 + file;
 };
 
+exports.squareToBoardOffset = function(square) {
+	if(!/^[a-h][1-8]$/.test(square)) {
+		return -1;
+	}
+	var file = FILE_SYMBOL.indexOf(square[0]);
+	var rank = RANK_SYMBOL.indexOf(square[1]);
+	return (rank * 8) + file;
+}
+
+exports.boardOffsetToSquare = function(off) {
+	if(off < 0 || off > 63) {
+		return -1;
+	}
+	var rank = Math.floor(off / 8);
+	var file = off % 8;
+	return rank*16 + file;
+}
+
+exports.boardOffsetToFile = function(off) {
+	if(off < 0 || off > 63) {
+		return -1;
+	}
+	var file = off % 8;
+	return FILE_SYMBOL[file];
+}
+
+exports.boardOffsetToRank = function(off) {
+	if(off < 0 || off > 63) {
+		return -1;
+	}
+	var rank = Math.floor(off / 8);
+	return RANK_SYMBOL[rank];
+}
+
 exports.coloredPieceToString = function(cp) {
 	return COLOR_SYMBOL[cp % 2] + PIECE_SYMBOL[Math.floor(cp / 2)];
 };
