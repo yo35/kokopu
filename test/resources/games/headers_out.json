@@ -7,7 +7,8 @@
     "White": "?",
     "Black": "?",
     "Result": "*",
-    "MoveText": "AACBxwDxxw=="
+    "MoveText": "AACBxwDxxw==",
+    "MainVariation": "AADxxw=="
   },
   {
     "Event": "?",
@@ -17,7 +18,8 @@
     "White": "?",
     "Black": "?",
     "Result": "1-0",
-    "MoveText": "AACBxwLxxw=="
+    "MoveText": "AACBxwLxxw==",
+    "MainVariation": "AADxxw=="
   },
   {
     "Event": "Some championship",
@@ -27,7 +29,8 @@
     "White": "Player 1",
     "Black": "Player 2",
     "Result": "0-1",
-    "MoveText": "AACBxwHxxw=="
+    "MoveText": "AACBxwHxxw==",
+    "MainVariation": "AADxxw=="
   },
   {
     "Event": "Some championship",
@@ -37,7 +40,8 @@
     "White": "Player 1",
     "Black": "Player 2",
     "Result": "1/2-1/2",
-    "MoveText": "AACBxwPxxw=="
+    "MoveText": "AACBxwPxxw==",
+    "MainVariation": "AADxxw=="
   },
   {
     "Event": "Special character \" (double quote)",
@@ -47,7 +51,8 @@
     "White": "Special characters [] (square brackets)",
     "Black": "Special character \\ (backslash)",
     "Result": "*",
-    "MoveText": "AACBxwDxxw=="
+    "MoveText": "AACBxwDxxw==",
+    "MainVariation": "AADxxw=="
   },
   {
     "Event": "?",
@@ -55,14 +60,15 @@
     "Date": "",
     "Round": "?",
     "White": "Player 1",
-    "Black": "Player 2",
-    "Result": "*",
     "WhiteElo": "2450",
     "WhiteTitle": "IM",
+    "Black": "Player 2",
     "BlackElo": "2530",
     "BlackTitle": "GM",
     "Annotator": "Kibitz",
-    "MoveText": "AACBxwDxxw=="
+    "Result": "*",
+    "MoveText": "AACBxwDxxw==",
+    "MainVariation": "AADxxw=="
   },
   {
     "Event": "Custom startup position",
@@ -73,7 +79,8 @@
     "Black": "?",
     "Result": "0-1",
     "FEN": "rnb1k1nr/pppp1ppp/8/2b1p3/2B1P2q/2N2N2/PPPP1PPP/R1BQK2R b KQkq - 5 4",
-    "MoveText": "AAAHzYHHAfHH"
+    "MoveText": "AAAHzYHHAfHH",
+    "MainVariation": "AAAHzfHH"
   },
   {
     "Event": "?",
@@ -83,7 +90,8 @@
     "White": "Ill-formed tag \" (unescaped double quote, should be \\\")",
     "Black": "Ill-formed tag \\ (unescaped backslash, should be \\\\)",
     "Result": "*",
-    "MoveText": "AACBxwDxxw=="
+    "MoveText": "AACBxwDxxw==",
+    "MainVariation": "AADxxw=="
   },
   {
     "Event": "Full inline PGN",
@@ -93,6 +101,7 @@
     "White": "Player 1",
     "Black": "Player 2",
     "Result": "*",
-    "MoveText": "AACBxwDxxw=="
+    "MoveText": "AACBxwDxxw==",
+    "MainVariation": "AADxxw=="
   }
 ]

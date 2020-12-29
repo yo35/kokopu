@@ -52,7 +52,7 @@ var Game = exports.Game = function() {
 	this._site      = undefined;
 	this._annotator = undefined;
 	this._result    = bt.LINE;
-	this._tags      = {};
+	this._headers   = {};
 
 	this._initialPosition = new Position();
 	this._fullMoveNumber = 1;
@@ -259,13 +259,13 @@ Game.prototype.variant = function() {
 	return this._initialPosition.variant();
 };
 
-Game.prototype.tags = function(key, value) {
+Game.prototype.headers = function(key, value) {
 	if (arguments.length === 0) {
-		return this._tags;
+		return this._headers;
 	} else if (arguments.length === 1) {
-		return this._tags[key];
+		return this._headers[key];
 	} else {
-		this._tags[key] = value;
+		this._headers[key] = value;
 	}
 };
 

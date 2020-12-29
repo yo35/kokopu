@@ -10,7 +10,8 @@
     "FEN": "8/8/5ppp/8/5PPP/8/8/8 w - - 0 1",
     "Setup": "1",
     "Variant": "No king",
-    "MoveText": "AAAHpgvmB2ULpQfnEccSgccA8cc="
+    "MoveText": "AAAHpgvmB2ULpQfnEccSgccA8cc=",
+    "MainVariation": "AAAHpgvmB2ULpQfn8cc="
   },
   {
     "Event": "Back-rank checkmate",
@@ -23,7 +24,8 @@
     "FEN": "r7/8/8/8/8/8/5PPP/6K1 b - - 0 1",
     "Setup": "1",
     "Variant": "White king only",
-    "MoveText": "AAAOAIHHAfHH"
+    "MoveText": "AAAOAIHHAfHH",
+    "MainVariation": "AAAOAPHH"
   },
   {
     "Event": "Smothered checkmate",
@@ -36,6 +38,7 @@
     "FEN": "r6k/5ppp/8/6N1/2Q5/8/8/8 w - - 0 1",
     "Setup": "1",
     "Variant": "Black king only",
-    "MoveText": "AAAJtQ/+DW8Pvwa+Dj4L9YHHAvHH"
+    "MoveText": "AAAJtQ/+DW8Pvwa+Dj4L9YHHAvHH",
+    "MainVariation": "AAAJtQ/+DW8Pvwa+Dj4L9fHH"
   }
 ]

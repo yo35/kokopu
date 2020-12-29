@@ -6,9 +6,9 @@
     "Round": "1",
     "White": "Torres, Luis J",
     "Black": "Tasic, Branislav",
+    "Annotator": "Hannes Langrock",
     "Result": "1-0",
     "ECO": "B21",
-    "Annotator": "Hannes Langrock",
     "PlyCount": "61",
     "EventDate": "1974.06.15",
     "EventType": "team-tourn",
@@ -24,6 +24,7 @@
     "BlackTeam": "Monaco",
     "WhiteTeamCountry": "PUR",
     "BlackTeamCountry": "MNC",
-    "MoveText": "AAADHAyiAtsImwKSBtIAUg5qAZUM6wFaDSzBBg90AMwMKAFDDvIAnQqkEccCB2QK5AACDLkGoQohBKENbQhyDzUMuA54ALIMaQD7DqgFZAtkAycNrg74C6cOKA+tCjAP/ANVC34BhQ1uAUwNIgy2C68NtwvuDDYLrQOeCd4FXoHHAvHH"
+    "MoveText": "AAADHAyiAtsImwKSBtIAUg5qAZUM6wFaDSzBBg90AMwMKAFDDvIAnQqkEccCB2QK5AACDLkGoQohBKENbQhyDzUMuA54ALIMaQD7DqgFZAtkAycNrg74C6cOKA+tCjAP/ANVC34BhQ1uAUwNIgy2C68NtwvuDDYLrQOeCd4FXoHHAvHH",
+    "MainVariation": "AAADHAyiAtsImwKSBtIAUg5qAZUM6wFaDSzBBg90AMwMKAFDDvIAnQqkB2QK5AACDLkGoQohBKENbQhyDzUMuA54ALIMaQD7DqgFZAtkAycNrg74C6cOKA+tCjAP/ANVC34BhQ1uAUwNIgy2C68NtwvuDDYLrQOeCd4FXvHH"
   }
 ]

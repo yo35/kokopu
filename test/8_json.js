@@ -256,9 +256,12 @@ function checkGameContentDatabase(testDataDescriptor, holder, gameIndex) {
 function checkGameJsonEncode(testDataDescriptor, holder) {
 	it('Write JSON ' + testDataDescriptor.label, function() {
 		var database = holder.database();
+		/*var json = JSON.stringify(kokopu.jsonEncode(database), null, 2);
 		var expectedJson = readText('games/' + testDataDescriptor.label + '_out.json');
-		var json = JSON.stringify(kokopu.jsonEncode(database), null, 2);
-		test.value(json).is(expectedJson);
+		test.value(json).is(expectedJson);*/
+		var json = kokopu.jsonEncode(database);
+		var expectedJson = JSON.parse(readText('games/' + testDataDescriptor.label + '_out.json'));
+		test.object(json).is(expectedJson);
 	});
 }
 

@@ -274,13 +274,15 @@ TokenStream.prototype.consumeToken = function() {
 	return true;
 };
 
-TokenStream.prototype.skipGame = function() {
+TokenStream.prototype.skipToNextGame = function() {
 	while(this._pos < this._text.length) {
 		if(testAtPos(this, this._matchEndOfGame)) {
-			break;
+			++this._pos;
+			return true;
 		}
 		++this._pos;
 	}
+	return false;
 };
 
 TokenStream.prototype.currentPosition = function() {

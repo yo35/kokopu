@@ -32,6 +32,8 @@ var Database = require('./database').Database;
 var TokenStream = require('./private_pgn/tokenstream').TokenStream;
 
 var Separator = '\n';
+var SupportedHeaders = ['Event', 'Site', 'Date', 'Round', 'White', 'WhiteElo', 'WhiteTitle',
+	'Black', 'BlackElo', 'BlackTitle', 'Annotator', 'Result'];
 
 function parseNullableHeader(value) {
 	return value === '?' ? undefined : value;
@@ -79,7 +81,7 @@ function parseVariant(value) {
 		case 'black king only':
 			return 'black-king-only';
 		default:
-			if (value.substring('960') >= 0) { // allow other styles of Chess960 variant specification
+			if (/^chess.*960$/.test(value)) { // allow 'Chess 960', 'chess960'
 				return 'chess960';
 			} else {
 				return undefined;
@@ -119,8 +121,11 @@ function processHeader(stream, game, initialPositionFactory, key, value) {
 			break;
 	}
 
-	// also add the header to game tags, includes the above tags as well as unknown tags
-	game.tags(key, value);
+	// also add the header to game tags to make sure we don't lose information that was
+	// passed in the input PGN. game.tags() will include the above tags as well
+	// as unknown tags and may not match the above nullable headers or date exactly but
+	// is a direct record of the input headers from the PGN.
+	game.headers(key, value);
 }
 
 
@@ -264,14 +269,14 @@ function doParseGame(stream) {
 
 
 /**
- * Skip 1 game in the given stream.
+ * Checks 1 game in the given stream, leaving the pos one character past the end of the current game
  *
  * @param {TokenStream} stream
  * @returns {boolean} `true` if a game has been skipped, false if the end of the stream has been reached.
  * @throws {module:exception.InvalidPGN}
  * @ignore
  */
-function doSkipGame(stream) {
+function checkValidGame(stream) {
 	var atLeastOneTokenFound = false;
 	while(stream.consumeToken()) {
 		atLeastOneTokenFound = true;
@@ -331,7 +336,7 @@ exports.pgnRead = function(pgnString, gameIndex) {
 		while(true) {
 			var currentPos = stream.currentPosition();
 			try {
-				if(!doSkipGame(stream)) {
+				if(!checkValidGame(stream)) {
 					break;
 				}
 				games.push(currentPos);
@@ -339,8 +344,8 @@ exports.pgnRead = function(pgnString, gameIndex) {
 			catch (err) {
 				if (err instanceof exception.InvalidPGN) {
 					errors.push({message: err.message, lineno: err.lineNumber});
-					// skip this game, but continue
-					stream.skipGame();
+					// continue at next game
+					stream.skipToNextGame();
 				}
 			}
 		}
@@ -351,7 +356,7 @@ exports.pgnRead = function(pgnString, gameIndex) {
 	else {
 		var gameCounter = 0;
 		while(gameCounter < gameIndex) {
-			if(doSkipGame(stream)) {
+			if(checkValidGame(stream)) {
 				++gameCounter;
 			}
 			else {
@@ -371,44 +376,43 @@ exports.pgnRead = function(pgnString, gameIndex) {
  */
 function writeDate(date) {
 	if (date === undefined) {
-		return '[Date \'????.??.??\']' + Separator;
+		return '[Date "????.??.??"]' + Separator;
 	} else if (date instanceof Date) {
-		return '[Date \'' +
+		return '[Date "' +
 			date.getFullYear().toString() + '.' +
 			((date.getMonth() + 1 < 10) ? ('0' + (date.getMonth() + 1).toString()) : (date.getMonth() + 1)).toString() + '.' +
 			((date.getDate() < 10) ? ('0' + date.getDate().toString()) : date.getDate().toString()) +
-			'\']' + Separator;
+			'"]' + Separator;
 	} else {
-		return '[Date \'' +
+		return '[Date "' +
 			((date.year === undefined) ? '????' : date.year) + '.' +
 			((date.month === undefined) ? '??' : date.month) + '.' +
 			((date.date === undefined) ? '??' : date.date) +
-			'\']' + Separator;
+			'"]' + Separator;
 	}
 }
 
 /**
- * Write non Seven Tag Roster tags
+ * Write any additional headers not directly present as keys on game
  * @param {Game} game
  *
  * @returns {string}
  */
-function writeNonSTRTags(game) {
+function writeAdditionalHeaders(game) {
 	var res = '';
-	var STR = ['Event', 'Site', 'Date', 'Round', 'White', 'Black', 'Result'];
-	if (Object.keys(game.tags()).length > 0) {
-		var tags = game.tags();
-		for (var tag in game.tags()) {
-			if (Object.prototype.hasOwnProperty.call(tags, tag)) {
-				var value = tags[tag];
-				if (!STR.includes(tag)) {
-					res += ('[' + tag + ' \'' + value + '\']' + Separator);
+	if (Object.keys(game.headers()).length > 0) {
+		var headers = game.headers();
+		for (var header in game.headers()) {
+			if (Object.prototype.hasOwnProperty.call(headers, header)) {
+				var value = headers[header];
+				if (!SupportedHeaders.includes(header)) {
+					res += ('[' + header + ' "' + value + '"]' + Separator);
 				}
 			}
 		}
-		/*Object.entries(game.tags()).forEach((tag, value) => {
-			if (!STR.includes(tag)) {
-				res += ('[' + tag + ' \'' + value + '\']' + Separator);
+		/*Object.entries(game.headers()).forEach((header, value) => {
+			if (!SupportedHeaders.includes(header)) {
+				res += ('[' + header + ' "' + value + '"]' + Separator);
 			}
 		});*/
 	}
@@ -424,14 +428,29 @@ function writeNonSTRTags(game) {
  */
 function writeHeaders(game) {
 	var res = '';
-	res += '[Event \'' + ((game.event() === undefined) ? '?' : game.event()) + '\']' + Separator;
-	res += '[Site \'' + ((game.site() === undefined) ? '?' : game.site()) + '\']' + Separator;
+	res += '[Event "' + ((game.event() === undefined) ? '?' : game.event()) + '"]' + Separator;
+	res += '[Site "' + ((game.site() === undefined) ? '?' : game.site()) + '"]' + Separator;
 	res += writeDate(game.date());
-	res += '[Round \'' + ((game.round() === undefined) ? '?' : game.round()) + '\']' + Separator;
-	res += '[White \'' + ((game.playerName('w') === undefined) ? '?' : game.playerName('w')) + '\']' + Separator;
-	res += '[Black \'' + ((game.playerName('b') === undefined) ? '?' : game.playerName('b')) + '\']' + Separator;
-	res += '[Result \'' + ((game.result() === undefined) ? '*' : game.result()) + '\']' + Separator;
-	res += writeNonSTRTags(game);
+	res += '[Round "' + ((game.round() === undefined) ? '?' : game.round()) + '"]' + Separator;
+	res += '[White "' + ((game.playerName('w') === undefined) ? '?' : game.playerName('w')) + '"]' + Separator;
+	res += '[Black "' + ((game.playerName('b') === undefined) ? '?' : game.playerName('b')) + '"]' + Separator;
+	if (game.playerElo('w') !== undefined) {
+		res += '[WhiteElo "' + ((game.playerElo('w') === undefined) ? '?' : game.playerElo('w')) + '"]' + Separator;
+	}
+	if (game.playerElo('b') !== undefined) {
+		res += '[BlackElo "' + ((game.playerElo('b') === undefined) ? '?' : game.playerElo('b')) + '"]' + Separator;
+	}
+	if (game.playerTitle('w') !== undefined) {
+		res += '[WhiteTitle "' + ((game.playerTitle('w') === undefined) ? '?' : game.playerTitle('w')) + '"]' + Separator;
+	}
+	if (game.playerTitle('b') !== undefined) {
+		res += '[BlackTitle "' + ((game.playerTitle('b') === undefined) ? '?' : game.playerTitle('b')) + '"]' + Separator;
+	}
+	if (game.annotator() !== undefined) {
+		res += '[Annotator "' + game.annotator() + '"]' + Separator;
+	}
+	res += '[Result "' + ((game.result() === undefined) ? '*' : game.result()) + '"]' + Separator;
+	res += writeAdditionalHeaders(game);
 	return res;
 }
 

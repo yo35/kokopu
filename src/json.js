@@ -55,6 +55,9 @@ var BlackWins = 1; // 0b01
 var WhiteWins = 2; // 0b10
 var Draw = 3; // 0b11
 
+var SupportedHeaders = ['Event', 'Site', 'Date', 'Round', 'White', 'WhiteElo', 'WhiteTitle',
+	'Black', 'BlackElo', 'BlackTitle', 'Annotator', 'Result'];
+
 /**
 * Write the date in PGN format
 *
@@ -78,27 +81,26 @@ function writeDate(date, res) {
 }
 
 /**
-* Write non Seven Tag Roster tags
+* Write additional headers that aren't already in the supported game headers
 * @param {Game} game
 * @param {Object} res
 *
 * @returns {Object}
 */
-function writeNonSTRTags(game, res) {
-	var STR = ['Event', 'Site', 'Date', 'Round', 'White', 'Black', 'Result'];
-	if (Object.keys(game.tags()).length > 0) {
-		var tags = game.tags();
-		for (var tag in game.tags()) {
-			if (Object.prototype.hasOwnProperty.call(tags, tag)) {
-				var value = tags[tag];
-				if (!STR.includes(tag)) {
-					res[tag] = value;
+function writeAdditionalHeaders(game, res) {
+	if (Object.keys(game.headers()).length > 0) {
+		var headers = game.headers();
+		for (var header in game.headers()) {
+			if (Object.prototype.hasOwnProperty.call(headers, header)) {
+				var value = headers[header];
+				if (!SupportedHeaders.includes(header)) {
+					res[header] = value;
 				}
 			}
 		}
-		/*Object.entries(game.tags()).forEach((tag, value) => {
-			if (!STR.includes(tag)) {
-				res += ('[' + tag + ' \'' + value + '\']' + Separator);
+		/*Object.entries(game.headers()).forEach((header, value) => {
+			if (!SupportedHeaders.includes(header)) {
+				res += ('[' + header + ' \'' + value + '\']' + Separator);
 			}
 		});*/
 	}
@@ -120,8 +122,23 @@ function writeHeaders(game, res) {
 	res.Round = ((game.round() === undefined) ? '?' : game.round());
 	res.White = ((game.playerName('w') === undefined) ? '?' : game.playerName('w'));
 	res.Black = ((game.playerName('b') === undefined) ? '?' : game.playerName('b'));
+	if (game.playerElo('w') !== undefined) {
+		res.WhiteElo = ((game.playerElo('w') === undefined) ? '?' : game.playerElo('w'));
+	}
+	if (game.playerElo('b') !== undefined) {
+		res.BlackElo = ((game.playerElo('b') === undefined) ? '?' : game.playerElo('b'));
+	}
+	if (game.playerTitle('w') !== undefined) {
+		res.WhiteTitle = ((game.playerTitle('w') === undefined) ? '?' : game.playerTitle('w'));
+	}
+	if (game.playerTitle('b') !== undefined) {
+		res.BlackTitle = ((game.playerTitle('b') === undefined) ? '?' : game.playerTitle('b'));
+	}
+	if (game.annotator() !== undefined) {
+		res.Annotator = game.annotator();
+	}
 	res.Result = ((game.result() === undefined) ? '*' : game.result());
-	res = writeNonSTRTags(game, res);
+	res = writeAdditionalHeaders(game, res);
 	return res;
 }
 
@@ -182,11 +199,12 @@ function writeNag(nag, res) {
 /**
 *
 * @param {MoveDescriptor} move
+* @param {number} variationDepth how deep we are in a variation tree
 * @param {Object} res
 *
 * @return {Object}
 */
-function writeMove(move, res) {
+function writeMove(move, variationDepth, res) {
 	// A move needs 16 bits to be stored
 
 	// bit  0- 5: destination square (from 0 to 63)
@@ -224,6 +242,13 @@ function writeMove(move, res) {
 		buf.writeUInt16BE((type << 14 | piece << 12 | from << 6 | to), 0);
 	}
 	res.buf = Buffer.concat([res.buf, buf]);
+
+	// maintain main variation separately as well
+	if (variationDepth === 0) {
+		var main = Buffer.alloc(MoveSize);
+		buf.copy(main);
+		res.main = Buffer.concat([res.main, main]);
+	}
 	return res;
 }
 
@@ -231,15 +256,15 @@ function writeMove(move, res) {
 * Write out the move, comments, annotations and variations for this node
 *
 * @param {Node} node
-* @param {Node} prev
+* @param {number} variationDepth
 * @param {Object} res
 *
 * @returns {Object}
 */
-function writeNode(node, prev, res) {
+function writeNode(node, variationDepth, res) {
 
 	// write move
-	res = writeMove(node.move(), res);
+	res = writeMove(node.move(), variationDepth, res);
 
 	// wrute the nags for this node
 	if (node.nags().length > 0) {
@@ -258,7 +283,7 @@ function writeNode(node, prev, res) {
 
 	if (node.variations().length > 0) {
 		node.variations().forEach(function (variation) {
-			res = writeVariation(variation, variation.isLongVariation(), false, res);
+			res = writeVariation(variation, variation.isLongVariation(), false, variationDepth + 1, res);
 		});
 	}
 	return res;
@@ -269,11 +294,12 @@ function writeNode(node, prev, res) {
 *
 * @param {Variation} variation
 * @param {boolean} isLongVariation
+* @param {number} variationDepth
 * @param {Object} res
 *
 * @returns {Object}
 */
-function writeVariation(variation, isLongVariation, isMainVariation, res) {
+function writeVariation(variation, isLongVariation, isMainVariation, variationDepth, res) {
 	if (!isMainVariation) {
 		var buf = Buffer.allocUnsafe(MoveSize);
 		buf.writeUInt16BE(isLongVariation ? StartLongVariation : StartVariation, 0);
@@ -296,8 +322,7 @@ function writeVariation(variation, isLongVariation, isMainVariation, res) {
 	}
 
 	// write the moves, node by node
-	var prev = undefined;
-	variation.nodes().forEach(function (node) { res = writeNode(node, prev, res); prev = node; });
+	variation.nodes().forEach(function (node) { res = writeNode(node, variationDepth, res); });
 
 	if (!isMainVariation) {
 		// end variation
@@ -347,17 +372,28 @@ function writeResult(game, res) {
 * @returns {Object} JSON object for the movetext - this is a binary base64 encoded string
 */
 function writeMovetext(game, res) {
+	// start move text
 	var buf = Buffer.allocUnsafe(MoveSize);
 	buf.writeUInt16BE(MoveNone, 0);
 	res.buf = buf;
+	// start main variation
+	buf = Buffer.allocUnsafe(MoveSize);
+	buf.writeUInt16BE(MoveNone, 0);
+	res.main = buf;
 
 	// we have one main variation, all other variations hang off nodes from it
-	res = writeVariation(game.mainVariation(), true, true, res);
+	res = writeVariation(game.mainVariation(), true, true, 0, res);
 	res = writeResult(game, res);
 
 	// end movetext
+	buf = Buffer.allocUnsafe(MoveSize);
 	buf.writeUInt16BE(EndMoveText, 0);
 	res.buf = Buffer.concat([res.buf, buf]);
+
+	// end main variation
+	buf = Buffer.allocUnsafe(MoveSize);
+	buf.writeUInt16BE(EndMoveText, 0);
+	res.main = Buffer.concat([res.main, buf]);
 	return res;
 }
 
@@ -374,6 +410,8 @@ function jsonEncodeSingleGame(game, res) {
 	res = writeMovetext(game, res);
 	res.MoveText = res.buf.toString('base64');
 	delete res.buf;
+	res.MainVariation = res.main.toString('base64');
+	delete res.main;
 	return res;
 }
 
@@ -492,7 +530,7 @@ function processHeader(game, initialPositionFactory, key, value) {
 	}
 
 	// also add the header to game tags, includes the above tags as well as unknown tags
-	game.tags(key, value);
+	game.headers(key, value);
 }
 
 function initializeInitialPosition(game, initialPositionFactory) {

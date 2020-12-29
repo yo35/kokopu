@@ -8,7 +8,13 @@
 	"03_loading_pgn": {
 		"title": "Loading a PGN file"
 	},
-	"04_chess960": {
+	"04_writing_pgn": {
+		"title": "Writing a PGN file"
+	},
+	"05_json_reading_and_writing": {
+		"title": "Reading and Writing a JSON file"
+	},
+	"06_chess960": {
 		"title": "Chess960"
 	}
 }
