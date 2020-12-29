@@ -88,17 +88,16 @@ function writeDate(date, res) {
 * @returns {Object}
 */
 function writeAdditionalHeaders(game, res) {
-	if (Object.keys(game.headers()).length > 0) {
-		var headers = game.headers();
-		for (var header in game.headers()) {
+	if (Object.keys(game.additionalHeaders()).length > 0) {
+		var headers = game.additionalHeaders();
+		for (var header in headers) {
 			if (Object.prototype.hasOwnProperty.call(headers, header)) {
-				var value = headers[header];
 				if (!SupportedHeaders.includes(header)) {
-					res[header] = value;
+					res[header] = headers[header];
 				}
 			}
 		}
-		/*Object.entries(game.headers()).forEach((header, value) => {
+		/*Object.entries(game.additionalHeaders()).forEach((header, value) => {
 			if (!SupportedHeaders.includes(header)) {
 				res += ('[' + header + ' \'' + value + '\']' + Separator);
 			}
@@ -518,6 +517,7 @@ function processHeader(game, initialPositionFactory, key, value) {
 		// initial position, that may be different from the usual one.
 		case 'FEN':
 			initialPositionFactory.fen = value;
+			game.additionalHeaders(key, value);  // any additional headers for output
 			break;
 
 		// The header 'Variant' indicates that this is not a regular chess game.
@@ -526,11 +526,12 @@ function processHeader(game, initialPositionFactory, key, value) {
 			if (!initialPositionFactory.variant) {
 				throw new exception.InvalidJSON(null, null, i18n.UNKNOWN_VARIANT, value);
 			}
+			game.additionalHeaders(key, value);  // any additional headers for output
+			break;
+		default:
+			game.additionalHeaders(key, value);  // any additional headers for output
 			break;
 	}
-
-	// also add the header to game tags, includes the above tags as well as unknown tags
-	game.headers(key, value);
 }
 
 function initializeInitialPosition(game, initialPositionFactory) {

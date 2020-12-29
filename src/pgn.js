@@ -110,6 +110,7 @@ function processHeader(stream, game, initialPositionFactory, key, value) {
 		case 'FEN':
 			initialPositionFactory.fen = value;
 			initialPositionFactory.fenTokenIndex = stream.tokenIndex();
+			game.additionalHeaders(key, value); // add to additional headers for output
 			break;
 
 		// The header 'Variant' indicates that this is not a regular chess game.
@@ -118,14 +119,12 @@ function processHeader(stream, game, initialPositionFactory, key, value) {
 			if(!initialPositionFactory.variant) {
 				throw stream.invalidPGNException(i18n.UNKNOWN_VARIANT, value);
 			}
+			game.additionalHeaders(key, value); // add to additional headers for output
+			break;
+		default:
+			game.additionalHeaders(key, value); // any additional headers for output
 			break;
 	}
-
-	// also add the header to game tags to make sure we don't lose information that was
-	// passed in the input PGN. game.tags() will include the above tags as well
-	// as unknown tags and may not match the above nullable headers or date exactly but
-	// is a direct record of the input headers from the PGN.
-	game.headers(key, value);
 }
 
 
@@ -400,17 +399,16 @@ function writeDate(date) {
  */
 function writeAdditionalHeaders(game) {
 	var res = '';
-	if (Object.keys(game.headers()).length > 0) {
-		var headers = game.headers();
-		for (var header in game.headers()) {
+	if (Object.keys(game.additionalHeaders()).length > 0) {
+		var headers = game.additionalHeaders();
+		for (var header in headers) {
 			if (Object.prototype.hasOwnProperty.call(headers, header)) {
-				var value = headers[header];
 				if (!SupportedHeaders.includes(header)) {
-					res += ('[' + header + ' "' + value + '"]' + Separator);
+					res += ('[' + header + ' "' + headers[header] + '"]' + Separator);
 				}
 			}
 		}
-		/*Object.entries(game.headers()).forEach((header, value) => {
+		/*Object.entries(game.additionalHeaders()).forEach((header, value) => {
 			if (!SupportedHeaders.includes(header)) {
 				res += ('[' + header + ' "' + value + '"]' + Separator);
 			}
