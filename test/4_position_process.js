@@ -192,6 +192,24 @@ describe('Algebraic notation generation', function() {
 	});
 });
 
+describe('Figurine Algebraic notation generation', function() {
+	testData().forEach(function(elem) {
+		it('Position ' + elem.label, function() {
+			var pos = createPosition(elem);
+			var moves = pos.moves().sort(function(e1, e2) { return e1.toString().localeCompare(e2.toString()); });
+			var figurineNotations = moves.map(function(move) { return pos.figurineNotation(move); });
+			var sans = elem.notations;
+			var FIGURINE_SYMBOLS = '\u2654\u2655\u2656\u2657\u2658\u2659\u265A\u265B\u265C\u265D\u265E\u265F';
+			var fans = sans.replace(/K/g, pos.turn() === 'w' ? FIGURINE_SYMBOLS[0] : FIGURINE_SYMBOLS[6]).
+				replace(/Q/g, pos.turn() === 'w' ? FIGURINE_SYMBOLS[1] : FIGURINE_SYMBOLS[7]).
+				replace(/R/g, pos.turn() === 'w' ? FIGURINE_SYMBOLS[2] : FIGURINE_SYMBOLS[8]).
+				replace(/B/g, pos.turn() === 'w' ? FIGURINE_SYMBOLS[3] : FIGURINE_SYMBOLS[9]).
+				replace(/N/g, pos.turn() === 'w' ? FIGURINE_SYMBOLS[4] : FIGURINE_SYMBOLS[10]);
+			test.value(figurineNotations.join('/')).is(fans);
+		});
+	});
+});
+
 
 describe('Algebraic notation parsing', function() {
 

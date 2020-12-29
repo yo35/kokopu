@@ -67,6 +67,7 @@ exports.BLACK_KING_ONLY = 4;
 
 var COLOR_SYMBOL   = 'wb';
 var PIECE_SYMBOL   = 'kqrbnp';
+var FIGURINE_SYMBOL = '\u2654\u2655\u2656\u2657\u2658\u2659\u265A\u265B\u265C\u265D\u265E\u265F';
 var RANK_SYMBOL    = '12345678';
 var FILE_SYMBOL    = 'abcdefgh';
 var RESULT_SYMBOL  = ['1-0', '0-1', '1/2-1/2', '*'];
@@ -85,6 +86,11 @@ exports.rankFromString    = function(rank   ) { return RANK_SYMBOL   .indexOf(ra
 exports.fileFromString    = function(file   ) { return FILE_SYMBOL   .indexOf(file   ); };
 exports.resultFromString  = function(result ) { return RESULT_SYMBOL .indexOf(result ); };
 exports.variantFromString = function(variant) { return VARIANT_SYMBOL.indexOf(variant); };
+exports.figurineFromString = function(piece, color) {
+	return ((color === 'w') ?
+		FIGURINE_SYMBOL[PIECE_SYMBOL.indexOf(piece)] :
+		FIGURINE_SYMBOL[PIECE_SYMBOL.indexOf(piece) + 6]);
+};
 
 exports.squareToString = function(square) {
 	return FILE_SYMBOL[square % 16] + RANK_SYMBOL[Math.floor(square / 16)];

@@ -421,6 +421,14 @@ Node.prototype.notation = function() {
 	return this._info.moveDescriptor === undefined ? '--' : rebuildPositionBeforeIfNecessary(this).notation(this._info.moveDescriptor);
 };
 
+/**
+ * Figuration Algebraic Notation representation of the move associated with the current node.
+ *
+ * @returns {string} with UNICODE for pieces
+ */
+Node.prototype.figurineNotation = function() {
+	return this._info.moveDescriptor === undefined ? '--' : rebuildPositionBeforeIfNecessary(this).figurineNotation(this._info.moveDescriptor);
+};
 
 /**
  * Chess position before the current move.

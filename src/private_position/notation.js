@@ -72,6 +72,16 @@ exports.getNotation = function(position, descriptor) {
 	return res;
 };
 
+exports.getFigurineNotation = function(position, descriptor) {
+	var color = descriptor.color();
+	var san = this.getNotation(position, descriptor);
+	var fan = san.replace(/K/g, bt.figurineFromString('k', color)).
+		replace(/Q/g, bt.figurineFromString('q', color)).
+		replace(/R/g, bt.figurineFromString('r', color)).
+		replace(/B/g, bt.figurineFromString('b', color)).
+		replace(/N/g, bt.figurineFromString('n', color));
+	return fan;
+};
 
 /**
  * Return the check/checkmate symbol to use for a move.
