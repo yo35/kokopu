@@ -692,7 +692,8 @@ Position.prototype.playNullMove = function() {
  *
  *//**
  *
- * Parse the given string as standard algebraic notation and return the corresponding move descriptor.
+ * Parse the given string as standard algebraic notation or uci move notation (long algebraic notation)
+ * and return the corresponding move descriptor.
  *
  * @param {string} move
  * @param {boolean} [strict=false] If `true`, only perfectly formatted SAN moves are accepted. If `false`, "small errors" in the input

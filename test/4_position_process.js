@@ -180,7 +180,6 @@ describe('Play', function() {
 	});
 });
 
-
 describe('Algebraic notation generation', function() {
 	testData().forEach(function(elem) {
 		it('Position ' + elem.label, function() {
@@ -260,6 +259,46 @@ describe('Algebraic notation parsing', function() {
 						}
 					}
 				}
+			});
+
+			// Sort the moves and remove the duplicates.
+			moves.sort();
+			moves = moves.filter(function(move, index, tab) { return index === 0 || move !== tab[index-1]; });
+
+			test.value(moves.join('/')).is(elem.moves);
+		});
+	});
+});
+
+describe('UCI notation parsing', function() {
+
+	var /* const */ PROMO  = ['', 'q', 'r', 'b', 'n'];
+
+	testData().forEach(function(elem) {
+		it('Position ' + elem.label, function() {
+			var pos = createPosition(elem);
+			var moves = [];
+
+			// Catch the exceptions thrown by the parsing function.
+			function parseUCINotation(text) {
+				try {
+					var descriptor = pos.notation(text);
+					moves.push(descriptor.toString());
+				}
+				catch(e) {
+					if(!(e instanceof kokopu.exception.InvalidNotation)) {
+						throw e;
+					}
+				}
+			}
+
+			kokopu.forEachSquare(function(from) {
+				kokopu.forEachSquare(function(to) {
+					for(var p=0; p<PROMO.length; ++p) {
+						var text = from + to + PROMO[p];
+						parseUCINotation(text);
+					}
+				});
 			});
 
 			// Sort the moves and remove the duplicates.

@@ -34,6 +34,7 @@ Features
 * Check, checkmate and stalemate detection.
 * Move legality check.
 * [Algrebraic notation](https://en.wikipedia.org/wiki/Algebraic_notation_(chess)) parsing and generation.
+* [Figurine Algebraic notation](https://en.wikipedia.org/wiki/Algebraic_notation_(chess)#Figurine_algebraic_notation) generation.
 * [FEN notation](https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation) parsing and generation.
 * [PGN](https://en.wikipedia.org/wiki/Portable_Game_Notation) file parsing and writing (including advanced PGN features
 such as commentaries, sub-variations, [NAGs](https://en.wikipedia.org/wiki/Numeric_Annotation_Glyphs),
