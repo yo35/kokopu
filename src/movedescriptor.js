@@ -104,6 +104,20 @@ MoveDescriptor.prototype.toString = function() {
 	return result;
 };
 
+MoveDescriptor.prototype.toUCIString = function() {
+	var result = bt.squareToString(this._from);
+	if(this.isCastling()) {
+		// UCI castling is KxR of same color
+		result += bt.squareToString(this._optionalSquare1);
+	} else {
+		result += bt.squareToString(this._to);
+	}
+
+	if(this.isPromotion()) {
+		result += this.promotion().toLowerCase();
+	}
+	return result;
+};
 
 /**
  * Whether or not the current move is a castling move.
