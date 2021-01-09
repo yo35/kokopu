@@ -1,24 +1,24 @@
 [
-    {
-      "Event": "Television Exhibition",
-      "Site": "London ENG",
-      "Date": "20140123",
-      "Round": "?",
-      "White": "Bill Gates",
-      "Black": "Magnus Carlsen",
-      "Result": "0-1",
-      "MoveText": "AAADHA5qAZUM4wFTD60HIw7jAFII58EGDp4D1wqkBd4LXgVkCc+BxwHxxw==",
-      "MainVariation": "AAADHA5qAZUM4wFTD60HIw7jAFII58EGDp4D1wqkBd4LXgVkCc/xxw=="
-    },
-    {
-      "Event": "1st American Chess Congress",
-      "Site": "New York, NY USA",
-      "Date": "18571103",
-      "Round": "4.6",
-      "White": "Paulsen, Louis",
-      "Black": "Morphy, Paul",
-      "Result": "0-1",
-      "MoveText": "AAADHA0kAZUOagBSD60BYQ9iwQbPPgVkD3wJKgzqCFoMYQaMC1wEnA8cAxUHLAKSDtMCWQipAhgIWADYDrMACA48Bigxx01vcnBoeSB0b29rIHR3ZWx2ZSBtaW51dGVzIG92ZXIgaGlzIG5leHQgbW92ZSwgcHJvYmFibHkgdG8gYXNzdXJlIGhpbXNlbGYgdGhhdCB0aGUgY29tYmluYXRpb24gd2FzIHNvdW5kIGFuZCB0aGF0IGhlIGhhZCBhIGZvcmNlZCB3aW4gaW4gZXZlcnkgdmFyaWF0aW9uLgAE1RHHAwOVCy4BhwzXAUNRxyHHTm90AAFGC4YBxg8EEccTcccFzgHGA5UBhQVOYccLjhHHASHHd291bGQgaGF2ZSB3b24gbW9yZSBxdWlja2x5LiBGb3IgaW5zdGFuY2U6AAoTA40BRgNOAYcDhnHHAUYDlwGHCk0KBSHHQWJzb2x1dGVseSBmb3JjZWQuAAXFAMUPDAIAC68C2wNUgccB8cc=",
-      "MainVariation": "AAADHA0kAZUOagBSD60BYQ9iwQbPPgVkD3wJKgzqCFoMYQaMC1wEnA8cAxUHLAKSDtMCWQipAhgIWADYDrMACA48BigE1QOVCy4BhwzXAUMFzgHGA5UBhQVOAUYDlwGHCk0KBQXFAMUPDAIAC68C2wNU8cc="
-    }
-  ]
+  {
+    "Event": "Television Exhibition",
+    "Site": "London ENG",
+    "Date": "20140123",
+    "Round": "?",
+    "White": "Bill Gates",
+    "Black": "Magnus Carlsen",
+    "Result": "0-1",
+    "MoveText": "AAADHA5qAZUM4wFTD60HIw7jAFII5wEHDp4D1wqkBd4LXgVkCc+BxwHxxw==",
+    "MainVariation": "AAADHA5qAZUM4wFTD60HIw7jAFII5wEHDp4D1wqkBd4LXgVkCc/xxw=="
+  },
+  {
+    "Event": "1st American Chess Congress",
+    "Site": "New York, NY USA",
+    "Date": "18571103",
+    "Round": "4.6",
+    "White": "Paulsen, Louis",
+    "Black": "Morphy, Paul",
+    "Result": "0-1",
+    "MoveText": "AAADHA0kAZUOagBSD60BYQ9iAQcPPwVkD3wJKgzqCFoMYQaMC1wEnA8cAxUHLAKSDtMCWQipAhgIWADYDrMACA48Bigxx01vcnBoeSB0b29rIHR3ZWx2ZSBtaW51dGVzIG92ZXIgaGlzIG5leHQgbW92ZSwgcHJvYmFibHkgdG8gYXNzdXJlIGhpbXNlbGYgdGhhdCB0aGUgY29tYmluYXRpb24gd2FzIHNvdW5kIGFuZCB0aGF0IGhlIGhhZCBhIGZvcmNlZCB3aW4gaW4gZXZlcnkgdmFyaWF0aW9uLgAE1RHHAwOVCy4BhwzXAUNRxyHHTm90AAFGC4YBxg8EEccTcccFzgHGA5UBhQVOYccLjhHHASHHd291bGQgaGF2ZSB3b24gbW9yZSBxdWlja2x5LiBGb3IgaW5zdGFuY2U6AAoTA40BRgNOAYcDhnHHAUYDlwGHCk0KBSHHQWJzb2x1dGVseSBmb3JjZWQuAAXFAMUPDAIAC68C2wNUgccB8cc=",
+    "MainVariation": "AAADHA0kAZUOagBSD60BYQ9iAQcPPwVkD3wJKgzqCFoMYQaMC1wEnA8cAxUHLAKSDtMCWQipAhgIWADYDrMACA48BigE1QOVCy4BhwzXAUMFzgHGA5UBhQVOAUYDlwGHCk0KBQXFAMUPDAIAC68C2wNU8cc="
+  }
+]

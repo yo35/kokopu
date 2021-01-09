@@ -404,15 +404,6 @@ function rebuildPositionBeforeIfNecessary(node) {
 }
 
 /**
- * MoveDescriptor for the move associated with the current node.
- *
- * @returns {MoveDescriptor}
- */
-Node.prototype.move = function() {
-	return this._info.moveDescriptor;
-};
-
-/**
  * SAN representation of the move associated to the current node.
  *
  * @returns {string}
@@ -428,6 +419,15 @@ Node.prototype.notation = function() {
  */
 Node.prototype.figurineNotation = function() {
 	return this._info.moveDescriptor === undefined ? '--' : rebuildPositionBeforeIfNecessary(this).figurineNotation(this._info.moveDescriptor);
+};
+
+/**
+ * UCI Notation representation of the move associated with the current node.
+ *
+ * @returns {string} with UCI move
+ */
+Node.prototype.uci = function() {
+	return this._info.moveDescriptor === undefined ? '0000' : rebuildPositionBeforeIfNecessary(this).uciNotation(this._info.moveDescriptor);
 };
 
 /**
@@ -651,18 +651,18 @@ Node.prototype.isLongComment = function() {
 
 
 /**
- * Compute the move descriptor associated to the given SAN notation, assuming the given position.
+ * Compute the move descriptor associated to the given SAN or UCI notation, assuming the given position.
  *
- * @param {Position} position Position based on which the given SAN notation must be interpreted.
- * @param {string} move SAN notation (or `'--'` for a null-move).
+ * @param {Position} position Position based on which the given SAN or UCI notation must be interpreted.
+ * @param {string} move SAN or UCI notation (or `'--'` (SAN) '0000' (UCI) for a null-move).
  * @returns {MoveDescriptor?} `undefined` is returned in case of a null-move.
  * @throws {module:exception.InvalidNotation} If the move notation cannot be parsed.
  * @ignore
  */
 function computeMoveDescriptor(position, move) {
-	if(move === '--') {
+	if(move === '--' || move === '0000') {
 		if(!position.isNullMoveLegal()) {
-			throw new exception.InvalidNotation(position, '--', i18n.ILLEGAL_NULL_MOVE);
+			throw new exception.InvalidNotation(position, move, i18n.ILLEGAL_NULL_MOVE);
 		}
 		return undefined;
 	}

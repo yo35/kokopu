@@ -84,6 +84,16 @@ exports.getFigurineNotation = function(position, descriptor) {
 };
 
 /**
+ * Converst the movedescriptor to a UCI engine move string
+ *
+ * @param {MoveDescriptor} descriptor
+ * @returns {string}
+ */
+exports.getUciNotation = function(descriptor) {
+	return descriptor.toUCIString();
+};
+
+/**
  * Return the check/checkmate symbol to use for a move.
  */
 function getCheckCheckmateSymbol(position, descriptor) {

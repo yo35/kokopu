@@ -15,9 +15,8 @@ A move needs 16 bits to be stored
 
 bit  0- 5: destination square (from 0 to 63)
 bit  6-11: origin square (from 0 to 63)
-bit 12-13: promotion piece type: KNIGHT (0), BISHOP (1), ROOK (2), QUEEN (3)
-bit 14-15: special move flag: promotion (1), en passant (2), castling (3)
-NOTE: EN-PASSANT bit is set only when a pawn can be captured
+bit 12-14: promotion piece type: KNIGHT (1), BISHOP (2), ROOK (3), QUEEN (4)
+Note: Castling is stored as KxR of the same color
 
 Special cases are MOVE_NONE, MOVE_NULL, MOVE_SPECIAL. We can sneak these in
 because in any normal move, destination square is almost always different from
@@ -29,13 +28,6 @@ enum Move : {
   MOVE_NONE = 0,
   MOVE_NULL = 65,
   MOVE_SPECIAL = 455
-};
-
-enum MoveType {
-  NORMAL,
-  PROMOTION = 1 << 14,
-  ENPASSANT = 2 << 14,
-  CASTLING  = 3 << 14
 };
 
 Special moves are MOVE_SPECIAL or'ed with:

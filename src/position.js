@@ -730,3 +730,18 @@ Position.prototype.figurineNotation = function() {
 		throw new exception.IllegalArgument('Position#figurineNotation()');
 	}
 };
+
+/**
+ * Return the UCI Notation for the move descriptor.
+ *
+ * @param {MoveDescriptor} moveDescriptor
+ * @returns {string}
+ */
+Position.prototype.uciNotation = function() {
+	if(arguments.length === 1 && moveDescriptor.isMoveDescriptor(arguments[0])) {
+		return notation.getUciNotation(arguments[0]);
+	}
+	else {
+		throw new exception.IllegalArgument('Position#uciNotation()');
+	}
+};

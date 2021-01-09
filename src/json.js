@@ -208,37 +208,35 @@ function writeMove(move, variationDepth, res) {
 
 	// bit  0- 5: destination square (from 0 to 63)
 	// bit  6-11: origin square (from 0 to 63)
-	// bit 12-13: promotion piece type (from KNIGHT-0, BISHOP-1, ROOK-2, QUEEN-3)
-	// bit 14-15: special move flag: normal (0), promotion (1), en passant (2), castling (3)
-	// NOTE: EN-PASSANT bit is set only when a pawn can be captured
-
+	// bit 12-14: promotion piece type (from KNIGHT-1, BISHOP-2, ROOK-3, QUEEN-4)
+	// note: castling is encoded as KxR
 	var buf = Buffer.alloc(MoveSize);
 
-	if (move === undefined) {
-		buf.writeUInt16BE(MoveNull);
+	if (move === '0000') {
+		buf.writeUInt16BE(MoveNull, 0);
 	} else {
-		var from = bt.squareToBoardOffset(move.from());
-		var to = bt.squareToBoardOffset(move.to());
-		var type = (move.isPromotion() ? 1 : ((move.isEnPassant() ? 2 : (move.isCastling() ? 3 : 0))));
+		var from = bt.squareToBoardOffset(move.substring(0,2));
+		var to = bt.squareToBoardOffset(move.substring(2,4));
+		var promotion = move.length > 4 ? move[4] : '';
 		var piece = 0;
 
-		if (move.isPromotion()) {
-			switch (move.promotion()) {
+		if (promotion.length > 0) {
+			switch (promotion) {
 				case 'q':
-					piece = 3;
+					piece = 4;
 					break;
 				case 'r':
-					piece = 2;
+					piece = 3;
 					break;
 				case 'b':
-					piece = 1;
+					piece = 2;
 					break;
 				case 'n':
-					piece = 0;
+					piece = 1;
 					break;
 			}
 		}
-		buf.writeUInt16BE((type << 14 | piece << 12 | from << 6 | to), 0);
+		buf.writeUInt16BE((piece << 12 | from << 6 | to), 0);
 	}
 	res.buf = Buffer.concat([res.buf, buf]);
 
@@ -263,7 +261,7 @@ function writeMove(move, variationDepth, res) {
 function writeNode(node, variationDepth, res) {
 
 	// write move
-	res = writeMove(node.move(), variationDepth, res);
+	res = writeMove(node.uci(), variationDepth, res);
 
 	// wrute the nags for this node
 	if (node.nags().length > 0) {
@@ -636,11 +634,15 @@ function doParseGame(obj) {
 				switch (cmd) {
 					case 0:
 						break;
-					case 1: // embedded audio
+					case 1: // embedded image
 						length = movetext.readBigUInt64BE(pos);
 						pos += 8 + length;
 						break;
-					case 2: // embedded video
+					case 2: // embedded audio
+						length = movetext.readBigUInt64BE(pos);
+						pos += 8 + length;
+						break;
+					case 3: // embedded video
 						length = movetext.readBigUInt64BE(pos);
 						pos += 8 + length;
 						break;
@@ -749,79 +751,25 @@ function doParseGame(obj) {
 					var fromSq = bt.boardOffsetToSquare(fOff);
 					var from = bt.squareToString(fromSq);
 					var piece = (moveType >> 12) & 0x3;
-					var flag = (moveType >> 14) & 0x3;
-					var move = '';
-					var position = nodeIsVariation ? node.initialPosition() : node.position();
+					var move = from + to;
 
-					switch (flag) {
-						case 0: // normal move
-							var f = position.square(from);
-							if (f !== '-') { // we are moving a piece/pawn (good!)
-								if (f[1] !== 'p') { // it is a piece
-									move += f[1].toUpperCase(); // KQBNR
-									if (f[1] !== 'k') {
-										move += from; // disambiguate the piece
-									}
-								}
-							}
-							var t = position.square(to);
-							if (t !== '-') { // there is a piece/pawn here (capture!)
-								// if the capturing entity is a pawn, we need to put in the file
-								if (f[1] === 'p') {
-									move += bt.boardOffsetToFile(fOff);
-								}
-								move += 'x' + to;
-							} else { // square is empty
-								move += to;
-							}
-							node = node.play(move);
+					switch (piece) {
+						case 0:
 							break;
-
-						case 1: // promotion
-							var f = position.square(from);
-							if (f[1] !== 'p') { // ??
-								throw new exception.InvalidJSON(null, null, i18n.ILLEGAL_PROMOTION);
-							}
-							var t = position.square(to);
-							if (t !== '-') { // there is a piece/pawn here (capture!)
-								move += bt.boardOffsetToFile(fOff);
-								move += 'x' + to;
-							} else { // square is empty
-								move += to;
-							}
-
-							move += '=';
-
-							switch (piece) {
-								case 0:
-									move += 'N';
-									break;
-								case 1:
-									move += 'B';
-									break;
-								case 2:
-									move += 'R';
-									break;
-								case 3:
-									move += 'Q';
-									break;
-							}
-							node = node.play(move);
+						case 1:
+							move += 'n';
 							break;
-
-						case 2: // en-passant
-							move = bt.boardOffsetToFile(fOff) + 'x' + toSq;
-							node = node.play(move);
+						case 2:
+							move += 'b';
 							break;
-						case 3: // castling
-							if (to === 'c1' || to === 'c8') {
-								move += 'O-O-O';
-							} else {
-								move += 'O-O';
-							}
-							node = node.play(move);
+						case 3:
+							move += 'r';
+							break;
+						case 4:
+							move += 'q';
 							break;
 					}
+					node = node.play(move);
 					nodeIsVariation = false;
 				}
 				catch (error) {
