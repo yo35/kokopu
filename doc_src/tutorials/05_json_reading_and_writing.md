@@ -16,7 +16,7 @@ A move needs 16 bits to be stored
 bit  0- 5: destination square (from 0 to 63)
 bit  6-11: origin square (from 0 to 63)
 bit 12-14: promotion piece type: KNIGHT (1), BISHOP (2), ROOK (3), QUEEN (4)
-Note: Castling is stored as KxR of the same color
+Note: Castling is encoded as KxR of same color to handle both standard and chess 960.
 
 Special cases are MOVE_NONE, MOVE_NULL, MOVE_SPECIAL. We can sneak these in
 because in any normal move, destination square is almost always different from
@@ -59,11 +59,13 @@ Special moves are MOVE_SPECIAL or'ed with:
 0xE << 12 [+]	extensions
 				255 possible extension commands stored in next byte (1-255), 0 is reserved
 				0	reserved
-				1 [+] 	embedded audio
+				1 [+] 	embedded image
+					UInt64BE length in bytes followed by the embedded binary image bytes that may have encoding etc (up to implementation)
+				2 [+] 	embedded audio
 					UInt64BE length in bytes followed by the embedded binary audio bytes that may have encoding etc (up to implementation)
-				2 [+]	embedded video
+				3 [+]	embedded video
 					UInt64BE length in bytes followed by the embedded binary video bytes that may have encoding etc (up to implementation)
-				3-255	unused
+				4-255	unused
 
 0xF << 12		end of data
 
