@@ -15,6 +15,7 @@
 	"contributors": [
 		"Atin Malaviya <atinm.dev@gmail.com>"
 	],
+	"funding": "https://www.paypal.com/donate?hosted_button_id=MP795VF4FXUDW",
 	"main": "index.js",
 	"devDependencies": {
 		"eslint": "~7.17.0",
