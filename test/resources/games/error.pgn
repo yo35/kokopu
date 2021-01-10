@@ -1,0 +1,29 @@
+[Event "Illegal move 1"]
+
+1. e5 *
+
+
+[Event "Illegal move 2"]
+
+1. e4 Nf3 *
+
+
+[Event "Invalid FEN"]
+[SetUp "1"]
+[FEN "Something invalid"]
+
+*
+
+
+[Event "Invalid variant"]
+[Variant "Something invalid"]
+[SetUp "1"]
+[FEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"]
+
+*
+
+
+[Event "Variant without FEN"]
+[Variant "Chess 960"]
+
+*

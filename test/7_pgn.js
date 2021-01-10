@@ -26,6 +26,7 @@
 var kokopu = require('../index');
 var readCSV = require('./common/readcsv');
 var readText = require('./common/readtext');
+var resourceExists = require('./common/resourceExists');
 var test = require('unit.js');
 
 
@@ -37,6 +38,60 @@ function testData() {
 			pgn: readText('games/' + fields[0] + '.pgn')
 		};
 	});
+}
+
+
+/**
+ * Return whether the PGN item corresponding to the given index in the PGN file corresponding to the given name is expected to be parsed
+ * as a valid PGN item, or is expected to throw an exception on a parsing attempt.
+ *
+ * @param {string} pgnName Name of the PGN file (without the .pgn extension)
+ * @param {number} gameIndex Index of the item within the PGN file.
+ * @returns {string} `'log'` if the PGN item is valid, `'err'` if an exception is expected to be thrown on parsing.
+ */
+function getItemType(pgnName, gameIndex) {
+	var fileBasename = 'games/' + pgnName + '_' + gameIndex;
+	var logExist = resourceExists(fileBasename + '.log');
+	var errExist = resourceExists(fileBasename + '.err');
+	if(logExist && errExist) {
+		throw 'Both .log not .err defined for ' + fileBasename; // eslint-disable-line no-throw-literal
+	}
+	else if(logExist) {
+		return 'log';
+	}
+	else if(errExist) {
+		return 'err';
+	}
+	else {
+		throw 'Neither .log not .err defined for ' + fileBasename; // eslint-disable-line no-throw-literal
+	}
+}
+
+
+/**
+ * Load the descriptor corresponding to a valid PGN item.
+ *
+ * @param {string} pgnName Name of the PGN file (without the .pgn extension)
+ * @param {number} gameIndex Index of the item within the PGN file.
+ * @returns {string}
+ */
+function loadValidItemDescriptor(pgnName, gameIndex) {
+	var filename = 'games/' + pgnName + '_' + gameIndex + '.log';
+	return readText(filename).trim();
+}
+
+
+/**
+ * Load the descriptor corresponding to an invalid PGN item.
+ *
+ * @param {string} pgnName Name of the PGN file (without the .pgn extension)
+ * @param {number} gameIndex Index of the item within the PGN file.
+ * @returns {{index:number, message:string}}
+ */
+function loadErrorItemDescriptor(pgnName, gameIndex) {
+	var filename = 'games/' + pgnName + '_' + gameIndex + '.err';
+	var fields = readText(filename).split('\n');
+	return { index: parseInt(fields[0]), message: fields[1].trim() };
 }
 
 
@@ -215,18 +270,33 @@ function dumpGame(game, iterationStyle) {
 }
 
 
-function checkGameContentDirect(testDataDescriptor, gameIndex) {
-	it('File ' + testDataDescriptor.label + ' - Game ' + gameIndex, function() {
-		var expectedDump = readText('games/' + testDataDescriptor.label + '_' + gameIndex + '.log');
-		test.value(dumpGame(kokopu.pgnRead(testDataDescriptor.pgn, gameIndex), 'using-next').trim()).is(expectedDump.trim());
-	});
+function pgnItemChecker(pgnName, gameIndex, iterationStyle, loader) {
+	return function() {
+
+		// LOG type => ensure that the item is valid, and compare its dump result to the descriptor.
+		if(getItemType(pgnName, gameIndex) === 'log') {
+			var expectedDescriptor = loadValidItemDescriptor(pgnName, gameIndex);
+			test.value(dumpGame(loader(gameIndex), iterationStyle).trim()).is(expectedDescriptor);
+		}
+
+		// ERR type => ensure that an exception is thrown, and check its attributes.
+		else {
+			var expectedDescriptor = loadErrorItemDescriptor(pgnName, gameIndex);
+			test.exception(function() { loader(gameIndex); })
+				.isInstanceOf(kokopu.exception.InvalidPGN)
+				.hasProperty('index', expectedDescriptor.index)
+				.hasProperty('message', expectedDescriptor.message);
+		}
+	};
 }
 
 
 describe('Game content (direct access)', function() {
 	testData().forEach(function(elem) {
 		for(var gameIndex = 0; gameIndex < elem.gameCount; ++gameIndex) {
-			checkGameContentDirect(elem, gameIndex);
+			it('File ' + elem.label + ' - Game ' + gameIndex, pgnItemChecker(elem.label, gameIndex, 'using-next', function(i) {
+				return kokopu.pgnRead(elem.pgn, i);
+			}));
 		}
 	});
 });
@@ -245,25 +315,20 @@ DatabaseHolder.prototype.database = function() {
 };
 
 
-function checkGameContentDatabase(testDataDescriptor, holder, gameIndex) {
-	it('File ' + testDataDescriptor.label + ' - Game ' + gameIndex, function() {
-		var database = holder.database();
-		var expectedDump = readText('games/' + testDataDescriptor.label + '_' + gameIndex + '.log');
-		test.value(dumpGame(database.game(gameIndex), 'using-nodes').trim()).is(expectedDump.trim());
-	});
-}
-
-
 describe('Game content (database)', function() {
 	testData().forEach(function(elem) {
 		var holder = new DatabaseHolder(elem.pgn);
 		for(var gameIndex = 0; gameIndex < elem.gameCount; ++gameIndex) {
 			if(gameIndex % 3 === 2) { continue; }
-			checkGameContentDatabase(elem, holder, gameIndex);
+			it('File ' + elem.label + ' - Game ' + gameIndex, pgnItemChecker(elem.label, gameIndex, 'using-nodes', function(i) {
+				return holder.database().game(i);
+			}));
 		}
 		for(var gameIndex = 0; gameIndex < elem.gameCount; ++gameIndex) {
 			if(gameIndex % 3 !== 2) { continue; }
-			checkGameContentDatabase(elem, holder, gameIndex);
+			it('File ' + elem.label + ' - Game ' + gameIndex, pgnItemChecker(elem.label, gameIndex, 'using-nodes', function(i) {
+				return holder.database().game(i);
+			}));
 		}
 	});
 });
