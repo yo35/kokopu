@@ -1,6 +1,11 @@
 ChangeLog
 =========
 
+1.5.0 (January 10, 2021)
+-----------------------
+* Add figurine notation.
+* More lenient chess960 variant header parsing.
+
 1.4.0 (August 22, 2020)
 -----------------------
 * Add variants "No king" and "White/Black king only" (see #12).
