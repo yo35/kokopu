@@ -64,21 +64,24 @@ function parseDateHeader(value) {
 
 
 function parseVariant(value) {
-	switch(value.toLowerCase()) {
-		case 'regular':
-		case 'standard':
-			return 'regular';
-		case 'chess960':
-		case 'fischerandom':
-			return 'chess960';
-		case 'no king':
-			return 'no-king';
-		case 'white king only':
-			return 'white-king-only';
-		case 'black king only':
-			return 'black-king-only';
-		default:
-			return undefined;
+	value = value.toLowerCase();
+	if(value === 'regular' || value === 'standard') {
+		return 'regular';
+	}
+	else if(value === 'fischerandom' || /^chess[ -]?960$/.test(value)) {
+		return 'chess960';
+	}
+	else if(/^no[ -]king$/.test(value)) {
+		return 'no-king';
+	}
+	else if(/^white[ -]king[ -]only$/.test(value)) {
+		return 'white-king-only';
+	}
+	else if(/^black[ -]king[ -]only$/.test(value)) {
+		return 'black-king-only';
+	}
+	else {
+		return undefined;
 	}
 }
 
