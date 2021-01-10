@@ -702,15 +702,49 @@ Position.prototype.playNullMove = function() {
  */
 Position.prototype.notation = function() {
 	if(arguments.length === 1 && moveDescriptor.isMoveDescriptor(arguments[0])) {
-		return notation.getNotation(this._impl, arguments[0]);
+		return notation.getNotation(this._impl, arguments[0], 'standard');
 	}
 	else if(arguments.length === 1 && typeof arguments[0] === 'string') {
-		return notation.parseNotation(this._impl, arguments[0], false);
+		return notation.parseNotation(this._impl, arguments[0], false, 'standard');
 	}
 	else if(arguments.length >= 2 && typeof arguments[0] === 'string' && typeof arguments[1] === 'boolean') {
-		return notation.parseNotation(this._impl, arguments[0], arguments[1]);
+		return notation.parseNotation(this._impl, arguments[0], arguments[1], 'standard');
 	}
 	else {
 		throw new exception.IllegalArgument('Position#notation()');
+	}
+};
+
+
+/**
+ * Return the figurine algebraic notation corresponding to the given move descriptor (figurine algebraic notation is the same as standard algebraic notation,
+ * except that chess pieces are represented with their respective unicode character, instead of the first letter of their English name).
+ *
+ * @param {MoveDescriptor} moveDescriptor
+ * @returns {string}
+ *
+ *//**
+ *
+ * Parse the given string as figurine algebraic notation and return the corresponding move descriptor (figurine algebraic notation is the same as standard algebraic notation,
+ * except that chess pieces are represented with their respective unicode character, instead of the first letter of their English name).
+ *
+ * @param {string} move
+ * @param {boolean} [strict=false] If `true`, only perfectly formatted FAN moves are accepted. If `false`, "small errors" in the input
+ *        such as a missing capture character, an unnecessary disambiguation symbol... do not interrupt the parsing.
+ * @returns {MoveDescriptor}
+ * @throws {module:exception.InvalidNotation} If the move parsing fails or if the parsed move would correspond to an illegal move.
+ */
+Position.prototype.figurineNotation = function() {
+	if(arguments.length === 1 && moveDescriptor.isMoveDescriptor(arguments[0])) {
+		return notation.getNotation(this._impl, arguments[0], 'figurine');
+	}
+	else if(arguments.length === 1 && typeof arguments[0] === 'string') {
+		return notation.parseNotation(this._impl, arguments[0], false, 'figurine');
+	}
+	else if(arguments.length >= 2 && typeof arguments[0] === 'string' && typeof arguments[1] === 'boolean') {
+		return notation.parseNotation(this._impl, arguments[0], arguments[1], 'figurine');
+	}
+	else {
+		throw new exception.IllegalArgument('Position#figurineNotation()');
 	}
 };

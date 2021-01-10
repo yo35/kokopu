@@ -38,7 +38,7 @@ var moveGeneration = require('./movegeneration');
 /**
  * Convert the given move descriptor to standard algebraic notation.
  */
-exports.getNotation = function(position, descriptor) {
+exports.getNotation = function(position, descriptor, pieceStyle) {
 	var res = '';
 
 	// Castling move
@@ -53,13 +53,13 @@ exports.getNotation = function(position, descriptor) {
 		}
 		res += bt.squareToString(descriptor._to);
 		if(descriptor.isPromotion()) {
-			res += '=' + bt.pieceToString(Math.floor(descriptor._finalPiece / 2)).toUpperCase();
+			res += '=' + getPieceSymbol(descriptor._finalPiece, pieceStyle);
 		}
 	}
 
 	// Non-pawn move
 	else {
-		res += bt.pieceToString(Math.floor(descriptor._movingPiece / 2)).toUpperCase();
+		res += getPieceSymbol(descriptor._movingPiece, pieceStyle);
 		res += getDisambiguationSymbol(position, descriptor._from, descriptor._to);
 		if(descriptor.isCapture()) {
 			res += 'x';
@@ -71,6 +71,20 @@ exports.getNotation = function(position, descriptor) {
 	res += getCheckCheckmateSymbol(position, descriptor);
 	return res;
 };
+
+
+/**
+ * Return a string representing the given chess piece according to the given style.
+ */
+function getPieceSymbol(coloredPiece, pieceStyle) {
+	switch(pieceStyle) {
+		case 'figurine':
+			return bt.figurineToString(coloredPiece);
+		case 'standard':
+		default:
+			return bt.pieceToString(Math.floor(coloredPiece / 2)).toUpperCase();
+	}
+}
 
 
 /**
@@ -179,10 +193,10 @@ function pinningLoockup(position, kingSquare, targetSquare, direction, pinnerCol
  * @returns {MoveDescriptor}
  * @throws InvalidNotation
  */
-exports.parseNotation = function(position, notation, strict) {
+exports.parseNotation = function(position, notation, strict, pieceStyle) {
 
 	// General syntax
-	var m = /^(?:(O-O-O)|(O-O)|([KQRBN])([a-h])?([1-8])?(x)?([a-h][1-8])|(?:([a-h])(x)?)?([a-h][1-8])(?:(=)?([KQRBNP]))?)([+#])?$/.exec(notation);
+	var m = /^(?:(O-O-O)|(O-O)|([A-Z\u2654-\u265f])([a-h])?([1-8])?(x)?([a-h][1-8])|(?:([a-h])(x)?)?([a-h][1-8])(?:(=)?([A-Z\u2654-\u265f]))?)([+#])?$/.exec(notation);
 	if(m === null) {
 		throw new exception.InvalidNotation(fen.getFEN(position, 0, 1), notation, i18n.INVALID_MOVE_NOTATION_SYNTAX);
 	}
@@ -232,7 +246,7 @@ exports.parseNotation = function(position, notation, strict) {
 
 	// Non-pawn move
 	else if(m[3]) {
-		var movingPiece = bt.pieceFromString(m[3].toLowerCase());
+		var movingPiece = parsePieceSymbol(position, notation, m[3], strict, pieceStyle);
 		var to = bt.squareFromString(m[7]);
 		var toContent = position.board[to];
 
@@ -304,7 +318,7 @@ exports.parseNotation = function(position, notation, strict) {
 			if(!m[12]) {
 				throw new exception.InvalidNotation(fen.getFEN(position, 0, 1), notation, i18n.MISSING_PROMOTION);
 			}
-			var promotion = bt.pieceFromString(m[12].toLowerCase());
+			var promotion = parsePieceSymbol(position, notation, m[12], strict, pieceStyle);
 			if(promotion === bt.PAWN || promotion === bt.KING) {
 				throw new exception.InvalidNotation(fen.getFEN(position, 0, 1), notation, i18n.INVALID_PROMOTED_PIECE, m[12]);
 			}
@@ -338,6 +352,33 @@ exports.parseNotation = function(position, notation, strict) {
 	// Final result
 	return descriptor;
 };
+
+
+/**
+ * Delegate function for piece symbol parsing.
+ */
+function parsePieceSymbol(position, notation, coloredPiece, strict, pieceStyle) {
+	switch(pieceStyle) {
+
+		case 'figurine':
+			var coloredPiece = bt.figurineFromString(coloredPiece);
+			if(piece < 0) {
+				throw new exception.InvalidNotation(fen.getFEN(position, 0, 1), notation, i18n.INVALID_PIECE_SYMBOL, coloredPiece);
+			}
+			if(strict && coloredPiece % 2 !== position.turn) {
+				throw new exception.InvalidNotation(fen.getFEN(position, 0, 1), notation, i18n.INVALID_PIECE_SYMBOL_COLOR, coloredPiece);
+			}
+			return Math.floor(coloredPiece / 2);
+
+		case 'standard':
+		default:
+			var piece = bt.pieceFromString(coloredPiece.toLowerCase());
+			if(piece < 0) {
+				throw new exception.InvalidNotation(fen.getFEN(position, 0, 1), notation, i18n.INVALID_PIECE_SYMBOL, coloredPiece);
+			}
+			return piece;
+	}
+}
 
 
 /**

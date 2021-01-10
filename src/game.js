@@ -399,6 +399,16 @@ Node.prototype.notation = function() {
 
 
 /**
+ * SAN-like representation of the move associated to the current node.
+ *
+ * @returns {string} Chess pieces are represented with their respective unicode character, instead of the first letter of their English name.
+ */
+Node.prototype.figurineNotation = function() {
+	return this._info.moveDescriptor === undefined ? '--' : rebuildPositionBeforeIfNecessary(this).figurineNotation(this._info.moveDescriptor);
+};
+
+
+/**
  * Chess position before the current move.
  *
  * @returns {Position}
