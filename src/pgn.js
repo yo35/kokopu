@@ -115,6 +115,8 @@ function processHeader(stream, game, initialPositionFactory, key, value) {
 			if(!initialPositionFactory.variant) {
 				throw new exception.InvalidPGN(stream.text(), stream.tokenCharacterIndex(), stream.tokenLineIndex(), i18n.UNKNOWN_VARIANT, value);
 			}
+			initialPositionFactory.variantTokenCharacterIndex = stream.tokenCharacterIndex();
+			initialPositionFactory.variantTokenLineIndex = stream.tokenLineIndex();
 			break;
 	}
 }
@@ -125,7 +127,7 @@ function initializeInitialPosition(stream, game, initialPositionFactory) {
 	// Nothing to do if no custom FEN has been defined -> let the default state.
 	if(!initialPositionFactory.fen) {
 		if(initialPositionFactory.variant && initialPositionFactory.variant !== 'regular') {
-			throw new exception.InvalidPGN(stream.text(), stream.tokenCharacterIndex(), stream.tokenLineIndex(), i18n.VARIANT_WITHOUT_FEN);
+			throw new exception.InvalidPGN(stream.text(), initialPositionFactory.variantTokenCharacterIndex, initialPositionFactory.variantTokenLineIndex, i18n.VARIANT_WITHOUT_FEN);
 		}
 		return;
 	}
