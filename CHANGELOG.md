@@ -4,7 +4,7 @@ ChangeLog
 1.6.0 (January 17, 2021)
 ------------------------
 * Report line index in PGN parsing exceptions.
-* Improve parsing resiliency to PGN syntaxic errors.
+* Improve parsing resiliency to PGN syntactic errors.
 
 1.5.0 (January 10, 2021)
 -----------------------

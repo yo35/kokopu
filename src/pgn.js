@@ -158,7 +158,7 @@ function initializeInitialPosition(stream, game, initialPositionFactory) {
  */
 function doParseGame(stream) {
 
-	// State variable for syntaxic analysis.
+	// State variable for syntactic analysis.
 	var game            = null;  // the result
 	var node            = null;  // current node (or variation) to which the next move should be appended
 	var nodeIsVariation = false; // whether the current node is a variation or not
