@@ -38,12 +38,12 @@ var TokenStream = exports.TokenStream = function(pgnString, initialPosition) {
 		pgnString = pgnString.substr(1);
 	}
 
-	this._text           = pgnString;       // what is being parsed
-	this._pos            = initialPosition; // current position in the string
-	this._emptyLineFound = false;           // whether an empty line has been encountered while parsing the current token
-	this._token          = 0;               // current token
-	this._tokenValue     = null;            // current token value (if any)
-	this._tokenIndex     = 0;               // position of the current token in the string
+	this._text                = pgnString;       // what is being parsed
+	this._pos                 = initialPosition; // current position in the string
+	this._emptyLineFound      = false;           // whether an empty line has been encountered while parsing the current token
+	this._token               = 0;               // current token
+	this._tokenValue          = null;            // current token value (if any)
+	this._tokenCharacterIndex = 0;               // position of the current token in the string
 
 	// Space-like matchers
 	this._matchSpaces = /[ \f\t\v]+/g;
@@ -199,12 +199,12 @@ TokenStream.prototype.consumeToken = function() {
 	// Consume blank (i.e. meaning-less) characters
 	skipBlanks(this);
 	if(this._pos >= this._text.length) {
-		this._tokenIndex = this._text.length;
+		this._tokenCharacterIndex = this._text.length;
 		return false;
 	}
 
 	// Remaining part of the string
-	this._tokenIndex = this._pos;
+	this._tokenCharacterIndex = this._pos;
 
 	// Match a game header (ex: [White "Kasparov, G."])
 	if(testAtPos(this, this._matchHeaderRegular)) {
@@ -262,39 +262,46 @@ TokenStream.prototype.consumeToken = function() {
 };
 
 
+/**
+ * PGN string being parsed.
+ */
+TokenStream.prototype.text = function() {
+	return this._text;
+};
+
+
 TokenStream.prototype.currentPosition = function() {
 	return this._pos;
 };
 
 
+/**
+ * Whether an empty line has been encountered just before the current token.
+ */
 TokenStream.prototype.emptyLineFound = function() {
 	return this._emptyLineFound;
 };
 
 
+/**
+ * Current token.
+ */
 TokenStream.prototype.token = function() {
 	return this._token;
 };
 
 
+/**
+ * Value associated to the current token, if any.
+ */
 TokenStream.prototype.tokenValue = function() {
 	return this._tokenValue;
 };
 
 
-TokenStream.prototype.tokenIndex = function() {
-	return this._tokenIndex;
-};
-
-
-TokenStream.prototype.invalidPGNException = function(tokenIndex) {
-	var constructorArguments = [ this._text ];
-	if(typeof tokenIndex !== 'number') {
-		constructorArguments.push(this._tokenIndex);
-	}
-	Array.prototype.push.apply(constructorArguments, arguments);
-
-	var result = Object.create(exception.InvalidPGN.prototype);
-	exception.InvalidPGN.apply(result, constructorArguments);
-	return result;
+/**
+ * Character index of the current token.
+ */
+TokenStream.prototype.tokenCharacterIndex = function() {
+	return this._tokenCharacterIndex;
 };

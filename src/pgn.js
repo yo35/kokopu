@@ -105,14 +105,14 @@ function processHeader(stream, game, initialPositionFactory, key, value) {
 		// initial position, that may be different from the usual one.
 		case 'FEN':
 			initialPositionFactory.fen = value;
-			initialPositionFactory.fenTokenIndex = stream.tokenIndex();
+			initialPositionFactory.fenTokenIndex = stream.tokenCharacterIndex();
 			break;
 
 		// The header 'Variant' indicates that this is not a regular chess game.
 		case 'Variant':
 			initialPositionFactory.variant = parseVariant(value);
 			if(!initialPositionFactory.variant) {
-				throw stream.invalidPGNException(i18n.UNKNOWN_VARIANT, value);
+				throw new exception.InvalidPGN(stream.text(), stream.tokenCharacterIndex(), i18n.UNKNOWN_VARIANT, value);
 			}
 			break;
 	}
@@ -124,7 +124,7 @@ function initializeInitialPosition(stream, game, initialPositionFactory) {
 	// Nothing to do if no custom FEN has been defined -> let the default state.
 	if(!initialPositionFactory.fen) {
 		if(initialPositionFactory.variant && initialPositionFactory.variant !== 'regular') {
-			throw stream.invalidPGNException(i18n.VARIANT_WITHOUT_FEN);
+			throw new exception.InvalidPGN(stream.text(), stream.tokenCharacterIndex(), i18n.VARIANT_WITHOUT_FEN);
 		}
 		return;
 	}
@@ -136,7 +136,7 @@ function initializeInitialPosition(stream, game, initialPositionFactory) {
 	}
 	catch(error) {
 		if(error instanceof exception.InvalidFEN) {
-			throw stream.invalidPGNException(initialPositionFactory.fenTokenIndex, i18n.INVALID_FEN_IN_PGN_TEXT, error.message);
+			throw new exception.InvalidPGN(stream.text(), initialPositionFactory.fenTokenIndex, i18n.INVALID_FEN_IN_PGN_TEXT, error.message);
 		}
 		else {
 			throw error;
@@ -184,7 +184,7 @@ function doParseGame(stream) {
 			// Header
 			case TokenStream.HEADER:
 				if(node !== null) {
-					throw stream.invalidPGNException(i18n.UNEXPECTED_PGN_HEADER);
+					throw new exception.InvalidPGN(stream.text(), stream.tokenCharacterIndex(), i18n.UNEXPECTED_PGN_HEADER);
 				}
 				processHeader(stream, game, initialPositionFactory, stream.tokenValue().key, stream.tokenValue().value);
 				break;
@@ -197,7 +197,7 @@ function doParseGame(stream) {
 				}
 				catch(error) {
 					if(error instanceof exception.InvalidNotation) {
-						throw stream.invalidPGNException(i18n.INVALID_MOVE_IN_PGN_TEXT, error.notation, error.message);
+						throw new exception.InvalidPGN(stream.text(), stream.tokenCharacterIndex(), i18n.INVALID_MOVE_IN_PGN_TEXT, error.notation, error.message);
 					}
 					else {
 						throw error;
@@ -226,7 +226,7 @@ function doParseGame(stream) {
 			// Begin of variation
 			case TokenStream.BEGIN_VARIATION:
 				if(nodeIsVariation) {
-					throw stream.invalidPGNException(i18n.UNEXPECTED_BEGIN_OF_VARIATION);
+					throw new exception.InvalidPGN(stream.text(), stream.tokenCharacterIndex(), i18n.UNEXPECTED_BEGIN_OF_VARIATION);
 				}
 				nodeStack.push(node);
 				node = node.addVariation(stream.emptyLineFound());
@@ -236,7 +236,7 @@ function doParseGame(stream) {
 			// End of variation
 			case TokenStream.END_VARIATION:
 				if(nodeStack.length === 0) {
-					throw stream.invalidPGNException(i18n.UNEXPECTED_END_OF_VARIATION);
+					throw new exception.InvalidPGN(stream.text(), stream.tokenCharacterIndex(), i18n.UNEXPECTED_END_OF_VARIATION);
 				}
 				node = nodeStack.pop();
 				nodeIsVariation = false;
@@ -245,7 +245,7 @@ function doParseGame(stream) {
 			// End-of-game
 			case TokenStream.END_OF_GAME:
 				if(nodeStack.length > 0) {
-					throw stream.invalidPGNException(i18n.UNEXPECTED_END_OF_GAME);
+					throw new exception.InvalidPGN(stream.text(), stream.tokenCharacterIndex(), i18n.UNEXPECTED_END_OF_GAME);
 				}
 				game.result(stream.tokenValue());
 				return game;
@@ -254,7 +254,7 @@ function doParseGame(stream) {
 
 	} // while(stream.consumeToken())
 
-	throw stream.invalidPGNException(i18n.UNEXPECTED_END_OF_TEXT);
+	throw new exception.InvalidPGN(stream.text(), stream.tokenCharacterIndex(), i18n.UNEXPECTED_END_OF_TEXT);
 }
 
 
@@ -278,7 +278,7 @@ function doSkipGame(stream) {
 	// If the end of the stream has been reached without seeing any END_OF_GAME token, then no token should have been seen at all.
 	// Throw an exception if this is not the case.
 	if(atLeastOneTokenFound) {
-		throw stream.invalidPGNException(i18n.UNEXPECTED_END_OF_TEXT);
+		throw new exception.InvalidPGN(stream.text(), stream.tokenCharacterIndex(), i18n.UNEXPECTED_END_OF_TEXT);
 	}
 	return false;
 }

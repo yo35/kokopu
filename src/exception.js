@@ -121,7 +121,7 @@ var InvalidPGN = exports.InvalidPGN = function(pgn, index, message) {
 	this.pgn = pgn;
 
 	/**
-	 * Index of the character in the PGN string where the parsing fails (or a negative value is no particular character is related to the error).
+	 * Index (0-based) of the character in the PGN string where the parsing fails (or a negative value is no particular character is related to the error).
 	 * @member {number}
 	 */
 	this.index = index;
