@@ -86,7 +86,7 @@ function parseVariant(value) {
 }
 
 
-function processHeader(stream, game, initialPositionFactory, key, value) {
+function processHeader(stream, game, initialPositionFactory, key, value, valueCharacterIndex, valueLineIndex) {
 	value = value.trim();
 	switch(key) {
 		case 'White': game.playerName('w', parseNullableHeader(value)); break;
@@ -105,18 +105,18 @@ function processHeader(stream, game, initialPositionFactory, key, value) {
 		// initial position, that may be different from the usual one.
 		case 'FEN':
 			initialPositionFactory.fen = value;
-			initialPositionFactory.fenTokenCharacterIndex = stream.tokenCharacterIndex();
-			initialPositionFactory.fenTokenLineIndex = stream.tokenLineIndex();
+			initialPositionFactory.fenTokenCharacterIndex = valueCharacterIndex;
+			initialPositionFactory.fenTokenLineIndex = valueLineIndex;
 			break;
 
 		// The header 'Variant' indicates that this is not a regular chess game.
 		case 'Variant':
 			initialPositionFactory.variant = parseVariant(value);
 			if(!initialPositionFactory.variant) {
-				throw new exception.InvalidPGN(stream.text(), stream.tokenCharacterIndex(), stream.tokenLineIndex(), i18n.UNKNOWN_VARIANT, value);
+				throw new exception.InvalidPGN(stream.text(), valueCharacterIndex, valueLineIndex, i18n.UNKNOWN_VARIANT, value);
 			}
-			initialPositionFactory.variantTokenCharacterIndex = stream.tokenCharacterIndex();
-			initialPositionFactory.variantTokenLineIndex = stream.tokenLineIndex();
+			initialPositionFactory.variantTokenCharacterIndex = valueCharacterIndex;
+			initialPositionFactory.variantTokenLineIndex = valueLineIndex;
 			break;
 	}
 }
@@ -173,9 +173,8 @@ function doParseGame(stream) {
 			game = new Game();
 		}
 
-		// Matching anything else different from a header means that the move section
-		// is going to be parse => set-up the root node.
-		if(stream.token() !== TokenStream.HEADER && node === null) {
+		// Set-up the root node when the first move-text token is encountered.
+		if(stream.isMoveTextSection() && node === null) {
 			initializeInitialPosition(stream, game, initialPositionFactory);
 			node = game.mainVariation();
 			nodeIsVariation = true;
@@ -185,11 +184,24 @@ function doParseGame(stream) {
 		switch(stream.token()) {
 
 			// Header
-			case TokenStream.HEADER:
+			case TokenStream.BEGIN_HEADER:
 				if(node !== null) {
 					throw new exception.InvalidPGN(stream.text(), stream.tokenCharacterIndex(), stream.tokenLineIndex(), i18n.UNEXPECTED_PGN_HEADER);
 				}
-				processHeader(stream, game, initialPositionFactory, stream.tokenValue().key, stream.tokenValue().value);
+				if(!stream.consumeToken() || stream.token() !== TokenStream.HEADER_ID) {
+					throw new exception.InvalidPGN(stream.text(), stream.tokenCharacterIndex(), stream.tokenLineIndex(), i18n.MISSING_PGN_HEADER_ID);
+				}
+				var headerId = stream.tokenValue();
+				if(!stream.consumeToken() || stream.token() !== TokenStream.HEADER_VALUE) {
+					throw new exception.InvalidPGN(stream.text(), stream.tokenCharacterIndex(), stream.tokenLineIndex(), i18n.MISSING_PGN_HEADER_VALUE);
+				}
+				var headerValue = stream.tokenValue();
+				var headerValueCharacterIndex = stream.tokenCharacterIndex();
+				var headerValueLineIndex = stream.tokenLineIndex();
+				if(!stream.consumeToken() || stream.token() !== TokenStream.END_HEADER) {
+					throw new exception.InvalidPGN(stream.text(), stream.tokenCharacterIndex(), stream.tokenLineIndex(), i18n.MISSING_END_OF_PGN_HEADER);
+				}
+				processHeader(stream, game, initialPositionFactory, headerId, headerValue, headerValueCharacterIndex, headerValueLineIndex);
 				break;
 
 			// Move or null-move
@@ -252,6 +264,10 @@ function doParseGame(stream) {
 				}
 				game.result(stream.tokenValue());
 				return game;
+
+			// Something unexpected...
+			default:
+				throw new exception.InvalidPGN(stream.text(), stream.tokenCharacterIndex(), stream.tokenLineIndex(), i18n.UNEXPECTED_TOKEN);
 
 		} // switch(stream.token())
 

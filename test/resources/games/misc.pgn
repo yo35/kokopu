@@ -12,8 +12,8 @@
 
 [Event "Game with comments and NAGs"]
 
-{A comment with braces: ab\{cd\}ef\\ghij 3 backslashes: \\\\\\}
-1. e4 ! e6 ?! {This opening is called the French.} 2. d4 +/= *
+{A comment with braces: ab{cd\}ef\\ghij 3 backslashes: \\\\\\}
+1. e4 ! e6 ?! {This opening is called the French.} 2. d4 +/= {A comment with a degenerated \backslash} *
 
 
 

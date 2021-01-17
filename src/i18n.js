@@ -72,9 +72,13 @@ exports.WRONG_CHECK_CHECKMATE_SYMBOL        = 'Wrong check/checkmate symbol (exp
 
 // PGN parsing error messages
 exports.INVALID_PGN_TOKEN               = 'Unrecognized character or group of characters.';
+exports.UNEXPECTED_TOKEN                = 'Unexpected character or group of characters.';
 exports.INVALID_MOVE_IN_PGN_TEXT        = 'Invalid move (%1$s). %2$s';
 exports.INVALID_FEN_IN_PGN_TEXT         = 'Invalid FEN string in the initial position header. %1$s';
 exports.UNEXPECTED_PGN_HEADER           = 'Unexpected PGN game header.';
+exports.MISSING_PGN_HEADER_ID           = 'Missing or invalid PGN game header ID.';
+exports.MISSING_PGN_HEADER_VALUE        = 'Missing or invalid PGN game header value.';
+exports.MISSING_END_OF_PGN_HEADER       = 'Missing or invalid end of PGN game header.';
 exports.UNEXPECTED_BEGIN_OF_VARIATION   = 'Unexpected begin of variation.';
 exports.UNEXPECTED_END_OF_VARIATION     = 'Unexpected end of variation.';
 exports.UNEXPECTED_END_OF_GAME          = 'Unexpected end of game: there are pending variations.';

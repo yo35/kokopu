@@ -11,8 +11,8 @@
 [Site "? "]
 [Date "?"]
 [Round " ? "]
-[White "  ? 	 "]
-[Black " ?		"]
+[White "  ? "]
+[Black " ?"]
 [Result "1-0"]
 1-0
 
@@ -29,8 +29,8 @@
 [Site "Paris, France "]
 [Date "2018.04.??"]
 [Round " 1 "]
-[White "  Player 1 	 "]
-[Black " Player 2		"]
+[White "  Player 1 "]
+[Black " Player   2"]
 [Result "1/2-1/2"]
 1/2-1/2
 
@@ -58,8 +58,7 @@
 [Result "0-1"]
 4... Qxf2# 0-1
 
-[White "Ill-formed tag " (unescaped double quote, should be \")"]
-[Black "Ill-formed tag \ (unescaped backslash, should be \\)"]
+[Event "Degenerated \backslash"]
 [Result "*"]
 *
 

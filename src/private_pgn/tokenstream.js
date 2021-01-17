@@ -55,49 +55,53 @@ var TokenStream = exports.TokenStream = function(pgnString, initialLocation) {
 	// Space-like matchers
 	this._matchSpaces = /[ \f\t\v]+/g;
 	this._matchLineBreak = /\r?\n|\r/g;
+	this._matchLineBreak.needIncrementLineIndex = true;
 
 	// Token matchers
-	this._matchHeaderRegular = /\[\s*(\w+)\s+"((?:[^\\"]|\\[\\"])*)"\s*\]/g;
-	this._matchHeaderDegenerated = /^\[\s*(\w+)\s+"(.*)"\s*\]$/mg;
+	this._matchBeginHeader = /\[/g;
+	this._matchEndHeader = /\]/g;
+	this._matchHeaderId = /(\w+)/g;
+	this._matchEnterHeaderValue = /"/g;
 	this._matchMove = /(?:[1-9][0-9]*\s*\.(?:\.\.)?\s*)?((?:O-O-O|O-O|[KQRBN][a-h]?[1-8]?x?[a-h][1-8]|(?:[a-h]x?)?[a-h][1-8](?:=?[KQRBNP])?)[+#]?|--)/g;
 	this._matchNag = /([!?][!?]?|\+\/?[-=]|[-=]\/?\+|=|inf|~)|\$([1-9][0-9]*)/g;
-	this._matchComment = /\{((?:[^{}\\]|\\[{}\\])*)\}/g;
+	this._matchEnterComment = /\{/g;
 	this._matchBeginVariation = /\(/g;
 	this._matchEndVariation = /\)/g;
 	this._matchEndOfGame = /1-0|0-1|1\/2-1\/2|\*/g;
 
-	this._matchSpaces.matchedIndex = -1;
-	this._matchLineBreak.matchedIndex = -1;
-	this._matchHeaderRegular.matchedIndex = -1;
-	this._matchHeaderDegenerated.matchedIndex = -1;
-	this._matchMove.matchedIndex = -1;
-	this._matchNag.matchedIndex = -1;
-	this._matchComment.matchedIndex = -1;
-	this._matchBeginVariation.matchedIndex = -1;
-	this._matchEndVariation.matchedIndex = -1;
-	this._matchEndOfGame.matchedIndex = -1;
+	// Special modes
+	this._headerValueMode = /((?:[^\\"\f\t\v\r\n]|\\[^\f\t\v\r\n])*)"/g;
+	this._commentMode = /((?:[^\\}]|\\.)*)\}/g;
+	this._commentMode.needIncrementLineIndex = true;
 };
 
 
 // PGN token types
-var TOKEN_HEADER          = TokenStream.HEADER          = 1; // Ex: [White "Kasparov, G."]
-var TOKEN_MOVE            = TokenStream.MOVE            = 2; // SAN notation or -- (with an optional move number)
-var TOKEN_NAG             = TokenStream.NAG             = 3; // $[1-9][0-9]* or a key from table SPECIAL_NAGS_LOOKUP (!!, +-, etc..)
-var TOKEN_COMMENT         = TokenStream.COMMENT         = 4; // {some text}
-var TOKEN_BEGIN_VARIATION = TokenStream.BEGIN_VARIATION = 5; // (
-var TOKEN_END_VARIATION   = TokenStream.END_VARIATION   = 6; // )
-var TOKEN_END_OF_GAME     = TokenStream.END_OF_GAME     = 7; // 1-0, 0-1, 1/2-1/2 or *
+var TOKEN_BEGIN_HEADER    = TokenStream.BEGIN_HEADER    =  1; // [
+var TOKEN_END_HEADER      = TokenStream.END_HEADER      =  2; // ]
+var TOKEN_HEADER_ID       = TokenStream.HEADER_ID       =  3; // Identifier of a header (e.g. `White` in header `[White "Kasparov, G."]`)
+var TOKEN_HEADER_VALUE    = TokenStream.HEADER_VALUE    =  4; // Value of a header (e.g. `Kasparov, G.` in header `[White "Kasparov, G."]`)
+var TOKEN_MOVE            = TokenStream.MOVE            =  5; // SAN notation or -- (with an optional move number)
+var TOKEN_NAG             = TokenStream.NAG             =  6; // $[1-9][0-9]* or a key from table SPECIAL_NAGS_LOOKUP (!!, +-, etc..)
+var TOKEN_COMMENT         = TokenStream.COMMENT         =  7; // {some text}
+var TOKEN_BEGIN_VARIATION = TokenStream.BEGIN_VARIATION =  8; // (
+var TOKEN_END_VARIATION   = TokenStream.END_VARIATION   =  9; // )
+var TOKEN_END_OF_GAME     = TokenStream.END_OF_GAME     = 10; // 1-0, 0-1, 1/2-1/2 or *
+
+// Movetext-related tokens are found within this interval.
+var FIRST_MOVE_TEXT_TOKEN = TOKEN_MOVE;
+var LAST_MOVE_TEXT_TOKEN = TOKEN_END_OF_GAME;
 
 
 /**
- * Try to match the given regular expression at the current position.
+ * Try to match the given regular expression at the current position, and increment the stream cursor (`stream._pos`) and the line counter (`stream._lineIndex`) in case of a match.
  *
  * @param {TokenStream} stream
  * @param {RegExp} regex
  * @returns {boolean}
  */
 function testAtPos(stream, regex) {
-	if(regex.matchedIndex < stream._pos) {
+	if(regex.matchedIndex === undefined || regex.matchedIndex < stream._pos) {
 		regex.lastIndex = stream._pos;
 		regex.matched = regex.exec(stream._text);
 		regex.matchedIndex = regex.matched === null ? stream._text.length : regex.matched.index;
@@ -105,6 +109,12 @@ function testAtPos(stream, regex) {
 
 	if(regex.matchedIndex === stream._pos) {
 		stream._pos = regex.lastIndex;
+		if(regex.needIncrementLineIndex) {
+			var reLineBreak = /\r?\n|\r/g;
+			while(reLineBreak.exec(regex.matched[0])) {
+				++stream._lineIndex;
+			}
+		}
 		return true;
 	}
 	else {
@@ -126,7 +136,6 @@ function skipBlanks(stream) {
 		}
 		else if(testAtPos(stream, stream._matchLineBreak)) {
 			++newLineCount;
-			++stream._lineIndex;
 		}
 		else {
 			break;
@@ -139,13 +148,24 @@ function skipBlanks(stream) {
 
 
 /**
+ * Trim the given string, and replace all the sub-sequence of 1 or several space-like characters by a single space.
+ *
+ * @param {string} text
+ * @returns {string}
+ */
+function trimAndCollapseSpaces(text) {
+	return text.replace(/^\s+|\s+$/g, '').replace(/\s+/g, ' ');
+}
+
+
+/**
  * Parse a header value, unescaping special characters.
  *
  * @param {string} rawHeaderValue
  * @returns {string}
  */
 function parseHeaderValue(rawHeaderValue) {
-	return rawHeaderValue.replace(/\\([\\"])/g, '$1');
+	return trimAndCollapseSpaces(rawHeaderValue.replace(/\\([\\"])/g, '$1'));
 }
 
 
@@ -156,14 +176,7 @@ function parseHeaderValue(rawHeaderValue) {
  * @returns {{comment:string, tags:Object}}
  */
 function parseCommentValue(rawComment) {
-	rawComment = rawComment.replace(/\\([{}\\])/g, '$1');
-
-	// Count the number of line break characters within the comment.
-	var lineBreakCount = 0;
-	var reLineBreak = /\r?\n|\r/g;
-	while(reLineBreak.exec(rawComment)) {
-		++lineBreakCount;
-	}
+	rawComment = rawComment.replace(/\\([\\}])/g, '$1');
 
 	// Find and remove the tags from the raw comment.
 	var tags = {};
@@ -173,13 +186,13 @@ function parseCommentValue(rawComment) {
 	});
 
 	// Trim the comment and collapse sequences of space characters into 1 character only.
-	comment = comment.replace(/^\s+|\s+$/g, '').replace(/\s+/g, ' ');
+	comment = trimAndCollapseSpaces(comment);
 	if(comment === '') {
 		comment = undefined;
 	}
 
 	// Return the result
-	return { comment:comment, tags:tags, lineBreakCount:lineBreakCount };
+	return { comment:comment, tags:tags };
 }
 
 
@@ -222,18 +235,8 @@ TokenStream.prototype.consumeToken = function() {
 	this._tokenCharacterIndex = this._pos;
 	this._tokenLineIndex = this._lineIndex;
 
-	// Match a game header (ex: [White "Kasparov, G."])
-	if(testAtPos(this, this._matchHeaderRegular)) {
-		this._token      = TOKEN_HEADER;
-		this._tokenValue = { key: this._matchHeaderRegular.matched[1], value: parseHeaderValue(this._matchHeaderRegular.matched[2]) };
-	}
-	else if(testAtPos(this, this._matchHeaderDegenerated)) {
-		this._token      = TOKEN_HEADER;
-		this._tokenValue = { key: this._matchHeaderDegenerated.matched[1], value: this._matchHeaderDegenerated.matched[2] };
-	}
-
 	// Match a move or a null-move
-	else if(testAtPos(this, this._matchMove)) {
+	if(testAtPos(this, this._matchMove)) {
 		this._token      = TOKEN_MOVE;
 		this._tokenValue = this._matchMove.matched[1];
 	}
@@ -246,10 +249,12 @@ TokenStream.prototype.consumeToken = function() {
 	}
 
 	// Match a comment
-	else if(testAtPos(this, this._matchComment)) {
+	else if(testAtPos(this, this._matchEnterComment)) {
+		if(!testAtPos(this, this._commentMode)) {
+			throw new exception.InvalidPGN(this._text, this._pos, this._lineIndex, i18n.INVALID_PGN_TOKEN);
+		}
 		this._token      = TOKEN_COMMENT;
-		this._tokenValue = parseCommentValue(this._matchComment.matched[1]);
-		this._lineIndex += this._tokenValue.lineBreakCount;
+		this._tokenValue = parseCommentValue(this._commentMode.matched[1]);
 	}
 
 	// Match the beginning of a variation
@@ -268,6 +273,33 @@ TokenStream.prototype.consumeToken = function() {
 	else if(testAtPos(this, this._matchEndOfGame)) {
 		this._token      = TOKEN_END_OF_GAME;
 		this._tokenValue = this._matchEndOfGame.matched[0];
+	}
+
+	// Match the beginning of a game header
+	else if(testAtPos(this, this._matchBeginHeader)) {
+		this._token      = TOKEN_BEGIN_HEADER;
+		this._tokenValue = null;
+	}
+
+	// Match the end of a game header
+	else if(testAtPos(this, this._matchEndHeader)) {
+		this._token      = TOKEN_END_HEADER;
+		this._tokenValue = null;
+	}
+
+	// Match the ID of a game header
+	else if(testAtPos(this, this._matchHeaderId)) {
+		this._token      = TOKEN_HEADER_ID;
+		this._tokenValue = this._matchHeaderId.matched[1];
+	}
+
+	// Match the value of a game header
+	else if(testAtPos(this, this._matchEnterHeaderValue)) {
+		if(!testAtPos(this, this._headerValueMode)) {
+			throw new exception.InvalidPGN(this._text, this._pos, this._lineIndex, i18n.INVALID_PGN_TOKEN);
+		}
+		this._token      = TOKEN_HEADER_VALUE;
+		this._tokenValue = parseHeaderValue(this._headerValueMode.matched[1]);
 	}
 
 	// Otherwise, the string is badly formatted with respect to the PGN syntax
@@ -332,4 +364,12 @@ TokenStream.prototype.tokenLineIndex = function() {
  */
 TokenStream.prototype.tokenCharacterIndex = function() {
 	return this._tokenCharacterIndex;
+};
+
+
+/**
+ * Wether the current token is a token of the move-text section.
+ */
+TokenStream.prototype.isMoveTextSection = function() {
+	return this._token >= FIRST_MOVE_TEXT_TOKEN && this._token <= LAST_MOVE_TEXT_TOKEN;
 };

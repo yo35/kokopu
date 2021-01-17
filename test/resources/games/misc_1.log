@@ -2,5 +2,5 @@ Event = {Game with comments and NAGs}
 -+<LONG {A comment with braces: ab{cd}ef\ghij 3 backslashes: \\\}<LONG
 (1w) e4 $1
 (1b) e6 $6 {This opening is called the French.}
-(2w) d4 $14
+(2w) d4 $14 {A comment with a degenerated \backslash}
 {Line}

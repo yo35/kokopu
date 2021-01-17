@@ -1,4 +1,3 @@
-White = {Ill-formed tag " (unescaped double quote, should be \")}
-Black = {Ill-formed tag \ (unescaped backslash, should be \\)}
+Event = {Degenerated \backslash}
 -+<LONG
 {Line}
