@@ -56,6 +56,7 @@ var TokenStream = exports.TokenStream = function(pgnString, initialLocation) {
 	this._matchSpaces = /[ \f\t\v]+/g;
 	this._matchLineBreak = /\r?\n|\r/g;
 	this._matchLineBreak.needIncrementLineIndex = true;
+	this._matchFastAdvance = /[^ \f\t\v\r\n"{]+/g;
 
 	// Token matchers
 	this._matchBeginHeader = /\[/g;
@@ -71,6 +72,7 @@ var TokenStream = exports.TokenStream = function(pgnString, initialLocation) {
 
 	// Special modes
 	this._headerValueMode = /((?:[^\\"\f\t\v\r\n]|\\[^\f\t\v\r\n])*)"/g;
+	this._headerValueDegradedMode = /[^\r\n]*/g
 	this._commentMode = /((?:[^\\}]|\\.)*)\}/g;
 	this._commentMode.needIncrementLineIndex = true;
 };
@@ -218,7 +220,7 @@ var SPECIAL_NAGS_LOOKUP = {
 /**
  * Try to consume 1 token.
  *
- * @return {boolean} `true` if a token could have been read, `false` if the end of the text has been reached.
+ * @returns {boolean} `true` if a token could have been read, `false` if the end of the text has been reached.
  * @throws {module:exception.InvalidPGN} If the text cannot be interpreted as a valid token.
  */
 TokenStream.prototype.consumeToken = function() {
@@ -231,7 +233,7 @@ TokenStream.prototype.consumeToken = function() {
 		return false;
 	}
 
-	// Remaining part of the string
+	// Save the location of the token.
 	this._tokenCharacterIndex = this._pos;
 	this._tokenLineIndex = this._lineIndex;
 
@@ -308,6 +310,56 @@ TokenStream.prototype.consumeToken = function() {
 	}
 
 	return true;
+};
+
+
+/**
+ * Try to skip all the tokens until a END_OF_GAME token is encountered.
+ *
+ * @returns {boolean} `true` if a END_OF_GAME token have been found, `false` if the end of the text has been reached.
+ * @throws {module:exception.InvalidPGN} If the text cannot be interpreted as a valid stream of tokens.
+ */
+TokenStream.prototype.skipGame = function() {
+	while(true) {
+
+		// Consume blank (i.e. meaning-less) characters
+		skipBlanks(this);
+		if(this._pos >= this._text.length) {
+			this._tokenCharacterIndex = this._text.length;
+			this._tokenLineIndex = this._lineIndex;
+			return false;
+		}
+
+		// Save the location of the token.
+		this._tokenCharacterIndex = this._pos;
+		this._tokenLineIndex = this._lineIndex;
+
+		// Skip comments.
+		if(testAtPos(this, this._matchEnterComment)) {
+			if(!testAtPos(this, this._commentMode)) {
+				throw new exception.InvalidPGN(this._text, this._pos, this._lineIndex, i18n.INVALID_PGN_TOKEN);
+			}
+		}
+
+		// Skip header values.
+		else if(testAtPos(this, this._matchEnterHeaderValue)) {
+			if(!testAtPos(this, this._headerValueMode) && !testAtPos(this, this._headerValueDegradedMode)) {
+				throw new exception.InvalidPGN(this._text, this._pos, this._lineIndex, i18n.INVALID_PGN_TOKEN);
+			}
+		}
+
+		// Match a end-of-game marker.
+		else if(testAtPos(this, this._matchEndOfGame)) {
+			this._token      = TOKEN_END_OF_GAME;
+			this._tokenValue = this._matchEndOfGame.matched[0];
+			return true;
+		}
+
+		// Skip everything else until the next space or comment/header-value beginning.
+		else if(!testAtPos(this, this._matchFastAdvance)) {
+			throw new exception.InvalidPGN(this._text, this._pos, this._lineIndex, i18n.INVALID_PGN_TOKEN);
+		}
+	}
 };
 
 

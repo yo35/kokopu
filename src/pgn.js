@@ -267,39 +267,13 @@ function doParseGame(stream) {
 
 			// Something unexpected...
 			default:
-				throw new exception.InvalidPGN(stream.text(), stream.tokenCharacterIndex(), stream.tokenLineIndex(), i18n.UNEXPECTED_TOKEN);
+				throw new exception.InvalidPGN(stream.text(), stream.tokenCharacterIndex(), stream.tokenLineIndex(), i18n.INVALID_PGN_TOKEN);
 
 		} // switch(stream.token())
 
 	} // while(stream.consumeToken())
 
 	throw new exception.InvalidPGN(stream.text(), stream.tokenCharacterIndex(), stream.tokenLineIndex(), i18n.UNEXPECTED_END_OF_TEXT);
-}
-
-
-/**
- * Skip 1 game in the given stream.
- *
- * @param {TokenStream} stream
- * @returns {boolean} `true` if a game has been skipped, false if the end of the stream has been reached.
- * @throws {module:exception.InvalidPGN}
- * @ignore
- */
-function doSkipGame(stream) {
-	var atLeastOneTokenFound = false;
-	while(stream.consumeToken()) {
-		atLeastOneTokenFound = true;
-		if(stream.token() === TokenStream.END_OF_GAME) {
-			return true;
-		}
-	}
-
-	// If the end of the stream has been reached without seeing any END_OF_GAME token, then no token should have been seen at all.
-	// Throw an exception if this is not the case.
-	if(atLeastOneTokenFound) {
-		throw new exception.InvalidPGN(stream.text(), stream.tokenCharacterIndex(), stream.tokenLineIndex(), i18n.UNEXPECTED_END_OF_TEXT);
-	}
-	return false;
 }
 
 
@@ -343,7 +317,7 @@ exports.pgnRead = function(pgnString, gameIndex) {
 		var gameLocations = [];
 		while(true) {
 			var currentLocation = stream.currentLocation();
-			if(!doSkipGame(stream)) {
+			if(!stream.skipGame()) {
 				break;
 			}
 			gameLocations.push(currentLocation);
@@ -355,7 +329,7 @@ exports.pgnRead = function(pgnString, gameIndex) {
 	else {
 		var gameCounter = 0;
 		while(gameCounter < gameIndex) {
-			if(doSkipGame(stream)) {
+			if(stream.skipGame()) {
 				++gameCounter;
 			}
 			else {

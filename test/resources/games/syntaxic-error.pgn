@@ -1,0 +1,74 @@
+[Event "Invalid move 1"]
+
+1. pawn goes to e4 *
+
+
+[Event "Invalid move 2"]
+
+1. Pe4 *
+
+
+[Event "Castling with character 0 instead of character O"]
+
+1. e4 e5 2. Nf3 Nf6 3. Bc4 Bc5 4. 0-0 0-1
+
+
+[Event "Missing header key"]
+["Somewhere"]
+
+*
+
+
+[Event "Missing header value"]
+[Site]
+
+*
+
+
+[Event "Linebreak characters are not allowed in header values"]
+[Site "Somewhere
+on the Earth"]
+
+*
+
+
+[Event "Unescaped double-quote character in header value"]
+[Site "Somewhere " else"]
+
+*
+
+
+[Event "Unescaped character in comment"]
+
+1. e4 {A comment with an unescaped close-brace } character} *
+
+
+[Event "Trying to fool the parser with an end-of-game-like header value before the error"]
+[Site "1-0"]
+
+1. Pe4 1-0
+
+
+[Event "Trying to fool the parser with an end-of-game-like header value after the error"]
+[Site "Somewhere
+on the Earth"]
+[Result "1-0"]
+
+1. e4 1-0
+
+
+[Event "Trying to fool the parser with an end-of-game-like comment before the error"]
+[Site "1-0"]
+
+1. e4 {1-0} Pe5 1-0
+
+
+[Event "Trying to fool the parser with an end-of-game-like comment after the error"]
+[Result "1-0"]
+
+1. Pe4 {1-0} 1-0
+
+
+[Event "A valid game at the end of the file"]
+
+1. e4 e5 2. Bc4 Nc6 3. Qh5 Nf6 4. Qxf7# 1-0
