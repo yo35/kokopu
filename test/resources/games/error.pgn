@@ -27,3 +27,11 @@
 [Variant "Chess 960"]
 
 *
+
+
+[Event "Line numbering with comment spanning several lines"]
+
+{I'am a very long comment
+that spans several lines.}
+
+1. O-O *

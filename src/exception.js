@@ -112,7 +112,7 @@ InvalidNotation.prototype.toString = function() {
  * @classdesc Exception thrown by the PGN parsing functions.
  * @static
  */
-var InvalidPGN = exports.InvalidPGN = function(pgn, index, message) {
+var InvalidPGN = exports.InvalidPGN = function(pgn, index, lineNumber, message) {
 
 	/**
 	 * PGN string that causes the error.
@@ -127,14 +127,19 @@ var InvalidPGN = exports.InvalidPGN = function(pgn, index, message) {
 	this.index = index;
 
 	/**
+	 * Index (1-based) of the line in the PGN string where the parsing fails (or a negative value is no particular character is related to the error).
+	 */
+	this.lineNumber = lineNumber;
+
+	/**
 	 * Human-readable message describing the error.
 	 * @member {string}
 	 */
-	this.message = buildMessage(message, 3, arguments);
+	this.message = buildMessage(message, 4, arguments);
 };
 
 InvalidPGN.prototype.toString = function() {
-	return toStringImpl('InvalidPGN', '[' + this.index + '] ' + this.message);
+	return toStringImpl('InvalidPGN', '[character=' + this.index + ' line=' + this.lineNumber + '] ' + this.message);
 };
 
 

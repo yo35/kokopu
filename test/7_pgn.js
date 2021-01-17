@@ -86,12 +86,12 @@ function loadValidItemDescriptor(pgnName, gameIndex) {
  *
  * @param {string} pgnName Name of the PGN file (without the .pgn extension)
  * @param {number} gameIndex Index of the item within the PGN file.
- * @returns {{index:number, message:string}}
+ * @returns {{index:number, lineNumber:number, message:string}}
  */
 function loadErrorItemDescriptor(pgnName, gameIndex) {
 	var filename = 'games/' + pgnName + '_' + gameIndex + '.err';
 	var fields = readText(filename).split('\n');
-	return { index: parseInt(fields[0]), message: fields[1].trim() };
+	return { index: parseInt(fields[0]), lineNumber: parseInt(fields[1]), message: fields[2].trim() };
 }
 
 
@@ -285,6 +285,7 @@ function pgnItemChecker(pgnName, gameIndex, iterationStyle, loader) {
 			test.exception(function() { loader(gameIndex); })
 				.isInstanceOf(kokopu.exception.InvalidPGN)
 				.hasProperty('index', expectedDescriptor.index)
+				.hasProperty('lineNumber', expectedDescriptor.lineNumber)
 				.hasProperty('message', expectedDescriptor.message);
 		}
 	};

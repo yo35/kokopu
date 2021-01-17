@@ -31,19 +31,26 @@ var i18n = require('../i18n');
  * @class
  * @classdesc Stream of tokens.
  */
-var TokenStream = exports.TokenStream = function(pgnString, initialPosition) {
+var TokenStream = exports.TokenStream = function(pgnString, initialLocation) {
 
 	// Remove the BOM (byte order mark) if any.
 	if(pgnString.codePointAt(0) === 0xFEFF) {
 		pgnString = pgnString.substr(1);
 	}
 
-	this._text                = pgnString;       // what is being parsed
-	this._pos                 = initialPosition; // current position in the string
-	this._emptyLineFound      = false;           // whether an empty line has been encountered while parsing the current token
-	this._token               = 0;               // current token
-	this._tokenValue          = null;            // current token value (if any)
-	this._tokenCharacterIndex = 0;               // position of the current token in the string
+	this._text                = pgnString; // what is being parsed
+	this._pos                 = 0;         // current position in the string
+	this._lineIndex           = 1;         // current line in the string
+	this._emptyLineFound      = false;     // whether an empty line has been encountered while parsing the current token
+	this._token               = 0;         // current token
+	this._tokenValue          = null;      // current token value (if any)
+	this._tokenCharacterIndex = -1;        // position of the current token in the string
+	this._tokenLineIndex      = -1;        // line of the current token in the string
+
+	if(initialLocation) {
+		this._pos = initialLocation.pos;
+		this._lineIndex = initialLocation.lineIndex;
+	}
 
 	// Space-like matchers
 	this._matchSpaces = /[ \f\t\v]+/g;
@@ -119,6 +126,7 @@ function skipBlanks(stream) {
 		}
 		else if(testAtPos(stream, stream._matchLineBreak)) {
 			++newLineCount;
+			++stream._lineIndex;
 		}
 		else {
 			break;
@@ -150,9 +158,15 @@ function parseHeaderValue(rawHeaderValue) {
 function parseCommentValue(rawComment) {
 	rawComment = rawComment.replace(/\\([{}\\])/g, '$1');
 
-	var tags = {};
+	// Count the number of line break characters within the comment.
+	var lineBreakCount = 0;
+	var reLineBreak = /\r?\n|\r/g;
+	while(reLineBreak.exec(rawComment)) {
+		++lineBreakCount;
+	}
 
 	// Find and remove the tags from the raw comment.
+	var tags = {};
 	var comment = rawComment.replace(/\[%([a-zA-Z0-9]+)\s+([^[\]]+)\]/g, function(match, p1, p2) {
 		tags[p1] = p2;
 		return ' ';
@@ -165,7 +179,7 @@ function parseCommentValue(rawComment) {
 	}
 
 	// Return the result
-	return { comment:comment, tags:tags };
+	return { comment:comment, tags:tags, lineBreakCount:lineBreakCount };
 }
 
 
@@ -200,11 +214,13 @@ TokenStream.prototype.consumeToken = function() {
 	skipBlanks(this);
 	if(this._pos >= this._text.length) {
 		this._tokenCharacterIndex = this._text.length;
+		this._tokenLineIndex = this._lineIndex;
 		return false;
 	}
 
 	// Remaining part of the string
 	this._tokenCharacterIndex = this._pos;
+	this._tokenLineIndex = this._lineIndex;
 
 	// Match a game header (ex: [White "Kasparov, G."])
 	if(testAtPos(this, this._matchHeaderRegular)) {
@@ -233,6 +249,7 @@ TokenStream.prototype.consumeToken = function() {
 	else if(testAtPos(this, this._matchComment)) {
 		this._token      = TOKEN_COMMENT;
 		this._tokenValue = parseCommentValue(this._matchComment.matched[1]);
+		this._lineIndex += this._tokenValue.lineBreakCount;
 	}
 
 	// Match the beginning of a variation
@@ -255,7 +272,7 @@ TokenStream.prototype.consumeToken = function() {
 
 	// Otherwise, the string is badly formatted with respect to the PGN syntax
 	else {
-		throw new exception.InvalidPGN(this._text, this._pos, i18n.INVALID_PGN_TOKEN);
+		throw new exception.InvalidPGN(this._text, this._pos, this._lineIndex, i18n.INVALID_PGN_TOKEN);
 	}
 
 	return true;
@@ -270,8 +287,11 @@ TokenStream.prototype.text = function() {
 };
 
 
-TokenStream.prototype.currentPosition = function() {
-	return this._pos;
+/**
+ * Current location within the stream.
+ */
+TokenStream.prototype.currentLocation = function() {
+	return { pos: this._pos, lineIndex: this._lineIndex };
 };
 
 
@@ -296,6 +316,14 @@ TokenStream.prototype.token = function() {
  */
 TokenStream.prototype.tokenValue = function() {
 	return this._tokenValue;
+};
+
+
+/**
+ * Line index of the current token.
+ */
+TokenStream.prototype.tokenLineIndex = function() {
+	return this._tokenLineIndex;
 };
 
 
