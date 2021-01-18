@@ -1,6 +1,10 @@
 ChangeLog
 =========
 
+1.6.1 (January 18, 2021)
+------------------------
+* Fix minor PGN parsing issues.
+
 1.6.0 (January 17, 2021)
 ------------------------
 * Report line index in PGN parsing exceptions.
