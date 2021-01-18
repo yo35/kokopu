@@ -56,7 +56,7 @@ var TokenStream = exports.TokenStream = function(pgnString, initialLocation) {
 	this._matchSpaces = /[ \f\t\v]+/g;
 	this._matchLineBreak = /\r?\n|\r/g;
 	this._matchLineBreak.needIncrementLineIndex = true;
-	this._matchFastAdvance = /[^ \f\t\v\r\n"{]+/g;
+	this._matchFastAdvance = /[^ \f\t\v\r\n"{][^ \f\t\v\r\n"{10*]*/g;
 
 	// Token matchers
 	this._matchBeginHeader = /\[/g;
