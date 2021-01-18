@@ -63,7 +63,8 @@ var TokenStream = exports.TokenStream = function(pgnString, initialLocation) {
 	this._matchEndHeader = /\]/g;
 	this._matchHeaderId = /(\w+)/g;
 	this._matchEnterHeaderValue = /"/g;
-	this._matchMove = /(?:[1-9][0-9]*\s*\.(?:\.\.)?\s*)?((?:O-O-O|O-O|[KQRBN][a-h]?[1-8]?x?[a-h][1-8]|(?:[a-h]x?)?[a-h][1-8](?:=?[KQRBNP])?)[+#]?|--)/g;
+	this._matchMoveNumber = /[1-9][0-9]*\.(?:\.\.)?/g;
+	this._matchMove = /(?:O-O-O|O-O|[KQRBN][a-h]?[1-8]?x?[a-h][1-8]|(?:[a-h]x?)?[a-h][1-8](?:=?[KQRBNP])?)[+#]?|--/g;
 	this._matchNag = /([!?][!?]?|\+\/?[-=]|[-=]\/?\+|=|inf|~)|\$([1-9][0-9]*)/g;
 	this._matchEnterComment = /\{/g;
 	this._matchBeginVariation = /\(/g;
@@ -83,15 +84,16 @@ var TOKEN_BEGIN_HEADER    = TokenStream.BEGIN_HEADER    =  1; // [
 var TOKEN_END_HEADER      = TokenStream.END_HEADER      =  2; // ]
 var TOKEN_HEADER_ID       = TokenStream.HEADER_ID       =  3; // Identifier of a header (e.g. `White` in header `[White "Kasparov, G."]`)
 var TOKEN_HEADER_VALUE    = TokenStream.HEADER_VALUE    =  4; // Value of a header (e.g. `Kasparov, G.` in header `[White "Kasparov, G."]`)
-var TOKEN_MOVE            = TokenStream.MOVE            =  5; // SAN notation or -- (with an optional move number)
-var TOKEN_NAG             = TokenStream.NAG             =  6; // $[1-9][0-9]* or a key from table SPECIAL_NAGS_LOOKUP (!!, +-, etc..)
-var TOKEN_COMMENT         = TokenStream.COMMENT         =  7; // {some text}
-var TOKEN_BEGIN_VARIATION = TokenStream.BEGIN_VARIATION =  8; // (
-var TOKEN_END_VARIATION   = TokenStream.END_VARIATION   =  9; // )
-var TOKEN_END_OF_GAME     = TokenStream.END_OF_GAME     = 10; // 1-0, 0-1, 1/2-1/2 or *
+var TOKEN_MOVE_NUMBER     = TokenStream.MOVE_NUMBER     =  5; // 42. or 23...
+var TOKEN_MOVE            = TokenStream.MOVE            =  6; // SAN notation
+var TOKEN_NAG             = TokenStream.NAG             =  7; // $[1-9][0-9]* or a key from table SPECIAL_NAGS_LOOKUP (!!, +-, etc..)
+var TOKEN_COMMENT         = TokenStream.COMMENT         =  8; // {some text}
+var TOKEN_BEGIN_VARIATION = TokenStream.BEGIN_VARIATION =  9; // (
+var TOKEN_END_VARIATION   = TokenStream.END_VARIATION   = 10; // )
+var TOKEN_END_OF_GAME     = TokenStream.END_OF_GAME     = 11; // 1-0, 0-1, 1/2-1/2 or *
 
 // Movetext-related tokens are found within this interval.
-var FIRST_MOVE_TEXT_TOKEN = TOKEN_MOVE;
+var FIRST_MOVE_TEXT_TOKEN = TOKEN_MOVE_NUMBER;
 var LAST_MOVE_TEXT_TOKEN = TOKEN_END_OF_GAME;
 
 
@@ -237,10 +239,16 @@ TokenStream.prototype.consumeToken = function() {
 	this._tokenCharacterIndex = this._pos;
 	this._tokenLineIndex = this._lineIndex;
 
+	// Match a move number
+	if(testAtPos(this, this._matchMoveNumber)) {
+		this._token      = TOKEN_MOVE_NUMBER;
+		this._tokenValue = null;
+	}
+
 	// Match a move or a null-move
-	if(testAtPos(this, this._matchMove)) {
+	else if(testAtPos(this, this._matchMove)) {
 		this._token      = TOKEN_MOVE;
-		this._tokenValue = this._matchMove.matched[1];
+		this._tokenValue = this._matchMove.matched[0];
 	}
 
 	// Match a NAG

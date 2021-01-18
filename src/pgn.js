@@ -204,6 +204,10 @@ function doParseGame(stream) {
 				processHeader(stream, game, initialPositionFactory, headerId, headerValue, headerValueCharacterIndex, headerValueLineIndex);
 				break;
 
+			// Move number
+			case TokenStream.MOVE_NUMBER:
+				break;
+
 			// Move or null-move
 			case TokenStream.MOVE:
 				try {
