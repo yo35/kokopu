@@ -52,6 +52,30 @@ function makeDescriptor(from, to) {
 	return position.isMoveLegal(from, to);
 }
 
+function makeChess60Descriptor(from, to) {
+
+	// +---+---+---+---+---+---+---+---+
+	// |   | n | b | k |   |   | n | r |
+	// +---+---+---+---+---+---+---+---+
+	// | P | p | q | p |   |   |   | p |
+	// +---+---+---+---+---+---+---+---+
+	// |   |   |   |   | p |   |   |   |
+	// +---+---+---+---+---+---+---+---+
+	// |   |   |   |   |   | p | P |   |
+	// +---+---+---+---+---+---+---+---+
+	// |   |   |   |   |   |   |   |   |
+	// +---+---+---+---+---+---+---+---+
+	// |   |   | Q |   |   |   |   |   |
+	// +---+---+---+---+---+---+---+---+
+	// |   | P |   |   | P | P |   | P |
+	// +---+---+---+---+---+---+---+---+
+	// | R | N | B | K |   |   |   | R |
+	// +---+---+---+---+---+---+---+---+
+	// w K f6
+
+	var position = new kokopu.Position('chess960', '1nbk2nr/Ppqp3p/4p3/5pP1/8/2Q5/1P1PPP1P/RNBK3R w AHh f6 0 1');
+	return position.isMoveLegal(from, to);
+}
 
 describe('Illegal move', function() {
 	it('Status?', function() { test.value(makeDescriptor('c1', 'a3')).is(false); });
@@ -83,6 +107,7 @@ describe('Normal move', function() {
 	it('Promotion'             , function() { test.exception(function() { descriptor.promotion(); }).isInstanceOf(kokopu.exception.IllegalArgument); });
 	it('Colored promotion'     , function() { test.exception(function() { descriptor.coloredPromotion(); }).isInstanceOf(kokopu.exception.IllegalArgument); });
 	it('To string'             , function() { test.value(descriptor.toString()).is('b1a3'); });
+	it('To uci'                , function() { test.value(descriptor.toUCIString()).is('b1a3'); });
 });
 
 
@@ -111,6 +136,7 @@ describe('Normal move with capture', function() {
 	it('Promotion'             , function() { test.exception(function() { descriptor.promotion(); }).isInstanceOf(kokopu.exception.IllegalArgument); });
 	it('Colored promotion'     , function() { test.exception(function() { descriptor.coloredPromotion(); }).isInstanceOf(kokopu.exception.IllegalArgument); });
 	it('To string'             , function() { test.value(descriptor.toString()).is('c3c7'); });
+	it('To uci'                , function() { test.value(descriptor.toUCIString()).is('c3c7'); });
 });
 
 
@@ -139,6 +165,35 @@ describe('Castling move', function() {
 	it('Promotion'             , function() { test.exception(function() { descriptor.promotion(); }).isInstanceOf(kokopu.exception.IllegalArgument); });
 	it('Colored promotion'     , function() { test.exception(function() { descriptor.coloredPromotion(); }).isInstanceOf(kokopu.exception.IllegalArgument); });
 	it('To string'             , function() { test.value(descriptor.toString()).is('e1g1O'); });
+	it('To uci'                , function() { test.value(descriptor.toUCIString()).is('e1g1'); });
+});
+
+describe('Chess960 Castling move', function() {
+	var preDescriptor = makeChess60Descriptor('d1', 'g1');
+
+	it('Status?', function() { test.value(preDescriptor.status).is('regular'); });
+	var descriptor = preDescriptor();
+
+	it('Is descriptor?', function() { test.value(kokopu.isMoveDescriptor(descriptor)).is(true); });
+	it('Is castling?'  , function() { test.value(descriptor.isCastling()).is(true); });
+	it('Is en-passant?', function() { test.value(descriptor.isEnPassant()).is(false); });
+	it('Is capture?'   , function() { test.value(descriptor.isCapture()).is(false); });
+	it('Is promotion?' , function() { test.value(descriptor.isPromotion()).is(false); });
+
+	it('Square from'           , function() { test.value(descriptor.from()).is('d1'); });
+	it('Square to'             , function() { test.value(descriptor.to()).is('g1'); });
+	it('Color'                 , function() { test.value(descriptor.color()).is('w'); });
+	it('Moving piece'          , function() { test.value(descriptor.movingPiece()).is('k'); });
+	it('Moving colored piece'  , function() { test.value(descriptor.movingColoredPiece()).is('wk'); });
+	it('Captured piece'        , function() { test.exception(function() { descriptor.capturedPiece(); }).isInstanceOf(kokopu.exception.IllegalArgument); });
+	it('Captured colored piece', function() { test.exception(function() { descriptor.capturedColoredPiece(); }).isInstanceOf(kokopu.exception.IllegalArgument); });
+	it('Rook from'             , function() { test.value(descriptor.rookFrom()).is('h1'); });
+	it('Rook to'               , function() { test.value(descriptor.rookTo()).is('f1'); });
+	it('En-passant square'     , function() { test.exception(function() { descriptor.enPassantSquare(); }).isInstanceOf(kokopu.exception.IllegalArgument); });
+	it('Promotion'             , function() { test.exception(function() { descriptor.promotion(); }).isInstanceOf(kokopu.exception.IllegalArgument); });
+	it('Colored promotion'     , function() { test.exception(function() { descriptor.coloredPromotion(); }).isInstanceOf(kokopu.exception.IllegalArgument); });
+	it('To string'             , function() { test.value(descriptor.toString()).is('d1g1O'); });
+	it('To uci'                , function() { test.value(descriptor.toUCIString()).is('d1h1'); });
 });
 
 
@@ -167,6 +222,7 @@ describe('En-passant move', function() {
 	it('Promotion'             , function() { test.exception(function() { descriptor.promotion(); }).isInstanceOf(kokopu.exception.IllegalArgument); });
 	it('Colored promotion'     , function() { test.exception(function() { descriptor.coloredPromotion(); }).isInstanceOf(kokopu.exception.IllegalArgument); });
 	it('To string'             , function() { test.value(descriptor.toString()).is('g5f6'); });
+	it('To uci'                , function() { test.value(descriptor.toUCIString()).is('g5f6'); });
 });
 
 
@@ -195,6 +251,7 @@ describe('Promotion move', function() {
 	it('Promotion'             , function() { test.value(descriptor.promotion()).is('q'); });
 	it('Colored promotion'     , function() { test.value(descriptor.coloredPromotion()).is('wq'); });
 	it('To string'             , function() { test.value(descriptor.toString()).is('a7a8Q'); });
+	it('To uci'                , function() { test.value(descriptor.toUCIString()).is('a7a8q'); });
 });
 
 
@@ -223,4 +280,5 @@ describe('Promotion move with capture', function() {
 	it('Promotion'             , function() { test.value(descriptor.promotion()).is('r'); });
 	it('Colored promotion'     , function() { test.value(descriptor.coloredPromotion()).is('wr'); });
 	it('To string'             , function() { test.value(descriptor.toString()).is('a7b8R'); });
+	it('To uci'                , function() { test.value(descriptor.toUCIString()).is('a7b8r'); });
 });

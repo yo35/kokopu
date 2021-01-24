@@ -88,7 +88,8 @@ exports.rankFromString     = function(rank   ) { return RANK_SYMBOL    .indexOf(
 exports.fileFromString     = function(file   ) { return FILE_SYMBOL    .indexOf(file   ); };
 exports.resultFromString   = function(result ) { return RESULT_SYMBOL  .indexOf(result ); };
 exports.variantFromString  = function(variant) { return VARIANT_SYMBOL .indexOf(variant); };
-
+exports.fileFromSquare     = function(square)  { return FILE_SYMBOL[square % 16]; };
+exports.rankFromSquare     = function(square)  { return RANK_SYMBOL[Math.floor(square / 16)]; };
 exports.squareToString = function(square) {
 	return FILE_SYMBOL[square % 16] + RANK_SYMBOL[Math.floor(square / 16)];
 };

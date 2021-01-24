@@ -106,8 +106,8 @@ MoveDescriptor.prototype.toString = function() {
 
 MoveDescriptor.prototype.toUCIString = function() {
 	var result = bt.squareToString(this._from);
-	if(this.isCastling()) {
-		// UCI castling is KxR of same color
+	if(this.isCastling() && bt.fileFromSquare(this._from) !== 'e') {
+		// UCI castling is KxR of same color for chess960 by convention
 		result += bt.squareToString(this._optionalSquare1);
 	} else {
 		result += bt.squareToString(this._to);
