@@ -24,7 +24,7 @@
 PACKAGE_JSON_FILE = package.json
 SRC_FILES         = index.js $(shell find src)
 SRC_DEV_FILES     = $(shell find demo) $(shell find test)
-SRC_DOC_FILES     = $(shell find doc_src)
+SRC_DOC_FILES     = $(shell find doc)
 DOC_CONFIG_FILE   = .jsdoc.json
 INFO_FILES        = README.md CHANGELOG.md LICENSE
 
@@ -35,8 +35,8 @@ PACKAGE_VERSION = $(shell node -p 'require("./$(PACKAGE_JSON_FILE)").version')
 
 # Generated files and folders
 NODE_MODULES_DIR    = node_modules
-DOCUMENTATION_DIR   = docs
 DISTRIBUTION_DIR    = dist
+DOCUMENTATION_DIR   = dist/docs
 BROWSER_JS_FILE     = dist/kokopu.js
 BROWSER_MIN_JS_FILE = dist/kokopu.min.js
 PACKAGE_DIST_FILE   = dist/kokopu-$(PACKAGE_VERSION).zip
@@ -86,8 +86,11 @@ $(NODE_MODULES_DIR): $(PACKAGE_JSON_FILE)
 # Generate the documentation
 # --------------------------
 
+docs: $(DOCUMENTATION_DIR)
+
 $(DOCUMENTATION_DIR): $(DOC_CONFIG_FILE) $(SRC_FILES) $(SRC_DOC_FILES) $(PACKAGE_JSON_FILE) $(NODE_MODULES_DIR)
 	@$(ECHO) "$(COLOR_IN)Building documentation...$(COLOR_OUT)"
+	@mkdir -p $(DISTRIBUTION_DIR)
 	@rm -rf $@
 	@$(JSDOC) -c $< -d $@
 
@@ -146,6 +149,6 @@ pack: $(DOCUMENTATION_DIR) $(PACKAGE_DIST_FILE)
 # -----------------------
 
 clean:
-	@rm -rf $(NODE_MODULES_DIR) npm-debug.log $(DOCUMENTATION_DIR) $(DISTRIBUTION_DIR)
+	@rm -rf $(NODE_MODULES_DIR) npm-debug.log $(DISTRIBUTION_DIR)
 
-.PHONY: help init lint unit test pack clean
+.PHONY: help init docs lint unit test pack clean
