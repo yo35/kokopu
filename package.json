@@ -6,6 +6,7 @@
 		"chess",
 		"fen",
 		"pgn",
+		"uci",
 		"games"
 	],
 	"bugs": "https://github.com/yo35/kokopu/issues",
