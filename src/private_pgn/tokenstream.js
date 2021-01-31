@@ -322,12 +322,13 @@ TokenStream.prototype.consumeToken = function() {
 
 
 /**
- * Try to skip all the tokens until a END_OF_GAME token is encountered.
+ * Try to skip all the tokens until a END_OF_GAME token or the end of the file is encountered.
  *
- * @returns {boolean} `true` if a END_OF_GAME token have been found, `false` if the end of the text has been reached.
+ * @returns {boolean} `true` if any token have been found, `false` if the end of the file has been reached without finding any token.
  * @throws {module:exception.InvalidPGN} If the text cannot be interpreted as a valid stream of tokens.
  */
 TokenStream.prototype.skipGame = function() {
+	var atLeastOneTokenFound = false;
 	while(true) {
 
 		// Consume blank (i.e. meaning-less) characters
@@ -335,12 +336,13 @@ TokenStream.prototype.skipGame = function() {
 		if(this._pos >= this._text.length) {
 			this._tokenCharacterIndex = this._text.length;
 			this._tokenLineIndex = this._lineIndex;
-			return false;
+			return atLeastOneTokenFound;
 		}
 
 		// Save the location of the token.
 		this._tokenCharacterIndex = this._pos;
 		this._tokenLineIndex = this._lineIndex;
+		atLeastOneTokenFound = true;
 
 		// Skip comments.
 		if(testAtPos(this, this._matchEnterComment)) {
