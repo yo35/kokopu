@@ -85,8 +85,7 @@ exports.makeInitial = function() {
 
 
 /**
- * Chess960 initial position, following the numbering scheme proposed by Reinhard Scharnagl (see for instance
- * https://chessprogramming.wikispaces.com/Reinhard+Scharnagl and https://chess960.net/start-positions/).
+ * Chess960 initial position, following the numbering scheme proposed by Reinhard Scharnagl (see for instance https://chess960.net/start-positions/).
  */
 exports.make960FromScharnagl = function(scharnaglCode) {
 	var info = decodeScharnagl(scharnaglCode);

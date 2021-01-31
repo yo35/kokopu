@@ -161,7 +161,7 @@ Position.prototype.reset = function() {
  * Set the position to one of the Chess960 starting position.
  *
  * @param {number} scharnaglCode Must be between 0 and 959 inclusive (see {@link https://chess960.net/start-positions/}
- *        or {@link https://chessprogramming.wikispaces.com/Reinhard+Scharnagl} for more details).
+ *        or {@link https://www.chessprogramming.org/Reinhard_Scharnagl} for more details).
  */
 Position.prototype.reset960 = function(scharnaglCode) {
 	this._impl = impl.make960FromScharnagl(scharnaglCode);
