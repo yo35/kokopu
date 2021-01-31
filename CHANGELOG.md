@@ -1,6 +1,10 @@
 ChangeLog
 =========
 
+1.7.0 (January 31, 2021)
+------------------------
+* Add UCI move parsing and generation.
+
 1.6.1 (January 18, 2021)
 ------------------------
 * Fix minor PGN parsing issues.
