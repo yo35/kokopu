@@ -4,7 +4,9 @@ Kokopu documentation
 Kokopu is a JavaScript library for chess applications. It implements the chess game rules,
 and provides tools to read/write the standard chess file formats
 ([PGN](https://en.wikipedia.org/wiki/Portable_Game_Notation),
-[FEN](https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation), etc.).
+[FEN](https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation),
+[UCI](https://en.wikipedia.org/wiki/Universal_Chess_Interface),
+etc.).
 
 [https://www.npmjs.com/package/kokopu](https://www.npmjs.com/package/kokopu)
 
@@ -95,3 +97,30 @@ Or within a browser:
 	// etc...
 </script>
 ```
+
+
+
+References
+----------
+
+### Forsyth-Edwards Notation (FEN)
+
+- [Wikipedia page](https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation)
+- [Chess Programming wiki](https://www.chessprogramming.org/Forsyth-Edwards_Notation)
+
+### Universal Chess Interface (UCI)
+
+- [Wikipedia page](https://en.wikipedia.org/wiki/Universal_Chess_Interface)
+- [Chess Programming wiki](https://www.chessprogramming.org/UCI)
+- [Protocol reference as published by Stefan Meyer-Kahlen](https://www.shredderchess.com/download/div/uci.zip)
+
+### Standard Algebraic Notation (SAN)
+
+- [Wikipedia page](https://en.wikipedia.org/wiki/Algebraic_notation_(chess))
+- [Chess Programming wiki](https://www.chessprogramming.org/Algebraic_Chess_Notation)
+
+### Portable Game Notation (PGN)
+
+- [Wikipedia page](https://en.wikipedia.org/wiki/Portable_Game_Notation)
+- [Chess Programming wiki](https://www.chessprogramming.org/Portable_Game_Notation)
+- [Format specification](https://ia802908.us.archive.org/26/items/pgn-standard-1994-03-12/PGN_standard_1994-03-12.txt)
