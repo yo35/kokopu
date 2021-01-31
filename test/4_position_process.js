@@ -44,8 +44,9 @@ function testData() {
 			isStalemate : fields[10]==='true',
 			hasMove     : fields[11]==='true',
 			moves       : fields[12],
-			notations   : fields[13],
-			successors  : fields[14]
+			uciMoves    : fields[13],
+			notations   : fields[14],
+			successors  : fields[15]
 		};
 	});
 }
@@ -202,6 +203,13 @@ function notationGenerationTest(elem, expectedNotations, testedFunction) {
 }
 
 
+describe('UCI notation generation', function() {
+	testData().forEach(function(elem) {
+		it('Position ' + elem.label, notationGenerationTest(elem, elem.uciMoves, function(pos, move) { return pos.uci(move); }));
+	});
+});
+
+
 describe('Standard algebraic notation generation', function() {
 	testData().forEach(function(elem) {
 		it('Position ' + elem.label, notationGenerationTest(elem, elem.notations, function(pos, move) { return pos.notation(move); }));
@@ -217,6 +225,41 @@ describe('Figurine notation generation', function() {
 	testData().forEach(function(elem) {
 		var figNotations = elem.notations.replace(/[KQRBNP]/g, function(val) { return elem.turn === 'w' ? WHITE_FIGURINES[val] : BLACK_FIGURINES[val]; });
 		it('Position ' + elem.label, notationGenerationTest(elem, figNotations, function(pos, move) { return pos.figurineNotation(move); }));
+	});
+});
+
+
+describe('UCI notation parsing', function() {
+	var /* const */ PROMO  = ['', 'q', 'r', 'b', 'n'];
+	testData().forEach(function(elem) {
+		it('Position ' + elem.label, function() {
+			var pos = createPosition(elem);
+			var moves = [];
+
+			// Try all the possible UCI notations...
+			kokopu.forEachSquare(function(from) {
+				kokopu.forEachSquare(function(to) {
+					for(var p=0; p<PROMO.length; ++p) {
+						var text = from + to + PROMO[p];
+						try {
+							var descriptor = pos.uci(text);
+							moves.push(descriptor.toString());
+						}
+						catch(e) {
+							if(!(e instanceof kokopu.exception.InvalidNotation)) {
+								throw e;
+							}
+						}
+					}
+				});
+			});
+
+			// Sort the moves and remove the duplicates.
+			moves.sort();
+			moves = moves.filter(function(move, index, tab) { return index === 0 || move !== tab[index-1]; });
+
+			test.value(moves.join('/')).is(elem.moves);
+		});
 	});
 });
 

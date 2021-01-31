@@ -44,7 +44,9 @@ exports.INVALID_EN_PASSANT_FIELD                  = 'The 4th field of a FEN stri
 exports.WRONG_RANK_IN_EN_PASSANT_FIELD            = 'The rank number indicated in the FEN string 4th field is inconsistent with respect to the 2nd field.';
 exports.INVALID_MOVE_COUNTING_FIELD               = 'The %1$s field of a FEN string must be a number.';
 
-// Notation parsing error messages
+// Notation & UCI parsing error messages
+exports.INVALID_UCI_NOTATION_SYNTAX         = 'The syntax of the UCI notation is invalid.';
+exports.ILLEGAL_UCI_MOVE                    = 'The UCI move is not legal.';
 exports.INVALID_MOVE_NOTATION_SYNTAX        = 'The syntax of the move notation is invalid.';
 exports.ILLEGAL_POSITION                    = 'The position is not legal.';
 exports.ILLEGAL_NO_KING_CASTLING            = 'Casting is not legal in the considered position as it has no king.';

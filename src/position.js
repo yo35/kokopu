@@ -33,6 +33,7 @@ var attacks = require('./private_position/attacks');
 var legality = require('./private_position/legality');
 var moveGeneration = require('./private_position/movegeneration');
 var notation = require('./private_position/notation');
+var uci = require('./private_position/uci');
 
 
 
@@ -746,5 +747,55 @@ Position.prototype.figurineNotation = function() {
 	}
 	else {
 		throw new exception.IllegalArgument('Position#figurineNotation()');
+	}
+};
+
+
+
+// -----------------------------------------------------------------------------
+// UCI
+// -----------------------------------------------------------------------------
+
+
+/**
+ * Return the UCI notation corresponding to the given move descriptor.
+ *
+ * Examples of UCI notation: `'e2e4'`, `'b8c6'`, `'e7e8q'` (promotion)... For more details, please refer to:
+ * - {@link https://en.wikipedia.org/wiki/Universal_Chess_Interface}
+ * - {@link https://www.chessprogramming.org/UCI}
+ * - {@link https://www.shredderchess.com/download/div/uci.zip}
+ *
+ * @param {MoveDescriptor} moveDescriptor
+ * @param {boolean} [forceKxR=false] If `true`, castling moves are encoded as "king-take-rook", i.e. for instance white king-side castling will be `'e1h1'`
+ *        (instead of `'e1g1'` in UCI standard). If `false`, castling move encoding follows the UCI standard for normal chess games (e.g. `'e1g1'`).
+ *        For Chess960 games, the "king-take-rook" style is always used, whatever the value of this flag.
+ * @returns {string}
+ *
+ *//**
+ *
+ * Parse the given string as UCI notation and return the corresponding move descriptor.
+ *
+ * @param {string} move
+ * @param {boolean} [strict=false] If `true`, "king-take-rook"-encoded castling moves (i.e. for instance `'e1h1'` for white king-side castling)
+ *        are rejected in case of normal chess games. If `false`, both "king-take-rook"-encoded and UCI-standard-encoded castling moves (e.g. `'e1g1'`)
+ *        are accepted. For Chess960 games, only the "king-take-rook" style is accepted, whatever the value of this flag.
+ * @returns {MoveDescriptor}
+ * @throws {module:exception.InvalidNotation} If the move parsing fails or if the parsed move would correspond to an illegal move.
+ */
+Position.prototype.uci = function() {
+	if(arguments.length === 1 && moveDescriptor.isMoveDescriptor(arguments[0])) {
+		return uci.getNotation(this._impl, arguments[0], false);
+	}
+	else if(arguments.length === 2 && moveDescriptor.isMoveDescriptor(arguments[0]) && typeof arguments[1] === 'boolean') {
+		return uci.getNotation(this._impl, arguments[0], arguments[1]);
+	}
+	else if(arguments.length === 1 && typeof arguments[0] === 'string') {
+		return uci.parseNotation(this._impl, arguments[0], false);
+	}
+	else if(arguments.length >= 2 && typeof arguments[0] === 'string' && typeof arguments[1] === 'boolean') {
+		return uci.parseNotation(this._impl, arguments[0], arguments[1]);
+	}
+	else {
+		throw new exception.IllegalArgument('Position#uci()');
 	}
 };
