@@ -87,20 +87,13 @@ console.log(position.ascii());
 
 // List the available moves.
 var moves = position.moves();
-console.log(moves.map(function(move) { return position.notation(move); }));
+console.log(moves.map(function(move) {
+  return position.notation(move);
+}));
 
-// [ 'a6', 'a5', 'b6', 'b5', 'c6', 'c5', 'd6','d5', 'f6', 'f5', 'g6', 'g5', 'h6', 'h5', 'Na6', 'Nc6',
-// 'Qe7', 'Qf6', 'Qg5', 'Qh4', 'Ke7', 'Be7', 'Bd6', 'Bc5', 'Bb4', 'Ba3', 'Nf6', 'Nh6', 'Ne7' ]
+// [ 'a6', 'a5', 'b6', 'b5', 'c6', 'c5', 'd6','d5', 'f6', 'f5', 'g6',
+// 'g5', 'h6', 'h5', 'Na6', 'Nc6', 'Qe7', 'Qf6', 'Qg5', 'Qh4', 'Ke7',
+// 'Be7', 'Bd6', 'Bc5', 'Bb4', 'Ba3', 'Nf6', 'Nh6', 'Ne7' ]
 ```
 
-Or within a browser:
-
-```
-<script src="kokopu.js"></script>
-<script>
-	var position = new kokopu.Position();
-	position.play('e4');
-	position.play('e5');
-	// etc...
-</script>
-```
+More examples available in [documentation](https://kokopu.yo35.org/).
