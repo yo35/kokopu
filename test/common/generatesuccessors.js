@@ -23,7 +23,7 @@
 'use strict';
 
 
-var kokopu = require('../../index');
+var kokopu = require('../../src/index');
 
 
 /**

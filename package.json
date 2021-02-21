@@ -17,7 +17,7 @@
 		"Atin Malaviya <atinm.dev@gmail.com>"
 	],
 	"funding": "https://www.paypal.com/donate?hosted_button_id=MP795VF4FXUDW",
-	"main": "index.js",
+	"main": "src/index.js",
 	"files": [
 		"src"
 	],
@@ -32,7 +32,7 @@
 		"unit.js": "~2.1.1"
 	},
 	"scripts": {
-		"lint": "eslint index.js demo src test",
+		"lint": "eslint demo src test",
 		"unit": "mocha --bail --sort",
 		"test": "npm run lint && npm run unit"
 	}

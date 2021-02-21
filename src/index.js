@@ -23,19 +23,19 @@
 'use strict';
 
 
-exports.i18n = require('./src/i18n');
-exports.exception = require('./src/exception');
+exports.i18n = require('./i18n');
+exports.exception = require('./exception');
 
-var util = require('./src/util');
+var util = require('./util');
 exports.forEachSquare = util.forEachSquare;
 exports.squareColor = util.squareColor;
 exports.squareToCoordinates = util.squareToCoordinates;
 exports.coordinatesToSquare = util.coordinatesToSquare;
 
-exports.isMoveDescriptor = require('./src/movedescriptor').isMoveDescriptor;
+exports.isMoveDescriptor = require('./movedescriptor').isMoveDescriptor;
 
-exports.Position = require('./src/position').Position;
-exports.Game = require('./src/game').Game;
+exports.Position = require('./position').Position;
+exports.Game = require('./game').Game;
 
-var pgn = require('./src/pgn');
+var pgn = require('./pgn');
 exports.pgnRead = pgn.pgnRead;
