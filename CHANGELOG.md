@@ -1,6 +1,10 @@
 ChangeLog
 =========
 
+1.7.1 (February 21, 2021)
+------------------------
+* Minor fixes in doc and packaging scripts.
+
 1.7.0 (January 31, 2021)
 ------------------------
 * Add UCI move parsing and generation.
