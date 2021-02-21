@@ -18,6 +18,9 @@
 	],
 	"funding": "https://www.paypal.com/donate?hosted_button_id=MP795VF4FXUDW",
 	"main": "index.js",
+	"files": [
+		"src" 
+	],
 	"devDependencies": {
 		"eslint": "~7.19.0",
 		"mocha": "~8.2.1",
