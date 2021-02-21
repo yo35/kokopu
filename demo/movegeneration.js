@@ -78,6 +78,7 @@ function run(fen, minDepth, maxDepth, verbose) {
 // -----------------------------------------------------------------------------
 
 program
+	.description('Recursive generation of chess moves, starting from a given position')
 	.option('-P, --position <fen>', 'initial position')
 	.option('-D, --depth <depth>', 'maximum depth to visit', parseInt)
 	.option('-v, --verbose', 'increase the verbosity level')

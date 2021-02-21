@@ -137,6 +137,10 @@ function run(paths, pathAlignment) {
 // -----------------------------------------------------------------------------
 
 program
+	.arguments('<pgn-files...>')
+	.description('Analyze some PGN files', {
+		'pgn-files': 'path to the PGN files to analyse'
+	})
 	.parse(process.argv);
 
 if(program.args.length === 0) {
