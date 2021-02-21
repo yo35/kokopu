@@ -22,7 +22,7 @@
 
 # Source files and folders
 PACKAGE_JSON_FILE = package.json
-SRC_FILES         = index.js $(shell find src)
+SRC_FILES         = $(shell find src)
 SRC_DEV_FILES     = $(shell find demo) $(shell find test)
 SRC_DOC_FILES     = $(shell find doc)
 DOC_CONFIG_FILE   = .jsdoc.json
