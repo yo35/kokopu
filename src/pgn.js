@@ -233,9 +233,7 @@ function doParseGame(stream) {
 			case TokenStream.COMMENT:
 				var tags = stream.tokenValue().tags;
 				for(var key in tags) {
-					if(tags[key] !== undefined) {
-						node.tag(key, tags[key]);
-					}
+					node.tag(key, tags[key]);
 				}
 				if(stream.tokenValue().comment !== undefined) {
 					node.comment(stream.tokenValue().comment, stream.emptyLineFound());

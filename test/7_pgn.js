@@ -126,9 +126,7 @@ function dumpGame(game, iterationStyle) {
 			// Extract the subkeys of the object `value`.
 			var subkeys = [];
 			for(var subkey in value) {
-				if(value[subkey] !== undefined) {
-					subkeys.push(subkey);
-				}
+				subkeys.push(subkey);
 			}
 			subkeys.sort();
 

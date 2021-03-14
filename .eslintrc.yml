@@ -15,11 +15,12 @@ rules:
   semi:            [ error, always ]
   camelcase:       [ error ]
 
-  # Additional rules
-  strict:                       [ error, global ]
+  # Additional rules (possible errors)
+  no-console: [ error ]
+
+  # Additional rules (best practices)
   curly:                        [ error, all ]
   eqeqeq:                       [ error, always ]
-  guard-for-in:                 [ error ]
   no-alert:                     [ error ]
   no-eval:                      [ error ]
   no-extend-native:             [ error ]
@@ -28,22 +29,28 @@ rules:
   no-implied-eval:              [ error ]
   no-invalid-this:              [ error ]
   no-labels:                    [ error ]
+  no-lone-blocks:               [ error ]
   no-loop-func:                 [ error ]
   no-new:                       [ error ]
   no-new-func:                  [ error ]
   no-new-wrappers:              [ error ]
+  no-octal-escape:              [ error ]
   no-return-assign:             [ error, always ]
   no-script-url:                [ error ]
   no-self-compare:              [ error ]
   no-throw-literal:             [ error ]
   no-unmodified-loop-condition: [ error ]
   no-unused-expressions:        [ error ]
-  no-useless-catch:             [ error ]
   no-useless-concat:            [ error ]
   no-useless-return:            [ error ]
   no-warning-comments:          [ warn, { location: anywhere, terms: [ TODO ] }]
-  no-shadow:                    [ error, { builtinGlobals: true }]
-  no-shadow-restricted-names:   [ error ]
+  prefer-regex-literals:        [ error ]
+
+  # Additional rules (strict mode)
+  strict: [ error, global ]
+
+  # Additional rules (variables)
+  no-shadow: [ error, { builtinGlobals: true }]
 
   # Relaxed rules
   no-redeclare:          [ off ]

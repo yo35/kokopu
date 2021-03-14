@@ -517,9 +517,7 @@ Node.prototype.variations = function() {
 Node.prototype.nags = function() {
 	var result = [];
 	for(var key in this._info.nags) {
-		if(this._info.nags[key]) {
-			result.push(key);
-		}
+		result.push(key);
 	}
 	return result;
 };
@@ -564,9 +562,7 @@ Node.prototype.removeNag = function(nag) {
 Node.prototype.tags = function() {
 	var result = [];
 	for(var key in this._info.tags) {
-		if(this._info.tags[key] !== undefined) {
-			result.push(key);
-		}
+		result.push(key);
 	}
 	return result;
 };

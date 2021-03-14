@@ -124,9 +124,7 @@ function run(paths, pathAlignment) {
 	});
 
 	for(var path in errors) {
-		if(path in errors) {
-			displayInvalidPGNError(path, errors[path]);
-		}
+		displayInvalidPGNError(path, errors[path]);
 	}
 }
 
