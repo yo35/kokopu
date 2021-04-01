@@ -24,7 +24,6 @@
 
 
 var kokopu = require('../src/index');
-var generateSuccessors = require('./common/generatesuccessors');
 var readCSV = require('./common/readcsv');
 var test = require('unit.js');
 
@@ -32,6 +31,22 @@ var test = require('unit.js');
 var NODE_COUNT_MAX_MAX = 10000000; // -1 for "no limit"
 var SPEED_MIN = 100; // kN/s
 var FIXED_TIMOUT = 100; // ms
+
+
+
+function generateSuccessors(pos, depth) {
+	var result = 1;
+
+	if(depth > 0) {
+		pos.moves().forEach(function(move) {
+			var nextPos = new kokopu.Position(pos);
+			nextPos.play(move);
+			result += generateSuccessors(nextPos, depth-1);
+		});
+	}
+
+	return result;
+}
 
 
 function testData() {

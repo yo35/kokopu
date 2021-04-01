@@ -24,7 +24,6 @@
 
 
 var kokopu = require('../src/index');
-var generateSuccessors = require('../test/common/generatesuccessors');
 var program = require('commander');
 
 
@@ -33,6 +32,24 @@ function align(data, width) {
 	while(result.length < width) {
 		result = ' ' + result;
 	}
+	return result;
+}
+
+
+/**
+ * Generate recursively the successors of the given position, up to the given depth.
+ */
+function generateSuccessors(pos, depth) {
+	var result = 1;
+
+	if(depth > 0) {
+		pos.moves().forEach(function(move) {
+			var nextPos = new kokopu.Position(pos);
+			nextPos.play(move);
+			result += generateSuccessors(nextPos, depth-1);
+		});
+	}
+
 	return result;
 }
 
