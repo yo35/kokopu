@@ -31,6 +31,7 @@ exports.forEachSquare = util.forEachSquare;
 exports.squareColor = util.squareColor;
 exports.squareToCoordinates = util.squareToCoordinates;
 exports.coordinatesToSquare = util.coordinatesToSquare;
+exports.oppositeColor = util.oppositeColor;
 
 exports.isMoveDescriptor = require('./movedescriptor').isMoveDescriptor;
 

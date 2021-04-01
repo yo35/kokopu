@@ -57,3 +57,9 @@ describe('Coordinates to square', function() {
 	it('h8', function() { test.value(kokopu.coordinatesToSquare(7, 7)).is('h8'); });
 	it('e3', function() { test.value(kokopu.coordinatesToSquare(4, 2)).is('e3'); });
 });
+
+
+describe('Opposite color', function() {
+	it('white to black', function() { test.value(kokopu.oppositeColor('w')).is('b'); });
+	it('black to white', function() { test.value(kokopu.oppositeColor('b')).is('w'); });
+});

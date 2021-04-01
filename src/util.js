@@ -85,3 +85,18 @@ exports.coordinatesToSquare = function(file, rank) {
 	}
 	return bt.fileToString(file) + bt.rankToString(rank);
 };
+
+
+/**
+ * Change white to black, and black to white.
+ *
+ * @param {Color} color
+ * @returns {Color}
+ */
+exports.oppositeColor = function(color) {
+	color = bt.colorFromString(color);
+	if (color < 0) {
+		throw new exception.IllegalArgument('oppositeColor()');
+	}
+	return bt.colorToString(1 - color);
+};
