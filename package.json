@@ -19,7 +19,9 @@
 	"funding": "https://www.paypal.com/donate?hosted_button_id=MP795VF4FXUDW",
 	"main": "src/index.js",
 	"files": [
-		"src"
+		"src",
+		"test",
+		".eslintrc.yml"
 	],
 	"devDependencies": {
 		"browserify": "~17.0.0",
