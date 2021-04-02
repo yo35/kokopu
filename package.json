@@ -36,6 +36,8 @@
 	"scripts": {
 		"lint": "eslint demo src test",
 		"unit": "mocha --bail --sort",
-		"test": "npm run lint && npm run unit"
+		"test": "npm run lint && npm run unit",
+		"build": "make -f scripts/build.mk",
+		"clean": "make -f scripts/build.mk clean"
 	}
 }
