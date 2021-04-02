@@ -29,6 +29,8 @@
 		"eslint": "~7.23.0",
 		"jsdoc": "~3.6.6",
 		"mocha": "~8.3.2",
+		"prompt": "~1.1.0",
+		"ssh2-sftp-client": "~6.0.1",
 		"tui-jsdoc-template": "~1.2.2",
 		"uglify-js": "~3.13.3",
 		"unit.js": "~2.1.1"
@@ -38,6 +40,8 @@
 		"unit": "mocha --bail --sort",
 		"test": "npm run lint && npm run unit",
 		"build": "make -f scripts/build.mk",
-		"clean": "make -f scripts/build.mk clean"
+		"clean": "make -f scripts/build.mk clean",
+		"predeploy": "npm run test && npm run build",
+		"deploy": "npm publish && node scripts/deploy.js"
 	}
 }
