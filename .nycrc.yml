@@ -1,0 +1,8 @@
+temp-dir: ./build/.nyc_output
+report-dir: ./build/coverage
+
+reporter:
+  - text
+  - html
+
+check-coverage: true
