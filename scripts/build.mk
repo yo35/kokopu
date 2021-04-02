@@ -34,11 +34,12 @@ PACKAGE_LICENSE = $(shell node -p 'require("./$(PACKAGE_JSON_FILE)").license')
 PACKAGE_VERSION = $(shell node -p 'require("./$(PACKAGE_JSON_FILE)").version')
 
 # Generated files and folders
+BUILD_DIR            = build
 DIST_DIR             = dist
-DOCUMENTATION_DIR    = $(DIST_DIR)/docs
-BROWSER_JS_FILE      = $(DIST_DIR)/kokopu.js
-BROWSER_MIN_JS_FILE  = $(DIST_DIR)/kokopu.min.js
+BROWSER_JS_FILE      = $(BUILD_DIR)/kokopu.js
+BROWSER_MIN_JS_FILE  = $(BUILD_DIR)/kokopu.min.js
 BROWSER_ARCHIVE_FILE = $(DIST_DIR)/kokopu-$(PACKAGE_VERSION).zip
+DOCUMENTATION_DIR    = $(DIST_DIR)/docs
 
 # Commands
 ECHO = echo
@@ -52,7 +53,7 @@ ECHO = echo
 all: $(BROWSER_ARCHIVE_FILE) $(DOCUMENTATION_DIR)
 
 clean:
-	@rm -rf npm-debug.log $(DIST_DIR)
+	@rm -rf npm-debug.log $(BUILD_DIR) $(DIST_DIR)
 
 
 # Build targets
@@ -66,7 +67,7 @@ $(BROWSER_ARCHIVE_FILE): $(BROWSER_JS_FILE) $(BROWSER_MIN_JS_FILE) $(INFO_FILES)
 
 $(BROWSER_JS_FILE): $(SRC_MAIN_FILE) $(SRC_FILES) $(PACKAGE_JSON_FILE)
 	@$(ECHO) "Generate kokopu.js..."
-	@mkdir -p $(DIST_DIR)
+	@mkdir -p $(BUILD_DIR)
 	@echo '/**' > $@
 	@echo ' * kokopu (https://www.npmjs.com/package/kokopu)' >> $@
 	@echo ' * @version $(PACKAGE_VERSION)' >> $@
@@ -77,7 +78,7 @@ $(BROWSER_JS_FILE): $(SRC_MAIN_FILE) $(SRC_FILES) $(PACKAGE_JSON_FILE)
 
 $(BROWSER_MIN_JS_FILE): $(BROWSER_JS_FILE) $(PACKAGE_JSON_FILE)
 	@$(ECHO) "Minify kokopu.js..."
-	@mkdir -p $(DIST_DIR)
+	@mkdir -p $(BUILD_DIR)
 	@npx uglifyjs --comments --compress -o $@ $<
 
 $(DOCUMENTATION_DIR): $(JSDOC_CONFIG_FILE) $(SRC_FILES) $(SRC_DOC_FILES) $(PACKAGE_JSON_FILE)
