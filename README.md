@@ -11,6 +11,7 @@ etc.).
 https://www.npmjs.com/package/kokopu
 
 [![Build Status](https://travis-ci.com/yo35/kokopu.svg?branch=master)](https://travis-ci.com/yo35/kokopu)
+[![Coverage Status](https://coveralls.io/repos/github/yo35/kokopu/badge.svg?branch=master)](https://coveralls.io/github/yo35/kokopu?branch=master)
 
 
 
