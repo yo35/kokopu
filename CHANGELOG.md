@@ -1,6 +1,10 @@
 ChangeLog
 =========
 
+1.7.3 (April 2, 2021)
+---------------------
+* Rework deployment flow.
+
 1.7.2 (April 1, 2021)
 ---------------------
 * Introduce `oppositeColor()`.
