@@ -81,13 +81,13 @@ exports.fileToString     = function(file   ) { return FILE_SYMBOL    [file   ]; 
 exports.resultToString   = function(result ) { return RESULT_SYMBOL  [result ]; };
 exports.variantToString  = function(variant) { return VARIANT_SYMBOL [variant]; };
 
-exports.colorFromString    = function(color  ) { return COLOR_SYMBOL   .indexOf(color  ); };
-exports.pieceFromString    = function(piece  ) { return PIECE_SYMBOL   .indexOf(piece  ); };
-exports.figurineFromString = function(cp     ) { return FIGURINE_SYMBOL.indexOf(cp     ); };
-exports.rankFromString     = function(rank   ) { return RANK_SYMBOL    .indexOf(rank   ); };
-exports.fileFromString     = function(file   ) { return FILE_SYMBOL    .indexOf(file   ); };
-exports.resultFromString   = function(result ) { return RESULT_SYMBOL  .indexOf(result ); };
-exports.variantFromString  = function(variant) { return VARIANT_SYMBOL .indexOf(variant); };
+exports.colorFromString    = function(color  ) { return color   === '' ? -1 : COLOR_SYMBOL   .indexOf(color  ); };
+exports.pieceFromString    = function(piece  ) { return piece   === '' ? -1 : PIECE_SYMBOL   .indexOf(piece  ); };
+exports.figurineFromString = function(cp     ) { return cp      === '' ? -1 : FIGURINE_SYMBOL.indexOf(cp     ); };
+exports.rankFromString     = function(rank   ) { return rank    === '' ? -1 : RANK_SYMBOL    .indexOf(rank   ); };
+exports.fileFromString     = function(file   ) { return file    === '' ? -1 : FILE_SYMBOL    .indexOf(file   ); };
+exports.resultFromString   = function(result ) { return RESULT_SYMBOL .indexOf(result ); };
+exports.variantFromString  = function(variant) { return VARIANT_SYMBOL.indexOf(variant); };
 
 exports.squareToString = function(square) {
 	return FILE_SYMBOL[square % 16] + RANK_SYMBOL[Math.floor(square / 16)];

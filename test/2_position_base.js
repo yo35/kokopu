@@ -233,4 +233,25 @@ describe('Position setters', function() {
 	it('Set en-passant 1b', function() { pos1.enPassant('-'); test.value(pos1.fen()).is('1nbqkbnr/pppppppp/5B2/8/8/8/PPPPPPPP/RNBQKBNR w Qkq - 0 1'); });
 	it('Set en-passant 2a', function() { pos2.enPassant('a'); test.value(pos2.fen()).is('8/8/8/6K1/8/8/8/8 b q a3 0 1'); });
 	it('Set en-passant 2b', function() { pos2.enPassant('h'); test.value(pos2.fen()).is('8/8/8/6K1/8/8/8/8 b q h3 0 1'); });
+
+	['p', 'Q', 'kw'].forEach(function(elem) {
+		it('Error for board with colored piece ' + elem, function() {
+			var p=new kokopu.Position();
+			test.exception(function() { p.square('d4', elem); }).isInstanceOf(kokopu.exception.IllegalArgument);
+		});
+	});
+
+	['', 'W', 'bb'].forEach(function(elem) {
+		it('Error for turn with ' + (elem === '' ? '<empty string>' : elem), function() {
+			var p=new kokopu.Position();
+			test.exception(function() { p.turn(elem); }).isInstanceOf(kokopu.exception.IllegalArgument);
+		});
+	});
+
+	['', 'i', 'gg'].forEach(function(elem) {
+		it('Error for en-passant with ' + (elem === '' ? '<empty string>' : elem), function() {
+			var p=new kokopu.Position();
+			test.exception(function() { p.enPassant(elem); }).isInstanceOf(kokopu.exception.IllegalArgument);
+		});
+	});
 });

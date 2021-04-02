@@ -38,6 +38,9 @@ describe('Square color', function() {
 	it('f5', function() { test.value(kokopu.squareColor('f5')).is('w'); });
 	it('e5', function() { test.value(kokopu.squareColor('e5')).is('b'); });
 	it('e6', function() { test.value(kokopu.squareColor('e6')).is('w'); });
+
+	it('Error with 7', function() { test.exception(function() { kokopu.squareColor('7'); }).isInstanceOf(kokopu.exception.IllegalArgument); });
+	it('Error with b8g', function() { test.exception(function() { kokopu.squareColor('b8g'); }).isInstanceOf(kokopu.exception.IllegalArgument); });
 });
 
 
@@ -47,6 +50,9 @@ describe('Square to coordinates', function() {
 	it('a8', function() { test.value(kokopu.squareToCoordinates('a8')).is({ file:0, rank:7 }); });
 	it('h8', function() { test.value(kokopu.squareToCoordinates('h8')).is({ file:7, rank:7 }); });
 	it('e3', function() { test.value(kokopu.squareToCoordinates('e3')).is({ file:4, rank:2 }); });
+
+	it('Error with <empty string>', function() { test.exception(function() { kokopu.squareToCoordinates(''); }).isInstanceOf(kokopu.exception.IllegalArgument); });
+	it('Error with cc', function() { test.exception(function() { kokopu.squareToCoordinates('cc'); }).isInstanceOf(kokopu.exception.IllegalArgument); });
 });
 
 
@@ -56,10 +62,18 @@ describe('Coordinates to square', function() {
 	it('a8', function() { test.value(kokopu.coordinatesToSquare(0, 7)).is('a8'); });
 	it('h8', function() { test.value(kokopu.coordinatesToSquare(7, 7)).is('h8'); });
 	it('e3', function() { test.value(kokopu.coordinatesToSquare(4, 2)).is('e3'); });
+
+	it('Error with (-1,4)', function() { test.exception(function() { kokopu.coordinatesToSquare(-1, 4); }).isInstanceOf(kokopu.exception.IllegalArgument); });
+	it('Error with (8,3)', function() { test.exception(function() { kokopu.coordinatesToSquare(8, 3); }).isInstanceOf(kokopu.exception.IllegalArgument); });
+	it('Error with (5,-1)', function() { test.exception(function() { kokopu.coordinatesToSquare(5, -1); }).isInstanceOf(kokopu.exception.IllegalArgument); });
+	it('Error with (5,8)', function() { test.exception(function() { kokopu.coordinatesToSquare(7, 8); }).isInstanceOf(kokopu.exception.IllegalArgument); });
 });
 
 
 describe('Opposite color', function() {
 	it('white to black', function() { test.value(kokopu.oppositeColor('w')).is('b'); });
 	it('black to white', function() { test.value(kokopu.oppositeColor('b')).is('w'); });
+
+	it('Error with z', function() { test.exception(function() { kokopu.oppositeColor('z'); }).isInstanceOf(kokopu.exception.IllegalArgument); });
+	it('Error with bb', function() { test.exception(function() { kokopu.oppositeColor('bb'); }).isInstanceOf(kokopu.exception.IllegalArgument); });
 });

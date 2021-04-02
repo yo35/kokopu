@@ -75,3 +75,13 @@ LABEL	CONSTRUCTOR	VARIANT	FEN	TURN	LEGAL	WHITE_KING	BLACK_KING	CHECK	CHECKMATE	S
 18d	fen	black-king-only	4k3/8/8/8/8/8/8/8 w - - 0 1	w	true	-	e8	false	false	true	false				
 18e	fen	black-king-only	8/8/6pp/6pk/6pr/5p2/5P2/7N w - - 0 1	w	true	-	h5	false	false	false	true	h1g3	h1g3	Ng3#	8/8/6pp/6pk/6pr/5pN1/5P2/8 b - - 0 1
 18f	fen	black-king-only	r3k2r/pR5p/P6P/8/8/8/8/8 b kq - 0 1	b	true	-	e8	false	false	false	true	a8b8/a8c8/a8d8/e8c8O/e8d8/e8f8/e8g8O/h8f8/h8g8	a8b8/a8c8/a8d8/e8c8/e8d8/e8f8/e8g8/h8f8/h8g8	Rb8/Rc8/Rd8/O-O-O/Kd8/Kf8/O-O/Rf8/Rg8	1r2k2r/pR5p/P6P/8/8/8/8/8 w k - 0 1|2r1k2r/pR5p/P6P/8/8/8/8/8 w k - 0 1|3rk2r/pR5p/P6P/8/8/8/8/8 w k - 0 1|2kr3r/pR5p/P6P/8/8/8/8/8 w - - 0 1|r2k3r/pR5p/P6P/8/8/8/8/8 w - - 0 1|r4k1r/pR5p/P6P/8/8/8/8/8 w - - 0 1|r4rk1/pR5p/P6P/8/8/8/8/8 w - - 0 1|r3kr2/pR5p/P6P/8/8/8/8/8 w q - 0 1|r3k1r1/pR5p/P6P/8/8/8/8/8 w q - 0 1
+19a	fen	regular	8/8/8/2K5/4k3/8/8/1P6 b - - 0 1	b	false	c5	e4	false	false	false	false				
+19b	fen	regular	8/8/8/2K5/4k3/8/8/2p5 b - - 0 1	b	false	c5	e4	false	false	false	false				
+19c	fen	regular	3P4/8/2K5/4k3/8/8/8/8 w - - 0 1	w	false	c6	e5	false	false	false	false				
+19d	fen	regular	4p3/8/2K5/4k3/8/8/8/8 b - - 0 1	b	false	c6	e5	false	false	false	false				
+20a	fen	regular	8/8/1K6/8/6k1/8/3K4/8 w - - 0 1	w	false	-	g4	false	false	false	false				
+20b	fen	regular	8/8/1K6/8/6k1/8/3k4/8 w - - 0 1	w	false	b6	-	false	false	false	false				
+21a	fen	regular	r1bqkbnr/pppnpppp/8/3pP3/8/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 1	w	false	e1	e8	false	false	false	false				
+21b	fen	regular	rnbqkbnr/ppp1pppp/8/8/2Pp4/2N2N2/PP1PPPPP/R1BQKB1R b KQkq c3 0 1	b	false	e1	e8	false	false	false	false				
+21c	fen	regular	rnbqkbnr/pppp1ppp/8/3PP3/8/8/PPP2PPP/RNBQKBNR w KQkq e6 0 1	w	false	e1	e8	false	false	false	false				
+21d	fen	regular	rnbqkbnr/1ppppppp/8/8/pN6/8/P1PPPPPP/R1BQKBNR b KQkq b3 0 1	b	false	e1	e8	false	false	false	false				
