@@ -26,6 +26,7 @@
 var bt = require('./basetypes');
 var moveDescriptor = require('./movedescriptor');
 var exception = require('./exception');
+var i18n = require('./i18n');
 
 var impl = require('./private_position/impl');
 var fen = require('./private_position/fen');
@@ -133,7 +134,7 @@ var Position = exports.Position = function() {
 				this._impl = fen.parseFEN(variant, arguments[0].substring(separatorIndex + 1), false).position;
 			}
 			else {
-				throw new exception.IllegalArgument('Position()');
+				throw new exception.InvalidFEN(arguments[0], i18n.INVALID_VARIANT_PREFIX, arguments[0].substring(0, separatorIndex));
 			}
 		}
 

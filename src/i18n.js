@@ -43,6 +43,7 @@ exports.INVALID_CASTLING_FIELD                    = 'The 3rd field of a FEN stri
 exports.INVALID_EN_PASSANT_FIELD                  = 'The 4th field of a FEN string must be either `-` or a square from the 3rd or 6th rank where en-passant is allowed.';
 exports.WRONG_RANK_IN_EN_PASSANT_FIELD            = 'The rank number indicated in the FEN string 4th field is inconsistent with respect to the 2nd field.';
 exports.INVALID_MOVE_COUNTING_FIELD               = 'The %1$s field of a FEN string must be a number.';
+exports.INVALID_VARIANT_PREFIX                    = 'Invalid variant prefix: `%1$s`.';
 
 // Notation & UCI parsing error messages
 exports.INVALID_UCI_NOTATION_SYNTAX         = 'The syntax of the UCI notation is invalid.';

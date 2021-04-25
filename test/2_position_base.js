@@ -46,6 +46,12 @@ describe('Position constructor', function() {
 		});
 	}
 
+	function doFailureTest(label, fenParsingErrorExpected, positionFactory) {
+		it(label, function() {
+			test.exception(positionFactory).isInstanceOf(fenParsingErrorExpected ? kokopu.exception.InvalidFEN : kokopu.exception.IllegalArgument);
+		});
+	}
+
 	doTest('Default constructor'  , 'regular', startFEN , function() { return new kokopu.Position(); });
 	doTest('Constructor \'start\'', 'regular', startFEN , function() { return new kokopu.Position('start'); });
 	doTest('Constructor \'empty\'', 'regular', emptyFEN , function() { return new kokopu.Position('empty'); });
@@ -69,6 +75,17 @@ describe('Position constructor', function() {
 	doTest('Constructor FEN-based (force white-king-only)', 'white-king-only', customFEN, function() { return new kokopu.Position('white-king-only', customFEN); });
 	doTest('Constructor \'empty\' (force black-king-only)', 'black-king-only', emptyFEN , function() { return new kokopu.Position('black-king-only', 'empty'); });
 	doTest('Constructor FEN-based (force black-king-only)', 'black-king-only', customFEN, function() { return new kokopu.Position('black-king-only', customFEN); });
+
+	doFailureTest('Invalid variant', false, function() { return new kokopu.Position('not-a-variant', 'empty'); });
+	doFailureTest('Invalid variant (FEN-based)', false, function() { return new kokopu.Position('not-a-variant', startFEN); });
+	doFailureTest('Invalid variant (FEN-based with prefix)', true, function() { return new kokopu.Position('not-a-variant:' + startFEN); });
+	doFailureTest('Invalid form 1', false, function() { return new kokopu.Position(42); });
+	doFailureTest('Invalid form 2', false, function() { return new kokopu.Position({}); });
+
+	doFailureTest('Invalid FEN string 1', true, function() { return new kokopu.Position('rkr/ppp/8/8/8/8/PPP/RKR w - - 0 1'); });
+	doFailureTest('Invalid FEN string 2', true, function() { return new kokopu.Position('Something strange: a string with a colon in it...'); });
+	doFailureTest('Invalid FEN string with variant', true, function() { return new kokopu.Position('regular', 'NotAFENString'); });
+	doFailureTest('Invalid FEN string with variant (as prefix)', true, function() { return new kokopu.Position('regular:NotAFENString'); });
 });
 
 
