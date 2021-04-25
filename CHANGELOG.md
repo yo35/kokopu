@@ -1,6 +1,11 @@
 ChangeLog
 =========
 
+1.8.0 (April 25, 2021)
+----------------------
+* Support syntax `'variant:FEN'` is `Position` constructor and FEN getter.
+* Add code coverage.
+
 1.7.3 (April 2, 2021)
 ---------------------
 * Rework deployment flow.
