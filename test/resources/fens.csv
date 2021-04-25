@@ -1,13 +1,14 @@
-LABEL	FEN_IN	VARIANT	STRICT	FIFTY_MOVE_CLOCK	FULL_MOVE_NUMBER	FEN_OUT
-1	rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b Kk e3 10 5	regular	true	10	5	rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b Kk e3 10 5
-2	k7/n1PB4/1K6/8/8/8/8/8 w - - 0 60	regular	true	0	60	k7/n1PB4/1K6/8/8/8/8/8 w - - 0 60
-3a	rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b Kq e3 0 1	regular	true	0	1	rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b Kq e3 0 1
-3b	rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b qK e3 0 1	regular	false	0	1	rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b Kq e3 0 1
-3c	rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b Kq e6 0 1	regular	false	0	1	rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b Kq e3 0 1
-3d	rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b Kq e3 00 1	regular	false	0	1	rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b Kq e3 0 1
-4a	nrkbqrbn/pppppppp/8/8/8/8/PPPPPPPP/NRKBQRBN w BFbf - 0 1	chess960	true	0	1	nrkbqrbn/pppppppp/8/8/8/8/PPPPPPPP/NRKBQRBN w BFbf - 0 1
-4b	nrkbqrbn/pppppppp/8/8/8/8/PPPPPPPP/NRKBQRBN w KQkq - 0 1	chess960	false	0	1	nrkbqrbn/pppppppp/8/8/8/8/PPPPPPPP/NRKBQRBN w BFbf - 0 1
-4c	nrkbqrbn/pppppppp/8/8/8/8/PPPPPPPP/NRKBQRBN w KQbf - 0 1	chess960	false	0	1	nrkbqrbn/pppppppp/8/8/8/8/PPPPPPPP/NRKBQRBN w BFbf - 0 1
-4d	nrkbqrbn/pppppppp/8/8/8/8/PPPPPPPP/NRKBQRBN w BKqf - 0 1	chess960	false	0	1	nrkbqrbn/pppppppp/8/8/8/8/PPPPPPPP/NRKBQRBN w BFbf - 0 1
-5a	rbbkrnqn/pppppppp/8/8/8/8/PPPPPPPP/NRKBQRBN w BFae - 5 24	chess960	true	5	24	rbbkrnqn/pppppppp/8/8/8/8/PPPPPPPP/NRKBQRBN w BFae - 5 24
-5b	rbbkrnqn/pppppppp/8/8/8/8/PPPPPPPP/NRKBQRBN w KQkq - 5 24	chess960	false	5	24	rbbkrnqn/pppppppp/8/8/8/8/PPPPPPPP/NRKBQRBN w BFae - 5 24
+LABEL	FEN_IN	VARIANT	STRICT	FIFTY_MOVE_CLOCK	FULL_MOVE_NUMBER	FEN_OUT_DEFAULT	FEN_OUT_WITH_COUNTERS	FEN_OUT_WITH_VARIANT
+1a	rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b Kk e3 10 5	regular	true	10	5	rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b Kk e3 0 1	rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b Kk e3 10 5	regular:rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b Kk e3 0 1
+1b	rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b Kk e3 3 2	regular	true	20	4	rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b Kk e3 0 1	rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b Kk e3 20 4	regular:rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b Kk e3 0 1
+2	k7/n1PB4/1K6/8/8/8/8/8 w - - 0 60	regular	true	0	60	k7/n1PB4/1K6/8/8/8/8/8 w - - 0 1	k7/n1PB4/1K6/8/8/8/8/8 w - - 0 60	regular:k7/n1PB4/1K6/8/8/8/8/8 w - - 0 1
+3a	rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b Kq e3 0 1	regular	true	0	1	rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b Kq e3 0 1	rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b Kq e3 0 1	regular:rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b Kq e3 0 1
+3b	rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b qK e3 0 1	regular	false	0	1	rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b Kq e3 0 1	rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b Kq e3 0 1	regular:rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b Kq e3 0 1
+3c	rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b Kq e6 0 1	regular	false	0	1	rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b Kq e3 0 1	rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b Kq e3 0 1	regular:rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b Kq e3 0 1
+3d	rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b Kq e3 00 1	regular	false	0	1	rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b Kq e3 0 1	rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b Kq e3 0 1	regular:rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b Kq e3 0 1
+4a	nrkbqrbn/pppppppp/8/8/8/8/PPPPPPPP/NRKBQRBN w BFbf - 0 1	chess960	true	0	1	nrkbqrbn/pppppppp/8/8/8/8/PPPPPPPP/NRKBQRBN w BFbf - 0 1	nrkbqrbn/pppppppp/8/8/8/8/PPPPPPPP/NRKBQRBN w BFbf - 0 1	chess960:nrkbqrbn/pppppppp/8/8/8/8/PPPPPPPP/NRKBQRBN w BFbf - 0 1
+4b	nrkbqrbn/pppppppp/8/8/8/8/PPPPPPPP/NRKBQRBN w KQkq - 0 1	chess960	false	0	1	nrkbqrbn/pppppppp/8/8/8/8/PPPPPPPP/NRKBQRBN w BFbf - 0 1	nrkbqrbn/pppppppp/8/8/8/8/PPPPPPPP/NRKBQRBN w BFbf - 0 1	chess960:nrkbqrbn/pppppppp/8/8/8/8/PPPPPPPP/NRKBQRBN w BFbf - 0 1
+4c	nrkbqrbn/pppppppp/8/8/8/8/PPPPPPPP/NRKBQRBN w KQbf - 0 1	chess960	false	0	1	nrkbqrbn/pppppppp/8/8/8/8/PPPPPPPP/NRKBQRBN w BFbf - 0 1	nrkbqrbn/pppppppp/8/8/8/8/PPPPPPPP/NRKBQRBN w BFbf - 0 1	chess960:nrkbqrbn/pppppppp/8/8/8/8/PPPPPPPP/NRKBQRBN w BFbf - 0 1
+4d	nrkbqrbn/pppppppp/8/8/8/8/PPPPPPPP/NRKBQRBN w BKqf - 0 1	chess960	false	0	1	nrkbqrbn/pppppppp/8/8/8/8/PPPPPPPP/NRKBQRBN w BFbf - 0 1	nrkbqrbn/pppppppp/8/8/8/8/PPPPPPPP/NRKBQRBN w BFbf - 0 1	chess960:nrkbqrbn/pppppppp/8/8/8/8/PPPPPPPP/NRKBQRBN w BFbf - 0 1
+5a	rbbkrnqn/pppppppp/8/8/8/8/PPPPPPPP/NRKBQRBN w BFae - 5 24	chess960	true	5	24	rbbkrnqn/pppppppp/8/8/8/8/PPPPPPPP/NRKBQRBN w BFae - 0 1	rbbkrnqn/pppppppp/8/8/8/8/PPPPPPPP/NRKBQRBN w BFae - 5 24	chess960:rbbkrnqn/pppppppp/8/8/8/8/PPPPPPPP/NRKBQRBN w BFae - 0 1
+5b	rbbkrnqn/pppppppp/8/8/8/8/PPPPPPPP/NRKBQRBN w KQkq - 5 24	chess960	false	5	24	rbbkrnqn/pppppppp/8/8/8/8/PPPPPPPP/NRKBQRBN w BFae - 0 1	rbbkrnqn/pppppppp/8/8/8/8/PPPPPPPP/NRKBQRBN w BFae - 5 24	chess960:rbbkrnqn/pppppppp/8/8/8/8/PPPPPPPP/NRKBQRBN w BFae - 0 1

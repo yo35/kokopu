@@ -31,13 +31,15 @@ var readCSV = require('./common/readcsv');
 function testData() {
 	return readCSV('fens.csv', function(fields) {
 		return {
-			label         : fields[0],
-			fenIn         : fields[1],
-			variant       : fields[2],
-			strict        : fields[3]==='true',
-			fiftyMoveClock: parseInt(fields[4]),
-			fullMoveNumber: parseInt(fields[5]),
-			fenOut        : fields[6]
+			label             : fields[0],
+			fenIn             : fields[1],
+			variant           : fields[2],
+			strict            : fields[3]==='true',
+			fiftyMoveClock    : parseInt(fields[4]),
+			fullMoveNumber    : parseInt(fields[5]),
+			fenOutDefault     : fields[6],
+			fenOutWithCounters: fields[7],
+			fenOutWithVariant : fields[8],
 		};
 	});
 }
@@ -49,14 +51,16 @@ describe('FEN parsing', function() {
 		it('Set FEN (tolerant) ' + elem.label, function() {
 			var position = new kokopu.Position(elem.variant, 'empty');
 			position.fen(elem.fenIn);
-			test.value(position.fen({ fiftyMoveClock:elem.fiftyMoveClock, fullMoveNumber:elem.fullMoveNumber })).is(elem.fenOut);
+			test.value(position.fen()).is(elem.fenOutDefault);
+			test.value(position.fen({ fiftyMoveClock:elem.fiftyMoveClock, fullMoveNumber:elem.fullMoveNumber })).is(elem.fenOutWithCounters);
+			test.value(position.fen({ withVariant: true })).is(elem.fenOutWithVariant);
 		});
 
 		it('Set FEN (strict) ' + elem.label, function() {
 			var position = new kokopu.Position(elem.variant, 'empty');
 			if(elem.strict) {
 				position.fen(elem.fenIn, true);
-				test.value(position.fen({ fiftyMoveClock:elem.fiftyMoveClock, fullMoveNumber:elem.fullMoveNumber })).is(elem.fenOut);
+				test.value(position.fen()).is(elem.fenOutDefault);
 			}
 			else {
 				test.exception(function() { position.fen(elem.fenIn, true); }).isInstanceOf(kokopu.exception.InvalidFEN);
