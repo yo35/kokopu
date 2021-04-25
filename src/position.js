@@ -58,17 +58,21 @@ var uci = require('./private_position/uci');
  * new kokopu.Position('chess960', 'empty');        //  7 -> Empty board, configured for Chess960.
  * new kokopu.Position('chess960', scharnaglCode);  //  8 -> One of the Chess960 starting position (`scharnaglCode` is a number between 0 and 959 inclusive).
  * new kokopu.Position(variant, fenString);         //  9 -> Parse the given FEN string, assuming the given game variant.
- * new kokopu.Position(anotherPosition);            // 10 -> Make a copy of `anotherPosition`.
+ * new kokopu.Position(fenStringWithVariant);       // 10 -> Parse the given FEN string, taking into account an optional game variant that may be mentioned in prefix.
+ * new kokopu.Position(anotherPosition);            // 11 -> Make a copy of `anotherPosition`.
  * ```
  * Please note that the argument `'regular'` can be omitted in forms 1, 2, 3. In particular, the constructor can be invoked
  * with no argument, as in `new kokopu.Position()`: in this case, a new `Position` initialized to the usual starting position
  * is instantiated (as in forms 1 and 2).
  *
  * In form 9, `variant` must be one of the game variant proposed in {@link GameVariant}. The `variant` argument can be omitted,
- * as in `new kokopu.Position(fenString)`: in this case, the usual chess rules are assumed (as if `variant` where set to `'regular'`).
  * If `variant` is set to `'chess960'`, then the X-FEN syntax can be used for `fenString'`.
  *
- * In form 10, `anotherPosition` must be another {@link Position} object.
+ * In form 10, `fenStringWithVariant` is assumed to be a string formatted as `'variant:FEN'` (e.g. `'chess960:nrkbqrbn/pppppppp/8/8/8/8/PPPPPPPP/NRKBQRBN w BFbf - 0 1'`).
+ * The `'variant:'` prefix is optional: if omitted, the usual chess rules are assumed. For the Chess960 variant,
+ * the X-FEN syntax can be used for the FEN part of the string.
+ *
+ * In form 11, `anotherPosition` must be another {@link Position} object.
  *
  * @throws {module:exception.InvalidFEN} If the input parameter is not a valid FEN string (can be thrown only in cases 6 and 7).
  *
@@ -109,15 +113,31 @@ var Position = exports.Position = function() {
 
 	// FEN parsing
 	else if(typeof arguments[0] === 'string') {
-		var variant = bt.variantFromString(arguments[0]);
-		if(variant >= 0) {
-			if(typeof arguments[1] === 'string') {
+		var separatorIndex = arguments[0].indexOf(':');
+
+		// Form (variant, FEN)
+		if(typeof arguments[1] === 'string') {
+			var variant = bt.variantFromString(arguments[0]);
+			if(variant >= 0) {
 				this._impl = fen.parseFEN(variant, arguments[1], false).position;
 			}
 			else {
 				throw new exception.IllegalArgument('Position()');
 			}
 		}
+
+		// Form (variant:FEN) (concatenated string)
+		else if(separatorIndex >= 0) {
+			var variant = bt.variantFromString(arguments[0].substring(0, separatorIndex));
+			if(variant >= 0) {
+				this._impl = fen.parseFEN(variant, arguments[0].substring(separatorIndex + 1), false).position;
+			}
+			else {
+				throw new exception.IllegalArgument('Position()');
+			}
+		}
+
+		// Form (FEN)
 		else {
 			this._impl = fen.parseFEN(bt.REGULAR_CHESS, arguments[0], false).position;
 		}

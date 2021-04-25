@@ -55,11 +55,13 @@ describe('Position constructor', function() {
 	doTest('Constructor \'start\' (force regular)', 'regular', startFEN , function() { return new kokopu.Position('regular', 'start'); });
 	doTest('Constructor \'empty\' (force regular)', 'regular', emptyFEN , function() { return new kokopu.Position('regular', 'empty'); });
 	doTest('Constructor FEN-based (force regular)', 'regular', customFEN, function() { return new kokopu.Position('regular', customFEN); });
+	doTest('Constructor FEN-based with prefix (force regular)', 'regular', customFEN, function() { return new kokopu.Position('regular:' + customFEN); });
 
 	doTest('Scharnagl constructor'                   , 'chess960', startXFEN, function() { return new kokopu.Position('chess960', 518); });
 	doTest('Constructor \'empty\' (force Chess960)'  , 'chess960', emptyFEN , function() { return new kokopu.Position('chess960', 'empty'); });
 	doTest('Constructor FEN-based (force Chess960)'  , 'chess960', customXFEN, function() { return new kokopu.Position('chess960', customFEN); }) ;
 	doTest('Constructor X-FEN-based (force Chess960)', 'chess960', customXFEN, function() { return new kokopu.Position('chess960', customXFEN); }) ;
+	doTest('Constructor X-FEN-based with prefix (force Chess960)', 'chess960', customXFEN, function() { return new kokopu.Position('chess960:' + customXFEN); }) ;
 
 	doTest('Constructor \'empty\' (force no-king)'        , 'no-king'        , emptyFEN , function() { return new kokopu.Position('no-king', 'empty'); });
 	doTest('Constructor FEN-based (force no-king)'        , 'no-king'        , customFEN, function() { return new kokopu.Position('no-king', customFEN); });
