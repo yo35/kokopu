@@ -662,6 +662,7 @@ Position.prototype.play = function(move) {
 			return true;
 		}
 		catch(err) {
+			// istanbul ignore else
 			if(err instanceof exception.InvalidNotation) {
 				return false;
 			}

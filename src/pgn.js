@@ -138,6 +138,7 @@ function initializeInitialPosition(stream, game, initialPositionFactory) {
 		game.initialPosition(position, moveCounters.fullMoveNumber);
 	}
 	catch(error) {
+		// istanbul ignore else
 		if(error instanceof exception.InvalidFEN) {
 			throw new exception.InvalidPGN(stream.text(), initialPositionFactory.fenTokenCharacterIndex, initialPositionFactory.fenTokenLineIndex, i18n.INVALID_FEN_IN_PGN_TEXT, error.message);
 		}
@@ -215,6 +216,7 @@ function doParseGame(stream) {
 					nodeIsVariation = false;
 				}
 				catch(error) {
+					// istanbul ignore else
 					if(error instanceof exception.InvalidNotation) {
 						throw new exception.InvalidPGN(stream.text(), stream.tokenCharacterIndex(), stream.tokenLineIndex(), i18n.INVALID_MOVE_IN_PGN_TEXT, error.notation, error.message);
 					}

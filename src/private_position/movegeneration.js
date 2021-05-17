@@ -101,6 +101,7 @@ var hasMove = exports.hasMove = function(position) {
 		return false;
 	}
 	catch(err) {
+		// istanbul ignore else
 		if(err instanceof MoveFound) { return true; }
 		else { throw err; }
 	}
