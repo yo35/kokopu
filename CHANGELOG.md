@@ -1,6 +1,11 @@
 ChangeLog
 =========
 
+1.9.0 (May 29, 2021)
+--------------------
+* Add tutorial "Set-up a game from scratch".
+* Minor changes in exception messages.
+
 1.8.0 (April 25, 2021)
 ----------------------
 * Support syntax `'variant:FEN'` is `Position` constructor and FEN getter.
