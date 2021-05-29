@@ -8,7 +8,7 @@
 	"03_loading_pgn": {
 		"title": "Loading a PGN file"
 	},
-	"04_chess960": {
+	"05_chess960": {
 		"title": "Chess960"
 	}
 }
