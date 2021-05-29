@@ -26,12 +26,12 @@
 exports.i18n = require('./i18n');
 exports.exception = require('./exception');
 
-var util = require('./util');
-exports.forEachSquare = util.forEachSquare;
-exports.squareColor = util.squareColor;
-exports.squareToCoordinates = util.squareToCoordinates;
-exports.coordinatesToSquare = util.coordinatesToSquare;
-exports.oppositeColor = util.oppositeColor;
+var helper = require('./helper');
+exports.forEachSquare = helper.forEachSquare;
+exports.squareColor = helper.squareColor;
+exports.squareToCoordinates = helper.squareToCoordinates;
+exports.coordinatesToSquare = helper.coordinatesToSquare;
+exports.oppositeColor = helper.oppositeColor;
 
 exports.isMoveDescriptor = require('./movedescriptor').isMoveDescriptor;
 
