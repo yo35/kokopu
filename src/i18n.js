@@ -30,19 +30,17 @@
 
 
 
-// Ordinal integers (from 1 to 8).
-exports.ORDINALS = ['1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th'];
-
 // FEN parsing error messages
 exports.WRONG_NUMBER_OF_FEN_FIELDS                = 'A FEN string must contain exactly 6 space-separated fields.';
 exports.WRONG_NUMBER_OF_SUBFIELDS_IN_BOARD_FIELD  = 'The 1st field of a FEN string must contain exactly 8 `/`-separated subfields.';
 exports.UNEXPECTED_CHARACTER_IN_BOARD_FIELD       = 'Unexpected character in the 1st field of the FEN string: `%s`.';
-exports.UNEXPECTED_END_OF_SUBFIELD_IN_BOARD_FIELD = 'The %s subfield of the FEN string 1st field is unexpectedly short.';
+exports.UNEXPECTED_END_OF_SUBFIELD_IN_BOARD_FIELD = 'Subfield %s of the FEN string 1st field is unexpectedly short.';
 exports.INVALID_TURN_FIELD                        = 'The 2nd field of a FEN string must be either `w` or `b`.';
 exports.INVALID_CASTLING_FIELD                    = 'The 3rd field of a FEN string must be either `-` or a list of characters among `K`, `Q`, `k` and `q` (in this order).';
 exports.INVALID_EN_PASSANT_FIELD                  = 'The 4th field of a FEN string must be either `-` or a square from the 3rd or 6th rank where en-passant is allowed.';
 exports.WRONG_RANK_IN_EN_PASSANT_FIELD            = 'The rank number indicated in the FEN string 4th field is inconsistent with respect to the 2nd field.';
-exports.INVALID_MOVE_COUNTING_FIELD               = 'The %s field of a FEN string must be a number.';
+exports.INVALID_HALF_MOVE_COUNT_FIELD             = 'The 5th field of a FEN string must be a number, indicating the number of half-move since the last pawn move or capture.';
+exports.INVALID_MOVE_NUMBER_FIELD                 = 'The 6th field of a FEN string must be a number, indicating the move number of the game.';
 exports.INVALID_VARIANT_PREFIX                    = 'Invalid variant prefix: `%s`.';
 
 // Notation & UCI parsing error messages

@@ -170,7 +170,7 @@ exports.parseFEN = function(variant, fen, strict) {
 
 		// Ensure that the current sub-field deals with all the squares of the current rank.
 		if(i !== rankField.length || f !== 8) {
-			throw new exception.InvalidFEN(fen, i18n.UNEXPECTED_END_OF_SUBFIELD_IN_BOARD_FIELD, i18n.ORDINALS[7-r]);
+			throw new exception.InvalidFEN(fen, i18n.UNEXPECTED_END_OF_SUBFIELD_IN_BOARD_FIELD, 8 - r);
 		}
 	}
 
@@ -202,10 +202,10 @@ exports.parseFEN = function(variant, fen, strict) {
 	// Move counting flags parsing
 	var moveCountingRegExp = strict ? /^(?:0|[1-9][0-9]*)$/ : /^[0-9]+$/;
 	if(!moveCountingRegExp.test(fields[4])) {
-		throw new exception.InvalidFEN(fen, i18n.INVALID_MOVE_COUNTING_FIELD, i18n.ORDINALS[4]);
+		throw new exception.InvalidFEN(fen, i18n.INVALID_HALF_MOVE_COUNT_FIELD);
 	}
 	if(!moveCountingRegExp.test(fields[5])) {
-		throw new exception.InvalidFEN(fen, i18n.INVALID_MOVE_COUNTING_FIELD, i18n.ORDINALS[5]);
+		throw new exception.InvalidFEN(fen, i18n.INVALID_MOVE_NUMBER_FIELD);
 	}
 	return { position: position, fiftyMoveClock: parseInt(fields[4], 10), fullMoveNumber: parseInt(fields[5], 10) };
 };
