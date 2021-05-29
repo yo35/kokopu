@@ -8,6 +8,9 @@
 	"03_loading_pgn": {
 		"title": "Loading a PGN file"
 	},
+	"04_set_up_game": {
+		"title": "Set-up a game from scratch"
+	},
 	"05_chess960": {
 		"title": "Chess960"
 	}
