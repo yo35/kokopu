@@ -128,6 +128,10 @@ describe('Clear mutator', function() {
 			});
 		});
 
+		it('From ' + variantSource + ' to error', function() {
+			var position = new kokopu.Position(variantSource, customFEN);
+			test.exception(function() { position.clear('not-a-variant'); }).isInstanceOf(kokopu.exception.IllegalArgument);
+		});
 	});
 });
 
