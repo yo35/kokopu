@@ -52,6 +52,10 @@ describe('Invalid FEN exception', function() {
 		var e = new kokopu.exception.InvalidFEN('2x5/8/8/8/8/8/8/8 w - - 0 1', kokopu.i18n.UNEXPECTED_CHARACTER_IN_BOARD_FIELD, 'x');
 		testInvalidFEN(e, '2x5/8/8/8/8/8/8/8 w - - 0 1', 'Unexpected character in the 1st field of the FEN string: `x`.');
 	});
+	it('Ill-formed message', function() {
+		var e = new kokopu.exception.InvalidFEN('whatever', 'arg1={1} arg0={0} arg0={0} arg2={2} arg1={1}', 'zero', 'one');
+		testInvalidFEN(e, 'whatever', 'arg1=one arg0=zero arg0=zero arg2={2} arg1=one');
+	});
 });
 
 
@@ -75,6 +79,10 @@ describe('Invalid notation exception', function() {
 	it('2-argument message', function() {
 		var e = new kokopu.exception.InvalidNotation('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', 'Nxe4', kokopu.i18n.NO_PIECE_CAN_MOVE_TO, 'N', 'e4');
 		testInvalidNotation(e, 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', 'Nxe4', 'No N can move to e4.');
+	});
+	it('Ill-formed message', function() {
+		var e = new kokopu.exception.InvalidNotation('fen', 'move', 'arg1={1} arg0={0}');
+		testInvalidNotation(e, 'fen', 'move', 'arg1={1} arg0={0}');
 	});
 });
 
@@ -100,5 +108,9 @@ describe('Invalid PGN exception', function() {
 	it('2-argument message', function() {
 		var e = new kokopu.exception.InvalidPGN('another PGN string again', 45678, 294, kokopu.i18n.INVALID_GAME_INDEX, 13, 9);
 		testInvalidPGN(e, 'another PGN string again', 45678, 294, '[character=45678 line=294]', 'Game index 13 is invalid (only 9 game(s) found in the PGN data).');
+	});
+	it('Ill-formed message', function() {
+		var e = new kokopu.exception.InvalidPGN('whatever', 0, 1, 'arg0={0} arg1={1}', '{1}', '{0}');
+		testInvalidPGN(e, 'whatever', 0, 1, '[character=0 line=1]', 'arg0={1} arg1={0}');
 	});
 });
