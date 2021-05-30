@@ -1,6 +1,10 @@
 ChangeLog
 =========
 
+1.9.1 (May 30, 2021)
+--------------------
+* Avoid dependency on built-in module `util`.
+
 1.9.0 (May 29, 2021)
 --------------------
 * Add tutorial "Set-up a game from scratch".
