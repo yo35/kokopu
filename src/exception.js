@@ -23,9 +23,6 @@
 'use strict';
 
 
-var util = require('util');
-
-
 /**
  * @module exception
  * @description This module defines the exceptions used by the library.
@@ -148,11 +145,10 @@ InvalidPGN.prototype.toString = function() {
 
 
 function buildMessage(message, offset, tokens) {
-	var args = [ message ];
-	for (var i = offset; i < tokens.length; ++i) {
-		args.push(tokens[i]);
-	}
-	return util.format.apply(null, args);
+	return message.replace(/{(\d+)}/g, function(match, index) {
+		index = Number(index) + offset;
+		return index < tokens.length ? tokens[index] : match;
+	});
 }
 
 
