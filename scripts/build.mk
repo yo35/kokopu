@@ -24,8 +24,8 @@
 PACKAGE_JSON_FILE = package.json
 SRC_MAIN_FILE     = src/index.js
 SRC_FILES         = $(shell find src -type f)
-SRC_DOC_FILES     = $(shell find doc -type f)
-JSDOC_CONFIG_FILE = .jsdoc.json
+SRC_DOC_FILES     = $(shell find doc_src -type f)
+DOC_CONFIG_FILE   = scripts/jsdoc.json
 INFO_FILES        = README.md CHANGELOG.md LICENSE
 
 # Kokopu information
@@ -81,7 +81,7 @@ $(BROWSER_MIN_JS_FILE): $(BROWSER_JS_FILE) $(PACKAGE_JSON_FILE)
 	@mkdir -p $(BUILD_DIR)
 	@npx uglifyjs --comments --compress -o $@ $<
 
-$(DOCUMENTATION_DIR): $(JSDOC_CONFIG_FILE) $(SRC_FILES) $(SRC_DOC_FILES) $(PACKAGE_JSON_FILE)
+$(DOCUMENTATION_DIR): $(DOC_CONFIG_FILE) $(SRC_FILES) $(SRC_DOC_FILES) $(PACKAGE_JSON_FILE)
 	@$(ECHO) "Generate documentation..."
 	@mkdir -p $(DIST_DIR)
 	@rm -rf $@
