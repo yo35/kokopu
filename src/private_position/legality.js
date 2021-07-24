@@ -34,11 +34,12 @@ var attacks = require('./attacks');
  *
  *  1. There is exactly one white king and one black king on the board (or more generally,
 	     the number of kings on the board matches the game variant of the position).
- *  2. The player that is not about to play is not check (this condition is omitted for variants in which kings has no "royal power").
- *  3. There are no pawn on rows 1 and 8.
- *  4. For each colored castle flag set, there is a rook and a king on the
+ *  2. Special check regarding positions in which one of the player (or both) has no piece.
+ *  3. The player that is not about to play is not check (this condition is omitted for variants in which kings has no "royal power").
+ *  4. There are no pawn on rows 1 and 8.
+ *  5. For each colored castle flag set, there is a rook and a king on the
  *     corresponding initial squares.
- *  5. The pawn situation is consistent with the en-passant flag if it is set.
+ *  6. The pawn situation is consistent with the en-passant flag if it is set.
  *     For instance, if it is set to the 'e' column and black is about to play,
  *     the squares e2 and e3 must be empty, and there must be a white pawn on e4.
  */
@@ -69,11 +70,16 @@ var refreshLegalFlagAndKingSquares = exports.refreshLegalFlagAndKingSquares = fu
 	}
 
 	// Condition (2)
-	if(position.king[1-position.turn] >= 0 && attacks.isAttacked(position, position.king[1-position.turn], position.turn)) {
+	if(position.variant === bt.ANTICHESS && !hasAtLeastOnePiece(position, 1-position.turn)) { // The player that has just played must have at least one piece in antichess.
 		return;
 	}
 
 	// Condition (3)
+	if(position.king[1-position.turn] >= 0 && attacks.isAttacked(position, position.king[1-position.turn], position.turn)) {
+		return;
+	}
+
+	// Condition (4)
 	for(var c=0; c<8; ++c) {
 		var cp1 = position.board[c];
 		var cp8 = position.board[112 + c];
@@ -82,7 +88,7 @@ var refreshLegalFlagAndKingSquares = exports.refreshLegalFlagAndKingSquares = fu
 		}
 	}
 
-	// Condition (4)
+	// Condition (5)
 	var isCastlingFlagLegalFun = getCastlingFlagLegalityCheckFunction(position.variant);
 	for(var color=0; color<2; ++color) {
 		if(!isCastlingFlagLegalFun(position, color)) {
@@ -90,7 +96,7 @@ var refreshLegalFlagAndKingSquares = exports.refreshLegalFlagAndKingSquares = fu
 		}
 	}
 
-	// Condition (5)
+	// Condition (6)
 	if(position.enPassant >= 0) {
 		var square2 = (6-position.turn*5)*16 + position.enPassant;
 		var square3 = (5-position.turn*3)*16 + position.enPassant;
@@ -100,7 +106,7 @@ var refreshLegalFlagAndKingSquares = exports.refreshLegalFlagAndKingSquares = fu
 		}
 	}
 
-	// At this point, all the conditions (1) to (5) hold, so the position can be flagged as legal.
+	// At this point, all the conditions (1) to (6) hold, so the position can be flagged as legal.
 	position.legal = true;
 };
 
@@ -150,6 +156,19 @@ function refreshKingSquare(position, color) {
 		}
 		return position.king[color] >= 0;
 	}
+}
+
+
+/**
+ * Detect whether the player with the given color has at least one piece or not.
+ */
+function hasAtLeastOnePiece(position, color) {
+	for(var sq=0; sq<120; sq += (sq & 0x7)===7 ? 9 : 1) {
+		if(position.board[sq] >= 0 && position.board[sq]%2 === color) {
+			return true;
+		}
+	}
+	return false;
 }
 
 

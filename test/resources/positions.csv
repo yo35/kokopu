@@ -95,7 +95,9 @@ LABEL	CONSTRUCTOR	VARIANT	FEN	TURN	LEGAL	WHITE_KING	BLACK_KING	CHECK	CHECKMATE	S
 24b	fen	antichess	rk6/k6K/p7/P7/8/8/7p/6Q1 b - - 0 1	b	true	-	-	false	false	false	true	h2g1B/h2g1K/h2g1N/h2g1Q/h2g1R	h2g1b/h2g1k/h2g1n/h2g1q/h2g1r	hxg1=B/hxg1=K/hxg1=N/hxg1=Q/hxg1=R	rk6/k6K/p7/P7/8/8/8/6b1 w - - 0 1|rk6/k6K/p7/P7/8/8/8/6k1 w - - 0 1|rk6/k6K/p7/P7/8/8/8/6n1 w - - 0 1|rk6/k6K/p7/P7/8/8/8/6q1 w - - 0 1|rk6/k6K/p7/P7/8/8/8/6r1 w - - 0 1
 24c	fen	antichess	rkk5/8/p7/P7/8/8/7p/8 w - - 0 1	w	true	-	-	false	true	true	false				
 25a	fen	antichess	8/8/8/1Q6/8/8/8/8 b - - 0 1	b	true	-	-	false	true	true	false				
-25b	fen	antichess	8/8/1k6/8/8/8/8/8 w - - 0 1	w	true	-	-	false	true	true	false				
+25b	fen	antichess	8/8/8/1Q6/8/8/8/8 w - - 0 1	w	false	-	-	false	false	false	false				
+25c	fen	antichess	8/8/1k6/8/8/8/8/8 w - - 0 1	w	true	-	-	false	true	true	false				
+25d	fen	antichess	8/8/1k6/8/8/8/8/8 b - - 0 1	b	false	-	-	false	false	false	false				
 27	fen	antichess	rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1	w	false	-	-	false	false	false	false				
 28a	fen	antichess	rnbqkbnr/ppp1pppp/8/3pP3/8/8/PPPP1PPP/RNBQKBNR w - d6 0 1	w	true	-	-	false	false	false	true	e5d6	e5d6	exd6	rnbqkbnr/ppp1pppp/3P4/8/8/8/PPPP1PPP/RNBQKBNR b - - 0 1
 28b	fen	antichess	rnbqkbnr/ppp1pppp/8/2Pp4/8/8/PP1PPPPP/RNBQKBNR w - d6 0 1	w	true	-	-	false	false	false	true	c5d6	c5d6	cxd6	rnbqkbnr/ppp1pppp/3P4/8/8/8/PP1PPPPP/RNBQKBNR b - - 0 1
@@ -107,7 +109,7 @@ LABEL	CONSTRUCTOR	VARIANT	FEN	TURN	LEGAL	WHITE_KING	BLACK_KING	CHECK	CHECKMATE	S
 29d	fen	antichess	8/8/8/8/P7/7p/8/8 b - a3 0 1	b	true	-	-	false	false	false	true	h3h2	h3h2	h2	8/8/8/8/P7/8/7p/8 w - - 0 1
 30	fen	antichess	4k3/8/1p1p1p1p/pP1PpP1P/Pb2P3/2N3N1/8/4K3 w - - 0 1	w	true	-	-	false	false	false	true	c3a2/c3b1/c3d1/c3e2/e1d1/e1d2/e1e2/e1f1/e1f2/g3e2/g3f1/g3h1	c3a2/c3b1/c3d1/c3e2/e1d1/e1d2/e1e2/e1f1/e1f2/g3e2/g3f1/g3h1	Na2/Nb1/Nd1/Nce2/Kd1/Kd2/Ke2/Kf1/Kf2/Nge2/Nf1/Nh1	4k3/8/1p1p1p1p/pP1PpP1P/Pb2P3/6N1/N7/4K3 b - - 0 1|4k3/8/1p1p1p1p/pP1PpP1P/Pb2P3/6N1/8/1N2K3 b - - 0 1|4k3/8/1p1p1p1p/pP1PpP1P/Pb2P3/6N1/8/3NK3 b - - 0 1|4k3/8/1p1p1p1p/pP1PpP1P/Pb2P3/6N1/4N3/4K3 b - - 0 1|4k3/8/1p1p1p1p/pP1PpP1P/Pb2P3/2N3N1/8/3K4 b - - 0 1|4k3/8/1p1p1p1p/pP1PpP1P/Pb2P3/2N3N1/3K4/8 b - - 0 1|4k3/8/1p1p1p1p/pP1PpP1P/Pb2P3/2N3N1/4K3/8 b - - 0 1|4k3/8/1p1p1p1p/pP1PpP1P/Pb2P3/2N3N1/8/5K2 b - - 0 1|4k3/8/1p1p1p1p/pP1PpP1P/Pb2P3/2N3N1/5K2/8 b - - 0 1|4k3/8/1p1p1p1p/pP1PpP1P/Pb2P3/2N5/4N3/4K3 b - - 0 1|4k3/8/1p1p1p1p/pP1PpP1P/Pb2P3/2N5/8/4KN2 b - - 0 1|4k3/8/1p1p1p1p/pP1PpP1P/Pb2P3/2N5/8/4K2N b - - 0 1
 31a	empty	chess960	8/8/8/8/8/8/8/8 w - - 0 1	w	false	-	-	false	false	false	false				
-31b	empty	no-king	8/8/8/8/8/8/8/8 w - - 0 1	w	false	-	-	false	false	false	false				
+31b	empty	no-king	8/8/8/8/8/8/8/8 w - - 0 1	w	true	-	-	false	false	true	false				
 31c	empty	white-king-only	8/8/8/8/8/8/8/8 w - - 0 1	w	false	-	-	false	false	false	false				
 31d	empty	black-king-only	8/8/8/8/8/8/8/8 w - - 0 1	w	false	-	-	false	false	false	false				
 31e	empty	antichess	8/8/8/8/8/8/8/8 w - - 0 1	w	false	-	-	false	false	false	false				
