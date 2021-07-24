@@ -515,7 +515,7 @@ exports.play = function(position, descriptor) {
 	}
 
 	// Update the computed flags.
-	if(movingPiece === bt.KING && position.king[position.turn] !== 0) {
+	if(movingPiece === bt.KING && position.king[position.turn] >= 0) {
 		position.king[position.turn] = descriptor._to;
 	}
 

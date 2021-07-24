@@ -79,7 +79,7 @@ exports.makeInitial = function(variant) {
 
 		// Computed attributes
 		legal: true,
-		king: [4 /* e1 */, 116 /* e8 */]
+		king: variant === bt.ANTICHESS ? [-1, -1] : [4 /* e1 */, 116 /* e8 */]
 	};
 };
 
