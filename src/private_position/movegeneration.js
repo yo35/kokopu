@@ -83,12 +83,12 @@ exports.isCheck = function(position) {
 
 
 exports.isCheckmate = function(position) {
-	return legality.isLegal(position) && !hasMove(position) && isKingToMoveAttacked(position);
+	return legality.isLegal(position) && !hasMove(position) && (position.variant === bt.ANTICHESS || isKingToMoveAttacked(position));
 };
 
 
 exports.isStalemate = function(position) {
-	return legality.isLegal(position) && !hasMove(position) && !isKingToMoveAttacked(position);
+	return legality.isLegal(position) && !hasMove(position) && (position.variant === bt.ANTICHESS || !isKingToMoveAttacked(position));
 };
 
 
@@ -117,6 +117,9 @@ exports.moves = function(position) {
 				res.push(moveDescriptor.makePromotion(descriptor._from, descriptor._to, position.turn, bt.ROOK  , descriptor._optionalPiece));
 				res.push(moveDescriptor.makePromotion(descriptor._from, descriptor._to, position.turn, bt.BISHOP, descriptor._optionalPiece));
 				res.push(moveDescriptor.makePromotion(descriptor._from, descriptor._to, position.turn, bt.KNIGHT, descriptor._optionalPiece));
+				if(position.variant === bt.ANTICHESS) {
+					res.push(moveDescriptor.makePromotion(descriptor._from, descriptor._to, position.turn, bt.KING, descriptor._optionalPiece));
+				}
 			}
 			else {
 				res.push(descriptor);
@@ -134,6 +137,9 @@ function generateMoves(position, fun) {
 
 	// Ensure that the position is legal.
 	if(!legality.isLegal(position)) { return; }
+
+	// In some variants, capture may be mandatory (typically in antichess).
+	var nonCaptureIsAllowed = !isCaptureMandatory(position);
 
 	// For all potential 'from' square...
 	for(var from=0; from<120; from += (from & 0x7)===7 ? 9 : 1) {
@@ -164,17 +170,19 @@ function generateMoves(position, fun) {
 			}
 
 			// Non-capturing moves
-			var moveDirection = 16 - position.turn*32;
-			var to = from + moveDirection;
-			if(position.board[to] < 0) {
-				fun(isKingSafeAfterMove(position, from, to, -1), to<8 || to>=112);
+			if(nonCaptureIsAllowed) {
+				var moveDirection = 16 - position.turn*32;
+				var to = from + moveDirection;
+				if(position.board[to] < 0) {
+					fun(isKingSafeAfterMove(position, from, to, -1), to<8 || to>=112);
 
-				// 2-square pawn move
-				var firstSquareOfRow = (1 + position.turn*5) * 16;
-				if(from>=firstSquareOfRow && from<firstSquareOfRow+8) {
-					to += moveDirection;
-					if(position.board[to] < 0) {
-						fun(isKingSafeAfterMove(position, from, to, -1), false);
+					// 2-square pawn move
+					var firstSquareOfRow = (1 + position.turn*5) * 16;
+					if(from>=firstSquareOfRow && from<firstSquareOfRow+8) {
+						to += moveDirection;
+						if(position.board[to] < 0) {
+							fun(isKingSafeAfterMove(position, from, to, -1), false);
+						}
 					}
 				}
 			}
@@ -187,7 +195,7 @@ function generateMoves(position, fun) {
 				var to = from + directions[i];
 				if((to & 0x88) === 0) {
 					var toContent = position.board[to];
-					if(toContent < 0 || toContent%2 !== position.turn) {
+					if(toContent < 0 ? nonCaptureIsAllowed : toContent%2 !== position.turn) {
 						fun(isKingSafeAfterMove(position, from, to, -1), false);
 					}
 				}
@@ -200,7 +208,7 @@ function generateMoves(position, fun) {
 			for(var i=0; i<directions.length; ++i) {
 				for(var to = from + directions[i]; (to & 0x88) === 0; to += directions[i]) {
 					var toContent = position.board[to];
-					if(toContent < 0 || toContent%2 !== position.turn) {
+					if(toContent < 0 ? nonCaptureIsAllowed : toContent%2 !== position.turn) {
 						fun(isKingSafeAfterMove(position, from, to, -1), false);
 					}
 					if(toContent >= 0) { break; }
@@ -209,12 +217,42 @@ function generateMoves(position, fun) {
 		}
 
 		// Generate castling moves
-		if(movingPiece === bt.KING && position.castling[position.turn] !== 0) {
+		if(movingPiece === bt.KING && nonCaptureIsAllowed && position.castling[position.turn] !== 0) {
 			fun(isCastlingLegal(position, from, 2 + 112*position.turn), false);
 			fun(isCastlingLegal(position, from, 6 + 112*position.turn), false);
 		}
 	}
 }
+
+
+/**
+ * For antichess, return `true` if the current player can capture something. For other variants, always returns `false`.
+ *
+ * Precondition: the position must be legal.
+ */
+var isCaptureMandatory = exports.isCaptureMandatory = function(position) {
+	if(position.variant !== bt.ANTICHESS) {
+		return false;
+	}
+
+	// Look for regular captures
+	for(var sq=0; sq<120; sq += (sq & 0x7)===7 ? 9 : 1) {
+		var content = position.board[sq];
+		if(content >= 0 && content%2 !== position.turn && attacks.isAttacked(position, sq, position.turn)) {
+			return true;
+		}
+	}
+
+	// Look for "en-passant" captures
+	if(position.enPassant >= 0) {
+		var enPassantSquare = (4-position.turn)*16 + position.enPassant;
+		var pawnTarget = bt.PAWN*2 + position.turn;
+		if(((enPassantSquare - 1) & 0x88) === 0 && position.board[enPassantSquare - 1] === pawnTarget) { return true; }
+		if(((enPassantSquare + 1) & 0x88) === 0 && position.board[enPassantSquare + 1] === pawnTarget) { return true; }
+	}
+
+	return false;
+};
 
 
 /**
@@ -229,10 +267,9 @@ var isKingSafeAfterMove = exports.isKingSafeAfterMove = function(position, from,
 	var fromContent   = position.board[from];
 	var toContent     = position.board[to  ];
 	var movingPiece   = Math.floor(fromContent / 2);
-	var kingSquare    = movingPiece===bt.KING ? to : position.king[position.turn];
 	var kingIsInCheck = false;
 
-	if(kingSquare >= 0) {
+	if(position.king[position.turn] >= 0) {
 
 		// Step (7) -> Execute the displacement (castling moves are processed separately).
 		position.board[to  ] = fromContent;
@@ -242,7 +279,7 @@ var isKingSafeAfterMove = exports.isKingSafeAfterMove = function(position, from,
 		}
 
 		// Step (8) -> Is the king safe after the displacement?
-		kingIsInCheck = attacks.isAttacked(position, kingSquare, 1-position.turn);
+		kingIsInCheck = attacks.isAttacked(position, movingPiece===bt.KING ? to : position.king[position.turn], 1-position.turn);
 
 		// Step (9) -> Reverse the displacement.
 		position.board[from] = fromContent;
@@ -359,10 +396,11 @@ exports.isMoveLegal = function(position, from, to) {
 	var enPassantSquare = -1; // square where a pawn is taken if the move is "en-passant"
 	var isTwoSquarePawnMove = false;
 	var isPromotion = movingPiece===bt.PAWN && (to<8 || to>=112);
+	var captureIsMandatory = isCaptureMandatory(position);
 
 	// Compute the move descriptor corresponding to castling, if applicable.
 	var castlingDescriptor = false;
-	if(movingPiece === bt.KING && position.castling[position.turn] !== 0) {
+	if(movingPiece === bt.KING && !captureIsMandatory && position.castling[position.turn] !== 0) {
 		castlingDescriptor = isCastlingLegal(position, from, to);
 	}
 
@@ -381,7 +419,7 @@ exports.isMoveLegal = function(position, from, to) {
 	// Step (5) -> check the content of the destination square
 	if(movingPiece === bt.PAWN) {
 		if(displacement === 135-position.turn*32 || isTwoSquarePawnMove) { // non-capturing pawn move
-			if(toContent !== bt.EMPTY) { return false; }
+			if(captureIsMandatory || toContent !== bt.EMPTY) { return false; }
 		}
 		else if(toContent === bt.EMPTY) { // en-passant pawn move
 			if(position.enPassant < 0 || to !== (5-position.turn*3)*16 + position.enPassant) { return false; }
@@ -392,7 +430,7 @@ exports.isMoveLegal = function(position, from, to) {
 		}
 	}
 	else { // piece move
-		if(toContent >= 0 && toContent%2 === position.turn) { return castlingDescriptor; }
+		if(toContent < 0 ? captureIsMandatory : toContent%2 === position.turn) { return castlingDescriptor; }
 	}
 
 	// Step (6) -> For sliding pieces, ensure that there is nothing between the origin and the destination squares.
@@ -412,9 +450,8 @@ exports.isMoveLegal = function(position, from, to) {
 		return {
 			type: 'promotion',
 			build: function(promotion) {
-				return promotion !== bt.PAWN && promotion !== bt.KING ?
-					moveDescriptor.makePromotion(descriptor._from, descriptor._to, descriptor._movingPiece % 2, promotion, descriptor._optionalPiece) :
-					false;
+				return promotion === bt.PAWN || (promotion === bt.KING && position.variant !== bt.ANTICHESS) ? false :
+					moveDescriptor.makePromotion(descriptor._from, descriptor._to, descriptor._movingPiece % 2, promotion, descriptor._optionalPiece);
 			}
 		};
 	}
@@ -478,7 +515,7 @@ exports.play = function(position, descriptor) {
 	}
 
 	// Update the computed flags.
-	if(movingPiece === bt.KING) {
+	if(movingPiece === bt.KING && position.king[position.turn] !== 0) {
 		position.king[position.turn] = descriptor._to;
 	}
 

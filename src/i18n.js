@@ -56,6 +56,7 @@ exports.NO_PIECE_CAN_MOVE_TO_DISAMBIGUATION = 'No {0} on the specified rank/file
 exports.REQUIRE_DISAMBIGUATION              = 'Cannot determine uniquely which {0} is supposed to move to {1}.';
 exports.WRONG_DISAMBIGUATION_SYMBOL         = 'Wrong disambiguation symbol (expected: `{0}`, observed: `{1}`).';
 exports.TRYING_TO_CAPTURE_YOUR_OWN_PIECES   = 'Capturing its own pieces is not legal.';
+exports.CAPTURE_IS_MANDATORY                = 'Capture is mandatory.'
 exports.INVALID_PIECE_SYMBOL                = 'Character `{0}` is not a valid piece symbol.';
 exports.INVALID_PIECE_SYMBOL_COLOR          = 'Invalid color for piece symbol `{0}`.';
 exports.INVALID_CAPTURING_PAWN_MOVE         = 'Invalid capturing pawn move.';

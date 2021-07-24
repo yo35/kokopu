@@ -93,7 +93,7 @@ function getPieceSymbol(coloredPiece, pieceStyle) {
 function getCheckCheckmateSymbol(position, descriptor) {
 	var nextPosition = impl.makeCopy(position);
 	moveGeneration.play(nextPosition, descriptor);
-	return moveGeneration.isCheck(nextPosition) ? (moveGeneration.hasMove(nextPosition) ? '+' : '#') : '';
+	return moveGeneration.isCheckmate(nextPosition) ? '#' : moveGeneration.isCheck(nextPosition) ? '+' : '';
 }
 
 
@@ -255,6 +255,11 @@ exports.parseNotation = function(position, notation, strict, pieceStyle) {
 			throw new exception.InvalidNotation(fen.getFEN(position, 0, 1), notation, i18n.TRYING_TO_CAPTURE_YOUR_OWN_PIECES);
 		}
 
+		// Capture may be mandatory in some variants.
+		if(toContent < 0 && moveGeneration.isCaptureMandatory(position)) {
+			throw new exception.InvalidNotation(fen.getFEN(position, 0, 1), notation, i18n.CAPTURE_IS_MANDATORY);
+		}
+
 		// Find the "from"-square candidates
 		var attackers = attacks.getAttacks(position, to, position.turn).filter(function(sq) { return position.board[sq] === movingPiece*2 + position.turn; });
 
@@ -303,6 +308,9 @@ exports.parseNotation = function(position, notation, strict, pieceStyle) {
 		if(m[8]) {
 			descriptor = getPawnCaptureDescriptor(position, notation, bt.fileFromString(m[8]), to);
 		}
+		else if(moveGeneration.isCaptureMandatory(position)) {
+			throw new exception.InvalidNotation(fen.getFEN(position, 0, 1), notation, i18n.CAPTURE_IS_MANDATORY);
+		}
 		else {
 			descriptor = getPawnAdvanceDescriptor(position, notation, to);
 		}
@@ -319,7 +327,7 @@ exports.parseNotation = function(position, notation, strict, pieceStyle) {
 				throw new exception.InvalidNotation(fen.getFEN(position, 0, 1), notation, i18n.MISSING_PROMOTION);
 			}
 			var promotion = parsePieceSymbol(position, notation, m[12], strict, pieceStyle);
-			if(promotion === bt.PAWN || promotion === bt.KING) {
+			if(promotion === bt.PAWN || (promotion === bt.KING && position.variant !== bt.ANTICHESS)) {
 				throw new exception.InvalidNotation(fen.getFEN(position, 0, 1), notation, i18n.INVALID_PROMOTED_PIECE, m[12]);
 			}
 			descriptor = moveDescriptor.makePromotion(descriptor._from, descriptor._to, descriptor._movingPiece % 2, promotion, descriptor._optionalPiece);

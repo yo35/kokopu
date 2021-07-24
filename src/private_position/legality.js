@@ -34,7 +34,7 @@ var attacks = require('./attacks');
  *
  *  1. There is exactly one white king and one black king on the board (or more generally,
 	     the number of kings on the board matches the game variant of the position).
- *  2. The player that is not about to play is not check.
+ *  2. The player that is not about to play is not check (this condition is omitted for variants in which kings has no "royal power").
  *  3. There are no pawn on rows 1 and 8.
  *  4. For each colored castle flag set, there is a rook and a king on the
  *     corresponding initial squares.
@@ -83,7 +83,7 @@ var refreshLegalFlagAndKingSquares = exports.refreshLegalFlagAndKingSquares = fu
 	}
 
 	// Condition (4)
-	var isCastlingFlagLegalFun = position.variant === bt.CHESS960 ? isCastlingFlagLegalForChess960 : isCastlingFlagLegalForRegularChess;
+	var isCastlingFlagLegalFun = getCastlingFlagLegalityCheckFunction(position.variant);
 	for(var color=0; color<2; ++color) {
 		if(!isCastlingFlagLegalFun(position, color)) {
 			return;
@@ -111,25 +111,54 @@ var refreshLegalFlagAndKingSquares = exports.refreshLegalFlagAndKingSquares = fu
 function refreshKingSquare(position, color) {
 	var target = bt.KING*2 + color;
 	position.king[color] = -1;
-	for(var sq=0; sq<120; sq += (sq & 0x7)===7 ? 9 : 1) {
-		if(position.board[sq] === target) {
 
-			// If the targeted king is detected on the square sq, two situations may occur:
-			// 1) No king was detected on the previously visited squares: then the current
-			//    square is saved, and loop over the next board squares goes on.
-			if(position.king[color] < 0) {
-				position.king[color] = sq;
-			}
+	// Expectation: king may be present (even several times), and it has no royal power.
+	if (position.variant === bt.ANTICHESS) {
+		return true;
+	}
 
-			// 2) Another king was detected on the previously visited squares: then the buffer position.king[color]
-			//    is set to the invalid state (-1), and the loop is interrupted.
-			else {
-				position.king[color] = -1;
+	// Expectation: no king of the given color is supposed to be present on the board.
+	else if (position.variant === bt.NO_KING || position.variant === bt.BLACK_KING_ONLY - color) {
+		for(var sq=0; sq<120; sq += (sq & 0x7)===7 ? 9 : 1) {
+			if(position.board[sq] === target) {
 				return false;
 			}
 		}
+		return true;
 	}
-	return position.variant === bt.NO_KING || position.variant === bt.BLACK_KING_ONLY - color ? position.king[color] < 0 : position.king[color] >= 0;
+
+	// Expectation: exactly 1 king of the given color is supposed to be present on the board,
+	// and it has royal power.
+	else {
+		for(var sq=0; sq<120; sq += (sq & 0x7)===7 ? 9 : 1) {
+			if(position.board[sq] === target) {
+
+				// If the targeted king is detected on the square sq, two situations may occur:
+				// 1) No king was detected on the previously visited squares: then the current
+				//    square is saved, and loop over the next board squares goes on.
+				if(position.king[color] < 0) {
+					position.king[color] = sq;
+				}
+
+				// 2) Another king was detected on the previously visited squares: then the buffer position.king[color]
+				//    is set to the invalid state (-1), and the loop is interrupted.
+				else {
+					position.king[color] = -1;
+					return false;
+				}
+			}
+		}
+		return position.king[color] >= 0;
+	}
+}
+
+
+function getCastlingFlagLegalityCheckFunction(variant) {
+	switch(variant) {
+		case bt.CHESS960: return isCastlingFlagLegalForChess960;
+		case bt.ANTICHESS: return isCastlingFlagLegalForAntichess;
+		default: return isCastlingFlagLegalForRegularChess;
+	}
 }
 
 
@@ -140,6 +169,11 @@ function isCastlingFlagLegalForRegularChess(position, color) {
 	var rookAOK = skipOOO             || position.board[0 + 112*color] === bt.ROOK*2 + color;
 	var kingOK  = (skipOO && skipOOO) || position.board[4 + 112*color] === bt.KING*2 + color;
 	return kingOK && rookAOK && rookHOK;
+}
+
+
+function isCastlingFlagLegalForAntichess(position, color) {
+	return position.castling[color] === 0;
 }
 
 

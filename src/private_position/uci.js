@@ -61,7 +61,7 @@ exports.getNotation = function(position, descriptor, forceKxR) {
 exports.parseNotation = function(position, notation, strict) {
 
 	// General syntax
-	var m = /^([a-h][1-8])([a-h][1-8])([qrbn]?)$/.exec(notation);
+	var m = /^([a-h][1-8])([a-h][1-8])([kqrbnp]?)$/.exec(notation);
 	if(m === null) {
 		throw new exception.InvalidNotation(fen.getFEN(position, 0, 1), notation, i18n.INVALID_UCI_NOTATION_SYNTAX);
 	}
@@ -102,10 +102,11 @@ exports.parseNotation = function(position, notation, strict) {
 
 	// Manage promotion.
 	if(result.type === 'promotion') {
-		if(m[3] === '') { // A promotion piece must be provided in case of promotion move.
+		var promotion = bt.pieceFromString(m[3]);
+		if(promotion < 0 || promotion === bt.PAWN || (promotion === bt.KING && position.variant !== bt.ANTICHESS)) {
 			throw new exception.InvalidNotation(fen.getFEN(position, 0, 1), notation, i18n.ILLEGAL_UCI_MOVE);
 		}
-		result = result.build(bt.pieceFromString(m[3]));
+		result = result.build(promotion);
 	}
 	else if(m[3] !== '') { // Throw if a promotion piece is provided while no promotion happens.
 		throw new exception.InvalidNotation(fen.getFEN(position, 0, 1), notation, i18n.ILLEGAL_UCI_MOVE);

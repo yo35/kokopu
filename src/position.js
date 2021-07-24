@@ -481,7 +481,9 @@ Position.prototype.isLegal = function() {
  *
  * @param {Color} color
  * @returns {Square|boolean} Square where is located the searched king. `false` is returned
- *          if there is no king of the given color, or if the are 2 such kings or more.
+ *          if there is no king of the given color, if the are 2 such kings or more,
+ *          or if king has no "royal power" (i.e. it cannot be put in check) in the current variant
+ *          (e.g. in antichess, `false` is always returned).
  */
 Position.prototype.kingSquare = function(color) {
 	color = bt.colorFromString(color);
@@ -504,6 +506,8 @@ Position.prototype.kingSquare = function(color) {
  * Return `true` if the player that is about to play is in check. If the position is not legal (see {@link Position#isLegal}),
  * the returned value is always `false`.
  *
+ * For antichess, this method always returns `false`.
+ *
  * @returns {boolean}
  */
 Position.prototype.isCheck = function() {
@@ -515,6 +519,9 @@ Position.prototype.isCheck = function() {
  * Return `true` if the player that is about to play is checkmated. If the position is not legal (see {@link Position#isLegal}),
  * the returned value is always `false`.
  *
+ * For antichess, this method returns `true` if the player about to play has no remaining piece or pawn, or if non of his/her remaining piece can move.
+ * (same behavior as {@link Position#isStalemate} in this case).
+ *
  * @returns {boolean}
  */
 Position.prototype.isCheckmate = function() {
@@ -525,6 +532,9 @@ Position.prototype.isCheckmate = function() {
 /**
  * Return `true` if the player that is about to play is stalemated. If the position is not legal (see {@link Position#isLegal}),
  * the returned value is always `false`.
+ *
+ * For antichess, this method returns `true` if the player about to play has no remaining piece or pawn, or if non of his/her remaining piece can move.
+ * (same behavior as {@link Position#isCheckmate} in this case).
  *
  * @returns {boolean}
  */

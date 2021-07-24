@@ -129,6 +129,9 @@ describe('Move legality check', function() {
 							break;
 
 						case 'promotion':
+							if (pos.variant() === 'antichess') {
+								moves.push(moveDescriptor('k'));
+							}
 							moves.push(moveDescriptor('q'));
 							moves.push(moveDescriptor('r'));
 							moves.push(moveDescriptor('b'));
@@ -205,7 +208,7 @@ describe('Figurine notation generation', function() {
 
 
 describe('UCI notation parsing', function() {
-	var /* const */ PROMO  = ['', 'q', 'r', 'b', 'n'];
+	var /* const */ PROMO  = ['', 'k', 'q', 'r', 'b', 'n', 'p'];
 	testData().forEach(function(elem) {
 		it('Position ' + elem.label, function() {
 			var pos = createPosition(elem);
@@ -298,7 +301,7 @@ function notationParsingTest(elem, testedPieces, testedPromos, testedFunction) {
 
 describe('Standard algebraic notation parsing', function() {
 	testData().forEach(function(elem) {
-		it('Position ' + elem.label, notationParsingTest(elem, 'KQRBN', ['', 'Q', 'R', 'B', 'N'], function(pos, text) { return pos.notation(text, false); }));
+		it('Position ' + elem.label, notationParsingTest(elem, 'KQRBN', ['', 'K', 'Q', 'R', 'B', 'N', 'P'], function(pos, text) { return pos.notation(text, false); }));
 	});
 });
 
@@ -306,7 +309,8 @@ describe('Standard algebraic notation parsing', function() {
 describe('Figurine notation parsing', function() {
 	testData().forEach(function(elem) {
 		var testedPieces = elem.turn === 'w' ? '\u2654\u2655\u2656\u2657\u2658' : '\u265a\u265b\u265c\u265d\u265e';
-		var testedPromos = elem.turn === 'w' ? ['', '\u2655', '\u2656', '\u2657', '\u2658'] : ['', '\u265b', '\u265c', '\u265d', '\u265e'];
+		var testedPromos = elem.turn === 'w' ? ['', '\u2654', '\u2655', '\u2656', '\u2657', '\u2658', '\u2659'] :
+			['', '\u265a', '\u265b', '\u265c', '\u265d', '\u265e', '\u265f'];
 		it('Position ' + elem.label, notationParsingTest(elem, testedPieces, testedPromos, function(pos, text) { return pos.figurineNotation(text, false); }));
 	});
 });
