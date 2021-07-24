@@ -58,9 +58,19 @@ function createPosition(testDataDescriptor) {
 		case 'xfen':
 			return new kokopu.Position(testDataDescriptor.variant, testDataDescriptor.fen);
 		default:
-			return new kokopu.Position(testDataDescriptor.constructor);
+			return new kokopu.Position(testDataDescriptor.variant, testDataDescriptor.constructor);
 	}
 }
+
+
+describe('Variant getter', function() {
+	testData().forEach(function(elem) {
+		it('Position ' + elem.label, function() {
+			var pos = createPosition(elem);
+			test.value(pos.variant()).is(elem.variant);
+		});
+	});
+});
 
 
 describe('Turn getter', function() {
