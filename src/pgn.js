@@ -80,6 +80,9 @@ function parseVariant(value) {
 	else if(/^black[ -]king[ -]only$/.test(value)) {
 		return 'black-king-only';
 	}
+	else if(/^anti[ -]?chess/.test(value)) {
+		return 'antichess';
+	}
 	else {
 		return undefined;
 	}
@@ -124,28 +127,39 @@ function processHeader(stream, game, initialPositionFactory, key, value, valueCh
 
 function initializeInitialPosition(stream, game, initialPositionFactory) {
 
-	// Nothing to do if no custom FEN has been defined -> let the default state.
-	if(!initialPositionFactory.fen) {
-		if(initialPositionFactory.variant && initialPositionFactory.variant !== 'regular') {
-			throw new exception.InvalidPGN(stream.text(), initialPositionFactory.variantTokenCharacterIndex, initialPositionFactory.variantTokenLineIndex, i18n.VARIANT_WITHOUT_FEN);
+	// If a FEN header has been encountered, set-up the initial position with it, taking the optional variant into account.
+	if (initialPositionFactory.fen) {
+		try {
+			var position = new Position(initialPositionFactory.variant ? initialPositionFactory.variant : 'regular', 'empty');
+			var moveCounters = position.fen(initialPositionFactory.fen);
+			game.initialPosition(position, moveCounters.fullMoveNumber);
 		}
-		return;
+		catch(error) {
+			// istanbul ignore else
+			if(error instanceof exception.InvalidFEN) {
+				throw new exception.InvalidPGN(stream.text(), initialPositionFactory.fenTokenCharacterIndex, initialPositionFactory.fenTokenLineIndex,
+					i18n.INVALID_FEN_IN_PGN_TEXT, error.message);
+			}
+			else {
+				throw error;
+			}
+		}
 	}
 
-	try {
-		var position = new Position(initialPositionFactory.variant ? initialPositionFactory.variant : 'regular', 'empty');
-		var moveCounters = position.fen(initialPositionFactory.fen);
-		game.initialPosition(position, moveCounters.fullMoveNumber);
-	}
-	catch(error) {
-		// istanbul ignore else
-		if(error instanceof exception.InvalidFEN) {
-			throw new exception.InvalidPGN(stream.text(), initialPositionFactory.fenTokenCharacterIndex, initialPositionFactory.fenTokenLineIndex, i18n.INVALID_FEN_IN_PGN_TEXT, error.message);
+	// Otherwise, if a variant header has been encountered, but without FEN header...
+	else if(initialPositionFactory.variant) {
+		if(initialPositionFactory.variant === 'regular' || initialPositionFactory.variant === 'antichess') {
+			var position = new Position(initialPositionFactory.variant, 'start');
+			game.initialPosition(position, 1);
 		}
 		else {
-			throw error;
+			throw new exception.InvalidPGN(stream.text(), initialPositionFactory.variantTokenCharacterIndex, initialPositionFactory.variantTokenLineIndex,
+				i18n.VARIANT_WITHOUT_FEN, initialPositionFactory.variant);
 		}
 	}
+
+	// If neither a variant header nor a FEN header has been encountered, nothing to do (the default initial position as defined in the `Game` object
+	// is the right one).
 }
 
 

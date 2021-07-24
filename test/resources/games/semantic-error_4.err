@@ -1,3 +1,3 @@
 318
 27
-For non-standard game variant, the FEN header is mandatory.
+For game variant chess960, the FEN header is mandatory.

@@ -1,0 +1,116 @@
+White = {tigrouste}
+WhiteElo = {1246}
+Black = {yo35}
+BlackElo = {1500}
+Event = {Rated Antichess game}
+Site = {Lichess}
+Date = {Sat May 22 2021}
+Variant = {antichess}
++---+---+---+---+---+---+---+---+
+| r | n | b | q | k | b | n | r |
++---+---+---+---+---+---+---+---+
+| p | p | p | p | p | p | p | p |
++---+---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+---+
+| P | P | P | P | P | P | P | P |
++---+---+---+---+---+---+---+---+
+| R | N | B | Q | K | B | N | R |
++---+---+---+---+---+---+---+---+
+w - - (antichess)
+-+<LONG
+(1w) b3
+(1b) e6
+(2w) h4
+(2b) Qxh4
+(3w) Rxh4
+(3b) Nh6
+(4w) Rxh6
+(4b) gxh6
+(5w) b4
+(5b) Bxb4
+(6w) Ba3
+(6b) Bxa3
+(7w) Nxa3
+(7b) b5
+(8w) Nxb5
+(8b) a6
+(9w) Nxc7
+(9b) a5
+(10w) Nxe6
+(10b) dxe6
+(11w) e3
+(11b) Ba6
+(12w) Bxa6
+(12b) Rxa6
+(13w) Qf3
+(13b) Kd8
+(14w) Qxf7
+(14b) Nc6
+(15w) Qxh7
+(15b) Rxh7
+(16w) d4
+(16b) Nxd4
+(17w) exd4
+(17b) e5
+(18w) dxe5
+(18b) Rf6
+(19w) exf6
+(19b) Rg7
+(20w) fxg7
+(20b) h5
+(21w) g8=K
+(21b) h4
+(22w) Rb1
+(22b) h3
+(23w) gxh3
+(23b) Kd7
+(24w) Rb4
+(24b) axb4
+(25w) c3
+(25b) bxc3
+(26w) Kd2
+(26b) cxd2
+(27w) Ne2
+(27b) Kc6
+(28w) Kf7
+(28b) d1=N
+(29w) Nc3
+(29b) Nxc3
+(30w) Ke6
+(30b) Nxa2
+(31w) Kd5
+(31b) Kxd5
+(32w) h4
+(32b) Ke6
+(33w) h5
+(33b) Kf7
+(34w) f4
+(34b) Nc3
+(35w) f5
+(35b) Kg6
+(36w) hxg6
+(36b) Nb5
+(37w) g7
+(37b) Nc7
+(38w) f6
+(38b) Nb5
+(39w) g8=Q
+(39b) Nc3
+(40w) Qa2
+(40b) Nxa2
+(41w) f7
+(41b) Nc3
+(42w) f8=Q
+(42b) Nd1
+(43w) Qg8
+(43b) Nf2
+(44w) Qg4
+(44b) Nxg4#
+{White wins}

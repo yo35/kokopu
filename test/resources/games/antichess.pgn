@@ -1,0 +1,32 @@
+[Event "Rated Antichess game"]
+[Site "Lichess"]
+[Date "2021.05.22"]
+[White "MeTheGreat_1200"]
+[Black "yo35"]
+[Result "0-1"]
+[WhiteElo "1468"]
+[BlackElo "1558"]
+[Variant "Antichess"]
+
+1. g3 e6 2. b4 Bxb4 3. g4 Bxd2 4. Kxd2 Qh4 5. g5 Qxh2 6. Rxh2 Nh6 7. gxh6 gxh6 8. Rxh6 Rf8
+9. Rxe6 dxe6 10. e3 b5 11. Bxb5 Nc6 12. Bxc6 Kd8 13. Bxa8 Bb7 14. Bxb7 c6 15. Bxc6 Kd7
+16. Bxd7 f5 17. Bxe6 Rc8 18. Bxf5 Rxc2 19. Bxh7 Rxd2 20. Qxd2 a5 21. Qxa5# 0-1
+
+
+[Event "Rated Antichess game"]
+[Site "Lichess"]
+[Date "2021.05.22"]
+[White "tigrouste"]
+[Black "yo35"]
+[Result "1-0"]
+[WhiteElo "1246"]
+[BlackElo "1500"]
+[Variant "Anti-chess"]
+
+1. b3 e6 2. h4 Qxh4 3. Rxh4 Nh6 4. Rxh6 gxh6 5. b4 Bxb4 6. Ba3 Bxa3 7. Nxa3 b5 8. Nxb5 a6
+9. Nxc7 a5 10. Nxe6 dxe6 11. e3 Ba6 12. Bxa6 Rxa6 13. Qf3 Kd8 14. Qxf7 Nc6 15. Qxh7 Rxh7
+16. d4 Nxd4 17. exd4 e5 18. dxe5 Rf6 19. exf6 Rg7 20. fxg7 h5 21. g8=K h4 22. Rb1 h3
+23. gxh3 Kd7 24. Rb4 axb4 25. c3 bxc3 26. Kd2 cxd2 27. Ne2 Kc6 28. Kf7 d1=N 29. Nc3 Nxc3
+30. Ke6 Nxa2 31. Kd5 Kxd5 32. h4 Ke6 33. h5 Kf7 34. f4 Nc3 35. f5 Kg6 36. hxg6 Nb5
+37. g7 Nc7 38. f6 Nb5 39. g8=Q Nc3 40. Qa2 Nxa2 41. f7 Nc3 42. f8=Q Nd1 43. Qg8 Nf2 44. Qg4 Nxg4# 1-0
+
