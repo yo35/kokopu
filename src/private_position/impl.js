@@ -56,7 +56,7 @@ exports.makeEmpty = function(variant) {
 };
 
 
-exports.makeInitial = function() {
+exports.makeInitial = function(variant) {
 	return {
 
 		// Board state
@@ -73,9 +73,9 @@ exports.makeInitial = function() {
 
 		// Flags
 		turn: bt.WHITE,
-		castling: [129 /* (1 << A-file) | (1 << H-file) */, 129],
+		castling: variant === bt.ANTICHESS ? [0, 0] : [129 /* (1 << A-file) | (1 << H-file) */, 129],
 		enPassant: -1,
-		variant: bt.REGULAR_CHESS,
+		variant: variant,
 
 		// Computed attributes
 		legal: true,

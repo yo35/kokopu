@@ -59,6 +59,7 @@ exports.CHESS960 = 1;
 exports.NO_KING = 2;
 exports.WHITE_KING_ONLY = 3;
 exports.BLACK_KING_ONLY = 4;
+exports.ANTICHESS = 5;
 
 
 // -----------------------------------------------------------------------------
@@ -71,7 +72,7 @@ var FIGURINE_SYMBOL = '\u2654\u265a\u2655\u265b\u2656\u265c\u2657\u265d\u2658\u2
 var RANK_SYMBOL     = '12345678';
 var FILE_SYMBOL     = 'abcdefgh';
 var RESULT_SYMBOL   = ['1-0', '0-1', '1/2-1/2', '*'];
-var VARIANT_SYMBOL  = ['regular', 'chess960', 'no-king', 'white-king-only', 'black-king-only'];
+var VARIANT_SYMBOL  = ['regular', 'chess960', 'no-king', 'white-king-only', 'black-king-only', 'antichess'];
 
 exports.colorToString    = function(color  ) { return COLOR_SYMBOL   [color  ]; };
 exports.pieceToString    = function(piece  ) { return PIECE_SYMBOL   [piece  ]; };
@@ -179,6 +180,7 @@ exports.coloredPieceFromString = function(cp) {
  *  - `'no-king'` (chess position without any king)
  *  - `'white-king-only'` (chess position with no black king)
  *  - `'black-king-only'` (chess position with no white king)
+ *  - `'antichess'` ([Antichess](https://en.wikipedia.org/wiki/Losing_chess), also known as losing chess, giveaway chess, suicide chess...)
  *
  * Variants `'no-king'`, `'white-king-only'` and `'black-king-only'` do not correspond to "real" games. They are mainly provided
  * to create games explaining a particular piece scheme, concept, or sequence of moves... with a reduced number of pieces.

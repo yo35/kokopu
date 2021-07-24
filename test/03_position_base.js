@@ -29,11 +29,12 @@ var readCSV = require('./common/readcsv');
 
 var startFEN  = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 var startXFEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w AHah - 0 1';
+var startFENAntichess = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w - - 0 1';
 var emptyFEN  = '8/8/8/8/8/8/8/8 w - - 0 1';
 var customFEN = 'k7/n1PB4/1K6/8/8/8/8/8 w KQkq d6 0 1';
 var customXFEN = 'k7/n1PB4/1K6/8/8/8/8/8 w AHah d6 0 1';
 
-var variants = ['regular', 'chess960', 'no-king', 'white-king-only', 'black-king-only'];
+var variants = ['regular', 'chess960', 'no-king', 'white-king-only', 'black-king-only', 'antichess'];
 
 
 describe('Position constructor', function() {
@@ -57,24 +58,30 @@ describe('Position constructor', function() {
 	doTest('Constructor \'empty\'', 'regular', emptyFEN , function() { return new kokopu.Position('empty'); });
 	doTest('Constructor FEN-based', 'regular', customFEN, function() { return new kokopu.Position(customFEN); });
 
-	doTest('Default constructor (force regular)'  , 'regular', startFEN , function() { return new kokopu.Position('regular'); });
-	doTest('Constructor \'start\' (force regular)', 'regular', startFEN , function() { return new kokopu.Position('regular', 'start'); });
-	doTest('Constructor \'empty\' (force regular)', 'regular', emptyFEN , function() { return new kokopu.Position('regular', 'empty'); });
-	doTest('Constructor FEN-based (force regular)', 'regular', customFEN, function() { return new kokopu.Position('regular', customFEN); });
+	doTest('Default constructor (force regular)'              , 'regular', startFEN , function() { return new kokopu.Position('regular'); });
+	doTest('Constructor \'start\' (force regular)'            , 'regular', startFEN , function() { return new kokopu.Position('regular', 'start'); });
+	doTest('Constructor \'empty\' (force regular)'            , 'regular', emptyFEN , function() { return new kokopu.Position('regular', 'empty'); });
+	doTest('Constructor FEN-based (force regular)'            , 'regular', customFEN, function() { return new kokopu.Position('regular', customFEN); });
 	doTest('Constructor FEN-based with prefix (force regular)', 'regular', customFEN, function() { return new kokopu.Position('regular:' + customFEN); });
 
-	doTest('Scharnagl constructor'                   , 'chess960', startXFEN, function() { return new kokopu.Position('chess960', 518); });
-	doTest('Constructor \'empty\' (force Chess960)'  , 'chess960', emptyFEN , function() { return new kokopu.Position('chess960', 'empty'); });
-	doTest('Constructor FEN-based (force Chess960)'  , 'chess960', customXFEN, function() { return new kokopu.Position('chess960', customFEN); }) ;
-	doTest('Constructor X-FEN-based (force Chess960)', 'chess960', customXFEN, function() { return new kokopu.Position('chess960', customXFEN); }) ;
-	doTest('Constructor X-FEN-based with prefix (force Chess960)', 'chess960', customXFEN, function() { return new kokopu.Position('chess960:' + customXFEN); }) ;
+	doTest('Scharnagl constructor'                         , 'chess960', startXFEN, function() { return new kokopu.Position('chess960', 518); });
+	doTest('Constructor \'empty\' (Chess960)'              , 'chess960', emptyFEN , function() { return new kokopu.Position('chess960', 'empty'); });
+	doTest('Constructor FEN-based (Chess960)'              , 'chess960', customXFEN, function() { return new kokopu.Position('chess960', customFEN); }) ;
+	doTest('Constructor X-FEN-based (Chess960)'            , 'chess960', customXFEN, function() { return new kokopu.Position('chess960', customXFEN); }) ;
+	doTest('Constructor X-FEN-based with prefix (Chess960)', 'chess960', customXFEN, function() { return new kokopu.Position('chess960:' + customXFEN); }) ;
 
-	doTest('Constructor \'empty\' (force no-king)'        , 'no-king'        , emptyFEN , function() { return new kokopu.Position('no-king', 'empty'); });
-	doTest('Constructor FEN-based (force no-king)'        , 'no-king'        , customFEN, function() { return new kokopu.Position('no-king', customFEN); });
-	doTest('Constructor \'empty\' (force white-king-only)', 'white-king-only', emptyFEN , function() { return new kokopu.Position('white-king-only', 'empty'); });
-	doTest('Constructor FEN-based (force white-king-only)', 'white-king-only', customFEN, function() { return new kokopu.Position('white-king-only', customFEN); });
-	doTest('Constructor \'empty\' (force black-king-only)', 'black-king-only', emptyFEN , function() { return new kokopu.Position('black-king-only', 'empty'); });
-	doTest('Constructor FEN-based (force black-king-only)', 'black-king-only', customFEN, function() { return new kokopu.Position('black-king-only', customFEN); });
+	doTest('Constructor \'empty\' (no-king)'        , 'no-king'        , emptyFEN , function() { return new kokopu.Position('no-king', 'empty'); });
+	doTest('Constructor FEN-based (no-king)'        , 'no-king'        , customFEN, function() { return new kokopu.Position('no-king', customFEN); });
+	doTest('Constructor \'empty\' (white-king-only)', 'white-king-only', emptyFEN , function() { return new kokopu.Position('white-king-only', 'empty'); });
+	doTest('Constructor FEN-based (white-king-only)', 'white-king-only', customFEN, function() { return new kokopu.Position('white-king-only', customFEN); });
+	doTest('Constructor \'empty\' (black-king-only)', 'black-king-only', emptyFEN , function() { return new kokopu.Position('black-king-only', 'empty'); });
+	doTest('Constructor FEN-based (black-king-only)', 'black-king-only', customFEN, function() { return new kokopu.Position('black-king-only', customFEN); });
+
+	doTest('Default constructor (antichess)'              , 'antichess', startFENAntichess, function() { return new kokopu.Position('antichess'); });
+	doTest('Constructor \'start\' (antichess)'            , 'antichess', startFENAntichess, function() { return new kokopu.Position('antichess', 'start'); });
+	doTest('Constructor \'empty\' (antichess)'            , 'antichess', emptyFEN         , function() { return new kokopu.Position('antichess', 'empty'); });
+	doTest('Constructor FEN-based (antichess)'            , 'antichess', customFEN        , function() { return new kokopu.Position('antichess', customFEN); });
+	doTest('Constructor FEN-based with prefix (antichess)', 'antichess', customFEN        , function() { return new kokopu.Position('antichess:' + customFEN); });
 
 	doFailureTest('Invalid variant', false, function() { return new kokopu.Position('not-a-variant', 'empty'); });
 	doFailureTest('Invalid variant (FEN-based)', false, function() { return new kokopu.Position('not-a-variant', startFEN); });
@@ -155,6 +162,18 @@ describe('Reset 960 mutator', function() {
 			position.reset960(518);
 			test.value(position.variant()).is('chess960');
 			test.value(position.fen()).is(startXFEN);
+		});
+	});
+});
+
+
+describe('Reset antichess mutator', function() {
+	variants.forEach(function(variant) {
+		it('From ' + variant, function() {
+			var position = new kokopu.Position(variant, customFEN);
+			position.resetAntichess();
+			test.value(position.variant()).is('antichess');
+			test.value(position.fen()).is(startFENAntichess);
 		});
 	});
 });
