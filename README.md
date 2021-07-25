@@ -41,7 +41,9 @@ Features
 * [PGN](https://en.wikipedia.org/wiki/Portable_Game_Notation) file parsing (including advanced PGN features
 such as commentaries, sub-variations, [NAGs](https://en.wikipedia.org/wiki/Numeric_Annotation_Glyphs),
 non-standard starting position...).
-* Support [Chess960](https://en.wikipedia.org/wiki/Chess960) (also known as Fischer Random Chess).
+* Support several chess variants:
+  - [Chess960](https://en.wikipedia.org/wiki/Chess960), also known as Fischer Random Chess.
+  - [Antichess](https://en.wikipedia.org/wiki/Losing_chess), also known as losing chess, giveaway chess, suicide chess...
 
 
 

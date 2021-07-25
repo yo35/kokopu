@@ -124,3 +124,8 @@ References
 - [Wikipedia page](https://en.wikipedia.org/wiki/Portable_Game_Notation)
 - [Chess Programming wiki](https://www.chessprogramming.org/Portable_Game_Notation)
 - [Format specification](https://ia802908.us.archive.org/26/items/pgn-standard-1994-03-12/PGN_standard_1994-03-12.txt)
+
+### Chess variants
+
+- [Chess960](https://en.wikipedia.org/wiki/Chess960)
+- [Antichess](https://en.wikipedia.org/wiki/Losing_chess)
