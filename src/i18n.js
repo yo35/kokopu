@@ -61,8 +61,8 @@ exports.INVALID_PIECE_SYMBOL                = 'Character `{0}` is not a valid pi
 exports.INVALID_PIECE_SYMBOL_COLOR          = 'Invalid color for piece symbol `{0}`.';
 exports.INVALID_CAPTURING_PAWN_MOVE         = 'Invalid capturing pawn move.';
 exports.INVALID_NON_CAPTURING_PAWN_MOVE     = 'Invalid non-capturing pawn move.';
-exports.NOT_SAFE_FOR_WHITE_KING             = 'This move would put let the white king in check.';
-exports.NOT_SAFE_FOR_BLACK_KING             = 'This move would put let the black king in check.';
+exports.NOT_SAFE_FOR_WHITE_KING             = 'This move would let the white king in check.';
+exports.NOT_SAFE_FOR_BLACK_KING             = 'This move would let the black king in check.';
 exports.MISSING_PROMOTION                   = 'A promoted piece must be specified for this move.';
 exports.MISSING_PROMOTION_SYMBOL            = 'Character `=` is required to specify a promoted piece.';
 exports.INVALID_PROMOTED_PIECE              = '{0} cannot be specified as a promoted piece.';
