@@ -69,11 +69,12 @@ var uci = require('./private_position/uci');
  * with no argument, as in `new kokopu.Position()`: in this case, a new `Position` initialized to the usual starting position
  * is instantiated (as in forms 1 and 2).
  *
- * In form 12, `variant` must be one of the game variant proposed in {@link GameVariant}. The `variant` argument can be omitted,
+ * In form 12, `variant` must be one of the game variant proposed in {@link GameVariant}. The `variant` argument can be omitted if it is set to `'regular'`
+ * (i.e. if the usual chess rules are used).
  * If `variant` is set to `'chess960'`, then the X-FEN syntax can be used for `fenString'`.
  *
  * In form 13, `fenStringWithVariant` is assumed to be a string formatted as `'variant:FEN'` (e.g. `'chess960:nrkbqrbn/pppppppp/8/8/8/8/PPPPPPPP/NRKBQRBN w BFbf - 0 1'`).
- * The `'variant:'` prefix is optional: if omitted, the usual chess rules are assumed. For the Chess960 variant,
+ * The `'variant:'` prefix is optional: if omitted, the usual chess rules are used. For the Chess960 variant,
  * the X-FEN syntax can be used for the FEN part of the string.
  *
  * In form 14, `anotherPosition` must be another {@link Position} object.
