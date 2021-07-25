@@ -141,11 +141,6 @@ program
 	})
 	.parse(process.argv);
 
-if(program.args.length === 0) {
-	console.log('No PGN file to analyze.');
-}
-else {
-	var pathAlignment = program.args.map(function(path) { return path.length; }).reduce(function(l1, l2) { return Math.max(l1, l2); });
-	console.log('Analyzing ' + program.args.length + ' PGN file(s)...');
-	run(program.args, pathAlignment);
-}
+var pathAlignment = program.args.map(function(path) { return path.length; }).reduce(function(l1, l2) { return Math.max(l1, l2); });
+console.log('Analyzing ' + program.args.length + ' PGN file(s)...');
+run(program.args, pathAlignment);

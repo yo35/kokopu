@@ -96,12 +96,10 @@ function run(fen, minDepth, maxDepth, verbose) {
 
 program
 	.description('Recursive generation of chess moves, starting from a given position')
-	.option('-P, --position <fen>', 'initial position')
-	.option('-D, --depth <depth>', 'maximum depth to visit', parseInt)
+	.option('-P, --position <fen>', 'initial position', 'start')
+	.option('-D, --depth <depth>', 'maximum depth to visit', 5)
 	.option('-v, --verbose', 'increase the verbosity level')
 	.parse(process.argv);
 
-var fen = program.position ? program.position : 'start';
-var maxDepth = program.depth && !isNaN(program.depth) ? program.depth : 5;
-
-run(fen, 0, maxDepth, program.verbose);
+var opts = program.opts();
+run(opts.position, 0, parseInt(opts.depth), Boolean(opts.verbose));
