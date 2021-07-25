@@ -63,6 +63,32 @@ describe('isAttacked', function() {
 });
 
 
+describe('getAttacks', function() {
+
+	function testGetAttacks(fen, byWho, squares) {
+		var position = new kokopu.Position(fen);
+		for(var sq in squares) {
+			var attacks = position.getAttacks(sq, byWho).sort().join('/');
+			test.value(attacks).is(squares[sq]);
+		}
+	}
+
+	it('Single attack', function() { testGetAttacks('8/8/8/4Q3/8/8/8/8 w - - 0 1', 'w', { c3: 'e5', d2: '' }); });
+	it('Double attacks', function() { testGetAttacks('8/8/8/4r3/8/1q6/8/8 w - - 0 1', 'b', { c7: '', e1: 'e5', e6: 'b3/e5', g8: 'b3' }); });
+	it('Multiple attacks 1', function() { testGetAttacks('8/8/5B2/1B6/3RN3/8/8/8 w - - 0 1', 'w',
+		{ c3: 'e4', d2: 'd4/e4', d4: 'f6', d7: 'b5/d4', d8: 'd4/f6', g4: '', g5: 'e4/f6' }); });
+	it('Multiple attacks 2', function() { testGetAttacks('1r2r2k/1bq3bp/p2p2n1/1p1P1Qp1/4B3/PP2R3/1BP3PP/5R1K w - - 0 1', 'w',
+		{ a8: '', b4: 'a3', e5: 'b2/f5', f3: 'e3/e4/f1/f5/g2', g2: 'e4/h1' }); });
+	it('Multiple attacks 3', function() { testGetAttacks('1r2r2k/1bq3bp/p2p2n1/1p1P1Qp1/4B3/PP2R3/1BP3PP/5R1K w - - 0 1', 'b',
+		{ a8: 'b7/b8', b4: '', e5: 'd6/e8/g6/g7', f3: '', g2: '' }); });
+
+	it('Invalid square 1', function() { testInvalidArgument(function(position) { return position.getAttacks('m7', 'w'); }); });
+	it('Invalid square 2', function() { testInvalidArgument(function(position) { return position.getAttacks('dfsdf', 'w'); }); });
+	it('Invalid color 1', function() { testInvalidArgument(function(position) { return position.getAttacks('e3', 'W'); }); });
+	it('Invalid color 2', function() { testInvalidArgument(function(position) { return position.getAttacks('e3', 'n'); }); });
+});
+
+
 describe('kingSquare', function() {
 	it('Invalid color 1', function() { testInvalidArgument(function(position) { return position.kingSquare('B'); }); });
 	it('Invalid color 2', function() { testInvalidArgument(function(position) { return position.kingSquare('whatever'); }); });
