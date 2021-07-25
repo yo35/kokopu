@@ -1,6 +1,12 @@
 ChangeLog
 =========
 
+1.10.0 (July 25, 2021)
+----------------------
+* Add support for [Antichess](https://en.wikipedia.org/wiki/Losing_chess).
+* Clarify the expected behavior of `Position#kingSquare()` in non-standard variants, especially variants
+in which king has no "royal power".
+
 1.9.1 (May 30, 2021)
 --------------------
 * Avoid dependency on built-in module `util`.
