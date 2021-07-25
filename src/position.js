@@ -479,11 +479,15 @@ Position.prototype.isLegal = function() {
 /**
  * Return the square on which is located the king of the given color.
  *
+ * For non-standard variants, the behavior of this method depends on whether king has "royal power" in the current variant or not
+ * (i.e. whether it can be put in check or not). For instance:
+ *  - in antichess, the king has no royal power, thus `false` is always returned,
+ *  - in chess960, the king has royal power (as in the usual chess rules), thus the method does returns the square on which the king is located.
+ *
  * @param {Color} color
  * @returns {Square|boolean} Square where is located the searched king. `false` is returned
  *          if there is no king of the given color, if the are 2 such kings or more,
- *          or if king has no "royal power" (i.e. it cannot be put in check) in the current variant
- *          (e.g. in antichess, `false` is always returned).
+ *          or if king has no "royal power".
  */
 Position.prototype.kingSquare = function(color) {
 	color = bt.colorFromString(color);
