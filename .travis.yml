@@ -1,5 +1,8 @@
+arch: arm64
+os: linux
+
 language: node_js
 node_js:
-  - "node"
+  - node
 
 after_success: npm run publish-coverage
