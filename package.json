@@ -19,6 +19,7 @@
 	"funding": "https://www.paypal.com/donate?hosted_button_id=MP795VF4FXUDW",
 	"main": "src/index.js",
 	"files": [
+		"demo",
 		"src",
 		"test",
 		".eslintrc.yml",
