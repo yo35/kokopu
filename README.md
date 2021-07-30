@@ -57,7 +57,7 @@ Used by
 Example
 -------
 
-```
+```javascript
 var kokopu = require('kokopu');
 
 // Create a new position, play some moves...
