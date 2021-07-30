@@ -45,12 +45,10 @@ non-standard starting position...).
   - [Chess960](https://en.wikipedia.org/wiki/Chess960), also known as Fischer Random Chess.
   - [Antichess](https://en.wikipedia.org/wiki/Losing_chess), also known as losing chess, giveaway chess, suicide chess...
 
-
-
-Used by
--------
-
-* [RPB Chessboard](https://wordpress.org/plugins/rpb-chessboard/), a chess plugin for WordPress.
+Kokopu is a headless library, meaning it does not provide any user interface.
+If you are interested in UI features (e.g. to be able to render a chessboard component within a web page),
+you may take a look at [Kokopu-React](https://www.npmjs.com/package/kokopu-react), which is a [React](https://reactjs.org/)-based library
+built on top of Kokopu to provide these kind of features.
 
 
 
