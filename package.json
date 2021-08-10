@@ -27,16 +27,16 @@
 	],
 	"devDependencies": {
 		"browserify": "^17.0.0",
-		"commander": "^8.0.0",
+		"commander": "^8.1.0",
 		"coveralls": "^3.1.1",
-		"eslint": "^7.31.0",
+		"eslint": "^7.32.0",
 		"jsdoc": "^3.6.7",
-		"mocha": "^9.0.2",
+		"mocha": "^9.0.3",
 		"nyc": "^15.1.0",
 		"prompt": "^1.1.0",
-		"ssh2-sftp-client": "^7.0.0",
+		"ssh2-sftp-client": "^7.0.1",
 		"tui-jsdoc-template": "^1.2.2",
-		"uglify-js": "^3.14.0",
+		"uglify-js": "^3.14.1",
 		"unit.js": "^2.1.1"
 	},
 	"scripts": {
