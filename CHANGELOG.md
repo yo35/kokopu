@@ -1,6 +1,10 @@
 ChangeLog
 =========
 
+1.10.1 (August 10, 2021)
+------------------------
+* Minor fixes in doc and packaged files.
+
 1.10.0 (July 25, 2021)
 ----------------------
 * Add support for [Antichess](https://en.wikipedia.org/wiki/Losing_chess).
