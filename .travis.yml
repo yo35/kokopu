@@ -5,4 +5,4 @@ language: node_js
 node_js:
   - node
 
-after_success: npm run publish-coverage
+after_success: npm run publish_coverage

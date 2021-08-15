@@ -43,7 +43,7 @@
 		"lint": "eslint demo src test",
 		"unit": "nyc mocha --bail --sort",
 		"test": "npm run lint && npm run unit",
-		"publish-coverage": "nyc report --reporter=text-lcov | coveralls",
+		"publish_coverage": "nyc report --reporter=text-lcov | coveralls",
 		"build": "make -f scripts/build.mk",
 		"clean": "make -f scripts/build.mk clean",
 		"predeploy": "npm run test && npm run build",
