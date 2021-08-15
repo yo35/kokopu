@@ -1,0 +1,10 @@
+Event = {Castling with character 0 instead of character O}
+-+<LONG
+(1w) e4
+(1b) e5
+(2w) Nf3
+(2b) Nf6
+(3w) Bc4
+(3b) Bc5
+(4w) O-O
+{Black wins}

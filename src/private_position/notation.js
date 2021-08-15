@@ -196,7 +196,7 @@ function pinningLoockup(position, kingSquare, targetSquare, direction, pinnerCol
 exports.parseNotation = function(position, notation, strict, pieceStyle) {
 
 	// General syntax
-	var m = /^(?:(O-O-O)|(O-O)|([A-Z\u2654-\u265f])([a-h])?([1-8])?(x)?([a-h][1-8])|(?:([a-h])(x)?)?([a-h][1-8])(?:(=)?([A-Z\u2654-\u265f]))?)([+#])?$/.exec(notation);
+	var m = /^(?:(O-O-O|0-0-0)|(O-O|0-0)|([A-Z\u2654-\u265f])([a-h])?([1-8])?(x)?([a-h][1-8])|(?:([a-h])(x)?)?([a-h][1-8])(?:(=)?([A-Z\u2654-\u265f]))?)([+#])?$/.exec(notation);
 	if(m === null) {
 		throw new exception.InvalidNotation(fen.getFEN(position, 0, 1), notation, i18n.INVALID_MOVE_NOTATION_SYNTAX);
 	}

@@ -99,3 +99,16 @@ describe('Move legality check', function() {
 	it('Invalid square from', function() { testInvalidArgument(function(position) { return position.isMoveLegal('c0', 'e4'); }); });
 	it('Invalid square to', function() { testInvalidArgument(function(position) { return position.isMoveLegal('b3', 'A2'); }); });
 });
+
+
+describe('Parse degenerated notation ', function() {
+
+	function testDegeneratedNotation(fen, move, expected) {
+		var position = new kokopu.Position(fen);
+		var md = position.notation(move);
+		test.value(md.toString()).is(expected);
+	}
+
+	it('King-side castling move with zero characters', function() { testDegeneratedNotation('r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w KQkq - 0 1', '0-0', 'e1g1O'); });
+	it('Queen-side castling move with zero characters', function() { testDegeneratedNotation('r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R b KQkq - 0 1', '0-0-0', 'e8c8O'); });
+});
