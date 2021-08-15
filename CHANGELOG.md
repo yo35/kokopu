@@ -1,6 +1,10 @@
 ChangeLog
 =========
 
+1.10.2 (August 15, 2021)
+------------------------
+* Support castling moves encoded with zeros (see #6).
+
 1.10.1 (August 10, 2021)
 ------------------------
 * Minor fixes in doc and packaged files.
