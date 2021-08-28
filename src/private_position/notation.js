@@ -141,9 +141,6 @@ function isPinned(position, sq, aimingAtSq) {
 	}
 
 	var vector = Math.abs(kingSquare - sq);
-	if(vector === 0) {
-		return false;
-	}
 	var aimingAtVector = Math.abs(aimingAtSq - sq);
 
 	var pinnerQueen  = bt.QUEEN  * 2 + 1 - position.turn;
