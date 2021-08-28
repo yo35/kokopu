@@ -96,8 +96,40 @@ describe('kingSquare', function() {
 
 
 describe('Move legality check', function() {
+
 	it('Invalid square from', function() { testInvalidArgument(function(position) { return position.isMoveLegal('c0', 'e4'); }); });
 	it('Invalid square to', function() { testInvalidArgument(function(position) { return position.isMoveLegal('b3', 'A2'); }); });
+
+	function testValidMove(fen, from, to, expectedSignature) {
+		var position = new kokopu.Position(fen);
+		var md = position.isMoveLegal(from, to);
+		test.value(md).isFunction().hasProperty('status', 'regular');
+		test.value(md().toString()).is(expectedSignature);
+	}
+
+	it('Regular move', function() { testValidMove('start', 'e2', 'e4', 'e2e4'); });
+	it('Castling move', function() { testValidMove('r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w KQkq - 0 1', 'e1', 'g1', 'e1g1O'); });
+	it('Castling move (Chess960)', function() { testValidMove('chess960:r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R b KQkq - 0 1', 'e8', 'h8', 'e8g8O'); });
+
+	function testInvalidMove(fen, from, to) {
+		var position = new kokopu.Position(fen);
+		var md = position.isMoveLegal(from, to);
+		test.value(md).is(false);
+	}
+
+	it('KxR at regular chess', function() { testInvalidMove('r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R b KQkq - 0 1', 'e8', 'h8'); });
+	it('Non-KxR at Chess960', function() { testInvalidMove('chess960:r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w KQkq - 0 1', 'e1', 'g1'); });
+
+	function testInvalidPromotionPiece(fen, from, to, promo) {
+		var position = new kokopu.Position(fen);
+		var md = position.isMoveLegal(from, to);
+		test.value(md).isFunction().hasProperty('status', 'promotion');
+		test.exception(function() { md(promo); }).isInstanceOf(kokopu.exception.IllegalArgument);
+	}
+
+	it('Invalid promotion piece 1', function() { testInvalidPromotionPiece('8/4K3/8/8/8/8/6pk/8 b - - 0 1', 'g2', 'g1', 'whatever'); });
+	it('Invalid promotion piece 2', function() { testInvalidPromotionPiece('8/4K3/8/8/8/8/p6k/8 b - - 0 1', 'a2', 'a1', 'k'); });
+	it('Invalid promotion piece 3', function() { testInvalidPromotionPiece('8/4K3/8/8/8/8/p6k/8 b - - 0 1', 'a2', 'a1', 'p'); });
 });
 
 
