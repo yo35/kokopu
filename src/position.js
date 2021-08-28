@@ -582,6 +582,10 @@ Position.prototype.moves = function() {
  *     in order to discriminate between the possible moves. A field `status` is added to the function in order to indicate whether
  *     there is a move ambiguity or not.
  *
+ * For castling moves, `to` is supposed to represent:
+ *  - for regular chess, the destination square of the king (i.e. c1, g1, c8 or g8),
+ *  - for Chess960, the origin square of the rook ("king-take-rook" pattern).
+ *
  * A code interpreting the result returned by {@link Position#isMoveLegal} would typically look like this:
  *
  * ```
@@ -602,12 +606,6 @@ Position.prototype.moves = function() {
  *       // are `result('q')`, `result('r')`, `result('b')` and `result('n')`.
  *       break;
  *
- *     case 'castle960':
- *       // The move "from -> to" is legal, but it corresponds either to a castling move
- *       // or to a regular king move (this case can only happen at Chess960).
- *       // The corresponding move descriptors are `result('castle')` and `result('king')`.
- *       break;
- *
  *     default:
  *       // This case is not supposed to happen.
  *       break;
@@ -626,6 +624,11 @@ Position.prototype.isMoveLegal = function(from, to) {
 		throw new exception.IllegalArgument('Position#isMoveLegal()');
 	}
 	var result = moveGeneration.isMoveLegal(this._impl, from, to);
+
+	function makeFactory(status, factory) {
+		factory.status = status;
+		return factory;
+	}
 
 	// No legal move.
 	if(!result) {
@@ -653,26 +656,11 @@ Position.prototype.isMoveLegal = function(from, to) {
 					throw new exception.IllegalArgument('Position#isMoveLegal()');
 				});
 
-			case 'castle960':
-				return makeFactory('castle960', function(type) {
-					switch(type) {
-						case 'king': return result.build(false);
-						case 'castle': return result.build(true);
-						default: throw new exception.IllegalArgument('Position#isMoveLegal()');
-					}
-				});
-
 			default: // This case is not supposed to happen.
 				throw new exception.IllegalArgument('Position#isMoveLegal()');
 		}
 	}
 };
-
-
-function makeFactory(status, factory) {
-	factory.status = status;
-	return factory;
-}
 
 
 /**

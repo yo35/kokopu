@@ -218,8 +218,15 @@ function generateMoves(position, fun) {
 
 		// Generate castling moves
 		if(movingPiece === bt.KING && nonCaptureIsAllowed && position.castling[position.turn] !== 0) {
-			fun(isCastlingLegal(position, from, 2 + 112*position.turn), false);
-			fun(isCastlingLegal(position, from, 6 + 112*position.turn), false);
+			if (position.variant === bt.CHESS960) {
+				for (var file = 0; file < 8; ++file) {
+					fun(isCastlingLegal(position, from, file + 112*position.turn), false);
+				}
+			}
+			else {
+				fun(isCastlingLegal(position, from, 2 + 112*position.turn), false);
+				fun(isCastlingLegal(position, from, 6 + 112*position.turn), false);
+			}
 		}
 	}
 }
@@ -305,34 +312,37 @@ var isKingSafeAfterMove = exports.isKingSafeAfterMove = function(position, from,
 
 
 /**
- * Delegated method for checking whether a castling move is legal or not.
+ * Delegated method for checking whether a castling move is legal or not. WARNING: in case of Chess960, `to` represents the origin square of the rook (KxR).
  */
 var isCastlingLegal = exports.isCastlingLegal = function(position, from, to) {
 
-	// Origin and destination squares of the rook involved in the move.
-	var castleFile = -1;
+	var rookFrom = -1;
 	var rookTo = -1;
-	if(to === 2 + position.turn*112) {
-		castleFile = position.variant === bt.CHESS960 ? findCastleFile(position.castling[position.turn], from % 16, -1) : 0;
-		rookTo = 3 + 112*position.turn;
-	}
-	else if(to === 6 + position.turn*112) {
-		castleFile = position.variant === bt.CHESS960 ? findCastleFile(position.castling[position.turn], from % 16, 1) : 7;
-		rookTo = 5 + 112*position.turn;
+
+	// Validate `from` and `to`, check the castling flags, and compute the origin and destination squares of the rook.
+	if (position.variant === bt.CHESS960) {
+		var castleFile = to % 16;
+		var castleRank = Math.floor(to / 16);
+		if (castleRank !== position.turn*7 || (position.castling[position.turn] & (1 << castleFile)) === 0) { return false; }
+		rookFrom = to;
+		rookTo = (from > to ? 3 : 5) + 112*position.turn;
+		to = (from > to ? 2 : 6) + 112*position.turn;
 	}
 	else {
-		return false;
+		if (to === 2 + position.turn*112) {
+			if ((position.castling[position.turn] & 1) === 0) { return false; }
+			rookFrom = 112*position.turn;
+			rookTo = 3 + 112*position.turn;
+		}
+		else if (to === 6 + position.turn*112) {
+			if ((position.castling[position.turn] & (1<<7)) === 0) { return false; }
+			rookFrom = 7 + 112*position.turn;
+			rookTo = 5 + 112*position.turn;
+		}
+		else {
+			return false;
+		}
 	}
-
-	// Ensure that the given underlying castling is allowed.
-	if(position.variant === bt.CHESS960) {
-		if(castleFile === -1) { return false; }
-	}
-	else {
-		if((position.castling[position.turn] & 1<<castleFile) === 0) { return false; }
-	}
-
-	var rookFrom = castleFile + position.turn*112;
 
 	// Ensure that each square on the trajectory is empty.
 	for(var sq = Math.min(from, to, rookFrom, rookTo); sq <= Math.max(from, to, rookFrom, rookTo); ++sq) {
@@ -350,20 +360,13 @@ var isCastlingLegal = exports.isCastlingLegal = function(position, from, to) {
 };
 
 
-function findCastleFile(castlingFlag, kingFile, offset) {
-	for(var file = kingFile + offset; file >= 0 && file < 8; file += offset) {
-		if((castlingFlag & 1 << file) !== 0) { return file; }
-	}
-	return -1;
-}
-
-
 /**
  * Core algorithm to determine whether a move is legal or not. The verification flow is the following:
  *
  *  1. Ensure that the position itself is legal.
  *  2. Ensure that the origin square contains a piece (denoted as the moving-piece)
  *     whose color is the same than the color of the player about to play.
+ *  3. Special routine for castling detection.
  *  4. Ensure that the displacement is geometrically correct, with respect to the moving piece.
  *  5. Check the content of the destination square.
  *  6. For the sliding pieces (and in case of a 2-square pawn move), ensure that there is no piece
@@ -376,9 +379,6 @@ function findCastleFile(castlingFlag, kingFile, offset) {
  *     it can be reversed. Only the state of the board is updated at this point.
  *  8. Look for king attacks.
  *  9. Reverse the displacement.
- *
- * Castling moves fail at step (4). They are taken out of this flow and processed
- * by the dedicated method `isLegalCastling()`.
  */
 exports.isMoveLegal = function(position, from, to) {
 
@@ -398,10 +398,12 @@ exports.isMoveLegal = function(position, from, to) {
 	var isPromotion = movingPiece===bt.PAWN && (to<8 || to>=112);
 	var captureIsMandatory = isCaptureMandatory(position);
 
-	// Compute the move descriptor corresponding to castling, if applicable.
-	var castlingDescriptor = false;
+	// Step (3) - Castling detection.
 	if(movingPiece === bt.KING && !captureIsMandatory && position.castling[position.turn] !== 0) {
-		castlingDescriptor = isCastlingLegal(position, from, to);
+		var castlingDescriptor = isCastlingLegal(position, from, to);
+		if (castlingDescriptor) {
+			return castlingDescriptor;
+		}
 	}
 
 	// Step (4)
@@ -412,7 +414,7 @@ exports.isMoveLegal = function(position, from, to) {
 			isTwoSquarePawnMove = true;
 		}
 		else {
-			return castlingDescriptor;
+			return false;
 		}
 	}
 
@@ -430,7 +432,7 @@ exports.isMoveLegal = function(position, from, to) {
 		}
 	}
 	else { // piece move
-		if(toContent < 0 ? captureIsMandatory : toContent%2 === position.turn) { return castlingDescriptor; }
+		if(toContent < 0 ? captureIsMandatory : toContent%2 === position.turn) { return false; }
 	}
 
 	// Step (6) -> For sliding pieces, ensure that there is nothing between the origin and the destination squares.
@@ -455,22 +457,8 @@ exports.isMoveLegal = function(position, from, to) {
 			}
 		};
 	}
-	else if(descriptor && castlingDescriptor) {
-		return {
-			type: 'castle960',
-			build: function(type) {
-				return type ? castlingDescriptor : descriptor;
-			}
-		};
-	}
-	else if(descriptor) {
-		return descriptor;
-	}
-	else if(castlingDescriptor) {
-		return castlingDescriptor;
-	}
 	else {
-		return false;
+		return descriptor;
 	}
 };
 

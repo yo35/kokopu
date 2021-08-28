@@ -82,7 +82,7 @@ exports.parseNotation = function(position, notation, strict) {
 	var expectedRookFrom = null; // non-null only if KxR substitution has been applied.
 
 	// If KxR is detected (and allowed), try to replace
-	if((position.variant === bt.CHESS960 || !strict) && position.board[from] !== bt.EMPTY && position.board[to] !== bt.EMPTY && position.board[from]%2 === position.board[to]%2) {
+	if(position.variant !== bt.CHESS960 && !strict && position.board[from] !== bt.EMPTY && position.board[to] !== bt.EMPTY && position.board[from]%2 === position.board[to]%2) {
 		var fromPiece = Math.floor(position.board[from] / 2);
 		var toPiece = Math.floor(position.board[to] / 2);
 		if(fromPiece === bt.KING && toPiece === bt.ROOK) {
@@ -112,16 +112,8 @@ exports.parseNotation = function(position, notation, strict) {
 		throw new exception.InvalidNotation(fen.getFEN(position, 0, 1), notation, i18n.ILLEGAL_UCI_MOVE);
 	}
 
-	// Manage the castling-move ambiguity that could arise in chess960.
-	if(result.type === 'castle960') {
-		result = result.build(kxrSubstitutionApplied);
-	}
-
 	// Manage KxR substitution.
 	if(result.isCastling()) {
-		if(position.variant === bt.CHESS960 && !kxrSubstitutionApplied) { // KxR substitution is mandatory for castling moves in Chess960.
-			throw new exception.InvalidNotation(fen.getFEN(position, 0, 1), notation, i18n.ILLEGAL_UCI_MOVE);
-		}
 		if(kxrSubstitutionApplied && expectedRookFrom !== result._optionalSquare1) { // If KxR substitution has been applied, ensure that the rook-from square is what it is supposed to be.
 			throw new exception.InvalidNotation(fen.getFEN(position, 0, 1), notation, i18n.ILLEGAL_UCI_MOVE);
 		}

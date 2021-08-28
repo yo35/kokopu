@@ -236,8 +236,8 @@ exports.parseNotation = function(position, notation, strict, pieceStyle) {
 			throw new exception.InvalidNotation(fen.getFEN(position, 0, 1), notation, i18n.ILLEGAL_NO_KING_CASTLING);
 		}
 
-		var to = (m[2] ? 6 : 2) + position.turn*112;
-		descriptor = moveGeneration.isCastlingLegal(position, from, to);
+		var toFile = getCastlingDestinationFile(position, m[2]);
+		descriptor = toFile < 0 ? false : moveGeneration.isCastlingLegal(position, from, toFile + 112*position.turn);
 		if(!descriptor) {
 			var message = m[2] ? i18n.ILLEGAL_KING_SIDE_CASTLING : i18n.ILLEGAL_QUEEN_SIDE_CASTLING;
 			throw new exception.InvalidNotation(fen.getFEN(position, 0, 1), notation, message);
@@ -385,6 +385,27 @@ function parsePieceSymbol(position, notation, coloredPiece, strict, pieceStyle) 
 				throw new exception.InvalidNotation(fen.getFEN(position, 0, 1), notation, i18n.INVALID_PIECE_SYMBOL, coloredPiece);
 			}
 			return piece;
+	}
+}
+
+
+/**
+ * Delegate function that returns the file of a `to` square to take into account to check whether a castling move is legal or not.
+ */
+function getCastlingDestinationFile(position, isKingSideCastling) {
+	if (position.variant === bt.CHESS960) {
+		if (position.castling[position.turn] !== 0) {
+			var castlingKing = bt.KING*2 + position.turn;
+			for (var file = isKingSideCastling ? 7 : 0; position.board[file + 112*position.turn] !== castlingKing; file = file + (isKingSideCastling ? -1 : 1)) {
+				if ((position.castling[position.turn] & (1 << file)) !== 0) {
+					return file;
+				}
+			}
+		}
+		return -1;
+	}
+	else {
+		return isKingSideCastling ? 6 : 2;
 	}
 }
 
