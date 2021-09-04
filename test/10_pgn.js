@@ -31,11 +31,11 @@ var test = require('unit.js');
 
 
 function testData() {
-	return readCSV('games.csv', function(fields) {
+	return readCSV('pgns.csv', function(fields) {
 		return {
 			label: fields[0],
 			gameCount: parseInt(fields[1]),
-			pgn: readText('games/' + fields[0] + '.pgn')
+			pgn: readText('pgns/' + fields[0] + '.pgn')
 		};
 	});
 }
@@ -50,7 +50,7 @@ function testData() {
  * @returns {string} `'log'` if the PGN item is valid, `'err'` if an exception is expected to be thrown on parsing.
  */
 function getItemType(pgnName, gameIndex) {
-	var fileBasename = 'games/' + pgnName + '_' + gameIndex;
+	var fileBasename = 'pgns/' + pgnName + '/' + gameIndex;
 	var logExist = resourceExists(fileBasename + '.log');
 	var errExist = resourceExists(fileBasename + '.err');
 	if(logExist && errExist) {
@@ -76,7 +76,7 @@ function getItemType(pgnName, gameIndex) {
  * @returns {string}
  */
 function loadValidItemDescriptor(pgnName, gameIndex) {
-	var filename = 'games/' + pgnName + '_' + gameIndex + '.log';
+	var filename = 'pgns/' + pgnName + '/' + gameIndex + '.log';
 	return readText(filename).trim();
 }
 
@@ -89,7 +89,7 @@ function loadValidItemDescriptor(pgnName, gameIndex) {
  * @returns {{index:number, lineNumber:number, message:string}}
  */
 function loadErrorItemDescriptor(pgnName, gameIndex) {
-	var filename = 'games/' + pgnName + '_' + gameIndex + '.err';
+	var filename = 'pgns/' + pgnName + '/' + gameIndex + '.err';
 	var fields = readText(filename).split('\n');
 	return { index: parseInt(fields[0]), lineNumber: parseInt(fields[1]), message: fields[2].trim() };
 }
