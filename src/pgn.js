@@ -23,6 +23,7 @@
 'use strict';
 
 
+var bt = require('./basetypes');
 var exception = require('./exception');
 var i18n = require('./i18n');
 
@@ -134,7 +135,7 @@ function initializeInitialPosition(stream, game, initialPositionFactory) {
 	// If a FEN header has been encountered, set-up the initial position with it, taking the optional variant into account.
 	if (initialPositionFactory.fen) {
 		try {
-			var position = new Position(initialPositionFactory.variant ? initialPositionFactory.variant : 'regular', 'empty');
+			var position = initialPositionFactory.variant ? new Position(initialPositionFactory.variant, 'empty') : new Position();
 			var moveCounters = position.fen(initialPositionFactory.fen);
 			game.initialPosition(position, moveCounters.fullMoveNumber);
 		}
@@ -152,7 +153,7 @@ function initializeInitialPosition(stream, game, initialPositionFactory) {
 
 	// Otherwise, if a variant header has been encountered, but without FEN header...
 	else if(initialPositionFactory.variant) {
-		if(initialPositionFactory.variant === 'regular' || initialPositionFactory.variant === 'antichess') {
+		if (bt.variantWithCanonicalStartPosition(bt.variantFromString(initialPositionFactory.variant))) {
 			var position = new Position(initialPositionFactory.variant, 'start');
 			game.initialPosition(position, 1);
 		}
