@@ -29,7 +29,7 @@ var i18n = require('./i18n');
 var Position = require('./position').Position;
 var Game = require('./game').Game;
 var Database = require('./database').Database;
-var TokenStream = require('./private_pgn/tokenstream').TokenStream;
+var TokenStream = require('./private_game/tokenstream').TokenStream;
 
 
 function parseNullableHeader(value) {
