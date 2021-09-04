@@ -25,6 +25,7 @@
 
 var exception = require('../exception');
 var i18n = require('../i18n');
+var impl = require('./impl');
 
 
 /**
@@ -152,24 +153,13 @@ function skipBlanks(stream) {
 
 
 /**
- * Trim the given string, and replace all the sub-sequence of 1 or several space-like characters by a single space.
- *
- * @param {string} text
- * @returns {string}
- */
-function trimAndCollapseSpaces(text) {
-	return text.replace(/^\s+|\s+$/g, '').replace(/\s+/g, ' ');
-}
-
-
-/**
  * Parse a header value, unescaping special characters.
  *
  * @param {string} rawHeaderValue
  * @returns {string}
  */
 function parseHeaderValue(rawHeaderValue) {
-	return trimAndCollapseSpaces(rawHeaderValue.replace(/\\([\\"])/g, '$1'));
+	return impl.trimAndCollapseSpaces(rawHeaderValue.replace(/\\([\\"])/g, '$1'));
 }
 
 
@@ -190,7 +180,7 @@ function parseCommentValue(rawComment) {
 	});
 
 	// Trim the comment and collapse sequences of space characters into 1 character only.
-	comment = trimAndCollapseSpaces(comment);
+	comment = impl.trimAndCollapseSpaces(comment);
 	if(comment === '') {
 		comment = undefined;
 	}

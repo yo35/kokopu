@@ -1,0 +1,26 @@
+Event: Game with variations and sub-variations
+1.e4
+1...e5
+ |
+ +- 1...c6
+ |
+ +- 1...c5
+ |  2.Nc3
+ |   |
+ |   +- 2.Nf3
+ |      2...d6
+ |
+2.Nf3
+2...Nc6
+3.Bc4
+ |
+ +- 3.Bb5
+    3...a6
+     |
+     +- 3...Nf6
+     |
+    4.Ba4
+     |
+     +- 4.Bxc6
+        4...dxc6
+*

@@ -1,0 +1,7 @@
+Event: An event name spanning several lines (1)
+Site: Somewhere...
+Date: September 4, 2021
+White: Light side (CM 1942)
+Black: Dark side (IM 2421)
+Annotator: The Annotator
+0-1

@@ -26,6 +26,7 @@
 var bt = require('./basetypes');
 var exception = require('./exception');
 var i18n = require('./i18n');
+var impl = require('./private_game/impl');
 
 var Position = require('./position').Position;
 
@@ -309,6 +310,17 @@ Game.prototype.initialPosition = function(initialPosition, fullMoveNumber) {
  */
 Game.prototype.mainVariation = function() {
 	return new Variation(this._mainVariationInfo, this._fullMoveNumber, this._initialPosition, true);
+};
+
+
+/**
+ * Return a human-readable string representing the game. This string is multi-line,
+ * and is intended to be displayed in a fixed-width font (similarly to an ASCII-art picture).
+ *
+ * @returns {string}
+ */
+Game.prototype.ascii = function() {
+	return impl.ascii(this);
 };
 
 
