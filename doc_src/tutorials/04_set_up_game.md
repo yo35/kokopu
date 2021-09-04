@@ -21,8 +21,8 @@ var kokopu = require('kokopu');
 var game = new kokopu.Game();
 
 // Set the player's names and event
-game.player('w', 'Alice');
-game.player('b', 'Bob');
+game.playerName('w', 'Alice');
+game.playerName('b', 'Bob');
 game.event('1st International Open of Whatever');
 
 // Start the main variation
