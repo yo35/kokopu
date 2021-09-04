@@ -170,19 +170,27 @@ Game.prototype.round = function(value) {
  */
 Game.prototype.date = function(value) {
 	if(arguments.length === 0) {
-		return this._date;
+		if (this._date instanceof Date) {
+			return new Date(this._date);
+		}
+		else if (this._date) {
+			return Object.assign({}, this._date);
+		}
+		else {
+			return undefined;
+		}
 	}
 	else if(value === undefined || value === null) {
 		this._date = undefined;
 	}
 	else if(value instanceof Date) {
-		this._date = value;
+		this._date = new Date(value);
 	}
-	else if(typeof value === 'object' && typeof value.year === 'number' && typeof value.month === 'number') {
-		this._date = { year: value.year, month: value.month };
+	else if(typeof value === 'object' && typeof value.year === 'number' && typeof value.month === 'number' && value.month >= 1 && value.month <= 12) {
+		this._date = { year: Math.round(value.year), month: Math.round(value.month) };
 	}
 	else if(typeof value === 'object' && typeof value.year === 'number' && (value.month === undefined || value.month === null)) {
-		this._date = { year: value.year };
+		this._date = { year: Math.round(value.year) };
 	}
 	else {
 		throw new exception.IllegalArgument('Game#date()');

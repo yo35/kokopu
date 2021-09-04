@@ -45,16 +45,20 @@ function parseDateHeader(value) {
 		year = parseInt(year, 10);
 		month = parseInt(month, 10);
 		day = parseInt(day, 10);
-		if(month >= 1 && month <= 12 && day >= 1 && day <= 31) {
-			return new Date(year, month - 1, day);
+		if (month >= 1 && month <= 12) {
+			var daysInMonth = new Date(year, month, 0).getDate();
+			return day >= 1 && day <= daysInMonth ? new Date(year, month - 1, day) : { year: year, month: month };
+		}
+		else {
+			return { year: year };
 		}
 	}
 	else if(/^([0-9]{4})\.([0-9]{2})\.\?\?$/.test(value)) {
 		var year = RegExp.$1;
-		var month = parseInt(RegExp.$2, 10);
-		if(month >= 1 && month <= 12) {
-			return { year: parseInt(year, 10), month: month };
-		}
+		var month = RegExp.$2;
+		year = parseInt(year, 10);
+		month = parseInt(month, 10);
+		return month >= 1 && month <= 12 ? { year: year, month: month } : { year: year };
 	}
 	else if(/^([0-9]{4})(?:\.\?\?\.\?\?)?$/.test(value)) {
 		return { year: parseInt(RegExp.$1, 10) };
