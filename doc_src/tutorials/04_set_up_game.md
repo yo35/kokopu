@@ -48,4 +48,26 @@ current = current.play('Nf6');
 current = current.play('Qxf7#');
 current.comment('That is the Scholar\'s Mate');
 game.result('1-0');
+
+// Display an ASCII-art representation of the game.
+console.log(game.ascii());
+
+// Event: 1st International Open of Whatever
+// White: Alice
+// Black: Bob
+// 1.e4
+// 1...e5
+//  |
+//  +- 1...c5
+//  |  2.Nf3
+//  |
+//  +- 1...e6
+//  |  2.d4
+//  |
+// 2.Bc4
+// 2...Nc6
+// 3.Qh5
+// 3...Nf6
+// 4.Qxf7# That is the Scholar's Mate
+// 1-0
 ```
