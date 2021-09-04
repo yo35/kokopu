@@ -6,7 +6,7 @@
 [Black "?"]
 [Result "*"]
 [FEN "bbqnnrkr/pppppppp/8/8/8/8/PPPPPPPP/BBQNNRKR w KQkq - 0 1"]
-[Setup "1"]
+[SetUp "1"]
 [Variant "Chess960"]
 
 *

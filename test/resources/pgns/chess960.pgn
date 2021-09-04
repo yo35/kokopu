@@ -7,7 +7,7 @@
 [Result "1-0"]
 [EventDate "2018.02.09"]
 [FEN "qrknbbnr/pppppppp/8/8/8/8/PPPPPPPP/QRKNBBNR w KQkq - 0 1"]
-[Setup "1"]
+[SetUp "1"]
 [TimeControl "600+5"]
 [Variant "Chess960"]
 
