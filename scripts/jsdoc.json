@@ -16,6 +16,11 @@
 				"include": [ "doc_src/static" ]
 			}
 		},
+		"logo": {
+			"width": "96px",
+			"height": "96px",
+			"url": "img/kokopu-logo.png"
+		},
 		"css": [ "styles/tui-doc-for-kokopu.css" ],
 		"name": "Kokopu documentation",
 		"footerText": "Kokopu documentation"
