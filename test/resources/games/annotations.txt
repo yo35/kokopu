@@ -1,5 +1,4 @@
 Event: Game with annotations
-Annotator: Myself
 1.e4
 1...e5
 2.Bc4

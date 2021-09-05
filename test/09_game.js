@@ -73,13 +73,13 @@ describe('ASCII', function() {
 		game.annotator(' The   Annotator ');
 		game.date(new Date(2021, 8, 4));
 		game.event('An event name\nspanning several lines');
-		game.playerElo('w', '1942');
-		game.playerElo('b', '2421');
+		game.playerElo('w', 1942);
+		game.playerElo('b', 2421);
 		game.playerName('w', '  Light side\n\n');
 		game.playerName('b', 'Dark\n \n\rside');
 		game.playerTitle('w', 'CM');
 		game.playerTitle('b', 'IM');
-		game.round('1');
+		game.round(1);
 		game.site('Somewhere...');
 		game.result('0-1');
 		return game;
@@ -88,7 +88,7 @@ describe('ASCII', function() {
 	itAscii('missing-headers-1', function() {
 		var game = new kokopu.Game();
 		game.date({ year: 1998 });
-		game.playerElo('w', '2345');
+		game.playerElo('w', 2345);
 		game.playerName('w', 'John Doe');
 		game.playerTitle('b', 'GM');
 		game.round('3');
@@ -181,12 +181,14 @@ describe('ASCII', function() {
 
 		current = current.play('Qf3');
 
+		game.annotator(null); // erase the annotator
 		return game;
 	});
 
 	itAscii('sub-variations', function() {
 		var game = new kokopu.Game();
 		game.event('Game with variations and sub-variations');
+		game.annotator('Myself');
 
 		var current = game.mainVariation().play('e4').play('e5');
 		current.addVariation().play('c6');
@@ -201,6 +203,7 @@ describe('ASCII', function() {
 		variation = variation.play('Ba4');
 		variation.addVariation().play('Bxc6').play('dxc6');
 
+		game.annotator(undefined); // erase the annotator
 		return game;
 	});
 });

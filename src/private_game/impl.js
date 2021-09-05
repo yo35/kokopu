@@ -35,6 +35,14 @@ var trimAndCollapseSpaces = exports.trimAndCollapseSpaces = function(text) {
 };
 
 
+/**
+ * Convert the given value to a string, unless it is undefined or null.
+ */
+exports.sanitizeStringHeader = function(value) {
+	return value === undefined || value === null ? undefined : String(value);
+};
+
+
 function formatSimpleHeader(key, header) {
 	return header ? key + ': ' + trimAndCollapseSpaces(header) : undefined;
 }

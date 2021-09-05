@@ -71,13 +71,13 @@ var Game = exports.Game = function() {
  * Set the player name.
  *
  * @param {Color} color
- * @param {string?} value
+ * @param {*?} value If `null` or `undefined`, the existing value (if any) is erased.
  */
 Game.prototype.playerName = function(color, value) {
 	color = bt.colorFromString(color);
 	if(color < 0) { throw new exception.IllegalArgument('Game#playerName()'); }
 	if(arguments.length === 1) { return this._playerName[color]; }
-	else { this._playerName[color] = value; }
+	else { this._playerName[color] = impl.sanitizeStringHeader(value); }
 };
 
 
@@ -92,13 +92,13 @@ Game.prototype.playerName = function(color, value) {
  * Set the player elo.
  *
  * @param {Color} color
- * @param {string?} value
+ * @param {*?} value If `null` or `undefined`, the existing value (if any) is erased.
  */
 Game.prototype.playerElo = function(color, value) {
 	color = bt.colorFromString(color);
 	if(color < 0) { throw new exception.IllegalArgument('Game#playerElo()'); }
 	if(arguments.length === 1) { return this._playerElo[color]; }
-	else { this._playerElo[color] = value; }
+	else { this._playerElo[color] = impl.sanitizeStringHeader(value); }
 };
 
 
@@ -113,13 +113,13 @@ Game.prototype.playerElo = function(color, value) {
  * Set the player title.
  *
  * @param {Color} color
- * @param {string?} value
+ * @param {*?} value If `null` or `undefined`, the existing value (if any) is erased.
  */
 Game.prototype.playerTitle = function(color, value) {
 	color = bt.colorFromString(color);
 	if(color < 0) { throw new exception.IllegalArgument('Game#playerTitle()'); }
 	if(arguments.length === 1) { return this._playerTitle[color]; }
-	else { this._playerTitle[color] = value; }
+	else { this._playerTitle[color] = impl.sanitizeStringHeader(value); }
 };
 
 
@@ -132,11 +132,11 @@ Game.prototype.playerTitle = function(color, value) {
  *
  * Set the event.
  *
- * @param {string?} value
+ * @param {*?} value If `null` or `undefined`, the existing value (if any) is erased.
  */
 Game.prototype.event = function(value) {
 	if(arguments.length === 0) { return this._event; }
-	else { this._event = value; }
+	else { this._event = impl.sanitizeStringHeader(value); }
 };
 
 
@@ -149,11 +149,11 @@ Game.prototype.event = function(value) {
  *
  * Set the round.
  *
- * @param {string?} value
+ * @param {*?} value If `null` or `undefined`, the existing value (if any) is erased.
  */
 Game.prototype.round = function(value) {
 	if(arguments.length === 0) { return this._round; }
-	else { this._round = value; }
+	else { this._round = impl.sanitizeStringHeader(value); }
 };
 
 
@@ -208,11 +208,11 @@ Game.prototype.date = function(value) {
  *
  * Set where the game takes place.
  *
- * @param {string?} value
+ * @param {*?} value If `null` or `undefined`, the existing value (if any) is erased.
  */
 Game.prototype.site = function(value) {
 	if(arguments.length === 0) { return this._site; }
-	else { this._site = value; }
+	else { this._site = impl.sanitizeStringHeader(value); }
 };
 
 
@@ -225,11 +225,11 @@ Game.prototype.site = function(value) {
  *
  * Set the name of the annotator.
  *
- * @param {string?} value
+ * @param {*?} value If `null` or `undefined`, the existing value (if any) is erased.
  */
 Game.prototype.annotator = function(value) {
 	if(arguments.length === 0) { return this._annotator; }
-	else { this._annotator = value; }
+	else { this._annotator = impl.sanitizeStringHeader(value); }
 };
 
 
