@@ -5,7 +5,6 @@
 
 # Node's stuff
 /node_modules
-/npm-debug.log
 
 # Generated files
 /build
