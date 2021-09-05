@@ -55,4 +55,3 @@ rules:
   # Relaxed rules
   no-redeclare:          [ off ]
   no-constant-condition: [ error, { checkLoops: false }]
-

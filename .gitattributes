@@ -1,3 +1,2 @@
 # Treat .pgn as binary files so that line endings and BOM bytes are preserved.
 *.pgn binary
-

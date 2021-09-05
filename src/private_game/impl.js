@@ -24,7 +24,7 @@
 
 
 var bt = require('../basetypes');
-var Position = require('../position').Position; 
+var Position = require('../position').Position;
 
 
 /**
