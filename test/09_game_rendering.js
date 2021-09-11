@@ -27,18 +27,9 @@ var kokopu = require('../src/index');
 var readText = require('./common/readtext');
 var test = require('unit.js');
 
+var factories = {
 
-describe('ASCII', function() {
-
-	function itAscii(filename, factory) {
-		it(filename, function() {
-			var expectedText = readText('games/' + filename + '.txt').trim();
-			var game = factory();
-			test.value(game.ascii().trim()).is(expectedText);
-		});
-	}
-
-	itAscii('base', function() {
+	'base': function() {
 		var game = new kokopu.Game();
 		game.playerName('w', 'Alice');
 		game.playerName('b', 'Bob');
@@ -62,13 +53,13 @@ describe('ASCII', function() {
 		current.comment('That is the Scholar\'s Mate');
 		game.result('1-0');
 		return game;
-	});
+	},
 
-	itAscii('empty', function() {
+	'empty': function() {
 		return new kokopu.Game();
-	});
+	},
 
-	itAscii('all-headers', function() {
+	'all-headers': function() {
 		var game = new kokopu.Game();
 		game.annotator(' The   Annotator ');
 		game.date(new Date(2021, 8, 4));
@@ -83,9 +74,9 @@ describe('ASCII', function() {
 		game.site('Somewhere...');
 		game.result('0-1');
 		return game;
-	});
+	},
 
-	itAscii('missing-headers-1', function() {
+	'missing-headers-1': function() {
 		var game = new kokopu.Game();
 		game.date({ year: 1998 });
 		game.playerElo('w', 2345);
@@ -94,9 +85,9 @@ describe('ASCII', function() {
 		game.round('3');
 		game.result('1/2-1/2');
 		return game;
-	});
+	},
 
-	itAscii('missing-headers-2', function() {
+	'missing-headers-2': function() {
 		var game = new kokopu.Game();
 		game.date({ year: 1955, month: 11 });
 		game.event('International Championship of Whatever');
@@ -105,26 +96,26 @@ describe('ASCII', function() {
 		game.playerName('b', 'Mister No-Name');
 		game.result('*');
 		return game;
-	});
+	},
 
-	itAscii('custom-initial-position', function() {
+	'custom-initial-position': function() {
 		var game = new kokopu.Game();
 		game.event('Custom initial position');
 		game.initialPosition(new kokopu.Position('8/2k5/p1P5/P1K5/8/8/8/8 w - - 0 60'), 60);
 		game.mainVariation().play('Kd5').play('Kc8').play('Kd4').play('Kd8').play('Kc4').play('Kc8').play('Kd5').play('Kc7').play('Kc5').play('Kc8').play('Kb6').addNag(18);
 		game.result('1-0');
 		return game;
-	});
+	},
 
-	itAscii('chess-variant', function() {
+	'chess-variant': function() {
 		var game = new kokopu.Game();
 		game.event('Chess game variant');
 		game.initialPosition(new kokopu.Position('chess960', 'rnbqnkrb/pppppppp/8/8/8/8/PPPPPPPP/RNBQNKRB w KQkq - 0 1'));
 		game.mainVariation().play('O-O');
 		return game;
-	});
+	},
 
-	itAscii('nags', function() {
+	'nags': function() {
 		var game = new kokopu.Game();
 		game.event('Game with NAGs');
 		var current = game.mainVariation().play('Nf3');
@@ -158,9 +149,9 @@ describe('ASCII', function() {
 		current = current.play('Ng1');
 		current.addNag(42);
 		return game;
-	});
+	},
 
-	itAscii('annotations', function() {
+	'annotations': function() {
 		var game = new kokopu.Game();
 		game.event('Game with annotations');
 		game.annotator('Myself');
@@ -183,9 +174,9 @@ describe('ASCII', function() {
 
 		game.annotator(null); // erase the annotator
 		return game;
-	});
+	},
 
-	itAscii('sub-variations', function() {
+	'sub-variations': function() {
 		var game = new kokopu.Game();
 		game.event('Game with variations and sub-variations');
 		game.annotator('Myself');
@@ -205,5 +196,21 @@ describe('ASCII', function() {
 
 		game.annotator(undefined); // erase the annotator
 		return game;
-	});
+	},
+};
+
+
+describe('ASCII', function() {
+
+	function itAscii(filename, factory) {
+		it(filename, function() {
+			var expectedText = readText('games/' + filename + '.txt').trim();
+			var game = factory();
+			test.value(game.ascii().trim()).is(expectedText);
+		});
+	}
+
+	for (var filename in factories) {
+		itAscii(filename, factories[filename]);
+	}
 });

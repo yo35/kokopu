@@ -95,7 +95,7 @@ function loadErrorItemDescriptor(pgnName, gameIndex) {
 }
 
 
-describe('Game count', function() {
+describe('Read PGN - Game count', function() {
 	testData().forEach(function(elem) {
 		it('File ' + elem.label, function() {
 			test.value(kokopu.pgnRead(elem.pgn).gameCount()).is(elem.gameCount);
@@ -290,7 +290,7 @@ function pgnItemChecker(pgnName, gameIndex, iterationStyle, loader) {
 }
 
 
-describe('Game content (direct access)', function() {
+describe('Read PGN - Game content (direct access)', function() {
 	testData().forEach(function(elem) {
 		for(var gameIndex = 0; gameIndex < elem.gameCount; ++gameIndex) {
 			it('File ' + elem.label + ' - Game ' + gameIndex, pgnItemChecker(elem.label, gameIndex, 'using-next', function(i) {
@@ -314,7 +314,7 @@ DatabaseHolder.prototype.database = function() {
 };
 
 
-describe('Game content (database)', function() {
+describe('Read PGN - Game content (database)', function() {
 	testData().forEach(function(elem) {
 		var holder = new DatabaseHolder(elem.pgn);
 		for(var gameIndex = 0; gameIndex < elem.gameCount; ++gameIndex) {
