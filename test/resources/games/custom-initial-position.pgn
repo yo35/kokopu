@@ -1,0 +1,11 @@
+[Event "Custom initial position"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "1-0"]
+[FEN "8/2k5/p1P5/P1K5/8/8/8/8 w - - 0 60"]
+[SetUp "1"]
+
+60. Kd5 Kc8 61. Kd4 Kd8 62. Kc4 Kc8 63. Kd5 Kc7 64. Kc5 Kc8 65. Kb6 $18 1-0

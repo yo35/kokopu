@@ -27,7 +27,7 @@ var kokopu = require('../src/index');
 var readText = require('./common/readtext');
 var test = require('unit.js');
 
-var factories = {
+var oneGamefactories = {
 
 	'base': function() {
 		var game = new kokopu.Game();
@@ -199,8 +199,33 @@ var factories = {
 	},
 };
 
+var fullPgnFactories = {
 
-describe('ASCII', function() {
+	'empty': function() {
+		return [];
+	},
+
+	'mini2': function() {
+
+		var game0 = new kokopu.Game();
+		game0.event('TV Show');
+		game0.date(new Date(2014, 0, 23));
+		game0.playerName('w', 'Bill Gates');
+		game0.playerName('b', 'Magnus Carlsen');
+		game0.result('0-1');
+		game0.mainVariation().play('e4').play('Nc6').play('Nf3').play('d5').play('Bd3').play('Nf6').play('exd5').play('Qxd5').play('Nc3').play('Qh5').play('O-O').play('Bg4').play('h3').play('Ne5').play('hxg4').play('Nfxg4').play('Nxe5').play('Qh2#');
+
+		var game1 = new kokopu.Game();
+		game1.event('Sample game');
+		game1.result('1-0');
+		game1.mainVariation().play('e4').play('e5').play('Bc4').play('Nc6').play('Qh5').play('Nf6').play('Qxf7#');
+
+		return [ game0, game1 ];
+	}
+};
+
+
+describe('Write ASCII', function() {
 
 	function itAscii(filename, factory) {
 		it(filename, function() {
@@ -210,7 +235,35 @@ describe('ASCII', function() {
 		});
 	}
 
-	for (var filename in factories) {
-		itAscii(filename, factories[filename]);
+	for (var f in oneGamefactories) {
+		itAscii(f, oneGamefactories[f]);
+	}
+});
+
+
+describe('Write PGN', function() {
+
+	function itOneGamePgn(filename, factory) {
+		it(filename, function() {
+			var expectedText = readText('games/' + filename + '.pgn');
+			var game = factory();
+			test.value(kokopu.pgnWrite(game)).is(expectedText);
+		});
+	}
+
+	for (var f in oneGamefactories) {
+		itOneGamePgn(f, oneGamefactories[f]);
+	}
+
+	function itFullPgn(filename, factory) {
+		it('Full PGN - ' + filename, function() {
+			var expectedText = readText('pgns/' + filename + '.pgn');
+			var games = factory();
+			test.value(kokopu.pgnWrite(games)).is(expectedText);
+		});
+	}
+
+	for (var f in fullPgnFactories) {
+		itFullPgn(f, fullPgnFactories[f]);
 	}
 });

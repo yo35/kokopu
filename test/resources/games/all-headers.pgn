@@ -1,0 +1,14 @@
+[Event "An event name spanning several lines"]
+[Site "Somewhere..."]
+[Date "2021.09.04"]
+[Round "1"]
+[White "Light side"]
+[Black "Dark side"]
+[Result "0-1"]
+[Annotator "The Annotator"]
+[BlackElo "2421"]
+[BlackTitle "IM"]
+[WhiteElo "1942"]
+[WhiteTitle "CM"]
+
+0-1

@@ -23,7 +23,9 @@
 'use strict';
 
 
+var Game = require('./game').Game;
 var pgnReadImpl = require('./private_game/pgn_read_impl');
+var pgnWriteImpl = require('./private_game/pgn_write_impl');
 
 
 /**
@@ -52,5 +54,28 @@ exports.pgnRead = function() {
 	// Parse one game...
 	else {
 		return pgnReadImpl.readOneGame(arguments[0], arguments[1]);
+	}
+};
+
+
+/**
+ * PGN writing function.
+ *
+ * @param {Game} Game to write.
+ * @returns {string}
+ *
+ *//**
+ *
+ * PGN writing function.
+ *
+ * @param {Game[]} Games to write.
+ * @returns {string}
+ */
+exports.pgnWrite = function(input) {
+	if (input instanceof Game) {
+		return pgnWriteImpl.writeGames([ input ]);
+	}
+	else {
+		return pgnWriteImpl.writeGames(input);
 	}
 };
