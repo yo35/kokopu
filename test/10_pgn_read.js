@@ -175,7 +175,6 @@ function dumpGame(game, iterationStyle) {
 
 	function dumpNags(node) {
 		var nags = node.nags();
-		nags.sort();
 		for(var k=0; k<nags.length; ++k) {
 			res += ' $' + nags[k];
 		}
@@ -183,7 +182,6 @@ function dumpGame(game, iterationStyle) {
 
 	function dumpTags(node) {
 		var tags = node.tags();
-		tags.sort();
 		for(var k=0; k<tags.length; ++k) {
 			var key = tags[k];
 			res += ' [' + key + ' = {' + node.tag(key) + '}]';

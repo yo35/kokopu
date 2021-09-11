@@ -119,14 +119,14 @@ function formatAnnotations(node) {
 	var result = [];
 
 	// NAGs
-	var nags = node.nags().sort();
+	var nags = node.nags();
 	for (var k = 0; k < nags.length; ++k) {
 		var nag = nags[k];
 		result.push(nag in NAG_SYMBOLS ? NAG_SYMBOLS[nag] : '$' + nag);
 	}
 
 	// Tags
-	var tags = node.tags().sort();
+	var tags = node.tags();
 	for (var k = 0; k < tags.length; ++k) {
 		var tag = tags[k];
 		result.push(tag + '={' + trimAndCollapseSpaces(node.tag(tag)) + '}');

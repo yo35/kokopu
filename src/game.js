@@ -537,14 +537,14 @@ Node.prototype.variations = function() {
 /**
  * Return the NAGs associated to the current move.
  *
- * @returns {number[]}
+ * @returns {number[]} Sorted array.
  */
 Node.prototype.nags = function() {
 	var result = [];
 	for(var key in this._info.nags) {
-		result.push(key);
+		result.push(Number(key));
 	}
-	return result;
+	return result.sort(function(a, b) { return a - b; });
 };
 
 
@@ -582,14 +582,14 @@ Node.prototype.removeNag = function(nag) {
 /**
  * Return the keys of the tags associated to the current move.
  *
- * @returns {string[]}
+ * @returns {string[]} Sorted array.
  */
 Node.prototype.tags = function() {
 	var result = [];
 	for(var key in this._info.tags) {
 		result.push(key);
 	}
-	return result;
+	return result.sort();
 };
 
 
@@ -820,7 +820,7 @@ Variation.prototype.nodes = function() {
 /**
  * Return the NAGs associated to the current variation.
  *
- * @returns {number[]}
+ * @returns {number[]} Sorted array.
  * @function
  */
 Variation.prototype.nags = Node.prototype.nags;
@@ -857,7 +857,7 @@ Variation.prototype.removeNag = Node.prototype.removeNag;
 /**
  * Return the keys of the tags associated to the current variation.
  *
- * @returns {string[]}
+ * @returns {string[]} Sorted array.
  * @function
  */
 Variation.prototype.tags = Node.prototype.tags;

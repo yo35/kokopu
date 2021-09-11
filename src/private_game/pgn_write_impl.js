@@ -92,7 +92,7 @@ function writeOptionalHeader(key, value) {
 function writeAnnotations(node, pushToken) {
 
 	// NAGs
-	var nags = node.nags().sort();
+	var nags = node.nags();
 	for (var k = 0; k < nags.length; ++k) {
 		pushToken('$' + nags[k]);
 	}
@@ -104,7 +104,7 @@ function writeAnnotations(node, pushToken) {
 	}
 
 	// Prepare tags
-	var tags = node.tags().sort();
+	var tags = node.tags();
 	var nonEmptyTagFound = false;
 	var tagValues = {};
 	for (var k = 0; k < tags.length; ++k) {
