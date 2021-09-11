@@ -39,7 +39,10 @@ function escapeCommentValue(value) {
 
 
 function formatNullableHeader(value) {
-	return value === undefined ? '?' : escapeHeaderValue(impl.trimAndCollapseSpaces(value));
+	if (value !== undefined) {
+		value = impl.trimAndCollapseSpaces(value);
+	}
+	return value ? escapeHeaderValue(value) : '?';
 }
 
 
@@ -79,7 +82,10 @@ function formatVariant(variant) {
 
 
 function writeOptionalHeader(key, value) {
-	return value === undefined ? '' : '[' + key + ' "' + escapeHeaderValue(impl.trimAndCollapseSpaces(value)) + '"]\n';
+	if (value !== undefined) {
+		value = impl.trimAndCollapseSpaces(value);
+	}
+	return value ? '[' + key + ' "' + escapeHeaderValue(impl.trimAndCollapseSpaces(value)) + '"]\n' : '';
 }
 
 

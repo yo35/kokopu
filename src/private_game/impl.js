@@ -35,26 +35,24 @@ var trimAndCollapseSpaces = exports.trimAndCollapseSpaces = function(text) {
 };
 
 
-/**
- * Convert the given value to a string, unless it is undefined or null.
- */
-exports.sanitizeStringHeader = function(value) {
-	return value === undefined || value === null ? undefined : String(value);
-};
+function trimCollapseAndMarkEmpty(text) {
+	text = trimAndCollapseSpaces(text);
+	return text === '' ? '<empty>' : text;
+}
 
 
 function formatSimpleHeader(key, header) {
-	return header ? key + ': ' + trimAndCollapseSpaces(header) : undefined;
+	return header === undefined ? undefined : key + ': ' + trimCollapseAndMarkEmpty(header);
 }
 
 
 function formatEventAndRound(event, round) {
-	if (!event && !round) {
+	if (event === undefined && round === undefined) {
 		return undefined;
 	}
-	var result = 'Event: ' + (event ? trimAndCollapseSpaces(event) : '<undefined>');
-	if (round) {
-		result += ' (' + trimAndCollapseSpaces(round) + ')';
+	var result = 'Event: ' + (event === undefined ? '<undefined>' : trimCollapseAndMarkEmpty(event));
+	if (round !== undefined) {
+		result += ' (' + trimCollapseAndMarkEmpty(round) + ')';
 	}
 	return result;
 }
@@ -78,18 +76,18 @@ function formatDate(date) {
 
 
 function formatPlayer(key, playerName, playerElo, playerTitle) {
-	if (!playerName && !playerElo && !playerTitle) {
+	if (playerName === undefined && playerElo === undefined && playerTitle === undefined) {
 		return undefined;
 	}
-	var result = key + ': ' + (playerName ? trimAndCollapseSpaces(playerName) : '<undefined>');
-	if (playerElo && playerTitle) {
-		result += ' (' + trimAndCollapseSpaces(playerTitle) + ' ' + trimAndCollapseSpaces(playerElo) + ')';
+	var result = key + ': ' + (playerName === undefined ? '<undefined>' : trimCollapseAndMarkEmpty(playerName));
+	if (playerElo !== undefined && playerTitle !== undefined) {
+		result += ' (' + trimCollapseAndMarkEmpty(playerTitle) + ' ' + trimCollapseAndMarkEmpty(playerElo) + ')';
 	}
-	else if (playerElo) {
-		result += ' (' + trimAndCollapseSpaces(playerElo) + ')';
+	else if (playerElo !== undefined) {
+		result += ' (' + trimCollapseAndMarkEmpty(playerElo) + ')';
 	}
-	else if (playerTitle) {
-		result += ' (' + trimAndCollapseSpaces(playerTitle) + ')';
+	else if (playerTitle !== undefined) {
+		result += ' (' + trimCollapseAndMarkEmpty(playerTitle) + ')';
 	}
 	return result;
 }
@@ -136,8 +134,8 @@ function formatAnnotations(node) {
 
 	// Comment
 	var comment = node.comment();
-	if (comment) {
-		result.push(trimAndCollapseSpaces(comment));
+	if (comment !== undefined) {
+		result.push(trimCollapseAndMarkEmpty(comment));
 	}
 
 	return result;
@@ -176,7 +174,7 @@ exports.ascii = function(game) {
 	// Moves & result
 
 	function isNonEmptyVariation(variation) {
-		return variation.first() || variation.nags().length > 0 || variation.tags().length > 0 || variation.comment();
+		return variation.first() || variation.nags().length > 0 || variation.tags().length > 0 || variation.comment() !== undefined;
 	}
 
 	function dumpNode(node, indent, hasSomethingAfter) {

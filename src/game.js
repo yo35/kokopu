@@ -60,6 +60,11 @@ var Game = exports.Game = function() {
 };
 
 
+function sanitizeStringHeader(value) {
+	return value === undefined || value === null ? undefined : String(value);
+}
+
+
 /**
  * Get the player name.
  *
@@ -77,7 +82,7 @@ Game.prototype.playerName = function(color, value) {
 	color = bt.colorFromString(color);
 	if(color < 0) { throw new exception.IllegalArgument('Game#playerName()'); }
 	if(arguments.length === 1) { return this._playerName[color]; }
-	else { this._playerName[color] = impl.sanitizeStringHeader(value); }
+	else { this._playerName[color] = sanitizeStringHeader(value); }
 };
 
 
@@ -98,7 +103,7 @@ Game.prototype.playerElo = function(color, value) {
 	color = bt.colorFromString(color);
 	if(color < 0) { throw new exception.IllegalArgument('Game#playerElo()'); }
 	if(arguments.length === 1) { return this._playerElo[color]; }
-	else { this._playerElo[color] = impl.sanitizeStringHeader(value); }
+	else { this._playerElo[color] = sanitizeStringHeader(value); }
 };
 
 
@@ -119,7 +124,7 @@ Game.prototype.playerTitle = function(color, value) {
 	color = bt.colorFromString(color);
 	if(color < 0) { throw new exception.IllegalArgument('Game#playerTitle()'); }
 	if(arguments.length === 1) { return this._playerTitle[color]; }
-	else { this._playerTitle[color] = impl.sanitizeStringHeader(value); }
+	else { this._playerTitle[color] = sanitizeStringHeader(value); }
 };
 
 
@@ -136,7 +141,7 @@ Game.prototype.playerTitle = function(color, value) {
  */
 Game.prototype.event = function(value) {
 	if(arguments.length === 0) { return this._event; }
-	else { this._event = impl.sanitizeStringHeader(value); }
+	else { this._event = sanitizeStringHeader(value); }
 };
 
 
@@ -153,7 +158,7 @@ Game.prototype.event = function(value) {
  */
 Game.prototype.round = function(value) {
 	if(arguments.length === 0) { return this._round; }
-	else { this._round = impl.sanitizeStringHeader(value); }
+	else { this._round = sanitizeStringHeader(value); }
 };
 
 
@@ -212,7 +217,7 @@ Game.prototype.date = function(value) {
  */
 Game.prototype.site = function(value) {
 	if(arguments.length === 0) { return this._site; }
-	else { this._site = impl.sanitizeStringHeader(value); }
+	else { this._site = sanitizeStringHeader(value); }
 };
 
 
@@ -229,7 +234,7 @@ Game.prototype.site = function(value) {
  */
 Game.prototype.annotator = function(value) {
 	if(arguments.length === 0) { return this._annotator; }
-	else { this._annotator = impl.sanitizeStringHeader(value); }
+	else { this._annotator = sanitizeStringHeader(value); }
 };
 
 
