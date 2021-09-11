@@ -1,0 +1,26 @@
+Event: Game with annotations 2
+=
+1.e4 !? ∞
+1...e5
+2.Nf3 cal={Rf3e5}
+2...Nc6 emptytag={}
+3.Bc4 <empty>
+3...Bc5 blanktag={}
+4.c3 <empty>
+4...Nf6
+5.d4 cal={Rd4c5,Rd4e5} <empty>
+5...exd4
+6.cxd4
+ |
+ +- You should not see in PGN this since there is no move in the variation...
+ |
+6...Bb4+
+ |
+ +- <empty>
+ |
+7.Nc3
+ |
+ +- <empty>
+ |
+7...O-O
+*

@@ -1,0 +1,9 @@
+[Event "Event with a \\ backslash"]
+[Site "Site with \" double-quotes"]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+
+{ Comment with \\ backslash and { some \} braces... } *

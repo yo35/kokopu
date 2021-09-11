@@ -1,0 +1,6 @@
+Event: <empty> (<empty>)
+White: <empty> (<empty> <empty>)
+Black: <empty> (<empty> <empty>)
+Annotator: <empty>
+<empty>
+*

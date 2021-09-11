@@ -90,7 +90,7 @@ var oneGamefactories = {
 	'missing-headers-2': function() {
 		var game = new kokopu.Game();
 		game.date({ year: 1955, month: 11 });
-		game.event('International Championship of Whatever');
+		game.round(3);
 		game.playerElo('w', '2299');
 		game.playerTitle('w', 'FM');
 		game.playerName('b', 'Mister No-Name');
@@ -98,12 +98,46 @@ var oneGamefactories = {
 		return game;
 	},
 
-	'custom-initial-position': function() {
+	'blank-headers-1': function() {
+		var game = new kokopu.Game();
+		game.event('');
+		game.round('');
+		game.playerName('w', '');
+		game.playerElo('w', '');
+		game.playerTitle('w', '');
+		game.playerName('b', ' ');
+		game.playerElo('b', ' ');
+		game.playerTitle('b', ' ');
+		game.annotator('');
+		game.mainVariation().comment('');
+		game.result('*');
+		return game;
+	},
+
+	'blank-headers-2': function() {
+		var game = new kokopu.Game();
+		game.event(' ');
+		game.round(' ');
+		game.annotator(' ');
+		game.mainVariation().comment(' ');
+		game.result('*');
+		return game;
+	},
+
+	'custom-initial-position-1': function() {
 		var game = new kokopu.Game();
 		game.event('Custom initial position');
 		game.initialPosition(new kokopu.Position('8/2k5/p1P5/P1K5/8/8/8/8 w - - 0 60'), 60);
 		game.mainVariation().play('Kd5').play('Kc8').play('Kd4').play('Kd8').play('Kc4').play('Kc8').play('Kd5').play('Kc7').play('Kc5').play('Kc8').play('Kb6').addNag(18);
 		game.result('1-0');
+		return game;
+	},
+
+	'custom-initial-position-2': function() {
+		var game = new kokopu.Game();
+		game.event('Custom initial position (Black to play)');
+		game.initialPosition(new kokopu.Position('rnbqk2r/pppp1ppp/5n2/2b1p3/2B1P3/5N2/PPPP1PPP/RNBQ1RK1 b kq - 5 4'), 4);
+		game.mainVariation().play('O-O');
 		return game;
 	},
 
@@ -151,9 +185,9 @@ var oneGamefactories = {
 		return game;
 	},
 
-	'annotations': function() {
+	'annotations-1': function() {
 		var game = new kokopu.Game();
-		game.event('Game with annotations');
+		game.event('Game with annotations 1');
 		game.annotator('Myself');
 
 		var current = game.mainVariation().play('e4').play('e5').play('Bc4').play('Nc6').play('Qh5');
@@ -176,6 +210,52 @@ var oneGamefactories = {
 		return game;
 	},
 
+	'annotations-2': function() {
+		var game = new kokopu.Game();
+		game.event('Game with annotations 2');
+
+		var current = game.mainVariation();
+		current.addNag(10);
+
+		current = current.play('e4');
+		current.addNag(13);
+		current.addNag(5);
+
+		current = current.play('e5').play('Nf3');
+		current.tag('cal', 'Rf3e5');
+
+		current = current.play('Nc6');
+		current.tag('emptytag', '');
+
+		current = current.play('Bc4');
+		current.comment('');
+
+		current = current.play('Bc5');
+		current.tag('blanktag', ' ');
+
+		current = current.play('c3');
+		current.comment(' ');
+
+		current = current.play('Nf6').play('d4');
+		current.tag('cal', 'Rd4c5,Rd4e5');
+		current.comment(' ');
+
+		current = current.play('exd4').play('cxd4');
+		var alternative1 = current.addVariation();
+		alternative1.comment('You should not see in PGN this since there is no move in the variation...');
+
+		current = current.play('Bb4+');
+		var alternative2 = current.addVariation();
+		alternative2.comment('');
+
+		current = current.play('Nc3');
+		var alternative3 = current.addVariation();
+		alternative3.comment(' ');
+
+		current.play('O-O');
+		return game;
+	},
+
 	'sub-variations': function() {
 		var game = new kokopu.Game();
 		game.event('Game with variations and sub-variations');
@@ -195,6 +275,15 @@ var oneGamefactories = {
 		variation.addVariation().play('Bxc6').play('dxc6');
 
 		game.annotator(undefined); // erase the annotator
+		return game;
+	},
+
+	'escaped-text': function() {
+		var game = new kokopu.Game();
+		game.event('Event with a \\ backslash');
+		game.site('Site with " double-quotes');
+		game.mainVariation().comment('Comment with \\ backslash and { some } braces...');
+		// TODO test escape for tag values
 		return game;
 	},
 };

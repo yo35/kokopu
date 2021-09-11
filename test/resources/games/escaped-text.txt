@@ -1,0 +1,4 @@
+Event: Event with a \ backslash
+Site: Site with " double-quotes
+Comment with \ backslash and { some } braces...
+*

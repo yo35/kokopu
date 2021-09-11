@@ -1,0 +1,11 @@
+[Event "Custom initial position (Black to play)"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[FEN "rnbqk2r/pppp1ppp/5n2/2b1p3/2B1P3/5N2/PPPP1PPP/RNBQ1RK1 b kq - 0 4"]
+[SetUp "1"]
+
+4... O-O *
