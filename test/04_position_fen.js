@@ -45,18 +45,20 @@ function testData() {
 }
 
 
-describe('FEN parsing', function() {
+describe('FEN parsing (tolerant)', function() {
 	testData().forEach(function(elem) {
-
-		it('Set FEN (tolerant) ' + elem.label, function() {
+		it('Position ' + elem.label, function() {
 			var position = new kokopu.Position(elem.variant, 'empty');
 			position.fen(elem.fenIn);
 			test.value(position.fen()).is(elem.fenOutDefault);
-			test.value(position.fen({ fiftyMoveClock:elem.fiftyMoveClock, fullMoveNumber:elem.fullMoveNumber })).is(elem.fenOutWithCounters);
-			test.value(position.fen({ withVariant: true })).is(elem.fenOutWithVariant);
 		});
+	});
+});
 
-		it('Set FEN (strict) ' + elem.label, function() {
+
+describe('FEN parsing (strict)', function() {
+	testData().forEach(function(elem) {
+		it('Position ' + elem.label, function() {
 			var position = new kokopu.Position(elem.variant, 'empty');
 			if(elem.strict) {
 				position.fen(elem.fenIn, true);
@@ -66,6 +68,25 @@ describe('FEN parsing', function() {
 				test.exception(function() { position.fen(elem.fenIn, true); }).isInstanceOf(kokopu.exception.InvalidFEN);
 			}
 		});
+	});
+});
 
+
+describe('FEN counters', function() {
+	testData().forEach(function(elem) {
+		it('Position ' + elem.label, function() {
+			var position = new kokopu.Position(elem.variant, elem.fenIn);
+			test.value(position.fen({ fiftyMoveClock:elem.fiftyMoveClock, fullMoveNumber:elem.fullMoveNumber })).is(elem.fenOutWithCounters);
+		});
+	});
+});
+
+
+describe('FEN with variant', function() {
+	testData().forEach(function(elem) {
+		it('Position ' + elem.label, function() {
+			var position = new kokopu.Position(elem.variant, elem.fenIn);
+			test.value(position.fen({ withVariant: true })).is(elem.fenOutWithVariant);
+		});
 	});
 });
