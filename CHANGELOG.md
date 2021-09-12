@@ -1,6 +1,16 @@
 ChangeLog
 =========
 
+2.0.0 (September 12, 2021)
+--------------------------
+* Introduce `pgnWrite()`.
+* Introduce `Game#ascii()`.
+* Change the way castling moves are handled at Chess960 in `Position#isMoveLegal()`: from now one,
+castling moves will be recognized as legal if and only if argument `to` corresponds to the origin square
+of the castling rook. As a consequence, no confusion is possible anymore between castling and regular king moves,
+and status `castle960` do not exist anymore among the objects that can be returned by `Position#isMoveLegal()`.
+This change affects only Chess960; regular chess and other variants are not impacted.
+
 1.10.2 (August 15, 2021)
 ------------------------
 * Support castling moves encoded with zeros (see #6).
