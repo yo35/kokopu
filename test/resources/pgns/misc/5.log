@@ -1,5 +1,5 @@
 Event = {Game with long/short comment descriptors}
--+<LONG {No empty line => SHORT.}
+-+<LONG {Header comment of main variation => always LONG.}<LONG
 (1w) e4
 (1b) e5
  |

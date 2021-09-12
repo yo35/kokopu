@@ -654,7 +654,7 @@ Node.prototype.comment = function(value, isLongComment) {
 	}
 	else {
 		this._info.comment = sanitizeStringHeader(value);
-		this._info.isLongComment = Boolean(isLongComment);
+		this._info.isLongComment = this._info.comment && isLongComment;
 	}
 };
 
@@ -662,7 +662,7 @@ Node.prototype.comment = function(value, isLongComment) {
 /**
  * Whether the text comment associated to the current move is long or short.
  *
- * @returns {boolean}
+ * @returns {boolean} Always `false` if no comment is defined.
  */
 Node.prototype.isLongComment = function() {
 	return this._parentVariation._withinLongVariation && this._info.isLongComment;

@@ -59,7 +59,7 @@ the combination was sound and that he had a forced win in every variation.}
 
 
 [Event "Game with long/short comment descriptors"]
-{No empty line => SHORT.}
+{Header comment of main variation => always LONG.}
 1.e4 e5 (
 
 {Within short variation, always SHORT.}

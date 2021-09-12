@@ -252,7 +252,8 @@ function doParseGame(stream) {
 					node.tag(key, tags[key]);
 				}
 				if(stream.tokenValue().comment !== undefined) {
-					node.comment(stream.tokenValue().comment, stream.emptyLineFound());
+					// Warning: the header comment of the main variation is always considered as a "long" comment.
+					node.comment(stream.tokenValue().comment, stream.emptyLineFound() || (nodeIsVariation && nodeStack.length === 0));
 				}
 				break;
 
