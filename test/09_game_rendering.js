@@ -201,7 +201,7 @@ var oneGamefactories = {
 		current.tag('cal', 'Rg6h5');
 
 		var alternative = current.addVariation();
-		alternative.comment('Other defense are possible, for instance:');
+		alternative.comment('Other defenses are possible, for instance:');
 		alternative.play('Nf6');
 
 		current = current.play('Qf3');

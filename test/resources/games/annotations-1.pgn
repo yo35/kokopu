@@ -7,5 +7,5 @@
 [Result "*"]
 
 1. e4 e5 2. Bc4 Nc6 3. Qh5 {[%cal Gc4f7,Gh5f7] [%csl Rf7] Threatening checkmate}
-3... g6 $1 {[%cal Rg6h5] Avoid the checkmate} ({Other defense are possible, for
+3... g6 $1 {[%cal Rg6h5] Avoid the checkmate} ({Other defenses are possible, for
 instance:} 3... Nf6) 4. Qf3 *
