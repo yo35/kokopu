@@ -197,7 +197,7 @@ function writeGame(game) {
 	result += writeOptionalHeader('BlackElo', game.playerElo('b'));
 	result += writeOptionalHeader('BlackTitle', game.playerTitle('b'));
 	if (hasFENHeader) {
-		result += '[FEN "' + game.initialPosition().fen({ fullMoveNumber: game.mainVariation().initialFullMoveNumber() }) + '"]\n'; // TODO avoid X-FEN if possible
+		result += '[FEN "' + game.initialPosition().fen({ fullMoveNumber: game.mainVariation().initialFullMoveNumber(), regularFENIfPossible: true }) + '"]\n';
 		result += '[SetUp "1"]\n';
 	}
 	result += writeOptionalHeader('Variant', formatVariant(variant));

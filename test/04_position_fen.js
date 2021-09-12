@@ -40,6 +40,7 @@ function testData() {
 			fenOutDefault     : fields[6],
 			fenOutWithCounters: fields[7],
 			fenOutWithVariant : fields[8],
+			fenOutWithoutXFEN : fields[9],
 		};
 	});
 }
@@ -87,6 +88,16 @@ describe('FEN with variant', function() {
 		it('Position ' + elem.label, function() {
 			var position = new kokopu.Position(elem.variant, elem.fenIn);
 			test.value(position.fen({ withVariant: true })).is(elem.fenOutWithVariant);
+		});
+	});
+});
+
+
+describe('FEN without XFEN if possible', function() {
+	testData().forEach(function(elem) {
+		it('Position ' + elem.label, function() {
+			var position = new kokopu.Position(elem.variant, elem.fenIn);
+			test.value(position.fen({ regularFENIfPossible: true })).is(elem.fenOutWithoutXFEN);
 		});
 	});
 });

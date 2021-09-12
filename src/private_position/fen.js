@@ -59,7 +59,7 @@ exports.ascii = function(position) {
 };
 
 
-exports.getFEN = function(position, fiftyMoveClock, fullMoveNumber) {
+exports.getFEN = function(position, fiftyMoveClock, fullMoveNumber, regularFENIfPossible) {
 	var result = '';
 
 	// Board scanning
@@ -87,15 +87,22 @@ exports.getFEN = function(position, fiftyMoveClock, fullMoveNumber) {
 	}
 
 	// Flags + additional move counters
-	result += ' ' + bt.colorToString(position.turn) + ' ' + castlingToString(position) + ' ' + enPassantToString(position);
+	result += ' ' + bt.colorToString(position.turn) + ' ' + castlingToString(position, regularFENIfPossible) + ' ' + enPassantToString(position);
 	result += ' ' + fiftyMoveClock + ' ' + fullMoveNumber;
 
 	return result;
 };
 
 
-function castlingToString(position) {
+function castlingToString(position, regularFENIfPossible) {
 	if(position.variant === bt.CHESS960) {
+		if (regularFENIfPossible) {
+			var whiteRegularFlags = regularFENCaslingFlagIfPossible(position, bt.WHITE);
+			var blackRegularFlags = regularFENCaslingFlagIfPossible(position, bt.BLACK);
+			if (whiteRegularFlags !== false && blackRegularFlags !== false) {
+				return whiteRegularFlags === '' && blackRegularFlags === '' ? '-' : whiteRegularFlags.toUpperCase() + blackRegularFlags;
+			}
+		}
 		var whiteFlags = '';
 		var blackFlags = '';
 		for(var file = 0; file < 8; ++file) {
@@ -112,6 +119,80 @@ function castlingToString(position) {
 		if(position.castling[bt.BLACK] & 1<<0) { result += 'q'; }
 		return result === '' ? '-' : result;
 	}
+}
+
+
+function regularFENCaslingFlagIfPossible(position, color) {
+	if (position.castling[color] === 0) {
+		return '';
+	}
+
+	var firstSquare = 112 * color;
+	var lastSquare = 112 * color + 7;
+	var targetKing = bt.KING * 2 + color;
+	var targetRook = bt.ROOK * 2 + color;
+
+	// Search for the king
+	var kingSquare = -1;
+	for (var sq = firstSquare; sq <= lastSquare; ++sq) {
+		if (position.board[sq] === targetKing) {
+			if (kingSquare < 0) {
+				kingSquare = sq;
+			}
+			else {
+				return false;
+			}
+		}
+	}
+	if (kingSquare < 0) {
+		return false;
+	}
+
+	var kingFileMask = 1 << (kingSquare % 16);
+	var queenSideMask = kingFileMask - 1;
+	var kingSideMask = position.castling[color] & ~(kingFileMask | queenSideMask);
+	queenSideMask = position.castling[color] & queenSideMask;
+	var fenFlag = '';
+
+	// King-side castling flag
+	var rookSquare = -1;
+	if (kingSideMask !== 0) {
+		for (var sq = kingSquare + 1; sq <= lastSquare; ++sq) {
+			if (position.board[sq] === targetRook) {
+				if (rookSquare < 0) {
+					rookSquare = sq;
+				}
+				else {
+					return false;
+				}
+			}
+		}
+		if (rookSquare < 0 || kingSideMask !== 1 << (rookSquare % 16)) {
+			return false;
+		}
+		fenFlag += 'k';
+	}
+
+	// Queen-side castling flag
+	rookSquare = -1;
+	if (queenSideMask !== 0) {
+		for (var sq = firstSquare; sq < kingSquare; ++sq) {
+			if (position.board[sq] === targetRook) {
+				if (rookSquare < 0) {
+					rookSquare = sq;
+				}
+				else {
+					return false;
+				}
+			}
+		}
+		if (rookSquare < 0 || queenSideMask !== 1 << (rookSquare % 16)) {
+			return false;
+		}
+		fenFlag += 'q';
+	}
+
+	return fenFlag === '' ? false : fenFlag;
 }
 
 

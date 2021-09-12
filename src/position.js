@@ -227,9 +227,11 @@ Position.prototype.ascii = function() {
 /**
  * Get the FEN representation of the current {@link Position}).
  *
- * @param {{fiftyMoveClock:number, fullMoveNumber:number, withVariant:boolean}} [options] If not provided, the `fiftyMoveClock`
- *        and the `fullMoveNumber` fields of the returned FEN string are set respectively to 0 and 1. If field `withVariant`
- *        is `true` (`false` by default), then the current game variant is appended as a colon-separated prefix.
+ * @param {{fiftyMoveClock:number, fullMoveNumber:number, withVariant:boolean, regularFENIfPossible:boolean}} [options]
+ *        If not provided, the `fiftyMoveClock` and the `fullMoveNumber` fields of the returned FEN string are set respectively to 0 and 1.
+ *        If field `withVariant` is `true` (`false` by default), then the current game variant is appended as a colon-separated prefix.
+ *        If field `regularFENIfPossible` is `true` (`false` by default), then castling rights X-FEN are encoded using the regular-FEN
+ *        coding format (this flag affects only Chess960 positions).
  *
  *//**
  *
@@ -248,7 +250,8 @@ Position.prototype.fen = function() {
 		var fiftyMoveClock = (typeof arguments[0].fiftyMoveClock === 'number') ? arguments[0].fiftyMoveClock : 0;
 		var fullMoveNumber = (typeof arguments[0].fullMoveNumber === 'number') ? arguments[0].fullMoveNumber : 1;
 		var withVariant = (typeof arguments[0].withVariant === 'boolean') ? arguments[0].withVariant : false;
-		return (withVariant ? bt.variantToString(this._impl.variant) + ':' : '') + fen.getFEN(this._impl, fiftyMoveClock, fullMoveNumber);
+		var regularFENIfPossible = (typeof arguments[0].regularFENIfPossible === 'boolean') ? arguments[0].regularFENIfPossible : false;
+		return (withVariant ? bt.variantToString(this._impl.variant) + ':' : '') + fen.getFEN(this._impl, fiftyMoveClock, fullMoveNumber, regularFENIfPossible);
 	}
 	else if(arguments.length === 1 && typeof arguments[0] === 'string') {
 		var result = fen.parseFEN(this._impl.variant, arguments[0], false);
