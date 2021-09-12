@@ -253,7 +253,8 @@ var oneGamefactories = {
 		alternative3.comment(' ');
 
 		current = current.play('O-O');
-		current.tag('TheTag', 'a[b]c');
+		current.tag('TheFirstTag', 'a[b]c');
+		current.tag('TheOtherTag', ' ');
 
 		return game;
 	},

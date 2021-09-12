@@ -22,5 +22,5 @@ Event: Game with annotations 2
  |
  +- <empty>
  |
-7...O-O TheTag={a[b]c}
+7...O-O TheFirstTag={a[b]c} TheOtherTag={}
 *
