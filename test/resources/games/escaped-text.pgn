@@ -6,4 +6,4 @@
 [Black "?"]
 [Result "*"]
 
-{ Comment with \\ backslash and { some \} braces... } *
+{Comment with \\ backslash and { some \} braces...} *

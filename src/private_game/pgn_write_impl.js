@@ -94,7 +94,7 @@ function writeAnnotations(node, pushToken) {
 	// NAGs
 	var nags = node.nags();
 	for (var k = 0; k < nags.length; ++k) {
-		pushToken('$' + nags[k]);
+		pushToken('$' + nags[k], false, false);
 	}
 
 	// Prepare comment
@@ -118,18 +118,20 @@ function writeAnnotations(node, pushToken) {
 
 	// Tags & comments
 	if (nonEmptyTagFound || comment) {
-		pushToken('{');
+		pushToken('{', false, true);
 		for (var k = 0; k < tags.length; ++k) {
 			var tag = tags[k];
 			var tagValue = tagValues[tag];
 			if (tagValue) {
-				pushToken('[%' + tag + ' ' + escapeCommentValue(tagValue) + ']'); // TODO escape issue
+				pushToken('[%' + tag + ' ' + escapeCommentValue(tagValue) + ']', false, false); // TODO escape issue
 			}
 		}
 		if (comment) {
-			escapeCommentValue(comment).split(' ').forEach(pushToken);
+			escapeCommentValue(comment).split(' ').forEach(function(token) {
+				pushToken(token, false, false);
+			});
 		}
-		pushToken('}');
+		pushToken('}', true, false);
 		return true;
 	}
 	else {
@@ -141,22 +143,22 @@ function writeAnnotations(node, pushToken) {
 function writeNode(node, forceMoveNumber, pushToken) {
 
 	if (node.moveColor() === 'w') {
-		pushToken(node.fullMoveNumber() + '.');
+		pushToken(node.fullMoveNumber() + '.', false, false);
 	}
 	else if (forceMoveNumber) {
-		pushToken(node.fullMoveNumber() + '...');
+		pushToken(node.fullMoveNumber() + '...', false, false);
 	}
 
-	pushToken(node.notation());
+	pushToken(node.notation(), false, false);
 	var nextForceMoveNumber = writeAnnotations(node, pushToken);
 
 	var variations = node.variations();
 	for (var k = 0; k < variations.length; ++k) {
 		var variation = variations[k];
 		if (variation.first()) {
-			pushToken('(');
+			pushToken('(', false, true);
 			writeVariation(variation, pushToken);
-			pushToken(')');
+			pushToken(')', true, false);
 			nextForceMoveNumber = true;
 		}
 	}
@@ -209,21 +211,23 @@ function writeGame(game) {
 
 	// Movetext
 	var currentLine = '';
-	function pushToken(token) {
-		if (currentLine.length === 0) {
+	var avoidNextSpace = false;
+	function pushToken(token, avoidSpaceBefore, avoidSpaceAfter) {
+		if (currentLine.length === 0) { // Only possible at the first call
 			currentLine = token;
 		}
-		else if (currentLine.length + token.length + 1 <= 80) {
-			currentLine += ' ' + token;
+		else if (currentLine.length + token.length + (avoidNextSpace || avoidSpaceBefore ? 0 : 1) <= 80) {
+			currentLine += (avoidNextSpace || avoidSpaceBefore ? '' : ' ') + token;
 		}
 		else {
 			result += currentLine + '\n';
 			currentLine = token;
 		}
+		avoidNextSpace = avoidSpaceAfter;
 	}
 
 	writeVariation(game.mainVariation(), pushToken);
-	pushToken(game.result());
+	pushToken(game.result(), false, false);
 	result += currentLine + '\n'; // currentLine is always non-empty here
 
 	return result;
