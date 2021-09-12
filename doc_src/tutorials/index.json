@@ -5,8 +5,8 @@
 	"02_set_up_position": {
 		"title": "Set-up a position"
 	},
-	"03_loading_pgn": {
-		"title": "Loading a PGN file"
+	"03_load_pgn": {
+		"title": "Load a PGN file"
 	},
 	"04_set_up_game": {
 		"title": "Set-up a game from scratch"
