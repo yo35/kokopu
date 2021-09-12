@@ -25,18 +25,11 @@
 
 var bt = require('../basetypes');
 var Position = require('../position').Position;
-
-
-/**
- * Trim the given string, and replace all the sub-sequence of 1 or several space-like characters by a single space.
- */
-var trimAndCollapseSpaces = exports.trimAndCollapseSpaces = function(text) {
-	return text.replace(/^\s+|\s+$/g, '').replace(/\s+/g, ' ');
-};
+var common = require('./common');
 
 
 function trimCollapseAndMarkEmpty(text) {
-	text = trimAndCollapseSpaces(text);
+	text = common.trimAndCollapseSpaces(text);
 	return text === '' ? '<empty>' : text;
 }
 
@@ -129,7 +122,7 @@ function formatAnnotations(node) {
 	var tags = node.tags();
 	for (var k = 0; k < tags.length; ++k) {
 		var tag = tags[k];
-		result.push(tag + '={' + trimAndCollapseSpaces(node.tag(tag)) + '}');
+		result.push(tag + '={' + common.trimAndCollapseSpaces(node.tag(tag)) + '}');
 	}
 
 	// Comment

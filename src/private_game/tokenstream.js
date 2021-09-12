@@ -25,7 +25,7 @@
 
 var exception = require('../exception');
 var i18n = require('../i18n');
-var impl = require('./impl');
+var common = require('./common');
 
 
 /**
@@ -159,7 +159,7 @@ function skipBlanks(stream) {
  * @returns {string}
  */
 function parseHeaderValue(rawHeaderValue) {
-	return impl.trimAndCollapseSpaces(rawHeaderValue.replace(/\\([\\"])/g, '$1'));
+	return common.trimAndCollapseSpaces(rawHeaderValue.replace(/\\([\\"])/g, '$1'));
 }
 
 
@@ -180,7 +180,7 @@ function parseCommentValue(rawComment) {
 	});
 
 	// Trim the comment and collapse sequences of space characters into 1 character only.
-	comment = impl.trimAndCollapseSpaces(comment);
+	comment = common.trimAndCollapseSpaces(comment);
 	if(comment === '') {
 		comment = undefined;
 	}

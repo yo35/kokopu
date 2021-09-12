@@ -26,7 +26,7 @@
 var bt = require('./basetypes');
 var exception = require('./exception');
 var i18n = require('./i18n');
-var impl = require('./private_game/impl');
+var asciiImpl = require('./private_game/ascii_impl');
 
 var Position = require('./position').Position;
 
@@ -325,7 +325,7 @@ Game.prototype.mainVariation = function() {
  * @returns {string}
  */
 Game.prototype.ascii = function() {
-	return impl.ascii(this);
+	return asciiImpl.ascii(this);
 };
 
 

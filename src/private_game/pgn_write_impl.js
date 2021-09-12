@@ -25,7 +25,7 @@
 
 var bt = require('../basetypes');
 var Position = require('../position').Position;
-var impl = require('./impl');
+var common = require('./common');
 
 
 function escapeHeaderValue(value) {
@@ -40,7 +40,7 @@ function escapeCommentValue(value) {
 
 function formatNullableHeader(value) {
 	if (value !== undefined) {
-		value = impl.trimAndCollapseSpaces(value);
+		value = common.trimAndCollapseSpaces(value);
 	}
 	return value ? escapeHeaderValue(value) : '?';
 }
@@ -83,9 +83,9 @@ function formatVariant(variant) {
 
 function writeOptionalHeader(key, value) {
 	if (value !== undefined) {
-		value = impl.trimAndCollapseSpaces(value);
+		value = common.trimAndCollapseSpaces(value);
 	}
-	return value ? '[' + key + ' "' + escapeHeaderValue(impl.trimAndCollapseSpaces(value)) + '"]\n' : '';
+	return value ? '[' + key + ' "' + escapeHeaderValue(value) + '"]\n' : '';
 }
 
 
@@ -100,7 +100,7 @@ function writeAnnotations(node, pushToken) {
 	// Prepare comment
 	var comment = node.comment();
 	if (comment) {
-		comment = impl.trimAndCollapseSpaces(comment);
+		comment = common.trimAndCollapseSpaces(comment);
 	}
 
 	// Prepare tags
@@ -109,7 +109,7 @@ function writeAnnotations(node, pushToken) {
 	var tagValues = {};
 	for (var k = 0; k < tags.length; ++k) {
 		var tag = tags[k];
-		var tagValue = impl.trimAndCollapseSpaces(node.tag(tag));
+		var tagValue = common.trimAndCollapseSpaces(node.tag(tag));
 		if (tagValue) {
 			tagValues[tag] = tagValue;
 			nonEmptyTagFound = true;
