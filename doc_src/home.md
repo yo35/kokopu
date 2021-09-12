@@ -24,8 +24,8 @@ npm install kokopu
 
 
 
-Main classes and methods
-------------------------
+Main classes and functions
+--------------------------
 
 - {@link Position}: this class represents a chess position, i.e. the state of
 a 64-square chessboard with a few additional information (who is about to play,
@@ -38,9 +38,11 @@ of the position, etc...
 the position at each step of the game, the comments and annotations (if any),
 the result of the game, and some meta-data such as the name of the players,
 the date of the game, the name of the tournament, etc...
-- Method {@link pgnRead} allows to parse
+- Function {@link pgnRead} allows to parse
 a [PGN file](https://en.wikipedia.org/wiki/Portable_Game_Notation):
 this method returns {@link Game} objects representing the content of the file.
+- Function {@link pgnWrite} allows to generate the [PGN string](https://en.wikipedia.org/wiki/Portable_Game_Notation)
+corresponding to a {@link Game} object or an array of {@link Game} objects.
 
 
 

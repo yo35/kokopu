@@ -38,7 +38,7 @@ Features
 * [Algrebraic notation](https://en.wikipedia.org/wiki/Algebraic_notation_(chess)) parsing and generation. 
 * [FEN notation](https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation) parsing and generation.
 * [UCI move](https://en.wikipedia.org/wiki/Universal_Chess_Interface) parsing and generation.
-* [PGN](https://en.wikipedia.org/wiki/Portable_Game_Notation) file parsing (including advanced PGN features
+* [PGN](https://en.wikipedia.org/wiki/Portable_Game_Notation) file parsing and generation (including advanced PGN features
 such as commentaries, sub-variations, [NAGs](https://en.wikipedia.org/wiki/Numeric_Annotation_Glyphs),
 non-standard starting position...).
 * Support several chess variants:

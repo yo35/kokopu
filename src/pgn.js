@@ -61,14 +61,14 @@ exports.pgnRead = function() {
 /**
  * PGN writing function.
  *
- * @param {Game} Game to write.
+ * @param {Game} game Game to write.
  * @returns {string}
  *
  *//**
  *
  * PGN writing function.
  *
- * @param {Game[]} Games to write.
+ * @param {Game[]} games Games to write.
  * @returns {string}
  */
 exports.pgnWrite = function(input) {
