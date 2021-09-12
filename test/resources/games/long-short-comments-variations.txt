@@ -1,0 +1,18 @@
+Event: Game with long & short comments and variations.
+I'm the main variation header comment.
+1.e4 I'm a long comment.
+1...e5
+ |
+ +- 1...c5
+ |  2.Nf3
+ |
+2.Nf3
+2...Nc6
+3.Bc4
+ |
+ +- I'm a long comment too.
+ |  3.Bb5
+ |  3...a6 I'm a short comment.
+ |
+3...Bc5
+*

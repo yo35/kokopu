@@ -262,6 +262,7 @@ var oneGamefactories = {
 		var game = new kokopu.Game();
 		game.event('Game with variations and sub-variations');
 		game.annotator('Myself');
+		game.mainVariation().comment('I\'m the main variation header comment.');
 
 		var current = game.mainVariation().play('e4').play('e5');
 		current.addVariation().play('c6');
@@ -285,6 +286,26 @@ var oneGamefactories = {
 		game.event('Event with a \\ backslash');
 		game.site('Site with " double-quotes');
 		game.mainVariation().comment('Comment with \\ backslash and { some } braces...');
+		return game;
+	},
+
+	'long-short-comments-variations': function() {
+		var game = new kokopu.Game();
+		game.event('Game with long & short comments and variations.');
+		game.mainVariation().comment('I\'m the main variation header comment.', true);
+
+		var current = game.mainVariation().play('e4');
+		current.comment('I\'m a long comment.', true);
+
+		current = current.play('e5');
+		current.addVariation(true).play('c5').play('Nf3');
+
+		current = current.play('Nf3').play('Nc6').play('Bc4');
+		var alternative = current.addVariation(true);
+		alternative.comment('I\'m a long comment too.', true);
+		alternative.play('Bb5').play('a6').comment('I\'m a short comment.', false);
+
+		current.play('Bc5');
 		return game;
 	},
 };

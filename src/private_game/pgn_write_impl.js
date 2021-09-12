@@ -89,7 +89,7 @@ function writeOptionalHeader(key, value) {
 }
 
 
-function writeAnnotations(node, pushToken) {
+function writeAnnotations(node, pushToken, skipLine, isHeaderAnnotationOfMainVariation) {
 
 	// NAGs
 	var nags = node.nags();
@@ -118,6 +118,9 @@ function writeAnnotations(node, pushToken) {
 
 	// Tags & comments
 	if (nonEmptyTagFound || comment) {
+		if (comment && node.isLongComment() && !isHeaderAnnotationOfMainVariation) {
+			skipLine();
+		}
 		pushToken('{', false, true);
 		for (var k = 0; k < tags.length; ++k) {
 			var tag = tags[k];
@@ -143,7 +146,7 @@ function writeAnnotations(node, pushToken) {
 }
 
 
-function writeNode(node, forceMoveNumber, pushToken) {
+function writeNode(node, forceMoveNumber, pushToken, skipLine) {
 
 	if (node.moveColor() === 'w') {
 		pushToken(node.fullMoveNumber() + '.', false, false);
@@ -153,30 +156,34 @@ function writeNode(node, forceMoveNumber, pushToken) {
 	}
 
 	pushToken(node.notation(), false, false);
-	var nextForceMoveNumber = writeAnnotations(node, pushToken);
+	var nextForceMoveNumber = writeAnnotations(node, pushToken, skipLine, false);
 
 	var variations = node.variations();
 	for (var k = 0; k < variations.length; ++k) {
 		var variation = variations[k];
-		if (variation.first()) {
-			pushToken('(', false, true);
-			writeVariation(variation, pushToken);
-			pushToken(')', true, false);
-			nextForceMoveNumber = true;
+		if (!variation.first()) {
+			continue;
 		}
+		if (variation.isLongVariation()) {
+			skipLine();
+		}
+		pushToken('(', false, true);
+		writeVariation(variation, pushToken, skipLine, false);
+		pushToken(')', true, false);
+		nextForceMoveNumber = true;
 	}
 
 	return nextForceMoveNumber;
 }
 
 
-function writeVariation(variation, pushToken) {
-	writeAnnotations(variation, pushToken);
+function writeVariation(variation, pushToken, skipLine, isMainVariation) {
+	writeAnnotations(variation, pushToken, skipLine, isMainVariation);
 
 	var currentNode = variation.first();
 	var forceMoveNumber = true;
 	while (currentNode) {
-		forceMoveNumber = writeNode(currentNode, forceMoveNumber, pushToken);
+		forceMoveNumber = writeNode(currentNode, forceMoveNumber, pushToken, skipLine);
 		currentNode = currentNode.next();
 	}
 }
@@ -213,10 +220,13 @@ function writeGame(game) {
 	result += '\n';
 
 	// Movetext
+	// --------
+
 	var currentLine = '';
 	var avoidNextSpace = false;
+
 	function pushToken(token, avoidSpaceBefore, avoidSpaceAfter) {
-		if (currentLine.length === 0) { // Only possible at the first call
+		if (currentLine.length === 0) {
 			currentLine = token;
 		}
 		else if (currentLine.length + token.length + (avoidNextSpace || avoidSpaceBefore ? 0 : 1) <= 80) {
@@ -229,9 +239,16 @@ function writeGame(game) {
 		avoidNextSpace = avoidSpaceAfter;
 	}
 
-	writeVariation(game.mainVariation(), pushToken);
+	function skipLine() {
+		result += currentLine + '\n'; // `currentLine` is always non-empty since there is never two consecutive calls to `skipLine()`
+		result += '\n';
+		currentLine = '';
+		avoidNextSpace = false;
+	}
+
+	writeVariation(game.mainVariation(), pushToken, skipLine, true);
 	pushToken(game.result(), false, false);
-	result += currentLine + '\n'; // currentLine is always non-empty here
+	result += currentLine + '\n'; // `currentLine` is non-empty here
 
 	return result;
 }

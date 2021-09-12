@@ -1,4 +1,5 @@
 Event: Game with variations and sub-variations
+I'm the main variation header comment.
 1.e4
 1...e5
  |
