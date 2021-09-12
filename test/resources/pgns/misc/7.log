@@ -10,4 +10,6 @@ Event = {Game with tags}
 (2b) a5 {No tag here.}
 (3w) c4 [key = {value}] {This is a comment.}
 (3b) g5 [key1 = {value1}] [key2 = {value2}] {This is another comment.}
+(4w) f4
+(4b) b5 [LineSplittedTag = {The value}]
 {Line}

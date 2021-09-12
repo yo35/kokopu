@@ -101,7 +101,11 @@ the combination was sound and that he had a forced win in every variation.}
 2.d4 {[%key value1] Cannot have several tags with the same key here! [%key value2]}
 2...a5 {No tag here.}
 3.c4 { This is a comment. } { [%key value] }
-3...g5 {[%key2 value2][%key1 value1]} { This is another comment. } *
+3...g5 {[%key2 value2][%key1 value1]} { This is another comment. }
+4.f4 {[%BlankTag  ]}
+4...b5 {[%LineSplittedTag
+The  value ]}
+*
 
 
 

@@ -252,7 +252,9 @@ var oneGamefactories = {
 		var alternative3 = current.addVariation();
 		alternative3.comment(' ');
 
-		current.play('O-O');
+		current = current.play('O-O');
+		current.tag('TheTag', 'a[b]c');
+
 		return game;
 	},
 
@@ -283,7 +285,6 @@ var oneGamefactories = {
 		game.event('Event with a \\ backslash');
 		game.site('Site with " double-quotes');
 		game.mainVariation().comment('Comment with \\ backslash and { some } braces...');
-		// TODO test escape for tag values
 		return game;
 	},
 };

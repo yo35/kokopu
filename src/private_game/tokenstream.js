@@ -174,8 +174,11 @@ function parseCommentValue(rawComment) {
 
 	// Find and remove the tags from the raw comment.
 	var tags = {};
-	var comment = rawComment.replace(/\[%(\w+)\s+([^[\]]+)\]/g, function(match, p1, p2) {
-		tags[p1] = p2;
+	var comment = rawComment.replace(/\[%(\w+)\s([^[\]]*)\]/g, function(match, p1, p2) {
+		p2 = common.trimAndCollapseSpaces(p2);
+		if (p2 !== '') {
+			tags[p1] = p2;
+		}
 		return ' ';
 	});
 

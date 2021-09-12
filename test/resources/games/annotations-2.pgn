@@ -7,4 +7,4 @@
 [Result "*"]
 
 $10 1. e4 $5 $13 e5 2. Nf3 {[%cal Rf3e5]} 2... Nc6 3. Bc4 Bc5 4. c3 Nf6 5. d4 {
-[%cal Rd4c5,Rd4e5]} 5... exd4 6. cxd4 Bb4+ 7. Nc3 O-O *
+[%cal Rd4c5,Rd4e5]} 5... exd4 6. cxd4 Bb4+ 7. Nc3 O-O {[%TheTag abc]} *

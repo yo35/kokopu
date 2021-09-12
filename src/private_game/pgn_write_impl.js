@@ -109,7 +109,7 @@ function writeAnnotations(node, pushToken) {
 	var tagValues = {};
 	for (var k = 0; k < tags.length; ++k) {
 		var tag = tags[k];
-		var tagValue = common.trimAndCollapseSpaces(node.tag(tag));
+		var tagValue = common.trimAndCollapseSpaces(node.tag(tag).replace(/[[\]]/g, '')); // Square-brackets are erased in tag values in PGN.
 		if (tagValue) {
 			tagValues[tag] = tagValue;
 			nonEmptyTagFound = true;
@@ -123,7 +123,10 @@ function writeAnnotations(node, pushToken) {
 			var tag = tags[k];
 			var tagValue = tagValues[tag];
 			if (tagValue) {
-				pushToken('[%' + tag + ' ' + escapeCommentValue(tagValue) + ']', false, false); // TODO escape issue
+				pushToken('[%' + tag, false, false);
+				escapeCommentValue(tagValue + ']').split(' ').forEach(function(token) {
+					pushToken(token, false, false);
+				});
 			}
 		}
 		if (comment) {
