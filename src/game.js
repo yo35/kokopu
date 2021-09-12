@@ -534,6 +534,11 @@ Node.prototype.variations = function() {
 };
 
 
+function isValidNag(nag) {
+	return typeof nag === 'number' && !isNaN(nag) && nag >= 0;
+}
+
+
 /**
  * Return the NAGs associated to the current move.
  *
@@ -555,6 +560,9 @@ Node.prototype.nags = function() {
  * @returns {boolean}
  */
 Node.prototype.hasNag = function(nag) {
+	if (!isValidNag(nag)) {
+		throw new exception.IllegalArgument('Node#hasNag()');
+	}
 	return Boolean(this._info.nags[nag]);
 };
 
@@ -565,6 +573,9 @@ Node.prototype.hasNag = function(nag) {
  * @param {number} nag
  */
 Node.prototype.addNag = function(nag) {
+	if (!isValidNag(nag)) {
+		throw new exception.IllegalArgument('Node#addNag()');
+	}
 	this._info.nags[nag] = true;
 };
 
@@ -575,6 +586,9 @@ Node.prototype.addNag = function(nag) {
  * @param {number} nag
  */
 Node.prototype.removeNag = function(nag) {
+	if (!isValidNag(nag)) {
+		throw new exception.IllegalArgument('Node#removeNag()');
+	}
 	delete this._info.nags[nag];
 };
 
@@ -607,11 +621,17 @@ Node.prototype.tags = function() {
  * @param {string?} value
  */
 Node.prototype.tag = function(tagKey, value) {
-	if(arguments.length === 1) {
+	if (!/^\w+$/.test(tagKey)) {
+		throw new exception.IllegalArgument('Node#tag()');
+	}
+	if (arguments.length === 1) {
 		return this._info.tags[tagKey];
 	}
+	else if (value === undefined || value === null) {
+		delete this._info.tags[tagKey];
+	}
 	else {
-		this._info.tags[tagKey] = value;
+		this._info.tags[tagKey] = String(value);
 	}
 };
 
@@ -633,7 +653,7 @@ Node.prototype.comment = function(value, isLongComment) {
 		return this._info.comment;
 	}
 	else {
-		this._info.comment = value;
+		this._info.comment = sanitizeStringHeader(value);
 		this._info.isLongComment = Boolean(isLongComment);
 	}
 };
