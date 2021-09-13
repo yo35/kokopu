@@ -1,6 +1,8 @@
 Kokopu
 ======
 
+<img align="right" width="96" height="96" src="graphics/logo.svg" />
+
 Kokopu is a JavaScript library for chess applications. It implements the chess game rules,
 and provides tools to read/write the standard chess file formats
 ([PGN](https://en.wikipedia.org/wiki/Portable_Game_Notation),
