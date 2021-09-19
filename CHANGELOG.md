@@ -1,6 +1,10 @@
 ChangeLog
 =========
 
+2.1.0 (September 19, 2021)
+--------------------------
+* Introduce `Game#dateAsString()`.
+
 2.0.0 (September 12, 2021)
 --------------------------
 * Introduce `pgnWrite()`.
