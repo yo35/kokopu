@@ -51,20 +51,8 @@ function formatEventAndRound(event, round) {
 }
 
 
-function formatDate(date) {
-	if (!date) {
-		return undefined;
-	}
-	if (date instanceof Date) {
-		return 'Date: ' + new Intl.DateTimeFormat('en-US', { dateStyle: 'long' }).format(date);
-	}
-	else if (date.month) {
-		var firstDay = new Date(date.year, date.month - 1, 1);
-		return 'Date: ' + new Intl.DateTimeFormat('en-US', { month: 'long', year: 'numeric' }).format(firstDay);
-	}
-	else {
-		return 'Date: ' + date.year;
-	}
+function formatDate(dateAsString) {
+	return dateAsString === undefined ? undefined : 'Date: ' + dateAsString;
 }
 
 
@@ -150,7 +138,7 @@ exports.ascii = function(game) {
 	// Headers
 	pushIfDefined(formatEventAndRound(game._event, game._round));
 	pushIfDefined(formatSimpleHeader('Site', game._site));
-	pushIfDefined(formatDate(game._date));
+	pushIfDefined(formatDate(game.dateAsString('en-us')));
 	pushIfDefined(formatPlayer('White', game._playerName[0], game._playerElo[0], game._playerTitle[0]));
 	pushIfDefined(formatPlayer('Black', game._playerName[1], game._playerElo[1], game._playerTitle[1]));
 	pushIfDefined(formatSimpleHeader('Annotator', game._annotator));

@@ -205,6 +205,31 @@ Game.prototype.date = function(value) {
 
 
 /**
+ * Get the date of the game as a human-readable string (e.g. `'November 1955'`, `'September 4, 2021'`).
+ *
+ * @param {*?} locales Locales to use to generate the result. If undefined, the default locale of the execution environment is used.
+ *                     See [Intl documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl#locale_identification_and_negotiation)
+ *                     for more details.
+ * @returns {string?}
+ */
+Game.prototype.dateAsString = function(locales) {
+	if (!this._date) {
+		return undefined;
+	}
+	if (this._date instanceof Date) {
+		return new Intl.DateTimeFormat(locales, { dateStyle: 'long' }).format(this._date);
+	}
+	else if (this._date.month) {
+		var firstDay = new Date(this._date.year, this._date.month - 1, 1);
+		return new Intl.DateTimeFormat(locales, { month: 'long', year: 'numeric' }).format(firstDay);
+	}
+	else {
+		return String(this._date.year);
+	}
+};
+
+
+/**
  * Get where the game takes place.
  *
  * @returns {string?}

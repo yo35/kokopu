@@ -29,6 +29,11 @@ var test = require('unit.js');
 
 describe('General game header', function() {
 
+	it('Initial state', function() {
+		var game = new kokopu.Game();
+		test.value(game.event()).is(undefined);
+	});
+
 	it('Set & get', function() {
 		var game = new kokopu.Game();
 		game.event('The event');
@@ -120,6 +125,12 @@ describe('Color-dependant header', function() {
 
 describe('Date header', function() {
 
+	it('Initial state', function() {
+		var game = new kokopu.Game();
+		test.value(game.date()).is(undefined);
+		test.value(game.dateAsString()).is(undefined);
+	});
+
 	it('Set full date & get', function() {
 		var game = new kokopu.Game();
 		game.date(new Date(2021, 8, 12));
@@ -175,6 +186,27 @@ describe('Date header', function() {
 		game.date(new Date(2021, 8, 12));
 		game.date(null);
 		test.value(game.date()).is(undefined);
+	});
+
+	it('Get as string (full date)', function() {
+		var game = new kokopu.Game();
+		game.date(new Date(2021, 8, 12));
+		test.value(game.dateAsString('en-us')).is('September 12, 2021');
+		test.value(game.dateAsString('fr')).is('12 septembre 2021');
+	});
+
+	it('Get as string (month+year)', function() {
+		var game = new kokopu.Game();
+		game.date({ year: 2021, month: 12 });
+		test.value(game.dateAsString('en-us')).is('December 2021');
+		test.value(game.dateAsString('fr')).is('décembre 2021');
+	});
+
+	it('Get as string (year only)', function() {
+		var game = new kokopu.Game();
+		game.date({ year: 2021 });
+		test.value(game.dateAsString('en-us')).is('2021');
+		test.value(game.dateAsString('fr')).is('2021');
 	});
 
 	function itInvalidValue(label, value) {
