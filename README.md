@@ -46,6 +46,7 @@ non-standard starting position...).
 * Support several chess variants:
   - [Chess960](https://en.wikipedia.org/wiki/Chess960), also known as Fischer Random Chess.
   - [Antichess](https://en.wikipedia.org/wiki/Losing_chess), also known as losing chess, giveaway chess, suicide chess...
+  - [Horde chess](https://en.wikipedia.org/wiki/Dunsany%27s_chess#Horde_chess) (following Lichess/Chess.com rules).
 
 Kokopu is a headless library, meaning it does not provide any user interface.
 If you are interested in UI features (e.g. to be able to render a chessboard component within a web page),

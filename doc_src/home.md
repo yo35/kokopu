@@ -131,3 +131,4 @@ References
 
 - [Chess960](https://en.wikipedia.org/wiki/Chess960)
 - [Antichess](https://en.wikipedia.org/wiki/Losing_chess)
+- [Horde chess](https://en.wikipedia.org/wiki/Dunsany%27s_chess#Horde_chess)
