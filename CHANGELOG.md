@@ -1,6 +1,10 @@
 ChangeLog
 =========
 
+2.2.0 (September 27, 2021)
+--------------------------
+* Add support for [Horde chess](https://en.wikipedia.org/wiki/Dunsany%27s_chess#Horde_chess).
+
 2.1.0 (September 19, 2021)
 --------------------------
 * Introduce `Game#dateAsString()`.
