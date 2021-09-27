@@ -77,3 +77,14 @@ describe('Opposite color', function() {
 	it('Error with z', function() { test.exception(function() { kokopu.oppositeColor('z'); }).isInstanceOf(kokopu.exception.IllegalArgument); });
 	it('Error with bb', function() { test.exception(function() { kokopu.oppositeColor('bb'); }).isInstanceOf(kokopu.exception.IllegalArgument); });
 });
+
+
+describe('Variant with canonical start position', function() {
+	it('no-king', function() { test.value(kokopu.variantWithCanonicalStartPosition('no-king')).is(false); });
+	it('chess960', function() { test.value(kokopu.variantWithCanonicalStartPosition('chess960')).is(false); });
+	it('antichess', function() { test.value(kokopu.variantWithCanonicalStartPosition('antichess')).is(true); });
+
+	it('Error with invalid variant', function() {
+		test.exception(function() { kokopu.variantWithCanonicalStartPosition('whatever'); }).isInstanceOf(kokopu.exception.IllegalArgument);
+	});
+});

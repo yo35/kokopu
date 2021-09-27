@@ -23,7 +23,7 @@
 'use strict';
 
 
-var bt = require('../basetypes');
+var helper = require('../helper');
 var exception = require('../exception');
 var i18n = require('../i18n');
 
@@ -153,7 +153,7 @@ function initializeInitialPosition(stream, game, initialPositionFactory) {
 
 	// Otherwise, if a variant header has been encountered, but without FEN header...
 	else if(initialPositionFactory.variant) {
-		if (bt.variantWithCanonicalStartPosition(bt.variantFromString(initialPositionFactory.variant))) {
+		if (helper.variantWithCanonicalStartPosition(initialPositionFactory.variant)) {
 			var position = new Position(initialPositionFactory.variant, 'start');
 			game.initialPosition(position, 1);
 		}

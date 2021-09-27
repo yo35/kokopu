@@ -25,6 +25,7 @@
 
 var bt = require('./basetypes');
 var exception = require('./exception');
+var impl = require('./private_position/impl');
 
 
 /**
@@ -99,4 +100,19 @@ exports.oppositeColor = function(color) {
 		throw new exception.IllegalArgument('oppositeColor()');
 	}
 	return bt.colorToString(1 - color);
+};
+
+
+/**
+ * Whether the given variant has a canonical start position or not.
+ *
+ * @param {GameVariant} variant
+ * @returns {boolean}
+ */
+exports.variantWithCanonicalStartPosition = function(variant) {
+	variant = bt.variantFromString(variant);
+	if (variant < 0) {
+		throw new exception.IllegalArgument('oppositeColor()');
+	}
+	return impl.variantWithCanonicalStartPosition(variant);
 };

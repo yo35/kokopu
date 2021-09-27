@@ -61,11 +61,6 @@ exports.WHITE_KING_ONLY = 3;
 exports.BLACK_KING_ONLY = 4;
 exports.ANTICHESS = 5;
 
-var HAS_CANNONICAL_STARTUP_POSITION = [ true, false, false, false, false, true ];
-
-exports.variantWithCanonicalStartPosition = function(variant) {
-	return HAS_CANNONICAL_STARTUP_POSITION[variant];
-};
 
 
 // -----------------------------------------------------------------------------

@@ -23,7 +23,7 @@
 'use strict';
 
 
-var bt = require('../basetypes');
+var helper = require('../helper');
 var Position = require('../position').Position;
 var common = require('./common');
 
@@ -202,7 +202,7 @@ function writeGame(game) {
 	result += '[Result "' + game.result() + '"]\n';
 
 	var variant = game.variant();
-	var hasFENHeader = !bt.variantWithCanonicalStartPosition(bt.variantFromString(variant)) || game._initialPosition.fen() !== new Position(variant).fen();
+	var hasFENHeader = !helper.variantWithCanonicalStartPosition(variant) || game._initialPosition.fen() !== new Position(variant).fen();
 
 	// Additional tags (ASCII order by tag name)
 	result += writeOptionalHeader('Annotator', game.annotator());

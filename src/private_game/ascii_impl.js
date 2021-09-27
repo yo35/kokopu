@@ -23,7 +23,7 @@
 'use strict';
 
 
-var bt = require('../basetypes');
+var helper = require('../helper');
 var Position = require('../position').Position;
 var common = require('./common');
 
@@ -148,7 +148,7 @@ exports.ascii = function(game) {
 	if (variant !== 'regular') {
 		lines.push('Variant: ' + variant);
 	}
-	if (!bt.variantWithCanonicalStartPosition(bt.variantFromString(variant)) || game._initialPosition.fen() !== new Position(variant).fen()) {
+	if (!helper.variantWithCanonicalStartPosition(variant) || game._initialPosition.fen() !== new Position(variant).fen()) {
 		lines.push(game._initialPosition.ascii());
 	}
 
