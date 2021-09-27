@@ -49,6 +49,17 @@ var REGULAR_START_BOARD = [
 	bt.BR, bt.BN, bt.BB, bt.BQ, bt.BK, bt.BB, bt.BN, bt.BR
 ];
 
+var HORDE_START_BOARD = [
+	bt.WP, bt.WP, bt.WP, bt.WP, bt.WP, bt.WP, bt.WP, bt.WP, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID,
+	bt.WP, bt.WP, bt.WP, bt.WP, bt.WP, bt.WP, bt.WP, bt.WP, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID,
+	bt.WP, bt.WP, bt.WP, bt.WP, bt.WP, bt.WP, bt.WP, bt.WP, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID,
+	bt.WP, bt.WP, bt.WP, bt.WP, bt.WP, bt.WP, bt.WP, bt.WP, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID,
+	EMPTY, bt.WP, bt.WP, EMPTY, EMPTY, bt.WP, bt.WP, EMPTY, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID,
+	EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID,
+	bt.BP, bt.BP, bt.BP, bt.BP, bt.BP, bt.BP, bt.BP, bt.BP, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID,
+	bt.BR, bt.BN, bt.BB, bt.BQ, bt.BK, bt.BB, bt.BN, bt.BR
+];
+
 var START_POSITION_INFO = [
 
 	{ // Regular chess
@@ -66,6 +77,12 @@ var START_POSITION_INFO = [
 		board: REGULAR_START_BOARD,
 		castling: [0, 0],
 		king: [-1, -1],
+	},
+
+	{ // Horde
+		board: HORDE_START_BOARD,
+		castling: [0, 129 /* (1 << A-file) | (1 << H-file) */],
+		king: [-1, 116 /* e8 */],
 	},
 ];
 

@@ -61,28 +61,30 @@ var uci = require('./private_position/uci');
  * new kokopu.Position('antichess');                //  9 -> Usual starting position, configured for antichess.
  * new kokopu.Position('antichess', 'start');       // 10 -> Same as 9.
  * new kokopu.Position('antichess', 'empty');       // 11 -> Empty board, configured for antichess.
- * new kokopu.Position(variant, fenString);         // 12 -> Parse the given FEN string, assuming the given game variant.
- * new kokopu.Position(fenStringWithVariant);       // 13 -> Parse the given FEN string, taking into account an optional game variant that may be mentioned in prefix.
- * new kokopu.Position(anotherPosition);            // 14 -> Make a copy of `anotherPosition`.
+ * new kokopu.Position('horde');                    // 12 -> Horde chess usual starting position.
+ * new kokopu.Position('horde', 'start');           // 13 -> Same as 12.
+ * new kokopu.Position('horde', 'empty');           // 14 -> Empty board, configured for horde chess.
+ * new kokopu.Position(variant, fenString);         // 15 -> Parse the given FEN string, assuming the given game variant.
+ * new kokopu.Position(fenStringWithVariant);       // 16 -> Parse the given FEN string, taking into account an optional game variant that may be mentioned in prefix.
+ * new kokopu.Position(anotherPosition);            // 17 -> Make a copy of `anotherPosition`.
  * ```
  * Please note that the argument `'regular'` can be omitted in forms 1, 2, 3. In particular, the constructor can be invoked
  * with no argument, as in `new kokopu.Position()`: in this case, a new `Position` initialized to the usual starting position
  * is instantiated (as in forms 1 and 2).
  *
- * In form 12, `variant` must be one of the game variant proposed in {@link GameVariant}. The `variant` argument can be omitted if it is set to `'regular'`
+ * In form 15, `variant` must be one of the game variant proposed in {@link GameVariant}. The `variant` argument can be omitted if it is set to `'regular'`
  * (i.e. if the usual chess rules are used).
  * If `variant` is set to `'chess960'`, then the X-FEN syntax can be used for `fenString'`.
  *
- * In form 13, `fenStringWithVariant` is assumed to be a string formatted as `'variant:FEN'` (e.g. `'chess960:nrkbqrbn/pppppppp/8/8/8/8/PPPPPPPP/NRKBQRBN w BFbf - 0 1'`).
+ * In form 16, `fenStringWithVariant` is assumed to be a string formatted as `'variant:FEN'` (e.g. `'chess960:nrkbqrbn/pppppppp/8/8/8/8/PPPPPPPP/NRKBQRBN w BFbf - 0 1'`).
  * The `'variant:'` prefix is optional: if omitted, the usual chess rules are used. For the Chess960 variant,
  * the X-FEN syntax can be used for the FEN part of the string.
  *
- * In form 14, `anotherPosition` must be another {@link Position} object.
+ * In form 17, `anotherPosition` must be another {@link Position} object.
  *
- * @throws {module:exception.InvalidFEN} If the input parameter is not a valid FEN string (can be thrown only in cases 6 and 7).
+ * @throws {module:exception.InvalidFEN} If the input parameter is not a valid FEN string (can be thrown only in cases 15 and 16).
  *
  * @see FEN notation: {@link https://en.wikipedia.org/wiki/Forsyth–Edwards_Notation}
- * @see Chess960 (aka. Fischer Random Chess): {@link https://en.wikipedia.org/wiki/Chess960}
  * @see Chess960 starting positions: {@link https://chess960.net/start-positions/}
  * @see X-FEN notation: {@link https://en.wikipedia.org/wiki/X-FEN}
  */
@@ -120,6 +122,12 @@ var Position = exports.Position = function() {
 	}
 	else if(arguments[0] === 'antichess' && arguments[1] === 'empty') {
 		this._impl = impl.makeEmpty(bt.ANTICHESS);
+	}
+	else if(arguments[0] === 'horde' && (arguments.length === 1 || arguments[1] === 'start')) {
+		this._impl = impl.makeInitial(bt.HORDE);
+	}
+	else if(arguments[0] === 'horde' && arguments[1] === 'empty') {
+		this._impl = impl.makeEmpty(bt.HORDE);
 	}
 
 	// FEN parsing
@@ -204,6 +212,14 @@ Position.prototype.reset960 = function(scharnaglCode) {
  */
 Position.prototype.resetAntichess = function() {
 	this._impl = impl.makeInitial(bt.ANTICHESS);
+};
+
+
+/**
+ * Set the position to the starting state of the horde chess variant.
+ */
+Position.prototype.resetHorde = function() {
+	this._impl = impl.makeInitial(bt.HORDE);
 };
 
 

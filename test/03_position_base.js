@@ -30,11 +30,13 @@ var readCSV = require('./common/readcsv');
 var startFEN  = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 var startXFEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w AHah - 0 1';
 var startFENAntichess = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w - - 0 1';
+var startFENHorde = 'rnbqkbnr/pppppppp/8/1PP2PP1/PPPPPPPP/PPPPPPPP/PPPPPPPP/PPPPPPPP w kq - 0 1';
 var emptyFEN  = '8/8/8/8/8/8/8/8 w - - 0 1';
 var customFEN = 'k7/n1PB4/1K6/8/8/8/8/8 w KQkq d6 0 1';
 var customXFEN = 'k7/n1PB4/1K6/8/8/8/8/8 w AHah d6 0 1';
+var customFENHorde = '1Q3rk1/2P4p/1P2pp2/2PP4/5P1P/2q1PPPP/2P1PPPP/2PPPPPP b - - 0 1';
 
-var variants = ['regular', 'chess960', 'no-king', 'white-king-only', 'black-king-only', 'antichess'];
+var variants = ['regular', 'chess960', 'no-king', 'white-king-only', 'black-king-only', 'antichess', 'horde'];
 
 
 describe('Position constructor', function() {
@@ -82,6 +84,12 @@ describe('Position constructor', function() {
 	doTest('Constructor \'empty\' (antichess)'            , 'antichess', emptyFEN         , function() { return new kokopu.Position('antichess', 'empty'); });
 	doTest('Constructor FEN-based (antichess)'            , 'antichess', customFEN        , function() { return new kokopu.Position('antichess', customFEN); });
 	doTest('Constructor FEN-based with prefix (antichess)', 'antichess', customFEN        , function() { return new kokopu.Position('antichess:' + customFEN); });
+
+	doTest('Default constructor (horde)'              , 'horde', startFENHorde , function() { return new kokopu.Position('horde'); });
+	doTest('Constructor \'start\' (horde)'            , 'horde', startFENHorde , function() { return new kokopu.Position('horde', 'start'); });
+	doTest('Constructor \'empty\' (horde)'            , 'horde', emptyFEN      , function() { return new kokopu.Position('horde', 'empty'); });
+	doTest('Constructor FEN-based (horde)'            , 'horde', customFENHorde, function() { return new kokopu.Position('horde', customFENHorde); });
+	doTest('Constructor FEN-based with prefix (horde)', 'horde', customFENHorde, function() { return new kokopu.Position('horde:' + customFENHorde); });
 
 	doFailureTest('Invalid variant', false, function() { return new kokopu.Position('not-a-variant', 'empty'); });
 	doFailureTest('Invalid variant (FEN-based)', false, function() { return new kokopu.Position('not-a-variant', startFEN); });
@@ -174,6 +182,18 @@ describe('Reset antichess mutator', function() {
 			position.resetAntichess();
 			test.value(position.variant()).is('antichess');
 			test.value(position.fen()).is(startFENAntichess);
+		});
+	});
+});
+
+
+describe('Reset horde mutator', function() {
+	variants.forEach(function(variant) {
+		it('From ' + variant, function() {
+			var position = new kokopu.Position(variant, customFEN);
+			position.resetHorde();
+			test.value(position.variant()).is('horde');
+			test.value(position.fen()).is(startFENHorde);
 		});
 	});
 });
