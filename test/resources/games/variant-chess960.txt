@@ -1,4 +1,4 @@
-Event: Chess game variant
+Event: Chess game variant - Chess960
 Variant: chess960
 +---+---+---+---+---+---+---+---+
 | r | n | b | q | n | k | r | b |

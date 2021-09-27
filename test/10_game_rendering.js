@@ -141,11 +141,33 @@ var oneGamefactories = {
 		return game;
 	},
 
-	'chess-variant': function() {
+	'variant-chess960': function() {
 		var game = new kokopu.Game();
-		game.event('Chess game variant');
+		game.event('Chess game variant - Chess960');
 		game.initialPosition(new kokopu.Position('chess960', 'rnbqnkrb/pppppppp/8/8/8/8/PPPPPPPP/RNBQNKRB w KQkq - 0 1'));
 		game.mainVariation().play('O-O');
+		return game;
+	},
+
+	'variant-no-king': function() {
+		var game = new kokopu.Game();
+		game.event('Chess game variant - No king');
+		game.initialPosition(new kokopu.Position('no-king', 'r7/8/8/8/8/8/8/7R w - - 0 1'));
+		game.mainVariation().play('Rh8').play('Ra1').play('Ra8').play('Rh1').play('Ra1').play('Rh8').play('Rh1').play('Ra8');
+		return game;
+	},
+
+	'variant-antichess': function() {
+		var game = new kokopu.Game();
+		game.event('Chess game variant - Antichess');
+		game.initialPosition(new kokopu.Position('antichess'));
+		return game;
+	},
+
+	'variant-horde': function() {
+		var game = new kokopu.Game();
+		game.event('Chess game variant - Horde');
+		game.initialPosition(new kokopu.Position('horde'));
 		return game;
 	},
 

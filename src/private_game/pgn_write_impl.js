@@ -75,6 +75,9 @@ function formatVariant(variant) {
 	else if (variant === 'antichess') {
 		return 'Antichess';
 	}
+	else if (variant === 'horde') {
+		return 'Horde';
+	}
 	else {
 		return variant;
 	}

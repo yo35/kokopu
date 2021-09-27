@@ -88,6 +88,9 @@ function parseVariant(value) {
 	else if(/^anti[ -]?chess/.test(value)) {
 		return 'antichess';
 	}
+	else if(value === 'horde') {
+		return 'horde';
+	}
 	else {
 		return undefined;
 	}
