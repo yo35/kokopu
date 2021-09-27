@@ -34,7 +34,7 @@ var attacks = require('./attacks');
  *
  *  1. There is exactly one white king and one black king on the board (or more generally,
 	     the number of kings on the board matches the game variant of the position).
- *  2. Special check regarding positions in which one of the player (or both) has no piece.
+ *  2. Special condition regarding positions in which one of the player (or both) has no piece.
  *  3. The player that is not about to play is not check (this condition is omitted for variants in which kings has no "royal power").
  *  4. There are no pawn on rows 1 and 8.
  *  5. For each colored castle flag set, there is a rook and a king on the
@@ -70,8 +70,15 @@ var refreshLegalFlagAndKingSquares = exports.refreshLegalFlagAndKingSquares = fu
 	}
 
 	// Condition (2)
-	if(position.variant === bt.ANTICHESS && !hasAtLeastOnePiece(position, 1-position.turn)) { // The player that has just played must have at least one piece in antichess.
-		return;
+	if (position.variant === bt.ANTICHESS) {
+		if (!hasAtLeastOnePiece(position, 1-position.turn)) { // The player that has just played must have at least one piece in antichess.
+			return;
+		}
+	}
+	else if (position.variant === bt.HORDE) {
+		if (position.turn === bt.BLACK && !hasAtLeastOnePiece(position, bt.WHITE)) { // White must have at least one piece if he/she has just played in horde chess.
+			return;
+		}
 	}
 
 	// Condition (3)
@@ -80,16 +87,17 @@ var refreshLegalFlagAndKingSquares = exports.refreshLegalFlagAndKingSquares = fu
 	}
 
 	// Condition (4)
+	var forbiddenCPWhite1 = position.variant === bt.HORDE ? bt.INVALID : bt.WP;
 	for(var c=0; c<8; ++c) {
 		var cp1 = position.board[c];
 		var cp8 = position.board[112 + c];
-		if(cp1 === bt.WP || cp8 === bt.WP || cp1 === bt.BP || cp8 === bt.BP) {
+		if (cp1 === forbiddenCPWhite1 || cp8 === bt.WP || cp1 === bt.BP || cp8 === bt.BP) {
 			return;
 		}
 	}
 
 	// Condition (5)
-	var isCastlingFlagLegalFun = getCastlingFlagLegalityCheckFunction(position.variant);
+	var isCastlingFlagLegalFun = position.variant === bt.CHESS960 ? isCastlingFlagLegalForChess960 : isCastlingFlagLegalForRegularChess;
 	for(var color=0; color<2; ++color) {
 		if(!isCastlingFlagLegalFun(position, color)) {
 			return;
@@ -124,7 +132,7 @@ function refreshKingSquare(position, color) {
 	}
 
 	// Expectation: no king of the given color is supposed to be present on the board.
-	else if (position.variant === bt.NO_KING || position.variant === bt.BLACK_KING_ONLY - color) {
+	else if (position.variant === bt.NO_KING || position.variant === bt.BLACK_KING_ONLY - color || (position.variant === bt.HORDE && color === bt.WHITE)) {
 		for(var sq=0; sq<120; sq += (sq & 0x7)===7 ? 9 : 1) {
 			if(position.board[sq] === target) {
 				return false;
@@ -172,27 +180,16 @@ function hasAtLeastOnePiece(position, color) {
 }
 
 
-function getCastlingFlagLegalityCheckFunction(variant) {
-	switch(variant) {
-		case bt.CHESS960: return isCastlingFlagLegalForChess960;
-		case bt.ANTICHESS: return isCastlingFlagLegalForAntichess;
-		default: return isCastlingFlagLegalForRegularChess;
-	}
-}
-
-
 function isCastlingFlagLegalForRegularChess(position, color) {
+	if (position.king[color] < 0) {
+		return position.castling[color] === 0;
+	}
 	var skipOO  = (position.castling[color] & 0x80) === 0;
 	var skipOOO = (position.castling[color] & 0x01) === 0;
 	var rookHOK = skipOO              || position.board[7 + 112*color] === bt.ROOK*2 + color;
 	var rookAOK = skipOOO             || position.board[0 + 112*color] === bt.ROOK*2 + color;
 	var kingOK  = (skipOO && skipOOO) || position.board[4 + 112*color] === bt.KING*2 + color;
 	return kingOK && rookAOK && rookHOK;
-}
-
-
-function isCastlingFlagLegalForAntichess(position, color) {
-	return position.castling[color] === 0;
 }
 
 

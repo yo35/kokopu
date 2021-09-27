@@ -544,7 +544,9 @@ Position.prototype.isCheck = function() {
  * the returned value is always `false`.
  *
  * For antichess, this method returns `true` if the player about to play has no remaining piece or pawn, or if non of his/her remaining piece can move.
- * (same behavior as {@link Position#isStalemate} in this case).
+ * (same behavior as {@link Position#isStalemate} for this variant).
+ *
+ * For horde chess, this method returns `true` if black has been checkmated or if white has no remaining piece.
  *
  * @returns {boolean}
  */
@@ -558,7 +560,9 @@ Position.prototype.isCheckmate = function() {
  * the returned value is always `false`.
  *
  * For antichess, this method returns `true` if the player about to play has no remaining piece or pawn, or if non of his/her remaining piece can move.
- * (same behavior as {@link Position#isCheckmate} in this case).
+ * (same behavior as {@link Position#isCheckmate} for this variant).
+ *
+ * For horde chess, this method returns `true` if black has been stalemated or if white cannot move but has still at least one piece.
  *
  * @returns {boolean}
  */

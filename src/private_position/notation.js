@@ -476,8 +476,8 @@ function getPawnAdvanceDescriptor(position, notation, to) {
 	// Look for two-square pawn moves
 	else if(position.board[from] < 0) {
 		from -= offset;
-		var firstSquareOfRow = (1 + position.turn*5) * 16;
-		if(from >= firstSquareOfRow && from < firstSquareOfRow+8 && position.board[from] === expectedFromContent) {
+		var firstSquareOfArea = position.turn * 96; // a1 for white, a7 for black (2-square pawn move is allowed from 1st row at horde chess)
+		if (from >= firstSquareOfArea && from < firstSquareOfArea + 24 && position.board[from] === expectedFromContent) {
 			return moveGeneration.isKingSafeAfterMove(position, from, to, -1);
 		}
 	}

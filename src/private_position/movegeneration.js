@@ -72,6 +72,16 @@ var /* const */ SLIDING_DIRECTION = [
 /* eslint-enable no-mixed-spaces-and-tabs, indent */
 
 
+function hasAtLeastOnePiece(position, color) {
+	for(var sq=0; sq<120; sq += (sq & 0x7)===7 ? 9 : 1) {
+		if (position.board[sq] !== bt.EMPTY && position.board[sq] % 2 === color) {
+			return true;
+		}
+	}
+	return false;
+}
+
+
 function isKingToMoveAttacked(position) {
 	return position.king[position.turn] >= 0 && attacks.isAttacked(position, position.king[position.turn], 1-position.turn);
 }
@@ -83,12 +93,34 @@ exports.isCheck = function(position) {
 
 
 exports.isCheckmate = function(position) {
-	return legality.isLegal(position) && !hasMove(position) && (position.variant === bt.ANTICHESS || isKingToMoveAttacked(position));
+	if (!legality.isLegal(position) || hasMove(position)) {
+		return false;
+	}
+	if (position.variant === bt.ANTICHESS) {
+		return true;
+	}
+	else if (position.variant === bt.HORDE && position.turn === bt.WHITE) {
+		return !hasAtLeastOnePiece(position, bt.WHITE);
+	}
+	else {
+		return isKingToMoveAttacked(position);
+	}
 };
 
 
 exports.isStalemate = function(position) {
-	return legality.isLegal(position) && !hasMove(position) && (position.variant === bt.ANTICHESS || !isKingToMoveAttacked(position));
+	if (!legality.isLegal(position) || hasMove(position)) {
+		return false;
+	}
+	if (position.variant === bt.ANTICHESS) {
+		return true;
+	}
+	else if (position.variant === bt.HORDE && position.turn === bt.WHITE) {
+		return hasAtLeastOnePiece(position, bt.WHITE);
+	}
+	else {
+		return !isKingToMoveAttacked(position);
+	}
 };
 
 
@@ -177,8 +209,8 @@ function generateMoves(position, fun) {
 					fun(isKingSafeAfterMove(position, from, to, -1), to<8 || to>=112);
 
 					// 2-square pawn move
-					var firstSquareOfRow = (1 + position.turn*5) * 16;
-					if(from>=firstSquareOfRow && from<firstSquareOfRow+8) {
+					var firstSquareOfArea = position.turn * 96; // a1 for white, a7 for black (2-square pawn move is allowed from 1st row at horde chess)
+					if (from >= firstSquareOfArea && from < firstSquareOfArea + 24) {
 						to += moveDirection;
 						if(position.board[to] < 0) {
 							fun(isKingSafeAfterMove(position, from, to, -1), false);
@@ -409,8 +441,8 @@ exports.isMoveLegal = function(position, from, to) {
 	// Step (4)
 	if((DISPLACEMENT_LOOKUP[displacement] & 1 << fromContent) === 0) {
 		if(movingPiece === bt.PAWN && displacement === 151-position.turn*64) {
-			var firstSquareOfRow = (1 + position.turn*5) * 16;
-			if(from < firstSquareOfRow || from >= firstSquareOfRow+8) { return false; }
+			var firstSquareOfArea = position.turn * 96; // a1 for white, a7 for black (2-square pawn move is allowed from 1st row at horde chess)
+			if (from < firstSquareOfArea || from >= firstSquareOfArea+24) { return false; }
 			isTwoSquarePawnMove = true;
 		}
 		else {
@@ -424,7 +456,7 @@ exports.isMoveLegal = function(position, from, to) {
 			if(captureIsMandatory || toContent !== bt.EMPTY) { return false; }
 		}
 		else if(toContent === bt.EMPTY) { // en-passant pawn move
-			if(position.enPassant < 0 || to !== (5-position.turn*3)*16 + position.enPassant) { return false; }
+			if(to !== (5-position.turn*3)*16 + position.enPassant) { return false; }
 			enPassantSquare = (4-position.turn)*16 + position.enPassant;
 		}
 		else { // regular capturing pawn move
@@ -493,12 +525,14 @@ exports.play = function(position, descriptor) {
 	// Update the en-passant flag.
 	position.enPassant = -1;
 	if(movingPiece === bt.PAWN && Math.abs(descriptor._from - descriptor._to)===32) {
-		var otherPawn = descriptor._movingPiece ^ 0x01;
-		var squareBefore = descriptor._to - 1;
-		var squareAfter = descriptor._to + 1;
-		if(((squareBefore & 0x88) === 0 && position.board[squareBefore] === otherPawn) ||
-			((squareAfter & 0x88) === 0 && position.board[squareAfter]===otherPawn)) {
-			position.enPassant = descriptor._to % 16;
+		var firstSquareOf2ndRow = (1 + 5*position.turn) * 16;
+		if (descriptor._from >= firstSquareOf2ndRow && firstSquareOf2ndRow < firstSquareOf2ndRow + 8) {
+			var otherPawn = descriptor._movingPiece ^ 0x01;
+			var squareBefore = descriptor._to - 1;
+			var squareAfter = descriptor._to + 1;
+			if (((squareBefore & 0x88) === 0 && position.board[squareBefore] === otherPawn) || ((squareAfter & 0x88) === 0 && position.board[squareAfter] === otherPawn)) {
+				position.enPassant = descriptor._to % 16;
+			}
 		}
 	}
 
