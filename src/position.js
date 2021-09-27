@@ -164,7 +164,7 @@ var Position = exports.Position = function() {
 /**
  * Set the position to the empty state.
  *
- * @param {GameVariant} [variant=`'regular'`] Chess game variant to use.
+ * @param {GameVariant} [variant='regular'] Chess game variant to use.
  */
 Position.prototype.clear = function(variant) {
 	if(arguments.length === 0) {
