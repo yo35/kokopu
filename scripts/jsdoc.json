@@ -23,6 +23,7 @@
 		},
 		"css": [ "styles/tui-doc-for-kokopu.css" ],
 		"name": "Kokopu documentation",
+		"favicon": "img/kokopu-favicon.png",
 		"footerText": "Kokopu documentation"
 	}
 }
