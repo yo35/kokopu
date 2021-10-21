@@ -7,7 +7,7 @@
 		"package": "package.json",
 		"readme": "doc_src/home.md",
 		"tutorials": "doc_src/tutorials",
-		"template": "node_modules/tui-jsdoc-template"
+		"template": "node_modules/@yo35/tui-jsdoc-template"
 	},
 	"templates": {
 		"default": {
