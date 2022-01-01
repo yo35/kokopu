@@ -133,7 +133,7 @@ describe('Move legality check', function() {
 });
 
 
-describe('Parse degenerated notation ', function() {
+describe('Parse degenerated notation', function() {
 
 	function testDegeneratedNotation(fen, move, expected) {
 		var position = new kokopu.Position(fen);
@@ -143,4 +143,46 @@ describe('Parse degenerated notation ', function() {
 
 	it('King-side castling move with zero characters', function() { testDegeneratedNotation('r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w KQkq - 0 1', '0-0', 'e1g1O'); });
 	it('Queen-side castling move with zero characters', function() { testDegeneratedNotation('r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R b KQkq - 0 1', '0-0-0', 'e8c8O'); });
+});
+
+
+describe('Parse and play move', function() {
+
+	it('Legal move', function() {
+		var position = new kokopu.Position();
+		test.value(position.play('e4')).is(true);
+		test.value(position.fen()).is('rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1');
+	});
+
+	function testInvalidMove(fen, move) {
+		var position = new kokopu.Position(fen);
+		test.value(position.play(move)).is(false);
+		test.value(position.fen()).is(fen);
+	}
+
+	it('Illegal move 1', function() { testInvalidMove('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', 'Ng3'); });
+	it('Illegal move 2', function() { testInvalidMove('r1bqkbnr/ppp2ppp/2B5/3pp3/4P3/5N2/PPPP1PPP/RNBQK2R b KQkq - 0 1', 'dxe4'); });
+
+	it('No argument', function() {
+		var position = new kokopu.Position();
+		test.exception(function() { position.play(); }).isInstanceOf(kokopu.exception.IllegalArgument);
+	});
+
+	it('Invalid argument type', function() {
+		var position = new kokopu.Position();
+		test.exception(function() { position.play(42); }).isInstanceOf(kokopu.exception.IllegalArgument);
+	});
+});
+
+
+describe('Play null-move', function() {
+
+	function testNullMove(fen, expected, fenAfter) {
+		var position = new kokopu.Position(fen);
+		test.value(position.playNullMove()).is(expected);
+		test.value(position.fen()).is(expected ? fenAfter : fen);
+	}
+
+	it('Legal null-move', function() { testNullMove('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', true, 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1'); });
+	it('Illegal null-move', function() { testNullMove('r1bqkbnr/ppp2ppp/2B5/3pp3/4P3/5N2/PPPP1PPP/RNBQK2R b KQkq - 0 1', false); });
 });
