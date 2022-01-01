@@ -1,6 +1,10 @@
 ChangeLog
 =========
 
+2.2.1 (January 1, 2022)
+-----------------------
+* Minor fixes in doc and dependencies.
+
 2.2.0 (September 27, 2021)
 --------------------------
 * Add support for [Horde chess](https://en.wikipedia.org/wiki/Dunsany%27s_chess#Horde_chess).
