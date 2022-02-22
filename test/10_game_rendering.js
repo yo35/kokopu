@@ -331,6 +331,23 @@ var oneGamefactories = {
 		current.play('Bc5');
 		return game;
 	},
+
+	'shortened-variation': function() {
+		var game = new kokopu.Game();
+		game.event('Game with shortened variation.');
+		var node = game.mainVariation().play('e4');
+		node.play('e5').play('Nf3');
+		node.removeFollowingMoves();
+		return game;
+	},
+
+	'cleared-variation': function() {
+		var game = new kokopu.Game();
+		game.event('Game with cleared variation.');
+		game.mainVariation().play('e4').play('e5').play('Nf3');
+		game.mainVariation().clearMoves();
+		return game;
+	},
 };
 
 var fullPgnFactories = {

@@ -731,6 +731,16 @@ Node.prototype.play = function(move) {
 
 
 /**
+ * Erase all the moves after the one on the current {@link Node}: after that, {@link Node#next} returns `undefined`.
+ * If the current {@link Node} is already the last one in its variation (i.e. if {@link Node#next} returns `undefined` already),
+ * nothing happens.
+ */
+Node.prototype.removeFollowingMoves = function() {
+	this._info.next = undefined;
+};
+
+
+/**
  * Create a new variation that can be played instead of the current move.
  *
  * @param {boolean} isLongVariation
@@ -964,4 +974,14 @@ Variation.prototype.play = function(move) {
 	var positionBefore = new Position(this._initialPosition);
 	this._info.first = createNodeInfo(computeMoveDescriptor(positionBefore, move));
 	return new Node(this._info.first, this, this._initialFullMoveNumber, positionBefore);
+};
+
+
+/**
+ * Erase all the moves in the current {@link Variation}: after that, {@link Variation#first} returns `undefined`.
+ * If the current {@link Variation} is already empty (i.e. if {@link Variation#first} returns `undefined` already),
+ * nothing happens.
+ */
+Variation.prototype.clearMoves = function() {
+	this._info.first = undefined;
 };

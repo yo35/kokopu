@@ -1,0 +1,2 @@
+Event: Game with cleared variation.
+*
