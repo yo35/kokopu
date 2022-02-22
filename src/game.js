@@ -360,18 +360,20 @@ Game.prototype.ascii = function() {
 // -----------------------------------------------------------------------------
 
 /**
+ * @param {object} parent VariantInfo or NodeInfo struct
  * @param {MoveDescriptor} moveDescriptor
  * @returns {object}
  * @ignore
  */
-function createNodeInfo(moveDescriptor) {
+function createNodeInfo(parent, moveDescriptor) {
 	return {
+		parent: parent,
 
 		// `moveDescriptor` is `undefined` in case of a null-move.
 		moveDescriptor: moveDescriptor,
 
 		// Next move and alternative variations.
-		next: undefined,
+		child: undefined,
 		variations: [],
 
 		// Annotations and comments associated to the underlying move.
@@ -425,13 +427,13 @@ function applyMoveDescriptor(position, info) {
 function rebuildPositionBeforeIfNecessary(node) {
 	if(!node._positionBefore) {
 		node._positionBefore = new Position(node._parentVariation._initialPosition);
-		var currentInfo = node._parentVariation._info.first;
+		var currentInfo = node._parentVariation._info.child;
 		while(currentInfo !== node._info) {
 			if(currentInfo === undefined) {
 				throw new exception.IllegalArgument('The current node is invalid.');
 			}
 			applyMoveDescriptor(node._positionBefore, currentInfo);
-			currentInfo = currentInfo.next;
+			currentInfo = currentInfo.child;
 		}
 	}
 	return node._positionBefore;
@@ -534,9 +536,9 @@ function computePositionBeforeAndFullMoveNumberForNextNode(node) {
  * @returns {Node?} `undefined` if the current move is the last move of the variation, or a node corresponding to the next move otherwise.
  */
 Node.prototype.next = function() {
-	if(!this._info.next) { return undefined; }
+	if(!this._info.child) { return undefined; }
 	var next = computePositionBeforeAndFullMoveNumberForNextNode(this);
-	return new Node(this._info.next, this._parentVariation, next.fullMoveNumber, next.positionBefore);
+	return new Node(this._info.child, this._parentVariation, next.fullMoveNumber, next.positionBefore);
 };
 
 
@@ -725,8 +727,8 @@ function computeMoveDescriptor(position, move) {
  */
 Node.prototype.play = function(move) {
 	var next = computePositionBeforeAndFullMoveNumberForNextNode(this);
-	this._info.next = createNodeInfo(computeMoveDescriptor(next.positionBefore, move));
-	return new Node(this._info.next, this._parentVariation, next.fullMoveNumber, next.positionBefore);
+	this._info.child = createNodeInfo(this._info, computeMoveDescriptor(next.positionBefore, move));
+	return new Node(this._info.child, this._parentVariation, next.fullMoveNumber, next.positionBefore);
 };
 
 
@@ -736,7 +738,7 @@ Node.prototype.play = function(move) {
  * nothing happens.
  */
 Node.prototype.removeFollowingMoves = function() {
-	this._info.next = undefined;
+	this._info.child = undefined;
 };
 
 
@@ -749,6 +751,59 @@ Node.prototype.removeFollowingMoves = function() {
 Node.prototype.addVariation = function(isLongVariation) {
 	this._info.variations.push(createVariationInfo(isLongVariation));
 	return new Variation(this._info.variations[this._info.variations.length - 1], this._fullMoveNumber, this.positionBefore(), this._parentVariation._withinLongVariation);
+};
+
+
+/**
+ * Change the order of the variations by swapping the two variations corresponding to the given indexes.
+ *
+ * @param {number} variationIndex1 Index of one variation to swap (must be such that `0 <= variationIndex1 < thisNode.variations().length`).
+ * @param {number} variationIndex2 Index of the other variation to swap (must be such that `0 <= variationIndex2 < thisNode.variations().length`).
+ */
+Node.prototype.swapVariations = function(variationIndex1, variationIndex2) {
+	var variation1 = this._info.variations[variationIndex1];
+	var variation2 = this._info.variations[variationIndex2];
+	if (!variation1 || !variation2) {
+		throw new exception.IllegalArgument('Node#swapVariations()');
+	}
+	this._info.variations[variationIndex1] = variation2;
+	this._info.variations[variationIndex2] = variation1;
+};
+
+
+/**
+ * Replace the move on the current node (and the following ones, if any) by the moves of the variation corresponding to the given index,
+ * and create a new variation with the move on the current node and its successors.
+ *
+ * WARNING: the promoted variation must NOT be empty.
+ *
+ * @param {number} variationIndex Index of the variation to promote (must be such that `0 <= variationIndex < thisNode.variations().length`).
+ *                                If the corresponding variation is empty, an exception is thrown.
+ */
+Node.prototype.promoteVariation = function(variationIndex) {
+	var variationToPromote = this._info.variations[variationIndex];
+	if (!variationToPromote || !variationToPromote.child) {
+		throw new exception.IllegalArgument('Node#promoteVariation()');
+	}
+	var oldMainLine = this._info;
+	var newMainLine = variationToPromote.child;
+
+	// Detach the array containing the variations from the current node.
+	var variations = oldMainLine.variations;
+	oldMainLine.variations = [];
+
+	// Create a new variation with the old main line.
+	variations[variationIndex] = createVariationInfo(false);
+	variations[variationIndex].child = oldMainLine;
+
+	// Create a new main line with the promoted variation, and re-attach the variations.
+	this._info = newMainLine;
+	newMainLine.variations = variations.concat(newMainLine.variations);
+
+	// Re-map the parents.
+	oldMainLine.parent.child = newMainLine;
+	newMainLine.parent = oldMainLine.parent;
+	oldMainLine.parent = variations[variationIndex];
 };
 
 
@@ -768,7 +823,7 @@ function createVariationInfo(isLongVariation) {
 		isLongVariation: isLongVariation,
 
 		// First move of the variation.
-		first: undefined,
+		child: undefined,
 
 		// Annotations and comments associated to the underlying variation.
 		nags: {},
@@ -832,8 +887,8 @@ Variation.prototype.initialFullMoveNumber = function() {
  * @returns {Node?} `undefined` if the variation is empty.
  */
 Variation.prototype.first = function() {
-	if(!this._info.first) { return undefined; }
-	return new Node(this._info.first, this, this._initialFullMoveNumber, new Position(this._initialPosition));
+	if(!this._info.child) { return undefined; }
+	return new Node(this._info.child, this, this._initialFullMoveNumber, new Position(this._initialPosition));
 };
 
 
@@ -845,7 +900,7 @@ Variation.prototype.first = function() {
 Variation.prototype.nodes = function() {
 	var result = [];
 
-	var currentNodeInfo = this._info.first;
+	var currentNodeInfo = this._info.child;
 	var previousNodeInfo = null;
 	var previousPositionBefore = this._initialPosition;
 	var previousFullMoveNumber = this._initialFullMoveNumber;
@@ -865,7 +920,7 @@ Variation.prototype.nodes = function() {
 
 		// Increment the counters.
 		previousNodeInfo = currentNodeInfo;
-		currentNodeInfo = currentNodeInfo.next;
+		currentNodeInfo = currentNodeInfo.child;
 	}
 
 	return result;
@@ -972,8 +1027,8 @@ Variation.prototype.isLongComment = function() {
  */
 Variation.prototype.play = function(move) {
 	var positionBefore = new Position(this._initialPosition);
-	this._info.first = createNodeInfo(computeMoveDescriptor(positionBefore, move));
-	return new Node(this._info.first, this, this._initialFullMoveNumber, positionBefore);
+	this._info.child = createNodeInfo(this._info, computeMoveDescriptor(positionBefore, move));
+	return new Node(this._info.child, this, this._initialFullMoveNumber, positionBefore);
 };
 
 
@@ -983,5 +1038,5 @@ Variation.prototype.play = function(move) {
  * nothing happens.
  */
 Variation.prototype.clearMoves = function() {
-	this._info.first = undefined;
+	this._info.child = undefined;
 };

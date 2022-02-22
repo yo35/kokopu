@@ -348,6 +348,37 @@ var oneGamefactories = {
 		game.mainVariation().clearMoves();
 		return game;
 	},
+
+	'swapped-variations': function() {
+		var game = new kokopu.Game();
+		game.event('Game with swapped variations.');
+		var node = game.mainVariation().play('e4').play('e5');
+		node.play('Nf3');
+		node.addVariation().play('c5');
+		node.addVariation().play('c6').comment('Used to be at index 1');
+		node.addVariation().play('d5');
+		node.addVariation().play('f5');
+		node.addVariation().play('g6').comment('Used to be at index 4');
+		node.addVariation().play('b5');
+		node.addVariation().play('a5');
+		node.swapVariations(1, 4);
+		return game;
+	},
+
+	'promoted-variation': function() {
+		var game = new kokopu.Game();
+		game.event('Game with promoted variation.');
+		var node = game.mainVariation().play('e4').play('e5');
+		node.play('Nf3').comment('Used to be the main line');
+		node.addVariation().play('c5');
+		var newNode = node.addVariation().play('d5');
+		newNode.play('exd5').play('Qxd5').comment('Used to be the variation at index 1');
+		newNode.addVariation().play('d6').play('d4').comment('Used to be a nested variation');
+		node.addVariation().play('c6');
+		node.addVariation().play('g6');
+		node.promoteVariation(1);
+		return game;
+	},
 };
 
 var fullPgnFactories = {

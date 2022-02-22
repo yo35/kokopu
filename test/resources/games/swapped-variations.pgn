@@ -1,0 +1,10 @@
+[Event "Game with swapped variations."]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+
+1. e4 e5 (1... c5) (1... g6 {Used to be at index 4}) (1... d5) (1... f5) (1...
+c6 {Used to be at index 1}) (1... b5) (1... a5) 2. Nf3 *
