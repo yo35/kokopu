@@ -35,3 +35,8 @@
 that spans several lines.}
 
 1. O-O *
+
+
+[Event "Illegal null-move"]
+
+1. e4 d5 2. Bb5+ -- 3. Nf3 *
