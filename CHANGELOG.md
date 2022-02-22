@@ -1,6 +1,11 @@
 ChangeLog
 =========
 
+2.3.0 (February 22, 2022)
+-------------------------
+* Enrich variation-management methods on `Game` and related objects: `Node#promoteVariation()`,
+`Node#removeVariation()`, `Node#removeFollowingMoves()`... (see #22).
+
 2.2.1 (January 1, 2022)
 -----------------------
 * Minor fixes in doc and dependencies.
