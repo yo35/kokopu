@@ -755,6 +755,19 @@ Node.prototype.addVariation = function(isLongVariation) {
 
 
 /**
+ * Remove the variation corresponding to the givn index.
+ *
+ * @param {number} variationIndex Index of the variation to promote (must be such that `0 <= variationIndex < thisNode.variations().length`).
+ */
+Node.prototype.removeVariation = function(variationIndex) {
+	if (!this._info.variations[variationIndex]) {
+		throw new exception.IllegalArgument('Node#removeVariation()');
+	}
+	this._info.variations = this._info.variations.slice(0, variationIndex).concat(this._info.variations.slice(variationIndex + 1));
+};
+
+
+/**
  * Change the order of the variations by swapping the two variations corresponding to the given indexes.
  *
  * @param {number} variationIndex1 Index of one variation to swap (must be such that `0 <= variationIndex1 < thisNode.variations().length`).

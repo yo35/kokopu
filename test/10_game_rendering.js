@@ -349,6 +349,19 @@ var oneGamefactories = {
 		return game;
 	},
 
+	'removed-variation': function() {
+		var game = new kokopu.Game();
+		game.event('Game with removed variation.');
+		var node = game.mainVariation().play('e4').play('e5');
+		node.play('Nf3');
+		node.addVariation().play('c5');
+		node.addVariation().play('h5').comment('Will be removed');
+		node.addVariation().play('c6');
+		node.addVariation().play('e6');
+		node.removeVariation(1);
+		return game;
+	},
+
 	'swapped-variations': function() {
 		var game = new kokopu.Game();
 		game.event('Game with swapped variations.');
