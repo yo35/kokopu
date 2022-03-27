@@ -1,6 +1,10 @@
 ChangeLog
 =========
 
+2.4.0 (March 27, 2022)
+----------------------
+* Expose `Database` (thus allowing for `... instanceof Database`).
+
 2.3.0 (February 22, 2022)
 -------------------------
 * Enrich variation-management methods on `Game` and related objects: `Node#promoteVariation()`,
