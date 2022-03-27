@@ -38,6 +38,7 @@ exports.isMoveDescriptor = require('./movedescriptor').isMoveDescriptor;
 
 exports.Position = require('./position').Position;
 exports.Game = require('./game').Game;
+exports.Database = require('./database').Database;
 
 var pgn = require('./pgn');
 exports.pgnRead = pgn.pgnRead;

@@ -27,8 +27,7 @@
  * @class
  * @classdesc Describe a set of chess games (see also {@link Game}).
  *
- * @description This constructor is not exposed in the public Kokopu API. Only internal objects and functions
- *              are allowed to instantiate {@link Database} objects.
+ * @description DO NOT invoke this constructor directly. Only internal objects and functions are allowed to instantiate {@link Database} objects.
  */
 var Database = exports.Database = function(impl, gameCountGetter, gameGetter) {
 	this._impl = impl;
