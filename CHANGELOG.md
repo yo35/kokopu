@@ -1,6 +1,10 @@
 ChangeLog
 =========
 
+2.4.1 (March 27, 2022)
+----------------------
+* Fix behavior of `Database#game(..)` with invalid indexes (see #24).
+
 2.4.0 (March 27, 2022)
 ----------------------
 * Expose `Database` (thus allowing for `... instanceof Database`).
