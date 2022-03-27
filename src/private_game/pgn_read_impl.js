@@ -306,7 +306,11 @@ function gameCountGetterImpl(impl) {
 
 function gameGetterImpl(impl, gameIndex) {
 	if(impl.currentGameIndex !== gameIndex) {
-		impl.stream = new TokenStream(impl.text, impl.gameLocations[gameIndex]);
+		var gameLocation = impl.gameLocations[gameIndex];
+		if (gameLocation === undefined) {
+			throw new exception.InvalidPGN(impl.text, -1, -1, i18n.INVALID_GAME_INDEX, gameIndex, impl.gameLocations.length);
+		}
+		impl.stream = new TokenStream(impl.text, gameLocation);
 	}
 	impl.currentGameIndex = -1;
 	var result = doParseGame(impl.stream);
@@ -338,7 +342,7 @@ exports.readDatabase = function(pgnString) {
 exports.readOneGame = function(pgnString, gameIndex) {
 	var stream = new TokenStream(pgnString);
 	var gameCounter = 0;
-	while(gameCounter < gameIndex) {
+	while(gameCounter !== gameIndex) {
 		if(stream.skipGame()) {
 			++gameCounter;
 		}
