@@ -56,7 +56,7 @@ var Game = exports.Game = function() {
 
 	this._initialPosition = new Position();
 	this._fullMoveNumber = 1;
-	this._mainVariationInfo = createVariationInfo(undefined, true);
+	this._mainVariationInfo = createVariationInfo(this, true);
 };
 
 
@@ -328,7 +328,7 @@ Game.prototype.initialPosition = function(initialPosition, fullMoveNumber) {
 		}
 		this._initialPosition = initialPosition;
 		this._fullMoveNumber = fullMoveNumber;
-		this._mainVariationInfo = createVariationInfo(undefined, true);
+		this._mainVariationInfo = createVariationInfo(this, true);
 	}
 };
 
@@ -339,7 +339,7 @@ Game.prototype.initialPosition = function(initialPosition, fullMoveNumber) {
  * @returns {Variation}
  */
 Game.prototype.mainVariation = function() {
-	return new Variation(this._mainVariationInfo, this._fullMoveNumber, this._initialPosition);
+	return new Variation(this._mainVariationInfo, this._initialPosition);
 };
 
 
@@ -360,18 +360,21 @@ Game.prototype.ascii = function() {
 // -----------------------------------------------------------------------------
 
 /**
- * @param {object} parent VariantInfo or NodeInfo struct
+ * @param {object} parentVariation VariantInfo struct
+ * @param {Color} moveColor
+ * @param {number} fullMoveNumber
  * @param {MoveDescriptor} moveDescriptor
  * @returns {object}
  * @ignore
  */
-function createNodeInfo(parent, moveDescriptor) {
+function createNodeInfo(parentVariation, moveColor, fullMoveNumber, moveDescriptor) {
 	return {
-		parent: parent,
-		isLongVariation: true, // just for recursion
+		parentVariation: parentVariation,
 
-		// `moveDescriptor` is `undefined` in case of a null-move.
-		moveDescriptor: moveDescriptor,
+		// Attributes of the current move.
+		moveColor: moveColor,
+		fullMoveNumber: fullMoveNumber,
+		moveDescriptor: moveDescriptor, // `moveDescriptor` is `undefined` in case of a null-move.
 
 		// Next move and alternative variations.
 		child: undefined,
@@ -393,9 +396,8 @@ function createNodeInfo(parent, moveDescriptor) {
  * @description This constructor is not exposed in the public Kokopu API. Only internal objects and functions
  *              are allowed to instantiate {@link Node} objects.
  */
-function Node(info, fullMoveNumber, positionBefore) {
+function Node(info, positionBefore) {
 	this._info = info;
-	this._fullMoveNumber = fullMoveNumber;
 	this._positionBefore = positionBefore;
 }
 
@@ -470,7 +472,7 @@ Node.prototype.position = function() {
  * @returns {number}
  */
 Node.prototype.fullMoveNumber = function() {
-	return this._fullMoveNumber;
+	return this._info.fullMoveNumber;
 };
 
 
@@ -480,28 +482,8 @@ Node.prototype.fullMoveNumber = function() {
  * @returns {Color}
  */
 Node.prototype.moveColor = function() {
-	return this._positionBefore.turn();
+	return this._info.moveColor;
 };
-
-
-/**
- * Compute the "position-before" and "full-move-number" applicable to the node after the given one.
- *
- * @param {Node} node
- * @returns {{positionBefore:Position, fullMoveNumber:number}}
- * @ignore
- */
-function computePositionBeforeAndFullMoveNumberForNextNode(node) {
-
-	// Compute the position-before applicable on the next node.
-	var positionBefore = new Position(node._positionBefore);
-	applyMoveDescriptor(positionBefore, node._info);
-
-	// Compute the full-move-number applicable to the next node.
-	var fullMoveNumber = positionBefore.turn() === 'w' ? node._fullMoveNumber + 1 : node._fullMoveNumber;
-
-	return { positionBefore:positionBefore, fullMoveNumber:fullMoveNumber };
-}
 
 
 /**
@@ -510,9 +492,12 @@ function computePositionBeforeAndFullMoveNumberForNextNode(node) {
  * @returns {Node?} `undefined` if the current move is the last move of the variation, or a node corresponding to the next move otherwise.
  */
 Node.prototype.next = function() {
-	if(!this._info.child) { return undefined; }
-	var next = computePositionBeforeAndFullMoveNumberForNextNode(this);
-	return new Node(this._info.child, next.fullMoveNumber, next.positionBefore);
+	if (!this._info.child) {
+		return undefined;
+	}
+	var nextPositionBefore = new Position(this._positionBefore);
+	applyMoveDescriptor(nextPositionBefore, this._info);
+	return new Node(this._info.child, nextPositionBefore);
 };
 
 
@@ -528,7 +513,7 @@ Node.prototype.variations = function() {
 
 	var result = [];
 	for(var i = 0; i < this._info.variations.length; ++i) {
-		result.push(new Variation(this._info.variations[i], this._fullMoveNumber, this._positionBefore));
+		result.push(new Variation(this._info.variations[i], this._positionBefore));
 	}
 	return result;
 };
@@ -660,31 +645,12 @@ Node.prototype.comment = function(value, isLongComment) {
 
 
 /**
- * Whether the current node or variation and all its parents are flagged as "long variation".
- *
- * @param {Node|Variation} nodeOrVariation
- * @returns {boolean}
- * @ignore
- */
-function withinLongVariation(nodeOrVariation) {
-	var info = nodeOrVariation._info;
-	while (info) {
-		if (!info.isLongVariation) {
-			return false;
-		}
-		info = info.parent;
-	}
-	return true;
-}
-
-
-/**
  * Whether the text comment associated to the current move is long or short.
  *
  * @returns {boolean} Always `false` if no comment is defined.
  */
 Node.prototype.isLongComment = function() {
-	return this._info.isLongComment && withinLongVariation(this);
+	return this._info.isLongComment && doIsLongVariation(this._info.parentVariation);
 };
 
 
@@ -718,9 +684,12 @@ function computeMoveDescriptor(position, move) {
  * @throws {module:exception.InvalidNotation} If the move notation cannot be parsed.
  */
 Node.prototype.play = function(move) {
-	var next = computePositionBeforeAndFullMoveNumberForNextNode(this);
-	this._info.child = createNodeInfo(this._info, computeMoveDescriptor(next.positionBefore, move));
-	return new Node(this._info.child, next.fullMoveNumber, next.positionBefore);
+	var nextPositionBefore = new Position(this._positionBefore);
+	applyMoveDescriptor(nextPositionBefore, this._info);
+	var nextMoveColor = nextPositionBefore.turn();
+	var nextFullMoveNumber = nextMoveColor === 'w' ? this._info.fullMoveNumber + 1: this._info.fullMoveNumber;
+	this._info.child = createNodeInfo(this._info.parentVariation, nextMoveColor, nextFullMoveNumber, computeMoveDescriptor(nextPositionBefore, move));
+	return new Node(this._info.child, nextPositionBefore);
 };
 
 
@@ -742,7 +711,7 @@ Node.prototype.removeFollowingMoves = function() {
  */
 Node.prototype.addVariation = function(isLongVariation) {
 	this._info.variations.push(createVariationInfo(this._info, isLongVariation));
-	return new Variation(this._info.variations[this._info.variations.length - 1], this._fullMoveNumber, this._positionBefore);
+	return new Variation(this._info.variations[this._info.variations.length - 1], this._positionBefore);
 };
 
 
@@ -806,11 +775,31 @@ Node.prototype.promoteVariation = function(variationIndex) {
 	newMainLine.variations = variations.concat(newMainLine.variations);
 
 	// Re-map the parents.
-	oldMainLine.parent.child = newMainLine;
-	newMainLine.parent = oldMainLine.parent;
-	oldMainLine.parent = variations[variationIndex];
+	var parent = findParent(oldMainLine);
+	parent.child = newMainLine;
+	resetParentVariationRecursively(newMainLine, oldMainLine.parentVariation);
+	resetParentVariationRecursively(oldMainLine, variations[variationIndex]);
+	for (var variationIndex = 0; variationIndex < newMainLine.variations.length; ++variationIndex) {
+		newMainLine.variations[variationIndex].parentNode = newMainLine;
+	}
 };
 
+
+function findParent(oldMainLine) {
+	var candidate = oldMainLine.parentVariation;
+	while (candidate.child !== oldMainLine) {
+		candidate = candidate.child;
+	}
+	return candidate;
+}
+
+
+function resetParentVariationRecursively(root, newParentVariation) {
+	while (root) {
+		root.parentVariation = newParentVariation;
+		root = root.child;
+	}
+}
 
 
 // -----------------------------------------------------------------------------
@@ -818,14 +807,14 @@ Node.prototype.promoteVariation = function(variationIndex) {
 // -----------------------------------------------------------------------------
 
 /**
- * @param {object?} parent NodeInfo struct (or `undefined` for the main variation)
+ * @param {object|Game} parentNode NodeInfo struct (or `Game` for the main variation)
  * @param {boolean} isLongVariation
  * @returns {object}
  * @ignore
  */
-function createVariationInfo(parent, isLongVariation) {
+function createVariationInfo(parentNode, isLongVariation) {
 	return {
-		parent: parent,
+		parentNode: parentNode,
 		isLongVariation: isLongVariation,
 
 		// First move of the variation.
@@ -848,9 +837,8 @@ function createVariationInfo(parent, isLongVariation) {
  * @description This constructor is not exposed in the public Kokopu API. Only internal objects and functions
  *              are allowed to instantiate {@link Variation} objects.
  */
-function Variation(info, initialFullMoveNumber, initialPosition) {
+function Variation(info, initialPosition) {
 	this._info = info;
-	this._initialFullMoveNumber = initialFullMoveNumber;
 	this._initialPosition = initialPosition;
 }
 
@@ -862,8 +850,29 @@ function Variation(info, initialFullMoveNumber, initialPosition) {
  * @returns {boolean}
  */
 Variation.prototype.isLongVariation = function() {
-	return this._info.isLongVariation && withinLongVariation(this);
+	return doIsLongVariation(this._info);
 };
+
+
+/**
+ * Whether the variation corresponding to the given descriptor is a "long variation",
+ * i.e. whether it is a flagged as "isLongVariation" AND SO ARE ALL IT'S PARENTS.
+ *
+ * @param {object} variationInfo VariationInfo struct
+ * @returns {boolean}
+ * @ignore
+ */
+function doIsLongVariation(variationInfo) {
+	while (true) {
+		if (!variationInfo.isLongVariation) {
+			return false;
+		}
+		if (variationInfo.parentNode instanceof Game) {
+			return true;
+		}
+		variationInfo = variationInfo.parentNode.parentVariation;
+	}
+}
 
 
 /**
@@ -882,7 +891,7 @@ Variation.prototype.initialPosition = function() {
  * @returns {number}
  */
 Variation.prototype.initialFullMoveNumber = function() {
-	return this._initialFullMoveNumber;
+	return this._info.parentNode instanceof Game ? this._info.parentNode._fullMoveNumber : this._info.parentNode.fullMoveNumber;
 };
 
 
@@ -893,7 +902,7 @@ Variation.prototype.initialFullMoveNumber = function() {
  */
 Variation.prototype.first = function() {
 	if(!this._info.child) { return undefined; }
-	return new Node(this._info.child, this._initialFullMoveNumber, new Position(this._initialPosition));
+	return new Node(this._info.child, new Position(this._initialPosition));
 };
 
 
@@ -906,22 +915,18 @@ Variation.prototype.nodes = function() {
 	var result = [];
 
 	var currentNodeInfo = this._info.child;
-	var previousNodeInfo = null;
+	var previousNodeInfo = undefined;
 	var previousPositionBefore = this._initialPosition;
-	var previousFullMoveNumber = this._initialFullMoveNumber;
-	while(currentNodeInfo) {
+	while (currentNodeInfo) {
 
 		// Compute the "position-before" attribute the current node.
 		var previousPositionBefore = new Position(previousPositionBefore);
-		if(previousNodeInfo !== null) {
+		if (previousNodeInfo) {
 			applyMoveDescriptor(previousPositionBefore, previousNodeInfo);
 		}
 
-		// Compute the "full-move-number" attribute the current node.
-		previousFullMoveNumber = previousNodeInfo !== null && previousPositionBefore.turn() === 'w' ? previousFullMoveNumber + 1 : previousFullMoveNumber;
-
 		// Push the current node.
-		result.push(new Node(currentNodeInfo, previousFullMoveNumber, previousPositionBefore));
+		result.push(new Node(currentNodeInfo, previousPositionBefore));
 
 		// Increment the counters.
 		previousNodeInfo = currentNodeInfo;
@@ -1031,9 +1036,8 @@ Variation.prototype.isLongComment = function() {
  * @throws {module:exception.InvalidNotation} If the move notation cannot be parsed.
  */
 Variation.prototype.play = function(move) {
-	var positionBefore = new Position(this._initialPosition);
-	this._info.child = createNodeInfo(this._info, computeMoveDescriptor(positionBefore, move));
-	return new Node(this._info.child, this._initialFullMoveNumber, positionBefore);
+	this._info.child = createNodeInfo(this._info, this._initialPosition.turn(), this.initialFullMoveNumber(), computeMoveDescriptor(this._initialPosition, move));
+	return new Node(this._info.child, new Position(this._initialPosition));
 };
 
 
