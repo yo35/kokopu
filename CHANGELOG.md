@@ -1,6 +1,10 @@
 ChangeLog
 =========
 
+2.5.0 (March 31, 2022)
+----------------------
+* Introduce `Node#id()`, `Variation#id()` and `Game#findById(..)`.
+
 2.4.1 (March 27, 2022)
 ----------------------
 * Fix behavior of `Database#game(..)` with invalid indexes (see #24).
