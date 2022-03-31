@@ -344,6 +344,63 @@ Game.prototype.mainVariation = function() {
 
 
 /**
+ * Return the node or variation corresponding to the given ID (see {@link Node#id} and {@link Variation#id}
+ * to retrieve the ID of a node or variation).
+ *
+ * @return {(Node|Variation)?} `undefined` is returned if the given ID does not correspond to an existing {@link Node} and {@link Variation}.
+ */
+Game.prototype.findById = function(id) {
+	var tokens = id.split('-');
+	if (tokens.length % 2 !== 1) {
+		return undefined;
+	}
+	var position = new Position(this._initialPosition);
+
+	// Find the parent variation of the target node.
+	var variationInfo = this._mainVariationInfo;
+	for (var i = 0; i + 1 < tokens.length; i += 2) {
+		var nodeInfo = findNode(variationInfo, tokens[i], position);
+		if (!nodeInfo) {
+			return undefined;
+		}
+		var match = /^v(\d+)$/.exec(tokens[i + 1]);
+		if (!match) {
+			return undefined;
+		}
+		var variationIndex = parseInt(match[1]);
+		if (variationIndex >= nodeInfo.variations.length) {
+			return undefined;
+		}
+		variationInfo = nodeInfo.variations[variationIndex];
+	}
+
+	// Find the target node within its parent variation, or return the variation itself
+	// if the ID is a variation ID (i.e. if it ends with 'start').
+	var lastToken = tokens[tokens.length - 1];
+	if (lastToken === 'start') {
+		return new Variation(variationInfo, position);
+	}
+	else {
+		var nodeInfo = findNode(variationInfo, lastToken, position);
+		return nodeInfo ? new Node(nodeInfo, position) : undefined;
+	}
+};
+
+
+function findNode(variationInfo, nodeIdToken, position) {
+	var nodeInfo = variationInfo.child;
+	while (nodeInfo) {
+		if (nodeIdToken === nodeInfo.fullMoveNumber + nodeInfo.moveColor) {
+			return nodeInfo;
+		}
+		applyMoveDescriptor(position, nodeInfo);
+		nodeInfo = nodeInfo.child;
+	}
+	return undefined;
+}
+
+
+/**
  * Return a human-readable string representing the game. This string is multi-line,
  * and is intended to be displayed in a fixed-width font (similarly to an ASCII-art picture).
  *
@@ -416,6 +473,31 @@ function applyMoveDescriptor(position, info) {
 	else {
 		position.play(info.moveDescriptor);
 	}
+}
+
+
+/**
+ * Identifier of the current node within its parent {@link Game}.
+ *
+ * WARNING: the ID may change when variations are modified (added, removed, swapped, promoted...)
+ * among the parents the current node.
+ *
+ * @returns {string}
+ */
+Node.prototype.id = function() {
+	return buildNodeId(this._info);
+};
+
+
+/**
+ * Compute the ID of the given node.
+ *
+ * @param {object} nodeInfo NodeInfo struct
+ * @returns {string}
+ * @ignore
+ */
+function buildNodeId(nodeInfo) {
+	return buildVariationIdPrefix(nodeInfo.parentVariation) + nodeInfo.fullMoveNumber + nodeInfo.moveColor;
 }
 
 
@@ -844,6 +926,38 @@ function Variation(info, initialPosition) {
 
 
 /**
+ * Identifier of the current variation within its parent {@link Game}.
+ *
+ * WARNING: the ID may change when variations are modified (added, removed, swapped, promoted...)
+ * among the parents the current variation.
+ *
+ * @returns {string}
+ */
+Variation.prototype.id = function() {
+	return buildVariationIdPrefix(this._info) + 'start';
+};
+
+
+/**
+ * Compute the ID of the given variation, without the final `'start'` token.
+ *
+ * @param {object} variationInfo VariationInfo struct
+ * @returns {string}
+ * @ignore
+ */
+function buildVariationIdPrefix(variationInfo) {
+	if (variationInfo.parentNode instanceof Game) {
+		return '';
+	}
+	else {
+		var parentNodeId = buildNodeId(variationInfo.parentNode);
+		var variationIndex = variationInfo.parentNode.variations.indexOf(variationInfo);
+		return parentNodeId + '-v' + variationIndex + '-';
+	}
+}
+
+
+/**
  * Whether the current variation is considered as a "long" variation, i.e. a variation that
  * should be displayed in an isolated block.
  *
@@ -901,8 +1015,10 @@ Variation.prototype.initialFullMoveNumber = function() {
  * @returns {Node?} `undefined` if the variation is empty.
  */
 Variation.prototype.first = function() {
-	if(!this._info.child) { return undefined; }
-	return new Node(this._info.child, new Position(this._initialPosition));
+	if (!this._info.child) {
+		return undefined;
+	}
+	return new Node(this._info.child, this._initialPosition);
 };
 
 
@@ -1037,7 +1153,7 @@ Variation.prototype.isLongComment = function() {
  */
 Variation.prototype.play = function(move) {
 	this._info.child = createNodeInfo(this._info, this._initialPosition.turn(), this.initialFullMoveNumber(), computeMoveDescriptor(this._initialPosition, move));
-	return new Node(this._info.child, new Position(this._initialPosition));
+	return new Node(this._info.child, this._initialPosition);
 };
 
 

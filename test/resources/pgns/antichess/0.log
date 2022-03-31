@@ -24,46 +24,46 @@ Variant = {antichess}
 | R | N | B | Q | K | B | N | R |
 +---+---+---+---+---+---+---+---+
 w - - (antichess)
--+<LONG
-(1w) g3
-(1b) e6
-(2w) b4
-(2b) Bxb4
-(3w) g4
-(3b) Bxd2
-(4w) Kxd2
-(4b) Qh4
-(5w) g5
-(5b) Qxh2
-(6w) Rxh2
-(6b) Nh6
-(7w) gxh6
-(7b) gxh6
-(8w) Rxh6
-(8b) Rf8
-(9w) Rxe6
-(9b) dxe6
-(10w) e3
-(10b) b5
-(11w) Bxb5
-(11b) Nc6
-(12w) Bxc6
-(12b) Kd8
-(13w) Bxa8
-(13b) Bb7
-(14w) Bxb7
-(14b) c6
-(15w) Bxc6
-(15b) Kd7
-(16w) Bxd7
-(16b) f5
-(17w) Bxe6
-(17b) Rc8
-(18w) Bxf5
-(18b) Rxc2
-(19w) Bxh7
-(19b) Rxd2
-(20w) Qxd2
-(20b) a5
-(21w) Qxa5#
+[start]                 -+<LONG
+[1w]                    (1w) g3
+[1b]                    (1b) e6
+[2w]                    (2w) b4
+[2b]                    (2b) Bxb4
+[3w]                    (3w) g4
+[3b]                    (3b) Bxd2
+[4w]                    (4w) Kxd2
+[4b]                    (4b) Qh4
+[5w]                    (5w) g5
+[5b]                    (5b) Qxh2
+[6w]                    (6w) Rxh2
+[6b]                    (6b) Nh6
+[7w]                    (7w) gxh6
+[7b]                    (7b) gxh6
+[8w]                    (8w) Rxh6
+[8b]                    (8b) Rf8
+[9w]                    (9w) Rxe6
+[9b]                    (9b) dxe6
+[10w]                   (10w) e3
+[10b]                   (10b) b5
+[11w]                   (11w) Bxb5
+[11b]                   (11b) Nc6
+[12w]                   (12w) Bxc6
+[12b]                   (12b) Kd8
+[13w]                   (13w) Bxa8
+[13b]                   (13b) Bb7
+[14w]                   (14w) Bxb7
+[14b]                   (14b) c6
+[15w]                   (15w) Bxc6
+[15b]                   (15b) Kd7
+[16w]                   (16w) Bxd7
+[16b]                   (16b) f5
+[17w]                   (17w) Bxe6
+[17b]                   (17b) Rc8
+[18w]                   (18w) Bxf5
+[18b]                   (18b) Rxc2
+[19w]                   (19w) Bxh7
+[19b]                   (19b) Rxd2
+[20w]                   (20w) Qxd2
+[20b]                   (20b) a5
+[21w]                   (21w) Qxa5#
 {Black wins}

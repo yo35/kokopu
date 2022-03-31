@@ -1,19 +1,19 @@
 Event = {Game with long & short comments and variations.}
--+<LONG {I'm the main variation header comment.}<LONG
-(1w) e4 {I'm a long comment.}<LONG
-(1b) e5
- |
- +---+<LONG
- |  (1b) c5
- |  (2w) Nf3
- |
-(2w) Nf3
-(2b) Nc6
-(3w) Bc4
- |
- +---+<LONG {I'm a long comment too.}<LONG
- |  (3w) Bb5
- |  (3b) a6 {I'm a short comment.}
- |
-(3b) Bc5
+[start]                 -+<LONG {I'm the main variation header comment.}<LONG
+[1w]                    (1w) e4 {I'm a long comment.}<LONG
+[1b]                    (1b) e5
+                         |
+[1b-v0-start]            +---+<LONG
+[1b-v0-1b]               |  (1b) c5
+[1b-v0-2w]               |  (2w) Nf3
+                         |
+[2w]                    (2w) Nf3
+[2b]                    (2b) Nc6
+[3w]                    (3w) Bc4
+                         |
+[3w-v0-start]            +---+<LONG {I'm a long comment too.}<LONG
+[3w-v0-3w]               |  (3w) Bb5
+[3w-v0-3b]               |  (3b) a6 {I'm a short comment.}
+                         |
+[3b]                    (3b) Bc5
 {Line}

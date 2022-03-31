@@ -17,16 +17,16 @@ Event = {Custom initial position}
 |   |   |   |   |   |   |   |   |
 +---+---+---+---+---+---+---+---+
 w - -
--+<LONG
-(60w) Kd5
-(60b) Kc8
-(61w) Kd4
-(61b) Kd8
-(62w) Kc4
-(62b) Kc8
-(63w) Kd5
-(63b) Kc7
-(64w) Kc5
-(64b) Kc8
-(65w) Kb6 $18
+[start]                 -+<LONG
+[60w]                   (60w) Kd5
+[60b]                   (60b) Kc8
+[61w]                   (61w) Kd4
+[61b]                   (61b) Kd8
+[62w]                   (62w) Kc4
+[62b]                   (62b) Kc8
+[63w]                   (63w) Kd5
+[63b]                   (63b) Kc7
+[64w]                   (64w) Kc5
+[64b]                   (64b) Kc8
+[65w]                   (65w) Kb6 $18
 {White wins}

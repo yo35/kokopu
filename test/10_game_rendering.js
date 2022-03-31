@@ -421,6 +421,54 @@ var fullPgnFactories = {
 };
 
 
+describe('Check IDs', function() {
+
+	function checkNode(game, node) {
+
+		// Check the current node.
+		var nodeId = node.id();
+		var searchedNode = game.findById(nodeId);
+		test.value(searchedNode).isNotFalse();
+		test.value(searchedNode.id()).is(nodeId);
+		test.value(searchedNode.positionBefore().fen()).is(node.positionBefore().fen());
+
+		// Check the variations.
+		var subVariations = node.variations();
+		for(var k = 0; k < subVariations.length; ++k) {
+			checkVariation(game, subVariations[k]);
+		}
+	}
+
+	function checkVariation(game, variation) {
+
+		// Check the current variation.
+		var variationId = variation.id();
+		var searchedVariation = game.findById(variationId);
+		test.value(searchedVariation).isNotFalse();
+		test.value(searchedVariation.id()).is(variationId);
+		test.value(searchedVariation.initialPosition().fen()).is(variation.initialPosition().fen());
+
+		// Check the moves.
+		var node = variation.first();
+		while (node) {
+			checkNode(game, node);
+			node = node.next();
+		}
+	}
+
+	function itCheckId(filename, factory) {
+		it(filename, function() {
+			var game = factory();
+			checkVariation(game, game.mainVariation());
+		});
+	}
+
+	for (var f in oneGamefactories) {
+		itCheckId(f, oneGamefactories[f]);
+	}
+});
+
+
 describe('Write ASCII', function() {
 
 	function itAscii(filename, factory) {

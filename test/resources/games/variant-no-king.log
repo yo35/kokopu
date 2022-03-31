@@ -18,13 +18,13 @@ Variant = {no-king}
 |   |   |   |   |   |   |   | R |
 +---+---+---+---+---+---+---+---+
 w - - (no-king)
--+<LONG
-(1w) Rh8
-(1b) Ra1
-(2w) Ra8
-(2b) Rh1
-(3w) Ra1
-(3b) Rh8
-(4w) Rh1
-(4b) Ra8
+[start]                 -+<LONG
+[1w]                    (1w) Rh8
+[1b]                    (1b) Ra1
+[2w]                    (2w) Ra8
+[2b]                    (2b) Rh1
+[3w]                    (3w) Ra1
+[3b]                    (3b) Rh8
+[4w]                    (4w) Rh1
+[4b]                    (4b) Ra8
 {Line}

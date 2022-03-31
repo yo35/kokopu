@@ -5,66 +5,66 @@ Round = {1}
 Site = {Nice}
 Date = {Sat Jun 15 1974}
 Annotator = {Hannes Langrock}
--+<LONG
-(1w) e4
-(1b) c5
-(2w) d4
-(2b) cxd4
-(3w) c3
-(3b) dxc3
-(4w) Nxc3
-(4b) Nc6
-(5w) Nf3
-(5b) d6
-(6w) Bc4
-(6b) e6
-(7w) O-O
-(7b) Be7
-(8w) Qe2
-(8b) a6
-(9w) Rd1
-(9b) Qc7
-(10w) Bf4
-(10b) Ne5 $2
-(11w) Bxe5
-(11b) dxe5
-(12w) Rac1
-(12b) Qb8
-(13w) Bb5+
-(13b) axb5
-(14w) Nxb5
-(14b) f6
-(15w) Nc7+
-(15b) Kf7
-(16w) Nxa8
-(16b) Qxa8
-(17w) Rc7
-(17b) b6
-(18w) Rd8
-(18b) Ba6
-(19w) Nxe5+
-(19b) fxe5
-(20w) Qh5+
-(20b) g6
-(21w) Rxa8
-(21b) gxh5
-(22w) Rxa6
-(22b) Nf6
-(23w) Raa7
-(23b) Re8
-(24w) f3
-(24b) Ng8
-(25w) Kf1
-(25b) Kg6
-(26w) Ke2
-(26b) Bc5
-(27w) Rg7+
-(27b) Kh6
-(28w) Rxh7+
-(28b) Kg6
-(29w) Rag7+
-(29b) Kf6
-(30w) g4
-(30b) hxg4
-(31w) fxg4
+[start]                 -+<LONG
+[1w]                    (1w) e4
+[1b]                    (1b) c5
+[2w]                    (2w) d4
+[2b]                    (2b) cxd4
+[3w]                    (3w) c3
+[3b]                    (3b) dxc3
+[4w]                    (4w) Nxc3
+[4b]                    (4b) Nc6
+[5w]                    (5w) Nf3
+[5b]                    (5b) d6
+[6w]                    (6w) Bc4
+[6b]                    (6b) e6
+[7w]                    (7w) O-O
+[7b]                    (7b) Be7
+[8w]                    (8w) Qe2
+[8b]                    (8b) a6
+[9w]                    (9w) Rd1
+[9b]                    (9b) Qc7
+[10w]                   (10w) Bf4
+[10b]                   (10b) Ne5 $2
+[11w]                   (11w) Bxe5
+[11b]                   (11b) dxe5
+[12w]                   (12w) Rac1
+[12b]                   (12b) Qb8
+[13w]                   (13w) Bb5+
+[13b]                   (13b) axb5
+[14w]                   (14w) Nxb5
+[14b]                   (14b) f6
+[15w]                   (15w) Nc7+
+[15b]                   (15b) Kf7
+[16w]                   (16w) Nxa8
+[16b]                   (16b) Qxa8
+[17w]                   (17w) Rc7
+[17b]                   (17b) b6
+[18w]                   (18w) Rd8
+[18b]                   (18b) Ba6
+[19w]                   (19w) Nxe5+
+[19b]                   (19b) fxe5
+[20w]                   (20w) Qh5+
+[20b]                   (20b) g6
+[21w]                   (21w) Rxa8
+[21b]                   (21b) gxh5
+[22w]                   (22w) Rxa6
+[22b]                   (22b) Nf6
+[23w]                   (23w) Raa7
+[23b]                   (23b) Re8
+[24w]                   (24w) f3
+[24b]                   (24b) Ng8
+[25w]                   (25w) Kf1
+[25b]                   (25b) Kg6
+[26w]                   (26w) Ke2
+[26b]                   (26b) Bc5
+[27w]                   (27w) Rg7+
+[27b]                   (27b) Kh6
+[28w]                   (28w) Rxh7+
+[28b]                   (28b) Kg6
+[29w]                   (29w) Rag7+
+[29b]                   (29b) Kf6
+[30w]                   (30w) g4
+[30b]                   (30b) hxg4
+[31w]                   (31w) fxg4
 {White wins}

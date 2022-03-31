@@ -352,3 +352,39 @@ describe('Tags', function() {
 	itInvalidKey('Empty key', function(node) { node.tag('', 'Whatever'); });
 	itInvalidKey('Blank key', function(node) { node.tag(' ', 'The value'); });
 });
+
+
+describe('Invalid findById', function() {
+
+	var game = new kokopu.Game();
+	var current = game.mainVariation();
+	current = current.play('e4');
+	current = current.play('e5');
+
+	var alternative1 = current.addVariation();
+	alternative1.play('c5').play('Nf3');
+
+	var alternative2 = current.addVariation();
+	alternative2.play('e6').play('d4');
+
+	current = current.play('Bc4');
+	current = current.play('Nc6');
+	current = current.play('Qh5');
+	current = current.play('Nf6');
+	current = current.play('Qxf7#');
+	game.result('1-0');
+
+	function itInvalidId(label, id) {
+		it(label, function() {
+			test.value(game.findById(id)).is(undefined);
+		});
+	}
+
+	itInvalidId('Empty', '');
+	itInvalidId('Missing start', '1b-v0');
+	itInvalidId('Invalid variation index', '1b-vOne-start');
+	itInvalidId('Out of bound variation index', '1b-v2-start');
+	itInvalidId('Out of bound node 1', '5w');
+	itInvalidId('Out of bound node 2', '1b-v0-2b');
+	itInvalidId('Out of bound node 3', '5w-v0-start');
+});

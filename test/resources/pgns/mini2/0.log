@@ -2,24 +2,23 @@ White = {Bill Gates}
 Black = {Magnus Carlsen}
 Event = {TV Show}
 Date = {Thu Jan 23 2014}
--+<LONG
-(1w) e4
-(1b) Nc6
-(2w) Nf3
-(2b) d5
-(3w) Bd3
-(3b) Nf6
-(4w) exd5
-(4b) Qxd5
-(5w) Nc3
-(5b) Qh5
-(6w) O-O
-(6b) Bg4
-(7w) h3
-(7b) Ne5
-(8w) hxg4
-(8b) Nfxg4
-(9w) Nxe5
-(9b) Qh2#
+[start]                 -+<LONG
+[1w]                    (1w) e4
+[1b]                    (1b) Nc6
+[2w]                    (2w) Nf3
+[2b]                    (2b) d5
+[3w]                    (3w) Bd3
+[3b]                    (3b) Nf6
+[4w]                    (4w) exd5
+[4b]                    (4b) Qxd5
+[5w]                    (5w) Nc3
+[5b]                    (5b) Qh5
+[6w]                    (6w) O-O
+[6b]                    (6b) Bg4
+[7w]                    (7w) h3
+[7b]                    (7b) Ne5
+[8w]                    (8w) hxg4
+[8b]                    (8b) Nfxg4
+[9w]                    (9w) Nxe5
+[9b]                    (9b) Qh2#
 {Black wins}
-

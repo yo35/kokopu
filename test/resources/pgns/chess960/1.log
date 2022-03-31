@@ -24,45 +24,45 @@ Variant = {chess960}
 | R | N | N | K | R | B | B | Q |
 +---+---+---+---+---+---+---+---+
 w AEae - (chess960)
--+<LONG
-(1w) g3
-(1b) Nc6
-(2w) Nc3
-(2b) f5
-(3w) f4
-(3b) g6
-(4w) Nb3
-(4b) Nb6
-(5w) O-O-O
-(5b) O-O-O
-(6w) e4
-(6b) fxe4
-(7w) Nxe4
-(7b) Kb8
-(8w) Bg2
-(8b) d5
-(9w) Nec5
-(9b) e5
-(10w) fxe5
-(10b) Rxe5
-(11w) d4
-(11b) Rxe1
-(12w) Rxe1
-(12b) Bxc5
-(13w) dxc5
-(13b) Na4
-(14w) c3
-(14b) Nxc3
-(15w) bxc3
-(15b) Qxc3+
-(16w) Kd1
-(16b) Nb4
-(17w) Re2
-(17b) d4
-(18w) Nxd4
-(18b) Bxa2
-(19w) Rd2
-(19b) Bc4
-(20w) Ke1
-(20b) Nc2+
+[start]                 -+<LONG
+[1w]                    (1w) g3
+[1b]                    (1b) Nc6
+[2w]                    (2w) Nc3
+[2b]                    (2b) f5
+[3w]                    (3w) f4
+[3b]                    (3b) g6
+[4w]                    (4w) Nb3
+[4b]                    (4b) Nb6
+[5w]                    (5w) O-O-O
+[5b]                    (5b) O-O-O
+[6w]                    (6w) e4
+[6b]                    (6b) fxe4
+[7w]                    (7w) Nxe4
+[7b]                    (7b) Kb8
+[8w]                    (8w) Bg2
+[8b]                    (8b) d5
+[9w]                    (9w) Nec5
+[9b]                    (9b) e5
+[10w]                   (10w) fxe5
+[10b]                   (10b) Rxe5
+[11w]                   (11w) d4
+[11b]                   (11b) Rxe1
+[12w]                   (12w) Rxe1
+[12b]                   (12b) Bxc5
+[13w]                   (13w) dxc5
+[13b]                   (13b) Na4
+[14w]                   (14w) c3
+[14b]                   (14b) Nxc3
+[15w]                   (15w) bxc3
+[15b]                   (15b) Qxc3+
+[16w]                   (16w) Kd1
+[16b]                   (16b) Nb4
+[17w]                   (17w) Re2
+[17b]                   (17b) d4
+[18w]                   (18w) Nxd4
+[18b]                   (18b) Bxa2
+[19w]                   (19w) Rd2
+[19b]                   (19b) Bc4
+[20w]                   (20w) Ke1
+[20b]                   (20b) Nc2+
 {Black wins}

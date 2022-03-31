@@ -18,12 +18,12 @@ Variant = {black-king-only}
 |   |   |   |   |   |   |   |   |
 +---+---+---+---+---+---+---+---+
 w - - (black-king-only)
--+<LONG
-(1w) Nxf7+
-(1b) Kg8
-(2w) Nh6+
-(2b) Kh8
-(3w) Qg8+
-(3b) Rxg8
-(4w) Nf7#
+[start]                 -+<LONG
+[1w]                    (1w) Nxf7+
+[1b]                    (1b) Kg8
+[2w]                    (2w) Nh6+
+[2b]                    (2b) Kh8
+[3w]                    (3w) Qg8+
+[3b]                    (3b) Rxg8
+[4w]                    (4w) Nf7#
 {White wins}

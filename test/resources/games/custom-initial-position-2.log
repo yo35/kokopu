@@ -17,6 +17,6 @@ Event = {Custom initial position (Black to play)}
 | R | N | B | Q |   | R | K |   |
 +---+---+---+---+---+---+---+---+
 b kq -
--+<LONG
-(4b) O-O
+[start]                 -+<LONG
+[4b]                    (4b) O-O
 {Line}

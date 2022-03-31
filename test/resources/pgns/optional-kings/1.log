@@ -18,6 +18,6 @@ Variant = {white-king-only}
 |   |   |   |   |   |   | K |   |
 +---+---+---+---+---+---+---+---+
 b - - (white-king-only)
--+<LONG
-(1b) Ra1#
+[start]                 -+<LONG
+[1b]                    (1b) Ra1#
 {Black wins}

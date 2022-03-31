@@ -1,10 +1,10 @@
 Event = {A valid game at the end of the file}
--+<LONG
-(1w) e4
-(1b) e5
-(2w) Bc4
-(2b) Nc6
-(3w) Qh5
-(3b) Nf6
-(4w) Qxf7#
+[start]                 -+<LONG
+[1w]                    (1w) e4
+[1b]                    (1b) e5
+[2w]                    (2w) Bc4
+[2b]                    (2b) Nc6
+[3w]                    (3w) Qh5
+[3b]                    (3b) Nf6
+[4w]                    (4w) Qxf7#
 {White wins}

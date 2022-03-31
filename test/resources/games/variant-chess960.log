@@ -18,6 +18,6 @@ Variant = {chess960}
 | R | N | B | Q | N | K | R | B |
 +---+---+---+---+---+---+---+---+
 w AGag - (chess960)
--+<LONG
-(1w) O-O
+[start]                 -+<LONG
+[1w]                    (1w) O-O
 {Line}

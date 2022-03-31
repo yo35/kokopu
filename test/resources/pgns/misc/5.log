@@ -1,25 +1,25 @@
 Event = {Game with long/short comment descriptors}
--+<LONG {Header comment of main variation => always LONG.}<LONG
-(1w) e4
-(1b) e5
- |
- +---+ {Within short variation, always SHORT.}
- |  (1b) e6 $18 {Within short variation, always SHORT.}
- |
-(2w) Nf3
-(2b) Nc6
-(3w) Bb5
- |
- +---+<LONG {No empty line => SHORT.}
- |  (3w) Bc4
- |  (3b) Bc5 {No empty line => SHORT.}
- |
-(3b) a6
-(4w) Bxc6
- |
- +---+<LONG {Empty line => LONG.}<LONG
- |  (4w) Ba4
- |  (4b) b5 {Empty line => LONG.}<LONG
- |
-(4b) dxc6
+[start]                 -+<LONG {Header comment of main variation => always LONG.}<LONG
+[1w]                    (1w) e4
+[1b]                    (1b) e5
+                         |
+[1b-v0-start]            +---+ {Within short variation, always SHORT.}
+[1b-v0-1b]               |  (1b) e6 $18 {Within short variation, always SHORT.}
+                         |
+[2w]                    (2w) Nf3
+[2b]                    (2b) Nc6
+[3w]                    (3w) Bb5
+                         |
+[3w-v0-start]            +---+<LONG {No empty line => SHORT.}
+[3w-v0-3w]               |  (3w) Bc4
+[3w-v0-3b]               |  (3b) Bc5 {No empty line => SHORT.}
+                         |
+[3b]                    (3b) a6
+[4w]                    (4w) Bxc6
+                         |
+[4w-v0-start]            +---+<LONG {Empty line => LONG.}<LONG
+[4w-v0-4w]               |  (4w) Ba4
+[4w-v0-4b]               |  (4b) b5 {Empty line => LONG.}<LONG
+                         |
+[4b]                    (4b) dxc6
 {Draw}

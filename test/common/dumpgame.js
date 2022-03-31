@@ -26,6 +26,9 @@
 var kokopu = require('../../src/index');
 
 
+var ID_PADDING = '                        ';
+
+
 /**
  * Dump the content of a Game object.
  *
@@ -120,10 +123,18 @@ module.exports = function(game, iterationStyle) {
 		}
 	}
 
+	function formatNodeOrVariationId(id) {
+		var result = '[' + id + ']';
+		while (result.length < ID_PADDING.length) {
+			result += ' ';
+		}
+		return result;
+	}
+
 	function dumpNode(node, indent) {
 
 		// Describe the move
-		res += indent + '(' + node.fullMoveNumber() + node.moveColor() + ') ' + node.notation();
+		res += formatNodeOrVariationId(node.id()) + indent + '(' + node.fullMoveNumber() + node.moveColor() + ') ' + node.notation();
 		dumpNags(node);
 		dumpTags(node);
 		dumpComment(node);
@@ -132,11 +143,11 @@ module.exports = function(game, iterationStyle) {
 		// Print the sub-variations
 		var subVariations = node.variations();
 		for(var k=0; k<subVariations.length; ++k) {
-			res += indent + ' |\n';
+			res += ID_PADDING + indent + ' |\n';
 			dumpVariation(subVariations[k], indent + ' |  ', indent + ' +--');
 		}
 		if(subVariations.length > 0) {
-			res += indent + ' |\n';
+			res += ID_PADDING + indent + ' |\n';
 		}
 	}
 
@@ -144,7 +155,7 @@ module.exports = function(game, iterationStyle) {
 	function dumpVariation(variation, indent, indentFirst) {
 
 		// Variation header
-		res += indentFirst + '-+';
+		res += formatNodeOrVariationId(variation.id()) + indentFirst + '-+';
 		if(variation.isLongVariation()) {
 			res += '<LONG';
 		}
