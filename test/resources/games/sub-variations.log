@@ -1,0 +1,39 @@
+Event = {Game with variations and sub-variations}
+-+<LONG {I'm the main variation header comment.}
+(1w) e4
+(1b) e5
+ |
+ +---+
+ |  (1b) c6
+ |
+ +---+
+ |  (1b) c5
+ |  (2w) Nc3
+ |   |
+ |   +---+
+ |   |  (2w) Nf3
+ |   |  (2b) d6
+ |   |
+ |
+(2w) Nf3
+ |
+ +---+
+ |
+(2b) Nc6
+(3w) Bc4
+ |
+ +---+
+ |  (3w) Bb5
+ |  (3b) a6
+ |   |
+ |   +---+
+ |   |  (3b) Nf6
+ |   |
+ |  (4w) Ba4
+ |   |
+ |   +---+
+ |   |  (4w) Bxc6
+ |   |  (4b) dxc6
+ |   |
+ |
+{Line}

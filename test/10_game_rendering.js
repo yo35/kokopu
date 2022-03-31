@@ -25,6 +25,7 @@
 
 var kokopu = require('../src/index');
 var readText = require('./common/readtext');
+var dumpGame = require('./common/dumpgame');
 var test = require('unit.js');
 
 var oneGamefactories = {
@@ -432,6 +433,23 @@ describe('Write ASCII', function() {
 
 	for (var f in oneGamefactories) {
 		itAscii(f, oneGamefactories[f]);
+	}
+});
+
+
+describe('Write ASCII (extensive)', function() {
+
+	function itAsciiExtensive(filename, iterationStyle, factory) {
+		it(filename + ' (' + iterationStyle + ')', function() {
+			var expectedText = readText('games/' + filename + '.log').trim();
+			var game = factory();
+			test.value(dumpGame(game, iterationStyle).trim()).is(expectedText);
+		});
+	}
+
+	for (var f in oneGamefactories) {
+		itAsciiExtensive(f, 'using next', oneGamefactories[f]);
+		itAsciiExtensive(f, 'using nodes', oneGamefactories[f]);
 	}
 });
 

@@ -1,0 +1,16 @@
+Event = {Game with removed variation.}
+-+<LONG
+(1w) e4
+(1b) e5
+ |
+ +---+
+ |  (1b) c5
+ |
+ +---+
+ |  (1b) c6
+ |
+ +---+
+ |  (1b) e6
+ |
+(2w) Nf3
+{Line}

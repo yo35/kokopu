@@ -1,0 +1,25 @@
+Event = {Game with promoted variation.}
+-+<LONG
+(1w) e4
+(1b) d5
+ |
+ +---+
+ |  (1b) c5
+ |
+ +---+
+ |  (1b) e5
+ |  (2w) Nf3 {Used to be the main line}
+ |
+ +---+
+ |  (1b) c6
+ |
+ +---+
+ |  (1b) g6
+ |
+ +---+
+ |  (1b) d6
+ |  (2w) d4 {Used to be a nested variation}
+ |
+(2w) exd5
+(2b) Qxd5 {Used to be the variation at index 1}
+{Line}

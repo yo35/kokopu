@@ -27,6 +27,7 @@ var kokopu = require('../src/index');
 var readCSV = require('./common/readcsv');
 var readText = require('./common/readtext');
 var resourceExists = require('./common/resourceExists');
+var dumpGame = require('./common/dumpgame');
 var test = require('unit.js');
 
 
@@ -104,175 +105,13 @@ describe('Read PGN - Game count', function() {
 });
 
 
-/**
- * Dump the content of a Game object read from a `.pgn` file.
- *
- * @param {Game} game
- * @param {string} iterationStyle Either `'using-next'` or `'using-nodes'`
- * @returns {string}
- */
-function dumpGame(game, iterationStyle) {
-	var res = '\n';
-
-	function dumpHeader(key, value) {
-		if(value === undefined) { return; }
-
-		res += key + ' = {';
-		if(value instanceof Date) {
-			res += value.toDateString();
-		}
-		else if(typeof value === 'object') {
-
-			// Extract the subkeys of the object `value`.
-			var subkeys = [];
-			for(var subkey in value) {
-				subkeys.push(subkey);
-			}
-			subkeys.sort();
-
-			// Print the value of each subkey.
-			if(subkeys.length === 0) {
-				res += '{}';
-			}
-			else {
-				res += '{ ';
-				for(var i=0; i<subkeys.length; ++i) {
-					if(i !== 0) { res += ', '; }
-					res += subkeys[i] + ':' + value[subkeys[i]];
-				}
-				res += ' }';
-			}
-		}
-		else {
-			res += value;
-		}
-		res += '}\n';
-	}
-
-	function dumpResult(result) {
-		res += '{';
-		switch(result) {
-			case '1-0': res += 'White wins'; break;
-			case '0-1': res += 'Black wins'; break;
-			case '1/2-1/2': res += 'Draw'; break;
-			case '*': res += 'Line'; break;
-			default: break;
-		}
-		res += '}\n';
-	}
-
-	function dumpVariant(variant) {
-		if(variant !== 'regular') {
-			res += 'Variant = {' + variant + '}\n';
-		}
-	}
-
-	function dumpInitialPosition(position) {
-		if(position.fen() !== new kokopu.Position().fen()) {
-			res += position.ascii() + '\n';
-		}
-	}
-
-	function dumpNags(node) {
-		var nags = node.nags();
-		for(var k=0; k<nags.length; ++k) {
-			res += ' $' + nags[k];
-		}
-	}
-
-	function dumpTags(node) {
-		var tags = node.tags();
-		for(var k=0; k<tags.length; ++k) {
-			var key = tags[k];
-			res += ' [' + key + ' = {' + node.tag(key) + '}]';
-		}
-	}
-
-	function dumpComment(node) {
-		var comment = node.comment();
-		if(comment !== undefined) {
-			res += ' {' + node.comment() + '}';
-			if(node.isLongComment()) {
-				res += '<LONG';
-			}
-		}
-	}
-
-	function dumpNode(node, indent) {
-
-		// Describe the move
-		res += indent + '(' + node.fullMoveNumber() + node.moveColor() + ') ' + node.notation();
-		dumpNags(node);
-		dumpTags(node);
-		dumpComment(node);
-		res += '\n';
-
-		// Print the sub-variations
-		var subVariations = node.variations();
-		for(var k=0; k<subVariations.length; ++k) {
-			res += indent + ' |\n';
-			dumpVariation(subVariations[k], indent + ' |  ', indent + ' +--');
-		}
-		if(subVariations.length > 0) {
-			res += indent + ' |\n';
-		}
-	}
-
-	// Recursive function to dump a variation.
-	function dumpVariation(variation, indent, indentFirst) {
-
-		// Variation header
-		res += indentFirst + '-+';
-		if(variation.isLongVariation()) {
-			res += '<LONG';
-		}
-		dumpNags(variation);
-		dumpTags(variation);
-		dumpComment(variation);
-		res += '\n';
-
-		// List of moves
-		if(iterationStyle === 'using-next') {
-			var node = variation.first();
-			while(node !== undefined) {
-				dumpNode(node, indent);
-				node = node.next();
-			}
-		}
-		else if(iterationStyle === 'using-nodes') {
-			variation.nodes().forEach(function(nodeInArray) {
-				dumpNode(nodeInArray, indent);
-			});
-		}
-	}
-
-	dumpHeader('White'     , game.playerName ('w'));
-	dumpHeader('WhiteElo'  , game.playerElo  ('w'));
-	dumpHeader('WhiteTitle', game.playerTitle('w'));
-	dumpHeader('Black'     , game.playerName ('b'));
-	dumpHeader('BlackElo'  , game.playerElo  ('b'));
-	dumpHeader('BlackTitle', game.playerTitle('b'));
-	dumpHeader('Event'     , game.event    ());
-	dumpHeader('Round'     , game.round    ());
-	dumpHeader('Site'      , game.site     ());
-	dumpHeader('Date'      , game.date     ());
-	dumpHeader('Annotator' , game.annotator());
-	dumpVariant(game.variant());
-	dumpInitialPosition(game.initialPosition());
-	dumpVariation(game.mainVariation(), '', '');
-	dumpResult(game.result());
-
-	return res;
-}
-
-
-function pgnItemChecker(pgnName, gameIndex, iterationStyle, loader) {
+function pgnItemChecker(pgnName, gameIndex, loader) {
 	return function() {
 
 		// LOG type => ensure that the item is valid, and compare its dump result to the descriptor.
 		if(getItemType(pgnName, gameIndex) === 'log') {
 			var expectedDescriptor = loadValidItemDescriptor(pgnName, gameIndex);
-			test.value(dumpGame(loader(gameIndex), iterationStyle).trim()).is(expectedDescriptor);
+			test.value(dumpGame(loader(gameIndex)).trim()).is(expectedDescriptor);
 		}
 
 		// ERR type => ensure that an exception is thrown, and check its attributes.
@@ -291,7 +130,7 @@ function pgnItemChecker(pgnName, gameIndex, iterationStyle, loader) {
 describe('Read PGN - Game content (direct access)', function() {
 	testData().forEach(function(elem) {
 		for(var gameIndex = 0; gameIndex < elem.gameCount; ++gameIndex) {
-			it('File ' + elem.label + ' - Game ' + gameIndex, pgnItemChecker(elem.label, gameIndex, 'using-next', function(i) {
+			it('File ' + elem.label + ' - Game ' + gameIndex, pgnItemChecker(elem.label, gameIndex, function(i) {
 				return kokopu.pgnRead(elem.pgn, i);
 			}));
 		}
@@ -317,13 +156,13 @@ describe('Read PGN - Game content (database)', function() {
 		var holder = new DatabaseHolder(elem.pgn);
 		for(var gameIndex = 0; gameIndex < elem.gameCount; ++gameIndex) {
 			if(gameIndex % 3 === 2) { continue; }
-			it('File ' + elem.label + ' - Game ' + gameIndex, pgnItemChecker(elem.label, gameIndex, 'using-nodes', function(i) {
+			it('File ' + elem.label + ' - Game ' + gameIndex, pgnItemChecker(elem.label, gameIndex, function(i) {
 				return holder.database().game(i);
 			}));
 		}
 		for(var gameIndex = 0; gameIndex < elem.gameCount; ++gameIndex) {
 			if(gameIndex % 3 !== 2) { continue; }
-			it('File ' + elem.label + ' - Game ' + gameIndex, pgnItemChecker(elem.label, gameIndex, 'using-nodes', function(i) {
+			it('File ' + elem.label + ' - Game ' + gameIndex, pgnItemChecker(elem.label, gameIndex, function(i) {
 				return holder.database().game(i);
 			}));
 		}

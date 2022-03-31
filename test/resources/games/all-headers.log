@@ -1,0 +1,18 @@
+White = {  Light side
+
+}
+WhiteElo = {1942}
+WhiteTitle = {CM}
+Black = {Dark
+ 
+side}
+BlackElo = {2421}
+BlackTitle = {IM}
+Event = {An event name
+spanning several lines}
+Round = {1}
+Site = {Somewhere...}
+Date = {Sat Sep 04 2021}
+Annotator = { The   Annotator }
+-+<LONG
+{Black wins}

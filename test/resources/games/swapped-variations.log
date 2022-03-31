@@ -1,0 +1,28 @@
+Event = {Game with swapped variations.}
+-+<LONG
+(1w) e4
+(1b) e5
+ |
+ +---+
+ |  (1b) c5
+ |
+ +---+
+ |  (1b) g6 {Used to be at index 4}
+ |
+ +---+
+ |  (1b) d5
+ |
+ +---+
+ |  (1b) f5
+ |
+ +---+
+ |  (1b) c6 {Used to be at index 1}
+ |
+ +---+
+ |  (1b) b5
+ |
+ +---+
+ |  (1b) a5
+ |
+(2w) Nf3
+{Line}

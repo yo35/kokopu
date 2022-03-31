@@ -1,0 +1,21 @@
+White = {Alice}
+Black = {Bob}
+Event = {1st International Open of Whatever}
+-+<LONG
+(1w) e4
+(1b) e5
+ |
+ +---+
+ |  (1b) c5
+ |  (2w) Nf3
+ |
+ +---+
+ |  (1b) e6
+ |  (2w) d4
+ |
+(2w) Bc4
+(2b) Nc6
+(3w) Qh5
+(3b) Nf6
+(4w) Qxf7# {That is the Scholar's Mate}
+{White wins}
