@@ -74,36 +74,13 @@ function formatPlayer(key, playerName, playerElo, playerTitle) {
 }
 
 
-/* eslint-disable no-mixed-spaces-and-tabs */
-
-var NAG_SYMBOLS = {
-	 3: '!!' ,    // very good move
-	 1: '!'  ,    // good move
-	 5: '!?' ,    // interesting move
-	 6: '?!' ,    // questionable move
-	 2: '?'  ,    // bad move
-	 4: '??' ,    // very bad move
-	18: '+-' ,    // White has a decisive advantage
-	16: '\u00b1', // White has a moderate advantage
-	14: '\u2a72', // White has a slight advantage
-	10: '='  ,    // equal position
-	13: '\u221e', // unclear position
-	15: '\u2a71', // Black has a slight advantage
-	17: '\u2213', // Black has a moderate advantage
-	19: '-+' ,    // Black has a decisive advantage
-};
-
-/* eslint-enable no-mixed-spaces-and-tabs */
-
-
 function formatAnnotations(node) {
 	var result = [];
 
 	// NAGs
 	var nags = node.nags();
 	for (var k = 0; k < nags.length; ++k) {
-		var nag = nags[k];
-		result.push(nag in NAG_SYMBOLS ? NAG_SYMBOLS[nag] : '$' + nag);
+		result.push(helper.nagSymbol(nags[k]));
 	}
 
 	// Tags

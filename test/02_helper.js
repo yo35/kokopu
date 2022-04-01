@@ -25,6 +25,7 @@
 
 var kokopu = require('../src/index');
 var test = require('unit.js');
+var readText = require('./common/readtext');
 
 
 describe('Square color', function() {
@@ -86,5 +87,26 @@ describe('Variant with canonical start position', function() {
 
 	it('Error with invalid variant', function() {
 		test.exception(function() { kokopu.variantWithCanonicalStartPosition('whatever'); }).isInstanceOf(kokopu.exception.IllegalArgument);
+	});
+});
+
+
+describe('NAG symbols', function() {
+	var nags = [ 3, 1, 5, 6, 2, 4, 18, 16, 14, 10, 11, 13, 15, 17, 19, 7, 8, 22, 32, 36, 40, 132, 138, 140, 142, 146 ];
+	var expectedSymbols = readText('nags.txt').trim().split(/\s+/);
+
+	function itNagWithSymbol(i) {
+		var nag = nags[i];
+		it('NAG ' + nag, function() {
+			test.value(kokopu.nagSymbol(nag)).is(expectedSymbols[i]);
+		});
+	}
+
+	for (var i = 0; i < nags.length; ++i) {
+		itNagWithSymbol(i);
+	}
+
+	it('NAG without symbol', function() {
+		test.value(kokopu.nagSymbol(99)).is('$99');
 	});
 });

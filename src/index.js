@@ -33,6 +33,7 @@ exports.squareToCoordinates = helper.squareToCoordinates;
 exports.coordinatesToSquare = helper.coordinatesToSquare;
 exports.oppositeColor = helper.oppositeColor;
 exports.variantWithCanonicalStartPosition = helper.variantWithCanonicalStartPosition;
+exports.nagSymbol = helper.nagSymbol;
 
 exports.isMoveDescriptor = require('./movedescriptor').isMoveDescriptor;
 

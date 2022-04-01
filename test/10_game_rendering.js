@@ -172,42 +172,6 @@ var oneGamefactories = {
 		return game;
 	},
 
-	'nags': function() {
-		var game = new kokopu.Game();
-		game.event('Game with NAGs');
-		var current = game.mainVariation().play('Nf3');
-		current.addNag(3);
-		current = current.play('Nf6');
-		current.addNag(1);
-		current = current.play('Ng1');
-		current.addNag(5);
-		current = current.play('Ng8');
-		current.addNag(6);
-		current = current.play('Nf3');
-		current.addNag(2);
-		current = current.play('Nf6');
-		current.addNag(4);
-		current = current.play('Ng1');
-		current.addNag(18);
-		current = current.play('Ng8');
-		current.addNag(16);
-		current = current.play('Nf3');
-		current.addNag(14);
-		current = current.play('Nf6');
-		current.addNag(10);
-		current = current.play('Ng1');
-		current.addNag(13);
-		current = current.play('Ng8');
-		current.addNag(15);
-		current = current.play('Nf3');
-		current.addNag(17);
-		current = current.play('Nf6');
-		current.addNag(19);
-		current = current.play('Ng1');
-		current.addNag(42);
-		return game;
-	},
-
 	'annotations-1': function() {
 		var game = new kokopu.Game();
 		game.event('Game with annotations 1');
