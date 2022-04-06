@@ -532,23 +532,6 @@ Node.prototype.previous = function() {
 
 
 /**
- * Apply the move descriptors of all the nodes until the given one to the given {@link Position} object.
- *
- * @param {object} variationInfo VariationInfo struct
- * @param {object} targetNodeInfo NodeInfo struct
- * @param {Position} position
- * @ignore
- */
-function avanceToNode(variationInfo, targetNodeInfo, position) {
-	var current = variationInfo.child;
-	while (current !== targetNodeInfo) {
-		applyMoveDescriptor(position, current);
-		current = current.child;
-	}
-}
-
-
-/**
  * Return the initial position of the given variation.
  *
  * @param {object} variationInfo VariationInfo
@@ -561,7 +544,11 @@ function rebuildVariationPosition(variationInfo) {
 	}
 	else {
 		var position = rebuildVariationPosition(variationInfo.parentNode.parentVariation);
-		avanceToNode(variationInfo.parentNode.parentVariation, variationInfo.parentNode, position);
+		var current = variationInfo.parentNode.parentVariation.child;
+		while (current !== variationInfo.parentNode) {
+			applyMoveDescriptor(position, current);
+			current = current.child;
+		}
 		return position;
 	}
 }
@@ -1024,13 +1011,7 @@ function buildVariationIdPrefix(variationInfo) {
  * @returns {Node?} `undefined` if the current variation is the main one (see {@link Game#mainVariation}).
  */
 Variation.prototype.parentNode = function() {
-	if (this._info.parentNode instanceof Game) {
-		return undefined;
-	}
-	else {
-		var position = rebuildVariationPosition(this._info);
-		return new Node(this._info.parentNode, position);
-	}
+	return this._info.parentNode instanceof Game ? undefined : new Node(this._info.parentNode, this._initialPosition);
 };
 
 
