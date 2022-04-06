@@ -433,6 +433,67 @@ describe('Check IDs', function() {
 });
 
 
+describe('Check backward iterators', function() {
+
+	function checkNode(parentVariation, previousNode, node) {
+
+		// Check the parent variation.
+		var actualParentVariation = node.parentVariation();
+		test.value(actualParentVariation.id()).is(parentVariation.id());
+		test.value(actualParentVariation.initialPosition().fen()).is(parentVariation.initialPosition().fen());
+
+		// Check the previous node.
+		var actualPreviousNode = node.previous();
+		if (previousNode) {
+			test.value(actualPreviousNode.id()).is(previousNode.id());
+			test.value(actualPreviousNode.positionBefore().fen()).is(previousNode.positionBefore().fen());
+		}
+		else {
+			test.value(actualPreviousNode).isNotTrue();
+		}
+
+		// Check the variations.
+		var subVariations = node.variations();
+		for(var k = 0; k < subVariations.length; ++k) {
+			checkVariation(node, subVariations[k]);
+		}
+	}
+
+	function checkVariation(parentNode, variation) {
+
+		// Check the current variation.
+		var actualParentNode = variation.parentNode();
+		if (parentNode) {
+			test.value(actualParentNode.id()).is(parentNode.id());
+			test.value(actualParentNode.positionBefore().fen()).is(parentNode.positionBefore().fen());
+		}
+		else {
+			test.value(actualParentNode).isNotTrue();
+		}
+
+		// Check the moves.
+		var node = variation.first();
+		var previousNode = false;
+		while (node) {
+			checkNode(variation, previousNode, node);
+			previousNode = node;
+			node = node.next();
+		}
+	}
+
+	function itBackwardIterators(filename, factory) {
+		it(filename, function() {
+			var game = factory();
+			checkVariation(false, game.mainVariation());
+		});
+	}
+
+	for (var f in oneGamefactories) {
+		itBackwardIterators(f, oneGamefactories[f]);
+	}
+});
+
+
 describe('Write ASCII', function() {
 
 	function itAscii(filename, factory) {

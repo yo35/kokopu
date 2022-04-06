@@ -502,6 +502,72 @@ function buildNodeId(nodeInfo) {
 
 
 /**
+ * Return the {@link Variation} that owns the current node.
+ *
+ * @returns {Variation}
+ */
+Node.prototype.parentVariation = function() {
+	var position = rebuildVariationPosition(this._info.parentVariation);
+	return new Variation(this._info.parentVariation, position);
+};
+
+
+/**
+ * Return the {@link Node} that comes before the current one in their parent variation.
+ *
+ * @returns {Node?} `undefined` if the current node is the first one of the variation.
+ */
+Node.prototype.previous = function() {
+	var position = rebuildVariationPosition(this._info.parentVariation);
+	var current = this._info.parentVariation.child;
+	if (current === this._info) {
+		return undefined;
+	}
+	while (current.child !== this._info) {
+		applyMoveDescriptor(position, current);
+		current = current.child;
+	}
+	return new Node(current, position);
+};
+
+
+/**
+ * Apply the move descriptors of all the nodes until the given one to the given {@link Position} object.
+ *
+ * @param {object} variationInfo VariationInfo struct
+ * @param {object} targetNodeInfo NodeInfo struct
+ * @param {Position} position
+ * @ignore
+ */
+function avanceToNode(variationInfo, targetNodeInfo, position) {
+	var current = variationInfo.child;
+	while (current !== targetNodeInfo) {
+		applyMoveDescriptor(position, current);
+		current = current.child;
+	}
+}
+
+
+/**
+ * Return the initial position of the given variation.
+ *
+ * @param {object} variationInfo VariationInfo
+ * @returns {Position}
+ * @ignore
+ */
+function rebuildVariationPosition(variationInfo) {
+	if (variationInfo.parentNode instanceof Game) {
+		return new Position(variationInfo.parentNode._initialPosition);
+	}
+	else {
+		var position = rebuildVariationPosition(variationInfo.parentNode.parentVariation);
+		avanceToNode(variationInfo.parentNode.parentVariation, variationInfo.parentNode, position);
+		return position;
+	}
+}
+
+
+/**
  * SAN representation of the move associated to the current node.
  *
  * @returns {string}
@@ -538,12 +604,7 @@ Node.prototype.positionBefore = function() {
  */
 Node.prototype.position = function() {
 	var position = this.positionBefore();
-	if(this._info.moveDescriptor === undefined) {
-		position.playNullMove();
-	}
-	else {
-		position.play(this._info.moveDescriptor);
-	}
+	applyMoveDescriptor(position, this._info);
 	return position;
 };
 
@@ -569,9 +630,9 @@ Node.prototype.moveColor = function() {
 
 
 /**
- * Go to the next move within the same variation.
+ * Return the {@link Node} that comes after the current one in their parent variation.
  *
- * @returns {Node?} `undefined` if the current move is the last move of the variation, or a node corresponding to the next move otherwise.
+ * @returns {Node?} `undefined` if the current node is the last one of the variation.
  */
 Node.prototype.next = function() {
 	if (!this._info.child) {
@@ -955,6 +1016,22 @@ function buildVariationIdPrefix(variationInfo) {
 		return parentNodeId + '-v' + variationIndex + '-';
 	}
 }
+
+
+/**
+ * Return the {@link Node} to which the current variation is attached.
+ *
+ * @returns {Node?} `undefined` if the current variation is the main one (see {@link Game#mainVariation}).
+ */
+Variation.prototype.parentNode = function() {
+	if (this._info.parentNode instanceof Game) {
+		return undefined;
+	}
+	else {
+		var position = rebuildVariationPosition(this._info);
+		return new Node(this._info.parentNode, position);
+	}
+};
 
 
 /**
