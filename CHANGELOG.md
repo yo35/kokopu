@@ -1,6 +1,12 @@
 ChangeLog
 =========
 
+2.6.0 (April 6, 2022)
+---------------------
+* Add methods to move backward in the move tree: `Node#previous()`, `Node#parentVariation()` and `Variation#parentNode()`.
+* Introduce `nagSymbol(..)` to retrieve the human-readable symbols associated to each
+[NAG](https://en.wikipedia.org/wiki/Numeric_Annotation_Glyphs).
+
 2.5.0 (March 31, 2022)
 ----------------------
 * Introduce `Node#id()`, `Variation#id()` and `Game#findById(..)`.
