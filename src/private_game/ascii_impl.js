@@ -125,7 +125,7 @@ exports.ascii = function(game) {
 	if (variant !== 'regular') {
 		lines.push('Variant: ' + variant);
 	}
-	if (!helper.variantWithCanonicalStartPosition(variant) || game._initialPosition.fen() !== new Position(variant).fen()) {
+	if (!helper.variantWithCanonicalStartPosition(variant) || !Position.isEqual(game._initialPosition, new Position(variant))) {
 		lines.push(game._initialPosition.ascii());
 	}
 

@@ -317,3 +317,86 @@ describe('Position setters', function() {
 		});
 	});
 });
+
+
+describe('Position equality', function() {
+
+	function checkIsEqual(p1, p2, expected) {
+		test.value(kokopu.Position.isEqual(p1, p2)).is(expected);
+		test.value(kokopu.Position.isEqual(p2, p1)).is(expected);
+	}
+
+	it('On copy (base)', function() {
+		var p1 = new kokopu.Position();
+		var p2 = new kokopu.Position(p1);
+		checkIsEqual(p1, p2, true);
+	});
+	it('On copy (FEN)', function() {
+		var p1 = new kokopu.Position(customFEN);
+		var p2 = new kokopu.Position(p1);
+		checkIsEqual(p1, p2, true);
+	});
+	it('On copy (with variant)', function() {
+		var p1 = new kokopu.Position('horde', customFENHorde);
+		var p2 = new kokopu.Position(p1);
+		checkIsEqual(p1, p2, true);
+	});
+
+	function itOnBoardChange(label, square, firstValue, secondValue) {
+		it('On board changed ' + label, function() {
+			var p1 = new kokopu.Position();
+			var p2 = new kokopu.Position();
+			p2.square(square, firstValue);
+			checkIsEqual(p1, p2, false);
+			p2.square(square, secondValue);
+			checkIsEqual(p1, p2, true);
+		});
+	}
+	itOnBoardChange(1, 'b8', '-', 'bn');
+	itOnBoardChange(2, 'a1', '-', 'wr');
+	itOnBoardChange(3, 'e4', 'bq', '-');
+
+	it('On turn changed', function() {
+		var p1 = new kokopu.Position();
+		var p2 = new kokopu.Position();
+		p2.turn('b');
+		checkIsEqual(p1, p2, false);
+		p2.turn('w');
+		checkIsEqual(p1, p2, true);
+	});
+
+	function itOnCastlingChange(label, castle) {
+		it('On castling changed ' + label, function() {
+			var p1 = new kokopu.Position();
+			var p2 = new kokopu.Position();
+			p2.castling(castle, false);
+			checkIsEqual(p1, p2, false);
+			p2.castling(castle, true);
+			checkIsEqual(p1, p2, true);
+		});
+	}
+	itOnCastlingChange(1, 'wk');
+	itOnCastlingChange(2, 'bq');
+
+	it('On en-passant changed', function() {
+		var p1 = new kokopu.Position(customFEN);
+		var p2 = new kokopu.Position(customFEN);
+		p2.enPassant('-');
+		checkIsEqual(p1, p2, false);
+		p2.enPassant('d');
+		checkIsEqual(p1, p2, true);
+	});
+
+	it('With distinct variants', function() {
+		var p1 = new kokopu.Position('regular', 'empty');
+		var p2 = new kokopu.Position('antichess', 'empty');
+		checkIsEqual(p1, p2, false);
+	});
+
+	it('With non-position objects', function() {
+		var pos = new kokopu.Position();
+		var obj = {};
+		checkIsEqual(pos, obj, false);
+		checkIsEqual(obj, obj, false);
+	});
+});

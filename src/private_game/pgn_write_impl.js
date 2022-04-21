@@ -205,7 +205,7 @@ function writeGame(game) {
 	result += '[Result "' + game.result() + '"]\n';
 
 	var variant = game.variant();
-	var hasFENHeader = !helper.variantWithCanonicalStartPosition(variant) || game._initialPosition.fen() !== new Position(variant).fen();
+	var hasFENHeader = !helper.variantWithCanonicalStartPosition(variant) || !Position.isEqual(game._initialPosition, new Position(variant));
 
 	// Additional tags (ASCII order by tag name)
 	result += writeOptionalHeader('Annotator', game.annotator());

@@ -245,3 +245,17 @@ exports.makeCopy = function(position) {
 		king     : position.king.slice()
 	};
 };
+
+
+exports.isEqual = function(pos1, pos2) {
+	if (pos1.turn !== pos2.turn || pos1.variant !== pos2.variant) {
+		return false;
+	}
+	for (var sq=0; sq<120; sq += (sq & 0x7)===7 ? 9 : 1) {
+		if (pos1.board[sq] !== pos2.board[sq]) {
+			return false;
+		}
+	}
+	// No check on `.legal` and `.king` as they are computed attributes.
+	return pos1.castling[0] === pos2.castling[0] && pos1.castling[1] === pos2.castling[1] && pos1.enPassant === pos2.enPassant;
+};

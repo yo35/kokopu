@@ -223,6 +223,19 @@ Position.prototype.resetHorde = function() {
 };
 
 
+/**
+ * Check whether both given objects represent the same chess position (i.e. the same chess variant, same board,
+ * and same turn/castling/en-passant flags).
+ *
+ * @param {Position} pos1
+ * @param {Position} pos2
+ * @returns {boolean}
+ */
+Position.isEqual = function(pos1, pos2) {
+	return pos1 instanceof Position && pos2 instanceof Position && impl.isEqual(pos1._impl, pos2._impl);
+};
+
+
 
 // -----------------------------------------------------------------------------
 // FEN & ASCII conversion
