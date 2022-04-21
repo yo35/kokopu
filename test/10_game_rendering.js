@@ -532,17 +532,16 @@ describe('Write ASCII', function() {
 
 describe('Write ASCII (extensive)', function() {
 
-	function itAsciiExtensive(filename, iterationStyle, factory) {
-		it(filename + ' (' + iterationStyle + ')', function() {
+	function itAsciiExtensive(filename, factory) {
+		it(filename, function() {
 			var expectedText = readText('games/' + filename + '/dump.txt').trim();
 			var game = factory();
-			test.value(dumpGame(game, iterationStyle).trim()).is(expectedText);
+			test.value(dumpGame(game).trim()).is(expectedText);
 		});
 	}
 
 	for (var f in oneGamefactories) {
-		itAsciiExtensive(f, 'using next', oneGamefactories[f]);
-		itAsciiExtensive(f, 'using nodes', oneGamefactories[f]);
+		itAsciiExtensive(f, oneGamefactories[f]);
 	}
 });
 

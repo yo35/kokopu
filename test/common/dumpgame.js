@@ -33,10 +33,9 @@ var ID_PADDING = '                        ';
  * Dump the content of a Game object.
  *
  * @param {Game} game
- * @param {string} [iterationStyle='using next'] Either `'using next'` or `'using nodes'`
  * @returns {string}
  */
-module.exports = function(game, iterationStyle) {
+module.exports = function(game) {
 	var res = '\n';
 
 	function dumpHeader(key, value) {
@@ -165,20 +164,10 @@ module.exports = function(game, iterationStyle) {
 		res += '\n';
 
 		// List of moves
-		if (iterationStyle === undefined || iterationStyle === 'using next') {
-			var node = variation.first();
-			while (node !== undefined) {
-				dumpNode(node, indent);
-				node = node.next();
-			}
-		}
-		else if (iterationStyle === 'using nodes') {
-			variation.nodes().forEach(function(nodeInArray) {
-				dumpNode(nodeInArray, indent);
-			});
-		}
-		else {
-			throw 'Unexpected iteration style: ' + iterationStyle; // eslint-disable-line no-throw-literal
+		var node = variation.first();
+		while (node !== undefined) {
+			dumpNode(node, indent);
+			node = node.next();
 		}
 	}
 
