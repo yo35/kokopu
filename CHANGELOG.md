@@ -1,6 +1,11 @@
 ChangeLog
 =========
 
+2.7.0 (April 21, 2022)
+----------------------
+* Introduce `Game#nodes(..)` to retrieve all the moves of a game (optionally with those coming from the sub-variations).
+* Introduce `Position#isEqual(..)` to check whether two instances of `Position` are identical or not.
+
 2.6.0 (April 6, 2022)
 ---------------------
 * Add methods to move backward in the move tree: `Node#previous()`, `Node#parentVariation()` and `Variation#parentNode()`.
