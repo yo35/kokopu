@@ -433,7 +433,7 @@ describe('Check IDs', function() {
 });
 
 
-describe('Check backward iterators', function() {
+describe('Backward iterators', function() {
 
 	function checkNode(parentVariation, previousNode, node) {
 
@@ -498,7 +498,7 @@ describe('Write ASCII', function() {
 
 	function itAscii(filename, factory) {
 		it(filename, function() {
-			var expectedText = readText('games/' + filename + '.txt').trim();
+			var expectedText = readText('games/' + filename + '/ascii.txt').trim();
 			var game = factory();
 			test.value(game.ascii().trim()).is(expectedText);
 		});
@@ -514,7 +514,7 @@ describe('Write ASCII (extensive)', function() {
 
 	function itAsciiExtensive(filename, iterationStyle, factory) {
 		it(filename + ' (' + iterationStyle + ')', function() {
-			var expectedText = readText('games/' + filename + '.log').trim();
+			var expectedText = readText('games/' + filename + '/dump.txt').trim();
 			var game = factory();
 			test.value(dumpGame(game, iterationStyle).trim()).is(expectedText);
 		});
@@ -531,7 +531,7 @@ describe('Write PGN', function() {
 
 	function itOneGamePgn(filename, factory) {
 		it(filename, function() {
-			var expectedText = readText('games/' + filename + '.pgn');
+			var expectedText = readText('games/' + filename + '/database.pgn');
 			var game = factory();
 			test.value(kokopu.pgnWrite(game)).is(expectedText);
 		});
