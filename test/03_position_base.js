@@ -98,7 +98,14 @@ describe('Position constructor', function() {
 	doFailureTest('Invalid form 2', false, function() { return new kokopu.Position({}); });
 
 	doFailureTest('Invalid FEN string 1', true, function() { return new kokopu.Position('rkr/ppp/8/8/8/8/PPP/RKR w - - 0 1'); });
-	doFailureTest('Invalid FEN string 2', true, function() { return new kokopu.Position('Something strange: a string with a colon in it...'); });
+	doFailureTest('Invalid FEN string 2', true, function() { return new kokopu.Position('8/8 w - - 0 1'); });
+	doFailureTest('Invalid FEN string 3', true, function() { return new kokopu.Position('8/8/8/X7/8/8/8/8 w - - 0 1'); });
+	doFailureTest('Invalid FEN string 4', true, function() { return new kokopu.Position('8/8/8/8/8/8/8/8 x - - 0 1'); });
+	doFailureTest('Invalid FEN string 5a', true, function() { return new kokopu.Position('8/8/8/8/8/8/8/8 w - j6 0 1'); });
+	doFailureTest('Invalid FEN string 5b', true, function() { return new kokopu.Position('8/8/8/8/8/8/8/8 w - a5 0 1'); });
+	doFailureTest('Invalid FEN string 6a', true, function() { return new kokopu.Position('8/8/8/8/8/8/8/8 w - - xxx 1'); });
+	doFailureTest('Invalid FEN string 6b', true, function() { return new kokopu.Position('8/8/8/8/8/8/8/8 w - - 0 xxx'); });
+	doFailureTest('Invalid FEN string with invalid variant', true, function() { return new kokopu.Position('Something strange: a string with a colon in it...'); });
 	doFailureTest('Invalid FEN string with variant', true, function() { return new kokopu.Position('regular', 'NotAFENString'); });
 	doFailureTest('Invalid FEN string with variant (as prefix)', true, function() { return new kokopu.Position('regular:NotAFENString'); });
 });
