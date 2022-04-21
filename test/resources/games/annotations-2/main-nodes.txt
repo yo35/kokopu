@@ -1,0 +1,14 @@
+[1w] e4
+[1b] e5
+[2w] Nf3
+[2b] Nc6
+[3w] Bc4
+[3b] Bc5
+[4w] c3
+[4b] Nf6
+[5w] d4
+[5b] exd4
+[6w] cxd4
+[6b] Bb4+
+[7w] Nc3
+[7b] O-O

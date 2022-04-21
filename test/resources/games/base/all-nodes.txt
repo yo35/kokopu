@@ -1,0 +1,11 @@
+[1w] e4
+[1b-v0-1b] c5
+[1b-v0-2w] Nf3
+[1b-v1-1b] e6
+[1b-v1-2w] d4
+[1b] e5
+[2w] Bc4
+[2b] Nc6
+[3w] Qh5
+[3b] Nf6
+[4w] Qxf7#

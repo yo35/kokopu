@@ -494,6 +494,26 @@ describe('Backward iterators', function() {
 });
 
 
+describe('Game nodes', function() {
+
+	function itGameNodes(filename, withSubVariations, factory) {
+		it(filename + (withSubVariations ? ' (with sub-variations)' : ' (main variation only)'), function() {
+			var expectedText = readText('games/' + filename + (withSubVariations ? '/all-nodes.txt' : '/main-nodes.txt')).trim();
+			var game = factory();
+			var text = game.nodes(withSubVariations).map(function(node) {
+				return '[' + node.id() + '] ' + node.notation();
+			}).join('\n');
+			test.value(text).is(expectedText);
+		});
+	}
+
+	for (var f in oneGamefactories) {
+		itGameNodes(f, false, oneGamefactories[f]);
+		itGameNodes(f, true, oneGamefactories[f]);
+	}
+});
+
+
 describe('Write ASCII', function() {
 
 	function itAscii(filename, factory) {

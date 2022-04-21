@@ -401,6 +401,33 @@ function findNode(variationInfo, nodeIdToken, position) {
 
 
 /**
+ * Return the {@link Node}-s corresponding to the moves of the main variation.
+ *
+ * @param {boolean} [withSubVariations=false] If `true`, the nodes of the sub-variations are also included in the result.
+ * @returns {Node[]} An empty array is returned if the main variation is empty.
+ */
+Game.prototype.nodes = function(withSubVariations) {
+	if (!withSubVariations) {
+		return this.mainVariation().nodes();
+	}
+
+	var result = [];
+	function processVariation(variation) {
+		var currentNodes = variation.nodes();
+		for (var i = 0; i < currentNodes.length; ++i) {
+			var nextVariations = currentNodes[i].variations();
+			for (var j = 0; j < nextVariations.length; ++j) {
+				processVariation(nextVariations[j]);
+			}
+			result.push(currentNodes[i]);
+		}
+	}
+	processVariation(this.mainVariation());
+	return result;
+};
+
+
+/**
  * Return a human-readable string representing the game. This string is multi-line,
  * and is intended to be displayed in a fixed-width font (similarly to an ASCII-art picture).
  *
@@ -1081,7 +1108,7 @@ Variation.prototype.first = function() {
 
 
 /**
- * Generate the nodes corresponding to the moves of the current variation.
+ * Return the {@link Node}-s corresponding to the moves of the current variation.
  *
  * @returns {Node[]} An empty array is returned if the variation is empty.
  */
@@ -1094,7 +1121,7 @@ Variation.prototype.nodes = function() {
 	while (currentNodeInfo) {
 
 		// Compute the "position-before" attribute the current node.
-		var previousPositionBefore = new Position(previousPositionBefore);
+		previousPositionBefore = new Position(previousPositionBefore);
 		if (previousNodeInfo) {
 			applyMoveDescriptor(previousPositionBefore, previousNodeInfo);
 		}
