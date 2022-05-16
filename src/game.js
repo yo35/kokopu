@@ -582,7 +582,7 @@ function rebuildVariationPosition(variationInfo) {
 
 
 /**
- * SAN representation of the move associated to the current node.
+ * SAN representation of the move associated to the current node (or `'--'` for a null-move).
  *
  * @returns {string}
  */
@@ -592,7 +592,7 @@ Node.prototype.notation = function() {
 
 
 /**
- * SAN-like representation of the move associated to the current node.
+ * SAN-like representation of the move associated to the current node (or `'--'` for a null-move).
  *
  * @returns {string} Chess pieces are represented with their respective unicode character, instead of the first letter of their English name.
  */
