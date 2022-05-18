@@ -22,54 +22,66 @@
 
 'use strict';
 
+const readline = require('readline');
+const { Readable } = require('stream');
+const Client = require('ssh2-sftp-client');
+const { version } = require('../package.json');
 
-var prompt = require('prompt');
-var Readable = require('stream').Readable;
-var Client = require('ssh2-sftp-client');
-var version = require('../package.json').version;
+function promptPassword(prompt, callback) {
 
-prompt.start();
-prompt.get({ name: 'password', hidden: true, replace: '*' }, function(err, result) {
+	let rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+	rl.input.on("keypress", () => {
+		let len = rl.line.length;
+		readline.moveCursor(rl.output, -len, 0);
+		readline.clearLine(rl.output, 1);
+		rl.output.write('*'.repeat(len));
+	});
+
+	let password = '';
+	rl.on('close', () => callback(password));
+
+	rl.question(prompt, answer => {
+		password = answer;
+		rl.close();
+	});
+}
+
+
+const HOST = 'ftp.cluster007.ovh.net';
+const USER = 'yolgiypr';
+const ROOT_DIR = 'kokopu';
+
+promptPassword(`Pass for ${USER}@${HOST}: `, pass => {
 
 	// Validate the password.
-	if (err) {
-		console.log(err);
-		return;
-	}
-	else if (result.password === '') {
+	if (!pass) {
 		console.log('Deploy canceled.');
 		return;
 	}
 
-	var client = new Client();
+	let client = new Client();
 	client.connect({
-		host: 'ftp.cluster007.ovh.net',
-		username: 'yolgiypr',
-		password: result.password
-	}).then(function() {
+		host: HOST,
+		username: USER,
+		password: pass,
+	}).then(() => {
 
 		// Upload the ZIP archive with the browser-ready scripts.
-		console.log('Upload kokopu-' + version + '.zip...');
-		return client.put('dist/kokopu-' + version + '.zip', 'kokopu/dist/kokopu-' + version + '.zip', { mode: 0o644 });
+		console.log(`Upload kokopu-${version}.zip...`);
+		return client.put(`dist/kokopu-${version}.zip`, `${ROOT_DIR}/dist/kokopu-${version}.zip`, { mode: 0o644 });
 
-	}).then(function() {
+	}).then(() => {
 
-		// Redirect `kokopu.zip` to the archive corresponding to the latest version.
-		console.log('Redirect kokopu.zip to kokopu-' + version + '.zip...');
-		var htaccess = Readable.from([ 'Redirect "/dist/kokopu.zip" "/dist/kokopu-' + version + '.zip"' ]);
-		return client.put(htaccess, 'kokopu/dist/.htaccess', { mode: 0o644 });
+		// Redirect kokopu.zip to the archive corresponding to the latest version.
+		console.log(`Redirect kokopu.zip to kokopu-${version}.zip...`);
+		let htaccess = Readable.from([ `Redirect "/dist/kokopu.zip" "/dist/kokopu-${version}.zip"` ]);
+		return client.put(htaccess, `${ROOT_DIR}/dist/.htaccess`, { mode: 0o644 });
 
-	}).then(function() {
+	}).then(() => {
 
 		// Upload the documentation.
 		console.log('Upload documentation...');
-		return client.uploadDir('dist/docs', 'kokopu/docs');
+		return client.uploadDir('dist/docs', `${ROOT_DIR}/docs`);
 
-	}).then(function() {
-		console.log('Done.');
-	}).catch(function(err) {
-		console.log(err);
-	}).finally(function() {
-		return client.end();
-	});
+	}).then(() => console.log('Done.')).catch(() => console.log(err)).finally(() => client.end());
 });
