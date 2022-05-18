@@ -92,7 +92,7 @@ describe('Variant with canonical start position', function() {
 
 
 describe('NAG symbols', function() {
-	var nags = [ 3, 1, 5, 6, 2, 4, 18, 16, 14, 10, 11, 13, 15, 17, 19, 7, 8, 22, 32, 36, 40, 132, 138, 140, 142, 146 ];
+	var nags = [ 3, 1, 5, 6, 2, 4, 18, 16, 14, 10, 11, 13, 15, 17, 19, 7, 8, 22, 32, 36, 40, 132, 138, 140, 141, 142, 143, 145, 146 ];
 	var expectedSymbols = readText('nags.txt').trim().split(/\s+/);
 
 	function itNagWithSymbol(i) {
