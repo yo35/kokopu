@@ -1,6 +1,11 @@
 ChangeLog
 =========
 
+2.8.0 (May 18, 2022)
+--------------------
+* Add support for NAGs $141, $143 and RR.
+* Remove dependency with security issue.
+
 2.7.0 (April 21, 2022)
 ----------------------
 * Introduce `Game#nodes(..)` to retrieve all the moves of a game (optionally with those coming from the sub-variations).
