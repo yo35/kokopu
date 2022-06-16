@@ -151,7 +151,7 @@ describe('Parse and play move', function() {
 	it('Legal move', function() {
 		var position = new kokopu.Position();
 		test.value(position.play('e4')).is(true);
-		test.value(position.fen()).is('rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1');
+		test.value(position.fen()).is('rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1');
 	});
 
 	function testInvalidMove(fen, move) {

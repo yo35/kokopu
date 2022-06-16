@@ -527,12 +527,7 @@ exports.play = function(position, descriptor) {
 	if(movingPiece === bt.PAWN && Math.abs(descriptor._from - descriptor._to)===32) {
 		var firstSquareOf2ndRow = (1 + 5*position.turn) * 16;
 		if (descriptor._from >= firstSquareOf2ndRow && firstSquareOf2ndRow < firstSquareOf2ndRow + 8) {
-			var otherPawn = descriptor._movingPiece ^ 0x01;
-			var squareBefore = descriptor._to - 1;
-			var squareAfter = descriptor._to + 1;
-			if (((squareBefore & 0x88) === 0 && position.board[squareBefore] === otherPawn) || ((squareAfter & 0x88) === 0 && position.board[squareAfter] === otherPawn)) {
-				position.enPassant = descriptor._to % 16;
-			}
+			position.enPassant = descriptor._to % 16;
 		}
 	}
 
