@@ -394,6 +394,13 @@ describe('Position equality', function() {
 		checkIsEqual(p1, p2, true);
 	});
 
+	it('After 2-square pawn move', function() {
+		var p1 = new kokopu.Position();
+		p1.play('e4');
+		var p2 = new kokopu.Position('rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1');
+		checkIsEqual(p1, p2, true);
+	});
+
 	it('With distinct variants', function() {
 		var p1 = new kokopu.Position('regular', 'empty');
 		var p2 = new kokopu.Position('antichess', 'empty');
