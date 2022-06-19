@@ -873,7 +873,7 @@ Node.prototype.addVariation = function(isLongVariation) {
 
 
 /**
- * Remove the variation corresponding to the givn index.
+ * Remove the variation corresponding to the given index.
  *
  * @param {number} variationIndex Index of the variation to promote (must be such that `0 <= variationIndex < thisNode.variations().length`).
  */
