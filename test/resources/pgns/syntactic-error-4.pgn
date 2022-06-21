@@ -1,0 +1,10 @@
+[Event "A game with an unclosed comment"]
+
+1. e4 {I miss my closing brace...
+
+*
+
+
+[Event "A valid game at the end of the file"]
+
+1. e4 e5 2. Bc4 Nc6 3. Qh5 Nf6 4. Qxf7# 1-0

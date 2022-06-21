@@ -33,7 +33,6 @@ var pgnWriteImpl = require('./private_game/pgn_write_impl');
  *
  * @param {string} pgnString String to parse.
  * @returns {Database}
- * @throws {module:exception.InvalidPGN}
  *
  *//**
  *

@@ -323,7 +323,6 @@ TokenStream.prototype.consumeToken = function() {
  * Try to skip all the tokens until a END_OF_GAME token or the end of the file is encountered.
  *
  * @returns {boolean} `true` if any token have been found, `false` if the end of the file has been reached without finding any token.
- * @throws {module:exception.InvalidPGN} If the text cannot be interpreted as a valid stream of tokens.
  */
 TokenStream.prototype.skipGame = function() {
 	var atLeastOneTokenFound = false;
@@ -340,14 +339,15 @@ TokenStream.prototype.skipGame = function() {
 		// Skip comments.
 		if(testAtPos(this, this._matchEnterComment)) {
 			if(!testAtPos(this, this._commentMode)) {
-				throw new exception.InvalidPGN(this._text, this._pos, this._lineIndex, i18n.INVALID_PGN_TOKEN);
+				this._pos = this._text.length;
+				return true;
 			}
 		}
 
 		// Skip header values.
 		else if(testAtPos(this, this._matchEnterHeaderValue)) {
-			if(!testAtPos(this, this._headerValueMode) && !testAtPos(this, this._headerValueDegradedMode)) {
-				throw new exception.InvalidPGN(this._text, this._pos, this._lineIndex, i18n.INVALID_PGN_TOKEN);
+			if (!testAtPos(this, this._headerValueMode)) {
+				testAtPos(this, this._headerValueDegradedMode); // Always true as `_headerValueDegradedMode` matches the empty string.
 			}
 		}
 
@@ -357,8 +357,8 @@ TokenStream.prototype.skipGame = function() {
 		}
 
 		// Skip everything else until the next space or comment/header-value beginning.
-		else if(!testAtPos(this, this._matchFastAdvance)) {
-			throw new exception.InvalidPGN(this._text, this._pos, this._lineIndex, i18n.INVALID_PGN_TOKEN);
+		else {
+			testAtPos(this, this._matchFastAdvance); // Always true given the other regexes `_matchEnterComment` and `_matchEnterHeaderValue`.
 		}
 	}
 };
