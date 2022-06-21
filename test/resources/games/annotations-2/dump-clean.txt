@@ -1,0 +1,17 @@
+Event = {Game with annotations 2}
+[start]                 -+<LONG $10
+[1w]                    (1w) e4 $5 $13
+[1b]                    (1b) e5
+[2w]                    (2w) Nf3 [cal = {Rf3e5}]
+[2b]                    (2b) Nc6
+[3w]                    (3w) Bc4
+[3b]                    (3b) Bc5
+[4w]                    (4w) c3
+[4b]                    (4b) Nf6
+[5w]                    (5w) d4 [cal = {Rd4c5,Rd4e5}]
+[5b]                    (5b) exd4
+[6w]                    (6w) cxd4
+[6b]                    (6b) Bb4+
+[7w]                    (7w) Nc3
+[7b]                    (7b) O-O [TheFirstTag = {abc}]
+{Line}

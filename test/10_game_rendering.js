@@ -25,6 +25,7 @@
 
 var kokopu = require('../src/index');
 var readText = require('./common/readtext');
+var resourceExists = require('./common/resourceexists');
 var dumpGame = require('./common/dumpgame');
 var test = require('unit.js');
 
@@ -611,5 +612,24 @@ describe('Write PGN', function() {
 
 	for (var f in fullPgnFactories) {
 		itFullPgn(f, fullPgnFactories[f]);
+	}
+});
+
+
+describe('Read PGN', function() {
+
+	function itReadPgn(filename) {
+		it(filename, function() {
+			var inputText = readText('games/' + filename + '/database.pgn');
+			var cleanedResource = 'games/' + filename + '/dump-clean.txt';
+			var actualResource = resourceExists(cleanedResource) ? cleanedResource : 'games/' + filename + '/dump.txt';
+			var expectedText = readText(actualResource).trim();
+			var game = kokopu.pgnRead(inputText, 0);
+			test.value(dumpGame(game).trim()).is(expectedText);
+		});
+	}
+
+	for (var f in oneGamefactories) {
+		itReadPgn(f);
 	}
 });
