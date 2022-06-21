@@ -39,14 +39,16 @@ var TokenStream = exports.TokenStream = function(pgnString, initialLocation) {
 		pgnString = pgnString.substr(1);
 	}
 
-	this._text                = pgnString; // what is being parsed
-	this._pos                 = 0;         // current position in the string
-	this._lineIndex           = 1;         // current line in the string
-	this._emptyLineFound      = false;     // whether an empty line has been encountered while parsing the current token
-	this._token               = 0;         // current token
-	this._tokenValue          = null;      // current token value (if any)
-	this._tokenCharacterIndex = -1;        // position of the current token in the string
-	this._tokenLineIndex      = -1;        // line of the current token in the string
+	this._text                 = pgnString; // what is being parsed
+	this._pos                  = 0;         // current position in the string
+	this._lineIndex            = 1;         // current line in the string
+
+	this._token                = INVALID_TOKEN; // current token
+	this._tokenValue           = null;          // current token value (if any)
+	this._tokenCharacterIndex  = -1;            // position of the current token in the string
+	this._tokenLineIndex       = -1;            // line of the current token in the string
+	this._emptyLineBeforeToken = false;         // whether an empty line has been encountered before the current token
+	this._emptyLineAfterToken  = false;         // whether an empty line will be encountered after the current token
 
 	if(initialLocation) {
 		this._pos = initialLocation.pos;
@@ -81,6 +83,7 @@ var TokenStream = exports.TokenStream = function(pgnString, initialLocation) {
 
 
 // PGN token types
+var INVALID_TOKEN = 0;
 var TOKEN_BEGIN_HEADER    = TokenStream.BEGIN_HEADER    =  1; // [
 var TOKEN_END_HEADER      = TokenStream.END_HEADER      =  2; // ]
 var TOKEN_HEADER_ID       = TokenStream.HEADER_ID       =  3; // Identifier of a header (e.g. `White` in header `[White "Kasparov, G."]`)
@@ -132,6 +135,7 @@ function testAtPos(stream, regex) {
  * Advance until the first non-blank character.
  *
  * @param {TokenStream} stream
+ * @returns {boolean} `true` if an empty line has been encountered.
  */
 function skipBlanks(stream) {
 	var newLineCount = 0;
@@ -148,7 +152,7 @@ function skipBlanks(stream) {
 	}
 
 	// An empty line was encountered if and only if at least to line breaks were found.
-	stream._emptyLineFound = newLineCount >= 2;
+	return newLineCount >= 2;
 }
 
 
@@ -221,7 +225,7 @@ var SPECIAL_NAGS_LOOKUP = {
 TokenStream.prototype.consumeToken = function() {
 
 	// Consume blank (i.e. meaning-less) characters
-	skipBlanks(this);
+	this._emptyLineBeforeToken = this._token === INVALID_TOKEN || this._token === TOKEN_END_OF_GAME ? skipBlanks(this) : this._emptyLineAfterToken;
 	if(this._pos >= this._text.length) {
 		this._tokenCharacterIndex = this._text.length;
 		this._tokenLineIndex = this._lineIndex;
@@ -310,6 +314,7 @@ TokenStream.prototype.consumeToken = function() {
 		throw new exception.InvalidPGN(this._text, this._pos, this._lineIndex, i18n.INVALID_PGN_TOKEN);
 	}
 
+	this._emptyLineAfterToken = this._token === TOKEN_END_OF_GAME ? false : skipBlanks(this);
 	return true;
 };
 
@@ -322,19 +327,14 @@ TokenStream.prototype.consumeToken = function() {
  */
 TokenStream.prototype.skipGame = function() {
 	var atLeastOneTokenFound = false;
+	this._token = INVALID_TOKEN;
 	while(true) {
 
 		// Consume blank (i.e. meaning-less) characters
 		skipBlanks(this);
 		if(this._pos >= this._text.length) {
-			this._tokenCharacterIndex = this._text.length;
-			this._tokenLineIndex = this._lineIndex;
 			return atLeastOneTokenFound;
 		}
-
-		// Save the location of the token.
-		this._tokenCharacterIndex = this._pos;
-		this._tokenLineIndex = this._lineIndex;
 		atLeastOneTokenFound = true;
 
 		// Skip comments.
@@ -353,8 +353,6 @@ TokenStream.prototype.skipGame = function() {
 
 		// Match a end-of-game marker.
 		else if(testAtPos(this, this._matchEndOfGame)) {
-			this._token      = TOKEN_END_OF_GAME;
-			this._tokenValue = this._matchEndOfGame.matched[0];
 			return true;
 		}
 
@@ -383,15 +381,23 @@ TokenStream.prototype.currentLocation = function() {
 
 
 /**
- * Whether an empty line has been encountered just before the current token.
+ * Whether there is an empty line just before the current token. WARNING: valid only after a call to `consumeToken()`.
  */
-TokenStream.prototype.emptyLineFound = function() {
-	return this._emptyLineFound;
+TokenStream.prototype.emptyLineBeforeToken = function() {
+	return this._emptyLineBeforeToken;
 };
 
 
 /**
- * Current token.
+ * Whether there is an empty line just after the current token. WARNING: valid only after a call to `consumeToken()`.
+ */
+TokenStream.prototype.emptyLineAfterToken = function() {
+	return this._emptyLineAfterToken;
+};
+
+
+/**
+ * Current token. WARNING: valid only after a call to `consumeToken()`.
  */
 TokenStream.prototype.token = function() {
 	return this._token;
@@ -399,7 +405,7 @@ TokenStream.prototype.token = function() {
 
 
 /**
- * Value associated to the current token, if any.
+ * Value associated to the current token, if any. WARNING: valid only after a call to `consumeToken()`.
  */
 TokenStream.prototype.tokenValue = function() {
 	return this._tokenValue;
@@ -407,7 +413,7 @@ TokenStream.prototype.tokenValue = function() {
 
 
 /**
- * Line index of the current token.
+ * Line index of the current token. WARNING: valid only after a call to `consumeToken()`.
  */
 TokenStream.prototype.tokenLineIndex = function() {
 	return this._tokenLineIndex;
@@ -415,7 +421,7 @@ TokenStream.prototype.tokenLineIndex = function() {
 
 
 /**
- * Character index of the current token.
+ * Character index of the current token. WARNING: valid only after a call to `consumeToken()`.
  */
 TokenStream.prototype.tokenCharacterIndex = function() {
 	return this._tokenCharacterIndex;
@@ -423,7 +429,7 @@ TokenStream.prototype.tokenCharacterIndex = function() {
 
 
 /**
- * Wether the current token is a token of the move-text section.
+ * Wether the current token is a token of the move-text section. WARNING: valid only after a call to `consumeToken()`.
  */
 TokenStream.prototype.isMoveTextSection = function() {
 	return this._token >= FIRST_MOVE_TEXT_TOKEN && this._token <= LAST_MOVE_TEXT_TOKEN;

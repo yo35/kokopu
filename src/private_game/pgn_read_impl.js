@@ -255,8 +255,8 @@ function doParseGame(stream) {
 					node.tag(key, tags[key]);
 				}
 				if(stream.tokenValue().comment !== undefined) {
-					// Warning: the header comment of the main variation is always considered as a "long" comment.
-					node.comment(stream.tokenValue().comment, stream.emptyLineFound() || (nodeIsVariation && nodeStack.length === 0));
+					var isLongComment = nodeIsVariation ? stream.emptyLineAfterToken() : stream.emptyLineBeforeToken();
+					node.comment(stream.tokenValue().comment, isLongComment);
 				}
 				break;
 
@@ -266,7 +266,7 @@ function doParseGame(stream) {
 					throw new exception.InvalidPGN(stream.text(), stream.tokenCharacterIndex(), stream.tokenLineIndex(), i18n.UNEXPECTED_BEGIN_OF_VARIATION);
 				}
 				nodeStack.push(node);
-				node = node.addVariation(stream.emptyLineFound());
+				node = node.addVariation(stream.emptyLineBeforeToken());
 				nodeIsVariation = true;
 				break;
 

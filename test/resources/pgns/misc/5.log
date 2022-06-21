@@ -1,5 +1,5 @@
 Event = {Game with long/short comment descriptors}
-[start]                 -+<LONG {Header comment of main variation => always LONG.}<LONG
+[start]                 -+<LONG {Empty line after first comment of variation => LONG.}<LONG
 [1w]                    (1w) e4
 [1b]                    (1b) e5
                          |
@@ -10,16 +10,16 @@ Event = {Game with long/short comment descriptors}
 [2b]                    (2b) Nc6
 [3w]                    (3w) Bb5
                          |
-[3w-v0-start]            +---+<LONG {No empty line => SHORT.}
+[3w-v0-start]            +---+<LONG {No empty line after => SHORT.}
 [3w-v0-3w]               |  (3w) Bc4
-[3w-v0-3b]               |  (3b) Bc5 {No empty line => SHORT.}
+[3w-v0-3b]               |  (3b) Bc5 {No empty line before => SHORT.}
                          |
 [3b]                    (3b) a6
 [4w]                    (4w) Bxc6
                          |
-[4w-v0-start]            +---+<LONG {Empty line => LONG.}<LONG
+[4w-v0-start]            +---+<LONG {Empty line after first comment of variation => LONG.}<LONG
 [4w-v0-4w]               |  (4w) Ba4
-[4w-v0-4b]               |  (4b) b5 {Empty line => LONG.}<LONG
+[4w-v0-4b]               |  (4b) b5 {Empty line before comment => LONG.}<LONG
                          |
 [4b]                    (4b) dxc6
 {Draw}

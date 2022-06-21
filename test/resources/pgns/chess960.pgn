@@ -17,6 +17,7 @@ Qd2 d5 16. c3 Bxf3 17. Rxf3 f5 18. Rh3 Rd7 19. Bg3 Bg5 20. Bf4 h6 21. Bxg5 hxg5
 22. Rh6 Re7 23. e4 dxe4 24. Qxg5 Kb7 25. d5 exd5 26. Rxc6 Ref7 27. Rc5 Rd7 28.
 Qg6 Qd8 29. Qc6+ Ka7 30. Bxb5 axb5 31. Rxb5 Qc8 32. a6  1-0
 
+
 [Event "GM Blitz Battle Chp - Chess960"]
 [Site "Chess.com"]
 [Date "2016.08.23"]
@@ -39,12 +40,14 @@ Qg6 Qd8 29. Qc6+ Ka7 30. Bxb5 axb5 31. Rxb5 Qc8 32. a6  1-0
 c3 Nxc3 15. bxc3 Qxc3+ 16. Kd1 Nb4 17. Re2 d4 18. Nxd4 Bxa2 19. Rd2 Bc4 20. Ke1
 Nc2+ 0-1
 
+
 [Event "Event 1"]
 [SetUp "1"]
 [FEN "nbbrqnkr/pppppppp/8/8/8/8/PPPPPPPP/NBBRQNKR w KQkq - 0 1"]
 [Variant "chess-960"]
 
 *
+
 
 [Event "Event 2"]
 [SetUp "1"]

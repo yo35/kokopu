@@ -5,7 +5,9 @@
 [White "?"]
 [Black "?"]
 [Result "*"]
+
 *
+
 
 [Event " ?"]
 [Site "? "]
@@ -14,7 +16,9 @@
 [White "  ? "]
 [Black " ?"]
 [Result "1-0"]
+
 1-0
+
 
 [Event "Some championship"]
 [Site "Paris, France"]
@@ -23,7 +27,9 @@
 [White "Player 1"]
 [Black "Player 2"]
 [Result "0-1"]
+
 0-1
+
 
 [Event " Some championship"]
 [Site "Paris, France "]
@@ -32,7 +38,9 @@
 [White "  Player 1 "]
 [Black " Player   2"]
 [Result "1/2-1/2"]
+
 1/2-1/2
+
 
 [Event "Special character \" (double quote)"]
 [Site "Special character ' (quote)"]
@@ -41,7 +49,9 @@
 [White "Special characters [] (square brackets)"]
 [Black "Special character \\ (backslash)"]
 [Result "*"]
+
 *
+
 
 [White "Player 1"]
 [WhiteElo "2450"]
@@ -51,40 +61,56 @@
 [BlackTitle "GM"]
 [Annotator "Kibitz"]
 [Result "*"]
+
 *
+
 
 [Event "Custom startup position"]
 [FEN "rnb1k1nr/pppp1ppp/8/2b1p3/2B1P2q/2N2N2/PPPP1PPP/R1BQK2R b KQkq - 5 4"]
 [Result "0-1"]
+
 4... Qxf2# 0-1
+
 
 [Event "Degenerated \backslash"]
 [Result "*"]
+
 *
 
+
 [Event "Full inline PGN"][White "Player 1"][Black "Player 2"][Result "*"] *
+
 
 [Event "Invalid month in date 1"]
 [Date "1999.13.??"]
 [Result "*"]
+
 *
+
 
 [Event "Invalid month in date 2"]
 [Date "2000.00.01"]
 [Result "*"]
+
 *
+
 
 [Event "Invalid day in date 1"]
 [Date "2003.04.31"]
 [Result "*"]
+
 *
+
 
 [Event "Invalid day in date 2"]
 [Date "2007.02.29"]
 [Result "*"]
+
 *
+
 
 [Event "Valid leap day"]
 [Date "2008.02.29"]
 [Result "*"]
+
 *
