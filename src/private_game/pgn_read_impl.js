@@ -177,10 +177,9 @@ function initializeInitialPosition(stream, game, initialPositionFactory) {
 function doParseGame(stream) {
 
 	// State variable for syntactic analysis.
-	var game            = null;  // the result
-	var node            = null;  // current node (or variation) to which the next move should be appended
-	var nodeIsVariation = false; // whether the current node is a variation or not
-	var nodeStack       = [];    // when starting a variation, its parent node (btw., always a "true" node, not a variation) is stacked here
+	var game      = null;  // the result
+	var node      = null;  // current node (or variation) to which the next move should be appended
+	var nodeStack = [];    // when starting a variation, its parent node (btw., always a "true" node, not a variation) is stacked here
 	var initialPositionFactory = {};
 
 	// Token loop
@@ -195,7 +194,6 @@ function doParseGame(stream) {
 		if(stream.isMoveTextSection() && node === null) {
 			initializeInitialPosition(stream, game, initialPositionFactory);
 			node = game.mainVariation();
-			nodeIsVariation = true;
 		}
 
 		// Token type switch
@@ -230,7 +228,6 @@ function doParseGame(stream) {
 			case TokenStream.MOVE:
 				try {
 					node = node.play(stream.tokenValue());
-					nodeIsVariation = false;
 				}
 				catch(error) {
 					// istanbul ignore else
@@ -255,19 +252,18 @@ function doParseGame(stream) {
 					node.tag(key, tags[key]);
 				}
 				if(stream.tokenValue().comment !== undefined) {
-					var isLongComment = nodeIsVariation ? stream.emptyLineAfterToken() : stream.emptyLineBeforeToken();
+					var isLongComment = node.isVariation() ? stream.emptyLineAfterToken() : stream.emptyLineBeforeToken();
 					node.comment(stream.tokenValue().comment, isLongComment);
 				}
 				break;
 
 			// Begin of variation
 			case TokenStream.BEGIN_VARIATION:
-				if(nodeIsVariation) {
+				if (node.isVariation()) {
 					throw new exception.InvalidPGN(stream.text(), stream.tokenCharacterIndex(), stream.tokenLineIndex(), i18n.UNEXPECTED_BEGIN_OF_VARIATION);
 				}
 				nodeStack.push(node);
 				node = node.addVariation(stream.emptyLineBeforeToken());
-				nodeIsVariation = true;
 				break;
 
 			// End of variation
@@ -276,7 +272,6 @@ function doParseGame(stream) {
 					throw new exception.InvalidPGN(stream.text(), stream.tokenCharacterIndex(), stream.tokenLineIndex(), i18n.UNEXPECTED_END_OF_VARIATION);
 				}
 				node = nodeStack.pop();
-				nodeIsVariation = false;
 				break;
 
 			// End-of-game

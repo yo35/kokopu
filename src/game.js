@@ -517,6 +517,16 @@ Node.prototype.id = function() {
 
 
 /**
+ * Always `false`. Useful to discrimate between {@link Node} and {@link Variation} instances.
+ *
+ * @returns {boolean}
+ */
+Node.prototype.isVariation = function() {
+	return false;
+};
+
+
+/**
  * Compute the ID of the given node.
  *
  * @param {object} nodeInfo NodeInfo struct
@@ -1010,6 +1020,16 @@ function Variation(info, initialPosition) {
  */
 Variation.prototype.id = function() {
 	return buildVariationIdPrefix(this._info) + 'start';
+};
+
+
+/**
+ * Always `true`. Useful to discrimate between {@link Node} and {@link Variation} instances.
+ *
+ * @returns {boolean}
+ */
+Variation.prototype.isVariation = function() {
+	return true;
 };
 
 

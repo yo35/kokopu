@@ -427,6 +427,46 @@ var fullPgnFactories = {
 };
 
 
+describe('Check isVariation', function() {
+
+	function checkNode(game, node) {
+
+		// Check the current node.
+		test.value(node.isVariation()).is(false);
+
+		// Check the variations.
+		var subVariations = node.variations();
+		for (var k = 0; k < subVariations.length; ++k) {
+			checkVariation(game, subVariations[k]);
+		}
+	}
+
+	function checkVariation(game, variation) {
+
+		// Check the current variation.
+		test.value(variation.isVariation()).is(true);
+
+		// Check the moves.
+		var node = variation.first();
+		while (node) {
+			checkNode(game, node);
+			node = node.next();
+		}
+	}
+
+	function itCheckIsVariation(filename, factory) {
+		it(filename, function() {
+			var game = factory();
+			checkVariation(game, game.mainVariation());
+		});
+	}
+
+	for (var f in oneGamefactories) {
+		itCheckIsVariation(f, oneGamefactories[f]);
+	}
+});
+
+
 describe('Check IDs', function() {
 
 	function checkNode(game, node) {

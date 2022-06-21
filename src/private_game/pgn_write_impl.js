@@ -121,7 +121,7 @@ function writeAnnotations(node, pushToken, skipLine, skipLineAfterCommentIfLong)
 
 	// Tags & comments
 	if (nonEmptyTagFound || comment) {
-		if (comment && node.isLongComment() && !node.id().endsWith('start')) { // TODO use isVariation() instead
+		if (comment && node.isLongComment() && !node.isVariation()) {
 			skipLine();
 		}
 		pushToken('{', false, true);
