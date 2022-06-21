@@ -31,12 +31,12 @@
 		"browserify": "^17.0.0",
 		"commander": "^9.3.0",
 		"coveralls": "^3.1.1",
-		"eslint": "^8.17.0",
+		"eslint": "^8.18.0",
 		"jsdoc": "^3.6.10",
 		"mocha": "^10.0.0",
 		"nyc": "^15.1.0",
-		"ssh2-sftp-client": "^9.0.0",
-		"uglify-js": "^3.16.0",
+		"ssh2-sftp-client": "^9.0.1",
+		"uglify-js": "^3.16.1",
 		"unit.js": "^2.1.1"
 	},
 	"scripts": {
