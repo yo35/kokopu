@@ -279,5 +279,5 @@ function writeGame(game) {
  * Generate the PGN string corresponding to the given array of {@link Game} objects.
  */
 exports.writeGames = function(games) {
-	return games.map(writeGame).join('\n');
+	return games.map(writeGame).join('\n\n');
 };
