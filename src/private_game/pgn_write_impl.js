@@ -258,10 +258,7 @@ function writeGame(game) {
 	}
 
 	function skipLine() {
-		if (currentLine.length === 0) {
-			return;
-		}
-		result += currentLine + '\n';
+		result += currentLine + '\n'; // `currentLine` is always non-empty since there is never two consecutive calls to `skipLine()`
 		result += '\n';
 		currentLine = '';
 		avoidNextSpace = false;
