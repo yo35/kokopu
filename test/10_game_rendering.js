@@ -277,10 +277,10 @@ var oneGamefactories = {
 		return game;
 	},
 
-	'long-short-comments-variations': function() {
+	'long-short-comments-variations-1': function() {
 		var game = new kokopu.Game();
-		game.event('Game with long & short comments and variations.');
-		game.mainVariation().comment('I\'m the main variation header comment.', true);
+		game.event('Game with long & short comments and variations 1.');
+		game.mainVariation().comment('I\'m the main variation header (long) comment.', true);
 
 		var current = game.mainVariation().play('e4');
 		current.comment('I\'m a long comment.', true);
@@ -293,7 +293,48 @@ var oneGamefactories = {
 		alternative.comment('I\'m a long comment too.', true);
 		alternative.play('Bb5').play('a6').comment('I\'m a short comment.', false);
 
-		current.play('Bc5');
+		current.play('Bc5').comment('I\'m a long comment at the end of the game.', true);
+		return game;
+	},
+
+	'long-short-comments-variations-2': function() {
+		var game = new kokopu.Game();
+		game.event('Game with long & short comments and variations 2.');
+		game.mainVariation().comment('I\'m the main variation header (short) comment.', false);
+
+		var current = game.mainVariation().play('e4');
+		current.comment('I\'m a long comment with sub-variation siblings.', true);
+		current.addVariation(false).play('d4').play('d5');
+
+		current = current.play('e5').play('Nf3');
+		current.addVariation(true).play('Nc3').comment('I\'m a long comment at the end of a variation.', true);
+
+		current = current.play('Nc6').play('Bc4');
+		current.addVariation(true).play('Bb5').play('a6');
+		current.addVariation(false).play('d4');
+
+		current = current.play('Bc5');
+		var alternative = current.addVariation(true);
+		alternative.comment('I\'m a long comment at the beginning of a variation.', true);
+		alternative.play('d6');
+		return game;
+	},
+
+	'long-short-comments-variations-3': function() {
+		var game = new kokopu.Game();
+		game.event('Game with long & short comments and variations 3.');
+
+		var current = game.mainVariation().play('e4');
+		current.comment('I\'m a long comment with an empty sub-variation sibling.', true);
+		current.addVariation();
+
+		current = current.play('e5').play('Nf3');
+		var alternative = current.addVariation(true);
+		alternative.comment('I\'m a long variation followed by an empty variation.');
+		alternative.play('Nc3');
+
+		current.addVariation();
+		current.play('Nc6');
 		return game;
 	},
 

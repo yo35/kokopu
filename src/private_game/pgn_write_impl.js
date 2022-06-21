@@ -92,7 +92,7 @@ function writeOptionalHeader(key, value) {
 }
 
 
-function writeAnnotations(node, pushToken, skipLine, isHeaderAnnotationOfMainVariation) {
+function writeAnnotations(node, pushToken, skipLine, skipLineAfterCommentIfLong) {
 
 	// NAGs
 	var nags = node.nags();
@@ -121,7 +121,7 @@ function writeAnnotations(node, pushToken, skipLine, isHeaderAnnotationOfMainVar
 
 	// Tags & comments
 	if (nonEmptyTagFound || comment) {
-		if (comment && node.isLongComment() && !isHeaderAnnotationOfMainVariation) {
+		if (comment && node.isLongComment() && !node.id().endsWith('start')) { // TODO use isVariation() instead
 			skipLine();
 		}
 		pushToken('{', false, true);
@@ -141,6 +141,9 @@ function writeAnnotations(node, pushToken, skipLine, isHeaderAnnotationOfMainVar
 			});
 		}
 		pushToken('}', true, false);
+		if (comment && node.isLongComment() && skipLineAfterCommentIfLong) {
+			skipLine();
+		}
 		return true;
 	}
 	else {
@@ -149,7 +152,7 @@ function writeAnnotations(node, pushToken, skipLine, isHeaderAnnotationOfMainVar
 }
 
 
-function writeNode(node, forceMoveNumber, pushToken, skipLine) {
+function writeNode(node, forceMoveNumber, pushToken, skipLine, isMainVariation) {
 
 	if (node.moveColor() === 'w') {
 		pushToken(node.fullMoveNumber() + '.', false, false);
@@ -159,9 +162,18 @@ function writeNode(node, forceMoveNumber, pushToken, skipLine) {
 	}
 
 	pushToken(node.notation(), false, false);
-	var nextForceMoveNumber = writeAnnotations(node, pushToken, skipLine, false);
 
 	var variations = node.variations();
+	var lastNonEmptyVariationIndex = -1;
+	for (var k = variations.length - 1; k >= 0; --k) {
+		if (variations[k].first()) {
+			lastNonEmptyVariationIndex = k;
+			break;
+		}
+	}
+
+	var nextForceMoveNumber = writeAnnotations(node, pushToken, skipLine, (isMainVariation || node.next()) && lastNonEmptyVariationIndex < 0);
+
 	for (var k = 0; k < variations.length; ++k) {
 		var variation = variations[k];
 		if (!variation.first()) {
@@ -173,6 +185,9 @@ function writeNode(node, forceMoveNumber, pushToken, skipLine) {
 		pushToken('(', false, true);
 		writeVariation(variation, pushToken, skipLine, false);
 		pushToken(')', true, false);
+		if (k === lastNonEmptyVariationIndex && variation.isLongVariation()) {
+			skipLine();
+		}
 		nextForceMoveNumber = true;
 	}
 
@@ -181,12 +196,12 @@ function writeNode(node, forceMoveNumber, pushToken, skipLine) {
 
 
 function writeVariation(variation, pushToken, skipLine, isMainVariation) {
-	writeAnnotations(variation, pushToken, skipLine, isMainVariation);
+	writeAnnotations(variation, pushToken, skipLine, true);
 
 	var currentNode = variation.first();
 	var forceMoveNumber = true;
 	while (currentNode) {
-		forceMoveNumber = writeNode(currentNode, forceMoveNumber, pushToken, skipLine);
+		forceMoveNumber = writeNode(currentNode, forceMoveNumber, pushToken, skipLine, isMainVariation);
 		currentNode = currentNode.next();
 	}
 }
@@ -243,7 +258,10 @@ function writeGame(game) {
 	}
 
 	function skipLine() {
-		result += currentLine + '\n'; // `currentLine` is always non-empty since there is never two consecutive calls to `skipLine()`
+		if (currentLine.length === 0) {
+			return;
+		}
+		result += currentLine + '\n';
 		result += '\n';
 		currentLine = '';
 		avoidNextSpace = false;

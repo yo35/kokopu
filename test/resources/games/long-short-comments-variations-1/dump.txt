@@ -1,5 +1,5 @@
-Event = {Game with long & short comments and variations.}
-[start]                 -+<LONG {I'm the main variation header comment.}<LONG
+Event = {Game with long & short comments and variations 1.}
+[start]                 -+<LONG {I'm the main variation header (long) comment.}<LONG
 [1w]                    (1w) e4 {I'm a long comment.}<LONG
 [1b]                    (1b) e5
                          |
@@ -15,5 +15,5 @@ Event = {Game with long & short comments and variations.}
 [3w-v0-3w]               |  (3w) Bb5
 [3w-v0-3b]               |  (3b) a6 {I'm a short comment.}
                          |
-[3b]                    (3b) Bc5
+[3b]                    (3b) Bc5 {I'm a long comment at the end of the game.}<LONG
 {Line}

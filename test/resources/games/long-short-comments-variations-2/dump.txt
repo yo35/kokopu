@@ -1,0 +1,30 @@
+Event = {Game with long & short comments and variations 2.}
+[start]                 -+<LONG {I'm the main variation header (short) comment.}
+[1w]                    (1w) e4 {I'm a long comment with sub-variation siblings.}<LONG
+                         |
+[1w-v0-start]            +---+
+[1w-v0-1w]               |  (1w) d4
+[1w-v0-1b]               |  (1b) d5
+                         |
+[1b]                    (1b) e5
+[2w]                    (2w) Nf3
+                         |
+[2w-v0-start]            +---+<LONG
+[2w-v0-2w]               |  (2w) Nc3 {I'm a long comment at the end of a variation.}<LONG
+                         |
+[2b]                    (2b) Nc6
+[3w]                    (3w) Bc4
+                         |
+[3w-v0-start]            +---+<LONG
+[3w-v0-3w]               |  (3w) Bb5
+[3w-v0-3b]               |  (3b) a6
+                         |
+[3w-v1-start]            +---+
+[3w-v1-3w]               |  (3w) d4
+                         |
+[3b]                    (3b) Bc5
+                         |
+[3b-v0-start]            +---+<LONG {I'm a long comment at the beginning of a variation.}<LONG
+[3b-v0-3b]               |  (3b) d6
+                         |
+{Line}

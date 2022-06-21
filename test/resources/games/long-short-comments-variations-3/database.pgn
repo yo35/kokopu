@@ -1,0 +1,17 @@
+[Event "Game with long & short comments and variations 3."]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+
+1. e4
+
+{I'm a long comment with an empty sub-variation sibling.}
+
+1... e5 2. Nf3
+
+({I'm a long variation followed by an empty variation.} 2. Nc3)
+
+2... Nc6 *

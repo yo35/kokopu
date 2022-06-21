@@ -1,0 +1,13 @@
+[1w-v0-1w] d4
+[1w-v0-1b] d5
+[1w] e4
+[1b] e5
+[2w-v0-2w] Nc3
+[2w] Nf3
+[2b] Nc6
+[3w-v0-3w] Bb5
+[3w-v0-3b] a6
+[3w-v1-3w] d4
+[3w] Bc4
+[3b-v0-3b] d6
+[3b] Bc5
