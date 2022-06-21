@@ -68,7 +68,7 @@ var TokenStream = exports.TokenStream = function(pgnString, initialLocation) {
 	this._matchEnterHeaderValue = /"/g;
 	this._matchMoveNumber = /[1-9][0-9]*\.(?:\.\.)?/g;
 	this._matchMove = /(?:O-O(?:-O)?|0-0(?:-0)?|[KQRBN][a-h]?[1-8]?x?[a-h][1-8]|(?:[a-h]x?)?[a-h][1-8](?:=?[KQRBNP])?)[+#]?|--/g;
-	this._matchNag = /([!?][!?]?|\+\/?[-=]|[-=]\/?\+|=|inf|~)|\$([1-9][0-9]*)/g;
+	this._matchNag = /([!?][!?]?|\+\/?[-=]|[-=]\/?\+|=|inf|~|RR|N)|\$([1-9][0-9]*)/g;
 	this._matchEnterComment = /\{/g;
 	this._matchBeginVariation = /\(/g;
 	this._matchEndVariation = /\)/g;
@@ -212,7 +212,9 @@ var SPECIAL_NAGS_LOOKUP = {
 	'~'  : 13, 'inf': 13,  // unclear position
 	'=/+': 15, '=+' : 15,  // Black has a slight advantage
 	'-/+': 17,             // Black has a moderate advantage
-	'-+' : 19              // Black has a decisive advantage
+	'-+' : 19,             // Black has a decisive advantage
+	'RR' : 145,            // Editorial comment
+	'N'  : 146,            // Novelty
 };
 
 
