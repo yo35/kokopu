@@ -1,8 +1,8 @@
 ChangeLog
 =========
 
-2.8.1 (May 18, 2022)
---------------------
+2.8.1 (June 16, 2022)
+---------------------
 * Fix update procedure for en-passant flag in `Position#play(..)` (see #27).
 
 2.8.0 (May 18, 2022)
