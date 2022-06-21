@@ -26,7 +26,7 @@
 var kokopu = require('../src/index');
 var readCSV = require('./common/readcsv');
 var readText = require('./common/readtext');
-var resourceExists = require('./common/resourceExists');
+var resourceExists = require('./common/resourceexists');
 var dumpGame = require('./common/dumpgame');
 var test = require('unit.js');
 
