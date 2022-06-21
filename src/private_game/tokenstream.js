@@ -199,20 +199,20 @@ function parseCommentValue(rawComment) {
 
 // Conversion table NAG -> numeric code
 var SPECIAL_NAGS_LOOKUP = {
-	'!!' :  3,             // very good move
-	'!'  :  1,             // good move
-	'!?' :  5,             // interesting move
-	'?!' :  6,             // questionable move
-	'?'  :  2,             // bad move
-	'??' :  4,             // very bad move
-	'+-' : 18,             // White has a decisive advantage
-	'+/-': 16,             // White has a moderate advantage
-	'+/=': 14, '+=' : 14,  // White has a slight advantage
-	'='  : 10,             // equal position
-	'~'  : 13, 'inf': 13,  // unclear position
-	'=/+': 15, '=+' : 15,  // Black has a slight advantage
-	'-/+': 17,             // Black has a moderate advantage
-	'-+' : 19,             // Black has a decisive advantage
+	'!!' :   3,            // very good move
+	'!'  :   1,            // good move
+	'!?' :   5,            // interesting move
+	'?!' :   6,            // questionable move
+	'?'  :   2,            // bad move
+	'??' :   4,            // very bad move
+	'+-' :  18,            // White has a decisive advantage
+	'+/-':  16,            // White has a moderate advantage
+	'+/=':  14, '+=' : 14, // White has a slight advantage
+	'='  :  10,            // equal position
+	'~'  :  13, 'inf': 13, // unclear position
+	'=/+':  15, '=+' : 15, // Black has a slight advantage
+	'-/+':  17,            // Black has a moderate advantage
+	'-+' :  19,            // Black has a decisive advantage
 	'RR' : 145,            // Editorial comment
 	'N'  : 146,            // Novelty
 };
