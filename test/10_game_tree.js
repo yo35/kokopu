@@ -23,7 +23,7 @@
 'use strict';
 
 
-var kokopu = require('../src/index');
+var kokopu = require('../dist/lib/index');
 var readText = require('./common/readtext');
 var resourceExists = require('./common/resourceexists');
 var dumpGame = require('./common/dumpgame');

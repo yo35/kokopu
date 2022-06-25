@@ -23,7 +23,7 @@
 'use strict';
 
 
-var kokopu = require('../src/index');
+var kokopu = require('../dist/lib/index');
 var test = require('unit.js');
 
 

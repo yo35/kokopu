@@ -23,7 +23,7 @@
 'use strict';
 
 
-var kokopu = require('../src/index');
+var kokopu = require('../dist/lib/index');
 var fs = require('fs');
 var program = require('commander');
 

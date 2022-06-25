@@ -36,15 +36,18 @@
 		"mocha": "^10.0.0",
 		"nyc": "^15.1.0",
 		"ssh2-sftp-client": "^9.0.1",
+		"typescript": "^4.7.4",
 		"uglify-js": "^3.16.1",
 		"unit.js": "^2.1.1"
 	},
 	"scripts": {
 		"lint": "eslint demo src test",
+		"preunit": "npm run build:lib",
 		"unit": "nyc mocha --bail --sort",
 		"test": "npm run lint && npm run unit",
 		"publish_coverage": "nyc report --reporter=text-lcov | coveralls",
 		"build": "make -f scripts/build.mk",
+		"build:lib": "tsc --project scripts/tsconfig.json",
 		"clean": "make -f scripts/build.mk clean",
 		"predeploy": "npm run test && npm run build",
 		"deploy": "npm publish && node scripts/deploy.js"
