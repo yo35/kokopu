@@ -1,4 +1,4 @@
-/******************************************************************************
+/* -------------------------------------------------------------------------- *
  *                                                                            *
  *    This file is part of Kokopu, a JavaScript chess library.                *
  *    Copyright (C) 2018-2022  Yoann Le Montagner <yo35 -at- melix.net>       *
@@ -17,15 +17,18 @@
  *    Public License along with this program. If not, see                     *
  *    <http://www.gnu.org/licenses/>.                                         *
  *                                                                            *
- ******************************************************************************/
+ * -------------------------------------------------------------------------- */
 
 
-'use strict';
+export * as i18n from './i18n';
+export * as exception from './exception';
 
+export { Color, Piece, ColoredPiece, EnPassantFlag, Castle, Castle960, Square, Coordinates, GameResult, GameVariant } from './basetypes';
+export { forEachSquare, squareColor, squareToCoordinates, coordinatesToSquare, oppositeColor, variantWithCanonicalStartPosition, nagSymbol } from './helper';
 
-/**
- * Trim the given string, and replace all the sub-sequence of 1 or several space-like characters by a single space.
- */
-exports.trimAndCollapseSpaces = function(text) {
-	return text.replace(/^\s+|\s+$/g, '').replace(/\s+/g, ' ');
-};
+export { isMoveDescriptor } from './movedescriptor';
+export { Position } from './position';
+export { Game } from './game';
+export { Database } from './database';
+
+export { pgnRead, pgnWrite } from './pgn';

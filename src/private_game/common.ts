@@ -1,4 +1,4 @@
-/******************************************************************************
+/* -------------------------------------------------------------------------- *
  *                                                                            *
  *    This file is part of Kokopu, a JavaScript chess library.                *
  *    Copyright (C) 2018-2022  Yoann Le Montagner <yo35 -at- melix.net>       *
@@ -17,30 +17,12 @@
  *    Public License along with this program. If not, see                     *
  *    <http://www.gnu.org/licenses/>.                                         *
  *                                                                            *
- ******************************************************************************/
+ * -------------------------------------------------------------------------- */
 
 
-'use strict';
-
-
-exports.i18n = require('./i18n');
-exports.exception = require('./exception');
-
-var helper = require('./helper');
-exports.forEachSquare = helper.forEachSquare;
-exports.squareColor = helper.squareColor;
-exports.squareToCoordinates = helper.squareToCoordinates;
-exports.coordinatesToSquare = helper.coordinatesToSquare;
-exports.oppositeColor = helper.oppositeColor;
-exports.variantWithCanonicalStartPosition = helper.variantWithCanonicalStartPosition;
-exports.nagSymbol = helper.nagSymbol;
-
-exports.isMoveDescriptor = require('./movedescriptor').isMoveDescriptor;
-
-exports.Position = require('./position').Position;
-exports.Game = require('./game').Game;
-exports.Database = require('./database').Database;
-
-var pgn = require('./pgn');
-exports.pgnRead = pgn.pgnRead;
-exports.pgnWrite = pgn.pgnWrite;
+/**
+ * Trim the given string, and replace all the sub-sequence of 1 or several space-like characters by a single space.
+ */
+export function trimAndCollapseSpaces(text: string) {
+	return text.replace(/^\s+|\s+$/g, '').replace(/\s+/g, ' ');
+}
