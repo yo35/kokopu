@@ -682,14 +682,19 @@ Position.prototype.isMoveLegal = function(from, to) {
 
 			case 'promotion':
 				return makeFactory('promotion', function(promotion) {
-					promotion = bt.pieceFromString(promotion);
-					if(promotion >= 0) {
-						var builtMoveDescriptor = result.build(promotion);
+					var promotionCode = bt.pieceFromString(promotion);
+					if (promotionCode >= 0) {
+						var builtMoveDescriptor = result.moveDescriptorFactory(promotionCode);
 						if(builtMoveDescriptor) {
 							return builtMoveDescriptor;
 						}
 					}
 					throw new exception.IllegalArgument('Position#isMoveLegal()');
+				});
+
+			case 'regular':
+				return makeFactory('regular', function() {
+					return result.moveDescriptor;
 				});
 
 			default: // This case is not supposed to happen.
@@ -864,16 +869,16 @@ Position.prototype.figurineNotation = function() {
  */
 Position.prototype.uci = function() {
 	if(arguments.length === 1 && moveDescriptor.isMoveDescriptor(arguments[0])) {
-		return uci.getNotation(this._impl, arguments[0], false);
+		return uci.getUCINotation(this._impl, arguments[0], false);
 	}
 	else if(arguments.length === 2 && moveDescriptor.isMoveDescriptor(arguments[0]) && typeof arguments[1] === 'boolean') {
-		return uci.getNotation(this._impl, arguments[0], arguments[1]);
+		return uci.getUCINotation(this._impl, arguments[0], arguments[1]);
 	}
 	else if(arguments.length === 1 && typeof arguments[0] === 'string') {
-		return uci.parseNotation(this._impl, arguments[0], false);
+		return uci.parseUCINotation(this._impl, arguments[0], false);
 	}
 	else if(arguments.length >= 2 && typeof arguments[0] === 'string' && typeof arguments[1] === 'boolean') {
-		return uci.parseNotation(this._impl, arguments[0], arguments[1]);
+		return uci.parseUCINotation(this._impl, arguments[0], arguments[1]);
 	}
 	else {
 		throw new exception.IllegalArgument('Position#uci()');

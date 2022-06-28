@@ -26,7 +26,7 @@ export * as exception from './exception';
 export { Color, Piece, ColoredPiece, EnPassantFlag, Castle, Castle960, Square, Coordinates, GameResult, GameVariant } from './basetypes';
 export { forEachSquare, squareColor, squareToCoordinates, coordinatesToSquare, oppositeColor, variantWithCanonicalStartPosition, nagSymbol } from './helper';
 
-export { isMoveDescriptor } from './movedescriptor';
+export { MoveDescriptor, isMoveDescriptor } from './movedescriptor';
 export { Position } from './position';
 export { Game } from './game';
 export { Database } from './database';

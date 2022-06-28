@@ -56,7 +56,7 @@ export function ascii(position: PositionImpl) {
 }
 
 
-export function getFEN(position: PositionImpl, fiftyMoveClock: number, fullMoveNumber: number, regularFENIfPossible: boolean) {
+export function getFEN(position: PositionImpl, fiftyMoveClock = 0, fullMoveNumber = 1, regularFENIfPossible = false) {
 	let result = '';
 
 	// Board scanning
