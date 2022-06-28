@@ -20,8 +20,8 @@
  * -------------------------------------------------------------------------- */
 
 
+import { KING, QUEEN, ROOK, BISHOP, KNIGHT, PAWN, EMPTY } from './base_types_impl';
 import { PositionImpl } from './impl';
-import { KING, QUEEN, ROOK, BISHOP, KNIGHT, PAWN, EMPTY } from '../basetypes';
 
 
 /**

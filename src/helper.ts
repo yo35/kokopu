@@ -20,8 +20,10 @@
  * -------------------------------------------------------------------------- */
 
 
-import { Color, colorFromString, colorToString, Square, squareFromString, squareToString, Coordinates, fileToString, rankToString, GameVariant, variantFromString } from './basetypes';
+import { Color, Square, Coordinates, GameVariant } from './basetypes';
 import { IllegalArgument } from './exception';
+
+import { colorFromString, colorToString, squareFromString, squareToString, fileToString, rankToString, variantFromString } from './private_position/base_types_impl';
 import { variantWithCanonicalStartPosition as variantWithCanonicalStartPositionImpl } from './private_position/impl';
 
 

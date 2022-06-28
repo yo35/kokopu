@@ -23,13 +23,12 @@
 'use strict';
 
 
-var bt = require('./basetypes');
 var exception = require('./exception');
 var i18n = require('./i18n');
-var asciiImpl = require('./private_game/ascii_impl');
-
 var Position = require('./position').Position;
 
+var bt = require('./private_position/base_types_impl');
+var asciiImpl = require('./private_game/ascii_impl');
 
 
 // -----------------------------------------------------------------------------

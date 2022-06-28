@@ -20,8 +20,9 @@
  * -------------------------------------------------------------------------- */
 
 
+import { WHITE, BLACK, KING, ROOK, REGULAR_CHESS, CHESS960, colorFromString, colorToString, fileFromString, fileToString, variantToString } from './base_types_impl';
 import { PositionImpl, makeEmpty } from './impl';
-import { WHITE, BLACK, KING, ROOK, REGULAR_CHESS, CHESS960, colorFromString, colorToString, fileFromString, fileToString, variantToString } from '../basetypes';
+
 import { InvalidFEN } from '../exception';
 import i18n = require('../i18n'); // TODO fix import
 

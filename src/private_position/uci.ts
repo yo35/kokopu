@@ -20,13 +20,13 @@
  * -------------------------------------------------------------------------- */
 
 
+import { KING, ROOK, EMPTY, CHESS960, pieceFromString, squareFromString } from './base_types_impl';
 import { getFEN } from './fen';
 import { PositionImpl } from './impl';
 import { isLegal } from './legality';
 import { MoveDescriptorImpl } from './movedescriptorimpl';
 import { isMoveLegal } from './movegeneration';
 
-import { KING, ROOK, EMPTY, CHESS960, pieceFromString, squareFromString } from '../basetypes';
 import { InvalidNotation } from '../exception';
 import i18n = require('../i18n'); // TODO fix import
 

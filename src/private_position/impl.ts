@@ -20,7 +20,7 @@
  * -------------------------------------------------------------------------- */
 
 
-import { WHITE, BLACK, KING, QUEEN, ROOK, BISHOP, KNIGHT, WK, WQ, WR, WB, WN, WP, BK, BQ, BR, BB, BN, BP, EMPTY, INVALID, SquareImpl, CHESS960, NO_KING } from '../basetypes';
+import { WHITE, BLACK, KING, QUEEN, ROOK, BISHOP, KNIGHT, WK, WQ, WR, WB, WN, WP, BK, BQ, BR, BB, BN, BP, EMPTY, INVALID, SquareImpl, CHESS960, NO_KING } from './base_types_impl';
 
 
 const EMPTY_BOARD = [

@@ -20,12 +20,13 @@
  * -------------------------------------------------------------------------- */
 
 
-import { PositionImpl } from './impl';
-import { WHITE, BLACK, KING, QUEEN, ROOK, BISHOP, KNIGHT, PAWN, EMPTY, CHESS960, ANTICHESS, HORDE } from '../basetypes';
 import { ATTACK_DIRECTIONS, isAttacked } from './attacks';
+import { WHITE, BLACK, KING, QUEEN, ROOK, BISHOP, KNIGHT, PAWN, EMPTY, CHESS960, ANTICHESS, HORDE } from './base_types_impl';
+import { PositionImpl } from './impl';
 import { isLegal } from './legality';
-import { MoveDescriptor } from '../movedescriptor';
 import { MoveDescriptorImpl } from './movedescriptorimpl';
+
+import { MoveDescriptor } from '../movedescriptor';
 
 
 /* eslint-disable no-mixed-spaces-and-tabs, indent */

@@ -20,9 +20,9 @@
  * -------------------------------------------------------------------------- */
 
 
-import { PositionImpl } from './impl';
-import { WHITE, BLACK, KING, ROOK, PAWN, WP, BP, EMPTY, INVALID, SquareImpl, CHESS960, NO_KING, BLACK_KING_ONLY, ANTICHESS, HORDE } from '../basetypes';
 import { isAttacked } from './attacks';
+import { WHITE, BLACK, KING, ROOK, PAWN, WP, BP, EMPTY, INVALID, SquareImpl, CHESS960, NO_KING, BLACK_KING_ONLY, ANTICHESS, HORDE } from './base_types_impl';
+import { PositionImpl } from './impl';
 
 
 /**

@@ -23,14 +23,14 @@
 'use strict';
 
 
-var bt = require('./basetypes');
-var moveDescriptor = require('./movedescriptor');
 var exception = require('./exception');
 var i18n = require('./i18n');
+var moveDescriptor = require('./movedescriptor');
 
-var impl = require('./private_position/impl');
-var fen = require('./private_position/fen');
 var attacks = require('./private_position/attacks');
+var bt = require('./private_position/base_types_impl');
+var fen = require('./private_position/fen');
+var impl = require('./private_position/impl');
 var legality = require('./private_position/legality');
 var moveGeneration = require('./private_position/movegeneration');
 var notation = require('./private_position/notation');

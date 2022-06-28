@@ -21,14 +21,14 @@
 
 
 import { getAttacks } from './attacks';
+import { WHITE, KING, QUEEN, ROOK, BISHOP, PAWN, EMPTY, CHESS960, ANTICHESS, figurineFromString, figurineToString, fileFromString, fileToString, rankFromString,
+	rankToString, pieceFromString, pieceToString, squareFromString, squareToString } from './base_types_impl';
 import { getFEN } from './fen';
 import { PositionImpl, makeCopy } from './impl';
 import { isLegal } from './legality';
 import { MoveDescriptorImpl } from './movedescriptorimpl';
 import { isCheckmate, isCheck, isCaptureMandatory, isCastlingLegal, isKingSafeAfterMove, play } from './movegeneration';
 
-import { WHITE, KING, QUEEN, ROOK, BISHOP, PAWN, EMPTY, CHESS960, ANTICHESS, figurineFromString, figurineToString, fileFromString, fileToString, rankFromString,
-	rankToString, pieceFromString, pieceToString, squareFromString, squareToString } from '../basetypes';
 import { InvalidNotation } from '../exception';
 import i18n = require('../i18n'); // TODO fix import
 
