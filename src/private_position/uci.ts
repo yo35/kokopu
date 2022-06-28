@@ -24,8 +24,8 @@ import { KING, ROOK, EMPTY, CHESS960, pieceFromString, squareFromString } from '
 import { getFEN } from './fen';
 import { PositionImpl } from './impl';
 import { isLegal } from './legality';
-import { MoveDescriptorImpl } from './movedescriptorimpl';
-import { isMoveLegal } from './movegeneration';
+import { MoveDescriptorImpl } from './move_descriptor_impl';
+import { isMoveLegal } from './move_generation';
 
 import { InvalidNotation } from '../exception';
 import i18n = require('../i18n'); // TODO fix import

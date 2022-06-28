@@ -20,7 +20,7 @@
  * -------------------------------------------------------------------------- */
 
 
-import { Color, Piece, ColoredPiece, Square, GameResult, GameVariant } from '../basetypes';
+import { Color, Piece, ColoredPiece, Square, GameResult, GameVariant } from '../base_types';
 
 
 // TODO change into const enum

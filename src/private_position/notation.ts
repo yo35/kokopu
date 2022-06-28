@@ -26,8 +26,8 @@ import { WHITE, KING, QUEEN, ROOK, BISHOP, PAWN, EMPTY, CHESS960, ANTICHESS, fig
 import { getFEN } from './fen';
 import { PositionImpl, makeCopy } from './impl';
 import { isLegal } from './legality';
-import { MoveDescriptorImpl } from './movedescriptorimpl';
-import { isCheckmate, isCheck, isCaptureMandatory, isCastlingLegal, isKingSafeAfterMove, play } from './movegeneration';
+import { MoveDescriptorImpl } from './move_descriptor_impl';
+import { isCheckmate, isCheck, isCaptureMandatory, isCastlingLegal, isKingSafeAfterMove, play } from './move_generation';
 
 import { InvalidNotation } from '../exception';
 import i18n = require('../i18n'); // TODO fix import

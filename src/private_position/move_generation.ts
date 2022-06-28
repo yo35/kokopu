@@ -24,9 +24,9 @@ import { ATTACK_DIRECTIONS, isAttacked } from './attacks';
 import { WHITE, BLACK, KING, QUEEN, ROOK, BISHOP, KNIGHT, PAWN, EMPTY, CHESS960, ANTICHESS, HORDE } from './base_types_impl';
 import { PositionImpl } from './impl';
 import { isLegal } from './legality';
-import { MoveDescriptorImpl } from './movedescriptorimpl';
+import { MoveDescriptorImpl } from './move_descriptor_impl';
 
-import { MoveDescriptor } from '../movedescriptor';
+import { MoveDescriptor } from '../move_descriptor';
 
 
 /* eslint-disable no-mixed-spaces-and-tabs, indent */

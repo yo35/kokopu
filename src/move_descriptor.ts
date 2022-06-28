@@ -20,7 +20,7 @@
  * -------------------------------------------------------------------------- */
 
 
-import { Color, ColoredPiece, Piece, Square } from './basetypes';
+import { Color, ColoredPiece, Piece, Square } from './base_types';
 
 
 /**

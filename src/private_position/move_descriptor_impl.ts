@@ -23,7 +23,7 @@
 import { KING, ROOK, PAWN, colorToString, coloredPieceToString, pieceToString, squareToString } from './base_types_impl';
 
 import { IllegalArgument } from '../exception';
-import { MoveDescriptor } from '../movedescriptor';
+import { MoveDescriptor } from '../move_descriptor';
 
 
 const CASTLING_FLAG   = 0x01;

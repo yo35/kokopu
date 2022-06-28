@@ -20,7 +20,7 @@
  * -------------------------------------------------------------------------- */
 
 
-import { Color, Square, Coordinates, GameVariant } from './basetypes';
+import { Color, Square, Coordinates, GameVariant } from './base_types';
 import { IllegalArgument } from './exception';
 
 import { colorFromString, colorToString, squareFromString, squareToString, fileToString, rankToString, variantFromString } from './private_position/base_types_impl';
