@@ -20,7 +20,7 @@
  * -------------------------------------------------------------------------- */
 
 
-import { Color, Piece, ColoredPiece, Square, GameResult, GameVariant } from '../base_types';
+import { Color, Piece, ColoredPiece, File, Rank, Square, GameResult, GameVariant } from '../base_types';
 
 
 // TODO change into const enum
@@ -93,20 +93,20 @@ const VARIANT_SYMBOL  = [ 'regular', 'chess960', 'no-king', 'white-king-only', '
 
 export function colorToString   (color   : number) { return COLOR_SYMBOL   [color  ] as Color; }
 export function pieceToString   (piece   : number) { return PIECE_SYMBOL   [piece  ] as Piece; }
-export function figurineToString(cp      : number) { return FIGURINE_SYMBOL[cp     ]; }
-export function rankToString    (rank    : number) { return RANK_SYMBOL    [rank   ]; }
-export function fileToString    (file    : number) { return FILE_SYMBOL    [file   ]; }
+export function figurineToString(cp      : number) { return FIGURINE_SYMBOL[cp     ] as string; }
+export function rankToString    (rank    : number) { return RANK_SYMBOL    [rank   ] as Rank; }
+export function fileToString    (file    : number) { return FILE_SYMBOL    [file   ] as File; }
 export function resultToString  (result  : number) { return RESULT_SYMBOL  [result ] as GameResult; }
 export function variantToString (variant : number) { return VARIANT_SYMBOL [variant] as GameVariant; }
 
 
-export function colorFromString   (color   : string) { return color   === '' ? -1 : COLOR_SYMBOL   .indexOf(color  ); } // TODO improve input check
-export function pieceFromString   (piece   : string) { return piece   === '' ? -1 : PIECE_SYMBOL   .indexOf(piece  ); }
-export function figurineFromString(cp      : string) { return cp      === '' ? -1 : FIGURINE_SYMBOL.indexOf(cp     ); }
-export function rankFromString    (rank    : string) { return rank    === '' ? -1 : RANK_SYMBOL    .indexOf(rank   ); }
-export function fileFromString    (file    : string) { return file    === '' ? -1 : FILE_SYMBOL    .indexOf(file   ); }
-export function resultFromString  (result  : string) { return RESULT_SYMBOL .indexOf(result ); }
-export function variantFromString (variant : string) { return VARIANT_SYMBOL.indexOf(variant); }
+export function colorFromString   (color   : any) { return color   === '' ? -1 : COLOR_SYMBOL   .indexOf(color  ); } // TODO improve input check
+export function pieceFromString   (piece   : any) { return piece   === '' ? -1 : PIECE_SYMBOL   .indexOf(piece  ); }
+export function figurineFromString(cp      : any) { return cp      === '' ? -1 : FIGURINE_SYMBOL.indexOf(cp     ); }
+export function rankFromString    (rank    : any) { return rank    === '' ? -1 : RANK_SYMBOL    .indexOf(rank   ); }
+export function fileFromString    (file    : any) { return file    === '' ? -1 : FILE_SYMBOL    .indexOf(file   ); }
+export function resultFromString  (result  : any) { return RESULT_SYMBOL .indexOf(result ); }
+export function variantFromString (variant : any) { return VARIANT_SYMBOL.indexOf(variant); }
 
 
 export function squareToString(square: number) {
@@ -114,7 +114,7 @@ export function squareToString(square: number) {
 }
 
 
-export function squareFromString(square: string) {
+export function squareFromString(square: any) {
 	if (!/^[a-h][1-8]$/.test(square)) {
 		return -1;
 	}
@@ -129,7 +129,7 @@ export function coloredPieceToString(cp: number) {
 }
 
 
-export function coloredPieceFromString(cp: string) {
+export function coloredPieceFromString(cp: any) {
 	if (!/^[wb][kqrbnp]$/.test(cp)) {
 		return -1;
 	}

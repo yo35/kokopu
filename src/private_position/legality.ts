@@ -28,22 +28,11 @@ import { PositionImpl } from './impl';
 /**
  * Check whether the given position is legal or not.
  *
- * A position is considered to be legal if all the following conditions are met:
- *
- * 1. There is exactly one white king and one black king on the board (or more generally,
- *    the number of kings on the board matches the game variant of the position).
- * 2. Special condition regarding positions in which one of the player (or both) has no piece.
- * 3. The player that is not about to play is not check (this condition is omitted for variants in which kings has no "royal power").
- * 4. There are no pawn on rows 1 and 8.
- * 5. For each colored castle flag set, there is a rook and a king on the
- *    corresponding initial squares.
- * 6. The pawn situation is consistent with the en-passant flag if it is set.
- *    For instance, if it is set to the 'e' column and black is about to play,
- *    the squares e2 and e3 must be empty, and there must be a white pawn on e4.
+ * See {@link Position.isLegal} for the description of the check points enforced in this function.
  */
-export function isLegal(position: PositionImpl) {
+export function isLegal(position: PositionImpl): boolean {
 	refreshLegalFlagAndKingSquares(position);
-	return position.legal;
+	return position.legal!;
 }
 
 
@@ -67,7 +56,7 @@ export function refreshLegalFlagAndKingSquares(position: PositionImpl) {
 		return;
 	}
 
-	// Condition (2)
+	// Extension of (1) for variants that allow a player to have no piece at all...
 	if (position.variant === ANTICHESS) {
 		if (!hasAtLeastOnePiece(position, 1 - position.turn)) { // The player that has just played must have at least one piece in antichess.
 			return;
@@ -79,12 +68,12 @@ export function refreshLegalFlagAndKingSquares(position: PositionImpl) {
 		}
 	}
 
-	// Condition (3)
+	// Condition (2)
 	if (position.king[1 - position.turn] >= 0 && isAttacked(position, position.king[1 - position.turn], position.turn)) {
 		return;
 	}
 
-	// Condition (4)
+	// Condition (3)
 	const forbiddenCPWhite1 = position.variant === HORDE ? INVALID : WP;
 	for (let c = 0; c < 8; ++c) {
 		const cp1 = position.board[SquareImpl.A1 + c];
@@ -94,7 +83,7 @@ export function refreshLegalFlagAndKingSquares(position: PositionImpl) {
 		}
 	}
 
-	// Condition (5)
+	// Condition (4)
 	const isCastlingFlagLegalFun = position.variant === CHESS960 ? isCastlingFlagLegalForChess960 : isCastlingFlagLegalForRegularChess;
 	for (let color = 0; color < 2; ++color) {
 		if (!isCastlingFlagLegalFun(position, color)) {
@@ -102,7 +91,7 @@ export function refreshLegalFlagAndKingSquares(position: PositionImpl) {
 		}
 	}
 
-	// Condition (6)
+	// Condition (5)
 	if (position.enPassant >= 0) {
 		const square2 = (6 - position.turn * 5) * 16 + position.enPassant;
 		const square3 = (5 - position.turn * 3) * 16 + position.enPassant;

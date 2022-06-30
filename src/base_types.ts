@@ -48,30 +48,38 @@ export type ColoredPiece =
 
 
 /**
- * Represents an empty square.
- */
-export type Empty = '-';
-
-
-/**
- * Admissible value for the en-passant flag in `Position`. Can be either a file (`'a'`, `'b'`, ..., `'h'`) indicating that a 2-square pawn move has just
- * happen on the corresponding file, or `'-'`, indicating that the previous move is NOT a 2-square pawn move.
- */
-export type EnPassantFlag = '-' | 'a' | 'b' | 'c' | 'd' | 'e' | 'f' | 'g' | 'h';
-
-
-/**
- * Castle type at chess: `'wk'` (white king-side castle), `'wq'`, `'bk'` or `'bq'`.
+ * Castle type at chess:
+ * - `'wk'` (white king-side castle)
+ * - `'wq'` (white queen-side castle)
+ * - `'bk'` (black king-side castle)
+ * - `'bq'` (black queen-side castle)
  */
 export type Castle = 'wk' | 'wq' | 'bk' | 'bq';
 
 
 /**
- * Castle type at Chess960: `'wa'` (white castle with rook initially on the a-file), `'wb'`, `'wc'`, ..., `'bh'`.
+ * Castle type at Chess960:
+ * - `'wa'` (white castle with rook on the file A)
+ * - `'wb'` (white castle with rook on the file B)
+ * - `'wc'` (white castle with rook on the file C)
+ * - ...
+ * - `'bh'` (black castle with rook on the file H)
  */
 export type Castle960 =
 	'wa' | 'wb' | 'wc' | 'wd' | 'we' | 'wf' | 'wg' | 'wh' |
 	'ba' | 'bb' | 'bc' | 'bd' | 'be' | 'bf' | 'bg' | 'bh';
+
+
+/**
+ * Chessboard file.
+ */
+export type File = 'a' | 'b' | 'c' | 'd' | 'e' | 'f' | 'g' | 'h';
+
+
+/**
+ * Chessboard rank.
+ */
+export type Rank = '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8';
 
 
 /**
