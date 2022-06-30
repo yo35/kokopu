@@ -29,7 +29,7 @@ import { isAttacked, getAttacks } from './private_position/attacks';
 import { EMPTY, REGULAR_CHESS, CHESS960, ANTICHESS, HORDE, colorFromString, colorToString, pieceFromString, coloredPieceFromString, coloredPieceToString,
 	fileFromString, fileToString, squareFromString, squareToString, variantFromString, variantToString } from './private_position/base_types_impl';
 import { ascii, getFEN, parseFEN } from './private_position/fen';
-import { PositionImpl, makeCopy, makeEmpty, makeInitial, make960FromScharnagl, isEqual, variantWithCanonicalStartPosition } from './private_position/impl';
+import { PositionImpl, makeCopy, makeEmpty, makeInitial, make960FromScharnagl, isEqual, hasCanonicalStartPosition } from './private_position/impl';
 import { isLegal, refreshLegalFlagAndKingSquares } from './private_position/legality';
 import { MoveDescriptorImpl } from './private_position/move_descriptor_impl';
 import { isCheck, isCheckmate, isStalemate, hasMove, moves, isMoveLegal, play, isNullMoveLegal, playNullMove } from './private_position/move_generation';
@@ -142,7 +142,7 @@ export class Position {
 				else {
 					const variantCode = variantFromString(arg0);
 					if (variantCode >= 0) {
-						if (!variantWithCanonicalStartPosition(variantCode)) {
+						if (!hasCanonicalStartPosition(variantCode)) {
 							throw new IllegalArgument('Position()');
 						}
 						this._impl = makeInitial(variantCode);
@@ -179,7 +179,7 @@ export class Position {
 					throw new IllegalArgument('Position()');
 				}
 				if (arg1 === 'start') {
-					if (!variantWithCanonicalStartPosition(variantCode)) {
+					if (!hasCanonicalStartPosition(variantCode)) {
 						throw new IllegalArgument('Position()');
 					}
 					this._impl = makeInitial(variantCode);

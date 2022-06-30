@@ -24,7 +24,7 @@ import { Color, Square, Coordinates, GameVariant } from './base_types';
 import { IllegalArgument } from './exception';
 
 import { colorFromString, colorToString, squareFromString, squareToString, fileToString, rankToString, variantFromString } from './private_position/base_types_impl';
-import { variantWithCanonicalStartPosition as variantWithCanonicalStartPositionImpl } from './private_position/impl';
+import { hasCanonicalStartPosition } from './private_position/impl';
 
 
 /**
@@ -103,7 +103,7 @@ export function variantWithCanonicalStartPosition(variant: GameVariant): boolean
 	if (variantCode < 0) {
 		throw new IllegalArgument('variantWithCanonicalStartPosition()');
 	}
-	return variantWithCanonicalStartPositionImpl(variantCode);
+	return hasCanonicalStartPosition(variantCode);
 }
 
 

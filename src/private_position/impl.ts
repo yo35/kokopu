@@ -118,7 +118,7 @@ const START_POSITION_INFO: (StartPositionInfo | null)[] = [
 ];
 
 
-export function variantWithCanonicalStartPosition(variant: number) { // TODO rename
+export function hasCanonicalStartPosition(variant: number) {
 	return START_POSITION_INFO[variant] !== null;
 }
 
