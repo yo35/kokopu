@@ -20,7 +20,7 @@
  * -------------------------------------------------------------------------- */
 
 
-import { WHITE, BLACK, KING, ROOK, REGULAR_CHESS, CHESS960, colorFromString, colorToString, fileFromString, fileToString, variantToString } from './base_types_impl';
+import { ColorImpl, PieceImpl, GameVariantImpl, colorFromString, colorToString, fileFromString, fileToString, variantToString } from './base_types_impl';
 import { PositionImpl, makeEmpty } from './impl';
 
 import { InvalidFEN } from '../exception';
@@ -49,7 +49,7 @@ export function ascii(position: PositionImpl) {
 
 	// Flags
 	result += colorToString(position.turn) + ' ' + castlingToString(position) + ' ' + enPassantToString(position);
-	if (position.variant !== REGULAR_CHESS) {
+	if (position.variant !== GameVariantImpl.REGULAR_CHESS) {
 		result += ' (' + variantToString(position.variant) + ')';
 	}
 
@@ -98,10 +98,10 @@ export function getFEN(position: PositionImpl, fiftyMoveClock = 0, fullMoveNumbe
  *                             For the other variants, this flag has no effect, as regulary FEN style is always used.  
  */
 function castlingToString(position: PositionImpl, regularFENIfPossible = false) {
-	if (position.variant === CHESS960) {
+	if (position.variant === GameVariantImpl.CHESS960) {
 		if (regularFENIfPossible) {
-			const whiteRegularFlags = regularFENCaslingFlagIfPossible(position, WHITE);
-			const blackRegularFlags = regularFENCaslingFlagIfPossible(position, BLACK);
+			const whiteRegularFlags = regularFENCaslingFlagIfPossible(position, ColorImpl.WHITE);
+			const blackRegularFlags = regularFENCaslingFlagIfPossible(position, ColorImpl.BLACK);
 			if (whiteRegularFlags !== false && blackRegularFlags !== false) {
 				return whiteRegularFlags === '' && blackRegularFlags === '' ? '-' : whiteRegularFlags.toUpperCase() + blackRegularFlags;
 			}
@@ -109,17 +109,17 @@ function castlingToString(position: PositionImpl, regularFENIfPossible = false) 
 		let whiteFlags = '';
 		let blackFlags = '';
 		for (let file = 0; file < 8; ++file) {
-			if (position.castling[WHITE] & 1 << file) { whiteFlags += fileToString(file); }
-			if (position.castling[BLACK] & 1 << file) { blackFlags += fileToString(file); }
+			if (position.castling[ColorImpl.WHITE] & 1 << file) { whiteFlags += fileToString(file); }
+			if (position.castling[ColorImpl.BLACK] & 1 << file) { blackFlags += fileToString(file); }
 		}
 		return whiteFlags === '' && blackFlags === '' ? '-' : whiteFlags.toUpperCase() + blackFlags;
 	}
 	else {
 		let result = '';
-		if (position.castling[WHITE] & 1 << 7) { result += 'K'; }
-		if (position.castling[WHITE] & 1 << 0) { result += 'Q'; }
-		if (position.castling[BLACK] & 1 << 7) { result += 'k'; }
-		if (position.castling[BLACK] & 1 << 0) { result += 'q'; }
+		if (position.castling[ColorImpl.WHITE] & 1 << 7) { result += 'K'; }
+		if (position.castling[ColorImpl.WHITE] & 1 << 0) { result += 'Q'; }
+		if (position.castling[ColorImpl.BLACK] & 1 << 7) { result += 'k'; }
+		if (position.castling[ColorImpl.BLACK] & 1 << 0) { result += 'q'; }
 		return result === '' ? '-' : result;
 	}
 }
@@ -133,8 +133,8 @@ function regularFENCaslingFlagIfPossible(position: PositionImpl, color: number):
 
 	const firstSquare = 112 * color;
 	const lastSquare = 112 * color + 7;
-	const targetKing = KING * 2 + color;
-	const targetRook = ROOK * 2 + color;
+	const targetKing = PieceImpl.KING * 2 + color;
+	const targetRook = PieceImpl.ROOK * 2 + color;
 
 	// Search for the king.
 	// WARNING: do not use `position.king` as this computed attribute may not be up-to-date.
@@ -280,7 +280,7 @@ export function parseFEN(variant: number, fen: string, strict: boolean): { posit
 	}
 
 	// Castling rights parsing
-	const castling = variant === CHESS960 ? castlingFromStringXFEN(fields[2], strict, position.board) : castlingFromStringFEN(fields[2], strict);
+	const castling = variant === GameVariantImpl.CHESS960 ? castlingFromStringXFEN(fields[2], strict, position.board) : castlingFromStringFEN(fields[2], strict);
 	if (castling === null) {
 		throw new InvalidFEN(fen, i18n.INVALID_CASTLING_FIELD);
 	}
@@ -320,10 +320,10 @@ function castlingFromStringFEN(castling: string, strict: boolean): number[] | nu
 	if (!(strict ? /^K?Q?k?q?$/ : /^[KQkq]*$/).test(castling)) {
 		return null;
 	}
-	if (castling.indexOf('K') >= 0) { result[WHITE] |= 1 << 7; }
-	if (castling.indexOf('Q') >= 0) { result[WHITE] |= 1 << 0; }
-	if (castling.indexOf('k') >= 0) { result[BLACK] |= 1 << 7; }
-	if (castling.indexOf('q') >= 0) { result[BLACK] |= 1 << 0; }
+	if (castling.indexOf('K') >= 0) { result[ColorImpl.WHITE] |= 1 << 7; }
+	if (castling.indexOf('Q') >= 0) { result[ColorImpl.WHITE] |= 1 << 0; }
+	if (castling.indexOf('k') >= 0) { result[ColorImpl.BLACK] |= 1 << 7; }
+	if (castling.indexOf('q') >= 0) { result[ColorImpl.BLACK] |= 1 << 0; }
 	return result;
 }
 
@@ -339,8 +339,8 @@ function castlingFromStringXFEN(castling: string, strict: boolean, board: number
 
 	if (!strict) {
 		function searchQueenSideRook(color: number) {
-			const targetRook = ROOK * 2 + color;
-			const targetKing = KING * 2 + color;
+			const targetRook = PieceImpl.ROOK * 2 + color;
+			const targetKing = PieceImpl.KING * 2 + color;
 			for (let sq = 112 * color; sq < 112 * color + 8; ++sq) {
 				if (board[sq] === targetRook) {
 					return sq % 8;
@@ -353,8 +353,8 @@ function castlingFromStringXFEN(castling: string, strict: boolean, board: number
 		}
 	
 		function searchKingSideRook(color: number) {
-			const targetRook = ROOK * 2 + color;
-			const targetKing = KING * 2 + color;
+			const targetRook = PieceImpl.ROOK * 2 + color;
+			const targetKing = PieceImpl.KING * 2 + color;
 			for (let sq = 112 * color + 7; sq >= 112 * color; --sq) {
 				if (board[sq] === targetRook) {
 					return sq % 8;
@@ -366,16 +366,16 @@ function castlingFromStringXFEN(castling: string, strict: boolean, board: number
 			return 7;
 		}
 	
-		if (castling.indexOf('K') >= 0) { result[WHITE] |= 1 << searchKingSideRook (WHITE); }
-		if (castling.indexOf('Q') >= 0) { result[WHITE] |= 1 << searchQueenSideRook(WHITE); }
-		if (castling.indexOf('k') >= 0) { result[BLACK] |= 1 << searchKingSideRook (BLACK); }
-		if (castling.indexOf('q') >= 0) { result[BLACK] |= 1 << searchQueenSideRook(BLACK); }
+		if (castling.indexOf('K') >= 0) { result[ColorImpl.WHITE] |= 1 << searchKingSideRook (ColorImpl.WHITE); }
+		if (castling.indexOf('Q') >= 0) { result[ColorImpl.WHITE] |= 1 << searchQueenSideRook(ColorImpl.WHITE); }
+		if (castling.indexOf('k') >= 0) { result[ColorImpl.BLACK] |= 1 << searchKingSideRook (ColorImpl.BLACK); }
+		if (castling.indexOf('q') >= 0) { result[ColorImpl.BLACK] |= 1 << searchQueenSideRook(ColorImpl.BLACK); }
 	}
 
 	for (let file = 0; file < 8; ++file) {
 		const s = fileToString(file);
-		if (castling.indexOf(s.toUpperCase()) >= 0) { result[WHITE] |= 1 << file; }
-		if (castling.indexOf(s              ) >= 0) { result[BLACK] |= 1 << file; }
+		if (castling.indexOf(s.toUpperCase()) >= 0) { result[ColorImpl.WHITE] |= 1 << file; }
+		if (castling.indexOf(s              ) >= 0) { result[ColorImpl.BLACK] |= 1 << file; }
 	}
 	return result;
 }

@@ -21,8 +21,8 @@
 
 
 import { getAttacks } from './attacks';
-import { WHITE, KING, QUEEN, ROOK, BISHOP, PAWN, EMPTY, CHESS960, ANTICHESS, figurineFromString, figurineToString, fileFromString, fileToString, rankFromString,
-	rankToString, pieceFromString, pieceToString, squareFromString, squareToString } from './base_types_impl';
+import { ColorImpl, PieceImpl, SpI, GameVariantImpl, figurineFromString, figurineToString, fileFromString, fileToString, rankFromString, rankToString,
+	pieceFromString, pieceToString, squareFromString, squareToString } from './base_types_impl';
 import { getFEN } from './fen';
 import { PositionImpl, makeCopy } from './impl';
 import { isLegal } from './legality';
@@ -45,7 +45,7 @@ export function getNotation(position: PositionImpl, descriptor: MoveDescriptorIm
 	}
 
 	// Pawn move
-	else if (Math.trunc(descriptor._movingColoredPiece / 2) === PAWN) {
+	else if (Math.trunc(descriptor._movingColoredPiece / 2) === PieceImpl.PAWN) {
 		if (descriptor.isCapture()) {
 			result += fileToString(descriptor._from % 16) + 'x';
 		}
@@ -146,9 +146,9 @@ function isPinned(position: PositionImpl, sq: number, aimingAtSq: number) {
 	const vector = Math.abs(kingSquare - sq);
 	const aimingAtVector = Math.abs(aimingAtSq - sq);
 
-	const pinnerQueen = QUEEN * 2 + 1 - position.turn;
-	const pinnerRook = ROOK * 2 + 1 - position.turn;
-	const pinnerBishop = BISHOP * 2 + 1 - position.turn;
+	const pinnerQueen = PieceImpl.QUEEN * 2 + 1 - position.turn;
+	const pinnerRook = PieceImpl.ROOK * 2 + 1 - position.turn;
+	const pinnerBishop = PieceImpl.BISHOP * 2 + 1 - position.turn;
 
 	// Potential pinning on file or rank.
 	if (vector < 8) {
@@ -174,12 +174,12 @@ function isPinned(position: PositionImpl, sq: number, aimingAtSq: number) {
 
 function pinningLoockup(position: PositionImpl, kingSquare: number, targetSquare: number, direction: number, pinnerColoredPiece1: number, pinnerColoredPiece2: number) {
 	for (let sq = kingSquare + direction; sq !== targetSquare; sq += direction) {
-		if (position.board[sq] !== EMPTY) {
+		if (position.board[sq] !== SpI.EMPTY) {
 			return false;
 		}
 	}
 	for (let sq = targetSquare + direction; (sq & 0x88) === 0; sq += direction) {
-		if (position.board[sq] !== EMPTY) {
+		if (position.board[sq] !== SpI.EMPTY) {
 			return position.board[sq] === pinnerColoredPiece1 || position.board[sq] === pinnerColoredPiece2;
 		}
 	}
@@ -283,9 +283,9 @@ function parseCastlingNotation(position: PositionImpl, notation: string, isKingS
  * Returns the file of a `to` square to take into account to check whether a castling move is legal or not.
  */
 function getCastlingDestinationFile(position: PositionImpl, isKingSideCastling: boolean) {
-	if (position.variant === CHESS960) {
+	if (position.variant === GameVariantImpl.CHESS960) {
 		if (position.castling[position.turn] !== 0) {
-			const castlingKing = KING * 2 + position.turn;
+			const castlingKing = PieceImpl.KING * 2 + position.turn;
 			for (let file = isKingSideCastling ? 7 : 0; position.board[file + 112 * position.turn] !== castlingKing; file += isKingSideCastling ? -1 : 1) {
 				if ((position.castling[position.turn] & 1 << file) !== 0) {
 					return file;
@@ -353,7 +353,7 @@ function parseNonPawnNotation(position: PositionImpl, notation: string, strict: 
 		}
 	}
 	if (!descriptor) {
-		const message = position.turn === WHITE ? i18n.NOT_SAFE_FOR_WHITE_KING : i18n.NOT_SAFE_FOR_BLACK_KING;
+		const message = position.turn === ColorImpl.WHITE ? i18n.NOT_SAFE_FOR_WHITE_KING : i18n.NOT_SAFE_FOR_BLACK_KING;
 		throw new InvalidNotation(getFEN(position), notation, message);
 	}
 
@@ -381,7 +381,7 @@ function parseNonPawnNotation(position: PositionImpl, notation: string, strict: 
 function parsePawnMoveNotation(position: PositionImpl, notation: string, strict: boolean, pieceStyle: 'standard' | 'figurine',
 	originFile: string | undefined, destinationSquare: string, promotionSymbol: string | undefined, promotedPiece: string | undefined): MoveDescriptorImpl {
 
-	const coloredPawn = PAWN * 2 + position.turn
+	const coloredPawn = PieceImpl.PAWN * 2 + position.turn
 	const to = squareFromString(destinationSquare);
 	const toContent = position.board[to];
 	const vector = 16 - position.turn*32;
@@ -434,12 +434,12 @@ function parsePawnMoveNotation(position: PositionImpl, notation: string, strict:
 		}
 	
 		// Check the content of the "to"-square
-		if (toContent !== EMPTY) {
+		if (toContent !== SpI.EMPTY) {
 			throw new InvalidNotation(getFEN(position), notation, i18n.INVALID_NON_CAPTURING_PAWN_MOVE);
 		}
 	
 		// Check the content of the "from"-square
-		if (position.board[from] === EMPTY) { // Look for two-square pawn moves
+		if (position.board[from] === SpI.EMPTY) { // Look for two-square pawn moves
 			from -= vector;
 			const firstSquareOfArea = position.turn * 96; // a1 for white, a7 for black (2-square pawn move is allowed from 1st row at horde chess)
 			if (from < firstSquareOfArea || from >= firstSquareOfArea + 24 || position.board[from] !== coloredPawn) {
@@ -453,7 +453,7 @@ function parsePawnMoveNotation(position: PositionImpl, notation: string, strict:
 
 	// Ensure that the pawn move do not let a king in check.
 	if (!isKingSafeAfterMove(position, from, to, enPassantSquare)) {
-		const message = position.turn === WHITE ? i18n.NOT_SAFE_FOR_WHITE_KING : i18n.NOT_SAFE_FOR_BLACK_KING;
+		const message = position.turn === ColorImpl.WHITE ? i18n.NOT_SAFE_FOR_WHITE_KING : i18n.NOT_SAFE_FOR_BLACK_KING;
 		throw new InvalidNotation(getFEN(position), notation, message);
 	}
 
@@ -463,7 +463,7 @@ function parsePawnMoveNotation(position: PositionImpl, notation: string, strict:
 			throw new InvalidNotation(getFEN(position), notation, i18n.MISSING_PROMOTION);
 		}
 		const promotion = parsePieceSymbol(position, notation, promotedPiece, strict, pieceStyle);
-		if (promotion === PAWN || (promotion === KING && position.variant !== ANTICHESS)) {
+		if (promotion === PieceImpl.PAWN || (promotion === PieceImpl.KING && position.variant !== GameVariantImpl.ANTICHESS)) {
 			throw new InvalidNotation(getFEN(position), notation, i18n.INVALID_PROMOTED_PIECE, promotedPiece);
 		}
 

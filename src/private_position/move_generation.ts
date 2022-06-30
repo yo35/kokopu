@@ -21,7 +21,7 @@
 
 
 import { ATTACK_DIRECTIONS, isAttacked } from './attacks';
-import { WHITE, BLACK, KING, QUEEN, ROOK, BISHOP, KNIGHT, PAWN, EMPTY, CHESS960, ANTICHESS, HORDE } from './base_types_impl';
+import { ColorImpl, PieceImpl, SpI, GameVariantImpl } from './base_types_impl';
 import { PositionImpl } from './impl';
 import { isLegal } from './legality';
 import { MoveDescriptorImpl } from './move_descriptor_impl';
@@ -81,7 +81,7 @@ const SLIDING_DIRECTION = [
  */
 function hasAtLeastOnePiece(position: PositionImpl, color: number) {
 	for (let sq = 0; sq < 120; sq += (sq & 0x7) === 7 ? 9 : 1) {
-		if (position.board[sq] !== EMPTY && position.board[sq] % 2 === color) {
+		if (position.board[sq] !== SpI.EMPTY && position.board[sq] % 2 === color) {
 			return true;
 		}
 	}
@@ -112,11 +112,11 @@ export function isCheckmate(position: PositionImpl) {
 	if (!isLegal(position) || hasMove(position)) {
 		return false;
 	}
-	if (position.variant === ANTICHESS) {
+	if (position.variant === GameVariantImpl.ANTICHESS) {
 		return true;
 	}
-	else if (position.variant === HORDE && position.turn === WHITE) {
-		return !hasAtLeastOnePiece(position, WHITE);
+	else if (position.variant === GameVariantImpl.HORDE && position.turn === ColorImpl.WHITE) {
+		return !hasAtLeastOnePiece(position, ColorImpl.WHITE);
 	}
 	else {
 		return isKingToMoveAttacked(position);
@@ -131,11 +131,11 @@ export function isStalemate(position: PositionImpl) {
 	if (!isLegal(position) || hasMove(position)) {
 		return false;
 	}
-	if (position.variant === ANTICHESS) {
+	if (position.variant === GameVariantImpl.ANTICHESS) {
 		return true;
 	}
-	else if (position.variant === HORDE && position.turn === WHITE) {
-		return hasAtLeastOnePiece(position, WHITE);
+	else if (position.variant === GameVariantImpl.HORDE && position.turn === ColorImpl.WHITE) {
+		return hasAtLeastOnePiece(position, ColorImpl.WHITE);
 	}
 	else {
 		return !isKingToMoveAttacked(position);
@@ -200,7 +200,7 @@ function generateMoves(position: PositionImpl, moveDescriptorConsumer: (moveDesc
 		}
 
 		// Generate moves for pawns
-		if (movingPiece === PAWN) {
+		if (movingPiece === PieceImpl.PAWN) {
 
 			// Capturing moves
 			const attackDirections = ATTACK_DIRECTIONS[fromContent];
@@ -234,7 +234,7 @@ function generateMoves(position: PositionImpl, moveDescriptorConsumer: (moveDesc
 					if (from >= firstSquareOfArea && from < firstSquareOfArea + 24) {
 						to += moveDirection;
 						if (position.board[to] < 0 && isKingSafeAfterMove(position, from, to)) {
-							moveDescriptorConsumer(MoveDescriptorImpl.make(from, to, fromContent, EMPTY));
+							moveDescriptorConsumer(MoveDescriptorImpl.make(from, to, fromContent, SpI.EMPTY));
 						}
 					}
 				}
@@ -242,7 +242,7 @@ function generateMoves(position: PositionImpl, moveDescriptorConsumer: (moveDesc
 		}
 
 		// Generate moves for non-sliding non-pawn pieces
-		else if (movingPiece === KNIGHT || movingPiece === KING) {
+		else if (movingPiece === PieceImpl.KNIGHT || movingPiece === PieceImpl.KING) {
 			const directions = ATTACK_DIRECTIONS[fromContent];
 			for (let i = 0; i < directions.length; ++i) {
 				const to = from + directions[i];
@@ -272,8 +272,8 @@ function generateMoves(position: PositionImpl, moveDescriptorConsumer: (moveDesc
 		}
 
 		// Generate castling moves
-		if (movingPiece === KING && nonCaptureIsAllowed && position.castling[position.turn] !== 0) {
-			if (position.variant === CHESS960) {
+		if (movingPiece === PieceImpl.KING && nonCaptureIsAllowed && position.castling[position.turn] !== 0) {
+			if (position.variant === GameVariantImpl.CHESS960) {
 				for (let file = 0; file < 8; ++file) {
 					const castlingDescriptor = isCastlingLegal(position, from, file + 112 * position.turn);
 					if (castlingDescriptor) {
@@ -302,16 +302,16 @@ function generateMoves(position: PositionImpl, moveDescriptorConsumer: (moveDesc
 function generateRegularPawnMoveOrPromotion(position: PositionImpl, from: number, to: number, moveDescriptorConsumer: (moveDescriptor: MoveDescriptorImpl) => void) {
 	const toContent = position.board[to];
 	if (to < 8 || to >= 112) {
-		moveDescriptorConsumer(MoveDescriptorImpl.makePromotion(from, to, position.turn, toContent, QUEEN));
-		moveDescriptorConsumer(MoveDescriptorImpl.makePromotion(from, to, position.turn, toContent, ROOK));
-		moveDescriptorConsumer(MoveDescriptorImpl.makePromotion(from, to, position.turn, toContent, BISHOP));
-		moveDescriptorConsumer(MoveDescriptorImpl.makePromotion(from, to, position.turn, toContent, KNIGHT));
-		if (position.variant === ANTICHESS) {
-			moveDescriptorConsumer(MoveDescriptorImpl.makePromotion(from, to, position.turn, toContent, KING));
+		moveDescriptorConsumer(MoveDescriptorImpl.makePromotion(from, to, position.turn, toContent, PieceImpl.QUEEN));
+		moveDescriptorConsumer(MoveDescriptorImpl.makePromotion(from, to, position.turn, toContent, PieceImpl.ROOK));
+		moveDescriptorConsumer(MoveDescriptorImpl.makePromotion(from, to, position.turn, toContent, PieceImpl.BISHOP));
+		moveDescriptorConsumer(MoveDescriptorImpl.makePromotion(from, to, position.turn, toContent, PieceImpl.KNIGHT));
+		if (position.variant === GameVariantImpl.ANTICHESS) {
+			moveDescriptorConsumer(MoveDescriptorImpl.makePromotion(from, to, position.turn, toContent, PieceImpl.KING));
 		}
 	}
 	else {
-		moveDescriptorConsumer(MoveDescriptorImpl.make(from, to, PAWN * 2 + position.turn, toContent));
+		moveDescriptorConsumer(MoveDescriptorImpl.make(from, to, PieceImpl.PAWN * 2 + position.turn, toContent));
 	}
 }
 
@@ -322,7 +322,7 @@ function generateRegularPawnMoveOrPromotion(position: PositionImpl, from: number
  * Precondition: the position must be legal.
  */
 export function isCaptureMandatory(position: PositionImpl) {
-	if (position.variant !== ANTICHESS) {
+	if (position.variant !== GameVariantImpl.ANTICHESS) {
 		return false;
 	}
 
@@ -337,7 +337,7 @@ export function isCaptureMandatory(position: PositionImpl) {
 	// Look for "en-passant" captures
 	if (position.enPassant >= 0) {
 		const enPassantSquare = (4 - position.turn) * 16 + position.enPassant;
-		const pawnTarget = PAWN * 2 + position.turn;
+		const pawnTarget = PieceImpl.PAWN * 2 + position.turn;
 		if (((enPassantSquare - 1) & 0x88) === 0 && position.board[enPassantSquare - 1] === pawnTarget) { return true; }
 		if (((enPassantSquare + 1) & 0x88) === 0 && position.board[enPassantSquare + 1] === pawnTarget) { return true; }
 	}
@@ -363,19 +363,19 @@ export function isKingSafeAfterMove(position: PositionImpl, from: number, to: nu
 
 		// Step (7) -> Execute the displacement (castling moves are processed separately).
 		position.board[to] = fromContent;
-		position.board[from] = EMPTY;
+		position.board[from] = SpI.EMPTY;
 		if (enPassantSquare >= 0) {
-			position.board[enPassantSquare] = EMPTY;
+			position.board[enPassantSquare] = SpI.EMPTY;
 		}
 
 		// Step (8) -> Is the king safe after the displacement?
-		kingIsInCheck = isAttacked(position, movingPiece === KING ? to : position.king[position.turn], 1 - position.turn);
+		kingIsInCheck = isAttacked(position, movingPiece === PieceImpl.KING ? to : position.king[position.turn], 1 - position.turn);
 
 		// Step (9) -> Reverse the displacement.
 		position.board[from] = fromContent;
 		position.board[to] = toContent;
 		if (enPassantSquare >= 0) {
-			position.board[enPassantSquare] = PAWN * 2 + 1 - position.turn;
+			position.board[enPassantSquare] = PieceImpl.PAWN * 2 + 1 - position.turn;
 		}
 	}
 
@@ -392,7 +392,7 @@ export function isCastlingLegal(position: PositionImpl, from: number, to: number
 	let rookTo = -1;
 
 	// Validate `from` and `to`, check the castling flags, and compute the origin and destination squares of the rook.
-	if (position.variant === CHESS960) {
+	if (position.variant === GameVariantImpl.CHESS960) {
 		const castleFile = to % 16;
 		const castleRank = Math.trunc(to / 16);
 		if (castleRank !== position.turn * 7 || (position.castling[position.turn] & (1 << castleFile)) === 0) {
@@ -422,7 +422,7 @@ export function isCastlingLegal(position: PositionImpl, from: number, to: number
 
 	// Ensure that each square on the trajectory is empty.
 	for (let sq = Math.min(from, to, rookFrom, rookTo); sq <= Math.max(from, to, rookFrom, rookTo); ++sq) {
-		if (sq !== from && sq !== rookFrom && position.board[sq] !== EMPTY) {
+		if (sq !== from && sq !== rookFrom && position.board[sq] !== SpI.EMPTY) {
 			return false;
 		}
 	}
@@ -479,11 +479,11 @@ export function isMoveLegal(position: PositionImpl, from: number, to: number): R
 	const displacement = to - from + 119;
 	let enPassantSquare = -1; // square where a pawn is taken if the move is "en-passant"
 	let isTwoSquarePawnMove = false;
-	const isPromotion = movingPiece === PAWN && (to < 8 || to >= 112);
+	const isPromotion = movingPiece === PieceImpl.PAWN && (to < 8 || to >= 112);
 	const captureIsMandatory = isCaptureMandatory(position);
 
 	// Step (3) - Castling detection.
-	if (movingPiece === KING && !captureIsMandatory && position.castling[position.turn] !== 0) {
+	if (movingPiece === PieceImpl.KING && !captureIsMandatory && position.castling[position.turn] !== 0) {
 		const castlingDescriptor = isCastlingLegal(position, from, to);
 		if (castlingDescriptor) {
 			return {
@@ -495,7 +495,7 @@ export function isMoveLegal(position: PositionImpl, from: number, to: number): R
 
 	// Step (4)
 	if ((DISPLACEMENT_LOOKUP[displacement] & 1 << fromContent) === 0) {
-		if (movingPiece === PAWN && displacement === 151 - position.turn * 64) {
+		if (movingPiece === PieceImpl.PAWN && displacement === 151 - position.turn * 64) {
 			const firstSquareOfArea = position.turn * 96; // a1 for white, a7 for black (2-square pawn move is allowed from 1st row at horde chess)
 			if (from < firstSquareOfArea || from >= firstSquareOfArea + 24) {
 				return false;
@@ -508,13 +508,13 @@ export function isMoveLegal(position: PositionImpl, from: number, to: number): R
 	}
 
 	// Step (5) -> check the content of the destination square
-	if (movingPiece === PAWN) {
+	if (movingPiece === PieceImpl.PAWN) {
 		if (displacement === 135 - position.turn * 32 || isTwoSquarePawnMove) { // non-capturing pawn move
-			if (captureIsMandatory || toContent !== EMPTY) {
+			if (captureIsMandatory || toContent !== SpI.EMPTY) {
 				return false;
 			}
 		}
-		else if (toContent === EMPTY) { // en-passant pawn move
+		else if (toContent === SpI.EMPTY) { // en-passant pawn move
 			if (to !== (5 - position.turn * 3) * 16 + position.enPassant) {
 				return false;
 			}
@@ -533,16 +533,16 @@ export function isMoveLegal(position: PositionImpl, from: number, to: number): R
 	}
 
 	// Step (6) -> For sliding pieces, ensure that there is nothing between the origin and the destination squares.
-	if (movingPiece === BISHOP || movingPiece === ROOK || movingPiece === QUEEN) {
+	if (movingPiece === PieceImpl.BISHOP || movingPiece === PieceImpl.ROOK || movingPiece === PieceImpl.QUEEN) {
 		const direction = SLIDING_DIRECTION[displacement];
 		for (let sq = from + direction; sq !== to; sq += direction) {
-			if (position.board[sq] !== EMPTY) {
+			if (position.board[sq] !== SpI.EMPTY) {
 				return false;
 			}
 		}
 	}
 	else if (isTwoSquarePawnMove) { // two-square pawn moves also require this test.
-		if (position.board[(from + to) / 2] !== EMPTY) {
+		if (position.board[(from + to) / 2] !== SpI.EMPTY) {
 			return false;
 		}
 	}
@@ -578,7 +578,7 @@ interface PromotionMoveDescriptor {
 
 function buildPromotionMoveDescriptor(from: number, to: number, variant: number, color: number, capturedColoredPiece: number): (promotion: number) => MoveDescriptorImpl | false {
 	return promotion => {
-		if (promotion == PAWN || (promotion === KING && variant !== ANTICHESS)) {
+		if (promotion == PieceImpl.PAWN || (promotion === PieceImpl.KING && variant !== GameVariantImpl.ANTICHESS)) {
 			return false;
 		}
 		return MoveDescriptorImpl.makePromotion(from, to, color, capturedColoredPiece, promotion);
@@ -592,12 +592,12 @@ function buildPromotionMoveDescriptor(from: number, to: number, variant: number,
 export function play(position: PositionImpl, descriptor: MoveDescriptorImpl) {
 
 	// Update the board.
-	position.board[descriptor._from] = EMPTY; // WARNING: update `from` before `to` in case both squares are actually the same!
+	position.board[descriptor._from] = SpI.EMPTY; // WARNING: update `from` before `to` in case both squares are actually the same!
 	if (descriptor.isEnPassant()) {
-		position.board[descriptor._optionalSquare1] = EMPTY;
+		position.board[descriptor._optionalSquare1] = SpI.EMPTY;
 	}
 	else if (descriptor.isCastling()) {
-		position.board[descriptor._optionalSquare1] = EMPTY;
+		position.board[descriptor._optionalSquare1] = SpI.EMPTY;
 		position.board[descriptor._optionalSquare2] = descriptor._optionalColoredPiece;
 	}
 	position.board[descriptor._to] = descriptor._finalColoredPiece;
@@ -605,17 +605,17 @@ export function play(position: PositionImpl, descriptor: MoveDescriptorImpl) {
 	const movingPiece = Math.trunc(descriptor._movingColoredPiece / 2);
 
 	// Update the castling flags.
-	if (movingPiece === KING) {
+	if (movingPiece === PieceImpl.KING) {
 		position.castling[position.turn] = 0;
 	}
-	if (descriptor._from <    8) { position.castling[WHITE] &= ~(1 <<  descriptor._from    ); }
-	if (descriptor._to   <    8) { position.castling[WHITE] &= ~(1 <<  descriptor._to      ); }
-	if (descriptor._from >= 112) { position.castling[BLACK] &= ~(1 << (descriptor._from % 16)); }
-	if (descriptor._to   >= 112) { position.castling[BLACK] &= ~(1 << (descriptor._to   % 16)); }
+	if (descriptor._from <    8) { position.castling[ColorImpl.WHITE] &= ~(1 <<  descriptor._from    ); }
+	if (descriptor._to   <    8) { position.castling[ColorImpl.WHITE] &= ~(1 <<  descriptor._to      ); }
+	if (descriptor._from >= 112) { position.castling[ColorImpl.BLACK] &= ~(1 << (descriptor._from % 16)); }
+	if (descriptor._to   >= 112) { position.castling[ColorImpl.BLACK] &= ~(1 << (descriptor._to   % 16)); }
 
 	// Update the en-passant flag.
 	position.enPassant = -1;
-	if (movingPiece === PAWN && Math.abs(descriptor._from - descriptor._to) === 32) {
+	if (movingPiece === PieceImpl.PAWN && Math.abs(descriptor._from - descriptor._to) === 32) {
 		const firstSquareOf2ndRow = (1 + 5 * position.turn) * 16;
 		if (descriptor._from >= firstSquareOf2ndRow && descriptor._from < firstSquareOf2ndRow + 8) {
 			position.enPassant = descriptor._to % 16;
@@ -623,7 +623,7 @@ export function play(position: PositionImpl, descriptor: MoveDescriptorImpl) {
 	}
 
 	// Update the computed flags.
-	if (movingPiece === KING && position.king[position.turn] >= 0) {
+	if (movingPiece === PieceImpl.KING && position.king[position.turn] >= 0) {
 		position.king[position.turn] = descriptor._to;
 	}
 

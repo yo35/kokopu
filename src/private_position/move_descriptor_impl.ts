@@ -20,7 +20,7 @@
  * -------------------------------------------------------------------------- */
 
 
-import { KING, ROOK, PAWN, colorToString, coloredPieceToString, pieceToString, squareToString } from './base_types_impl';
+import { PieceImpl, colorToString, coloredPieceToString, pieceToString, squareToString } from './base_types_impl';
 
 import { IllegalArgument } from '../exception';
 import { MoveDescriptor } from '../move_descriptor';
@@ -49,8 +49,8 @@ export class MoveDescriptorImpl extends MoveDescriptor {
 	 * Instantiate a castling move.
 	 */
 	static makeCastling(from: number, to: number, rookFrom: number, rookTo: number, color: number) {
-		const movingColoredKing = KING * 2 + color;
-		const movingColoredRook = ROOK * 2 + color;
+		const movingColoredKing = PieceImpl.KING * 2 + color;
+		const movingColoredRook = PieceImpl.ROOK * 2 + color;
 		return new MoveDescriptorImpl(CASTLING_FLAG, from, to, movingColoredKing, movingColoredKing, movingColoredRook, rookFrom, rookTo);
 	}
 
@@ -59,8 +59,8 @@ export class MoveDescriptorImpl extends MoveDescriptor {
 	 */
 	static makeEnPassant(from: number, to: number, enPassantSquare: number, color: number) {
 		const flags = EN_PASSANT_FLAG | CAPTURE_FLAG;
-		const movingColoredPawn = PAWN * 2 + color;
-		const capturedColoredPawn = PAWN * 2 + 1 - color;
+		const movingColoredPawn = PieceImpl.PAWN * 2 + color;
+		const capturedColoredPawn = PieceImpl.PAWN * 2 + 1 - color;
 		return new MoveDescriptorImpl(flags, from, to, movingColoredPawn, movingColoredPawn, capturedColoredPawn, enPassantSquare, -1);
 	}
 
@@ -69,7 +69,7 @@ export class MoveDescriptorImpl extends MoveDescriptor {
 	 */
 	static makePromotion(from: number, to: number, color: number, capturedColoredPiece: number, promotion: number) {
 		const flags = PROMOTION_FLAG | (capturedColoredPiece >= 0 ? CAPTURE_FLAG : 0x00);
-		const movingColoredPawn = PAWN * 2 + color;
+		const movingColoredPawn = PieceImpl.PAWN * 2 + color;
 		const finalColoredPiece = promotion * 2 + color;
 		return new MoveDescriptorImpl(flags, from, to, movingColoredPawn, finalColoredPiece, capturedColoredPiece, -1, -1);
 	}

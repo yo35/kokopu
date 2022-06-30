@@ -20,7 +20,7 @@
  * -------------------------------------------------------------------------- */
 
 
-import { KING, ROOK, EMPTY, CHESS960, pieceFromString, squareFromString } from './base_types_impl';
+import { PieceImpl, SpI, GameVariantImpl, pieceFromString, squareFromString } from './base_types_impl';
 import { getFEN } from './fen';
 import { PositionImpl } from './impl';
 import { isLegal } from './legality';
@@ -38,7 +38,7 @@ export function getUCINotation(position: PositionImpl, descriptor: MoveDescripto
 	let result = descriptor.from();
 
 	if (descriptor.isCastling()) {
-		result += forceKxR || position.variant === CHESS960 ? descriptor.rookFrom() : descriptor.to();
+		result += forceKxR || position.variant === GameVariantImpl.CHESS960 ? descriptor.rookFrom() : descriptor.to();
 	}
 	else {
 		result += descriptor.to();
@@ -80,10 +80,11 @@ export function parseUCINotation(position: PositionImpl, notation: string, stric
 
 	// For non-Chess960 variants, if KxR is detected (and allowed), replace the given `to` square
 	// by the actual destination square of the king.
-	if (position.variant !== CHESS960 && !strict && position.board[from] !== EMPTY && position.board[to] !== EMPTY && position.board[from] % 2 === position.board[to] % 2) {
+	if (position.variant !== GameVariantImpl.CHESS960 && !strict && position.board[from] !== SpI.EMPTY && position.board[to] !== SpI.EMPTY &&
+		position.board[from] % 2 === position.board[to] % 2) {
 		const fromPiece = Math.trunc(position.board[from] / 2);
 		const toPiece = Math.trunc(position.board[to] / 2);
-		if (fromPiece === KING && toPiece === ROOK) {
+		if (fromPiece === PieceImpl.KING && toPiece === PieceImpl.ROOK) {
 			kxRSubstitutionApplied = true;
 			expectedRookFrom = to;
 			to = position.turn * 112 + (from < to ? 6 : 2);

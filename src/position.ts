@@ -26,7 +26,7 @@ import i18n = require('./i18n'); // TODO fix import
 import { MoveDescriptor } from './move_descriptor';
 
 import { isAttacked, getAttacks } from './private_position/attacks';
-import { EMPTY, REGULAR_CHESS, CHESS960, ANTICHESS, HORDE, colorFromString, colorToString, pieceFromString, coloredPieceFromString, coloredPieceToString,
+import { SpI, GameVariantImpl, colorFromString, colorToString, pieceFromString, coloredPieceFromString, coloredPieceToString,
 	fileFromString, fileToString, squareFromString, squareToString, variantFromString, variantToString } from './private_position/base_types_impl';
 import { ascii, getFEN, parseFEN } from './private_position/fen';
 import { PositionImpl, makeCopy, makeEmpty, makeInitial, make960FromScharnagl, isEqual, hasCanonicalStartPosition } from './private_position/impl';
@@ -119,7 +119,7 @@ export class Position {
 
 			// Default constructor
 			case 0:
-				this._impl = makeInitial(REGULAR_CHESS);
+				this._impl = makeInitial(GameVariantImpl.REGULAR_CHESS);
 				break;
 
 			// Possible overloads with 1 argument:
@@ -131,10 +131,10 @@ export class Position {
 			//  - GameVariant:FEN
 			case 1: {
 				if (arg0 === 'start') {
-					this._impl = makeInitial(REGULAR_CHESS);
+					this._impl = makeInitial(GameVariantImpl.REGULAR_CHESS);
 				}
 				else if (arg0 === 'empty') {
-					this._impl = makeEmpty(REGULAR_CHESS);
+					this._impl = makeEmpty(GameVariantImpl.REGULAR_CHESS);
 				}
 				else if (arg0 instanceof Position) {
 					this._impl = makeCopy(arg0._impl);
@@ -150,7 +150,7 @@ export class Position {
 					else if (typeof arg0 === 'string') {
 						const separatorIndex = arg0.indexOf(':');
 						if (separatorIndex < 0) {
-							this._impl = parseFEN(REGULAR_CHESS, arg0, false).position;
+							this._impl = parseFEN(GameVariantImpl.REGULAR_CHESS, arg0, false).position;
 						}
 						else {
 							const variantPrefix = arg0.substring(0, separatorIndex);
@@ -188,7 +188,7 @@ export class Position {
 					this._impl = makeEmpty(variantCode);
 				}
 				else if (typeof arg1 === 'number') {
-					if (variantCode !== CHESS960 || !isValidScharnaglCode(arg1)) {
+					if (variantCode !== GameVariantImpl.CHESS960 || !isValidScharnaglCode(arg1)) {
 						throw new IllegalArgument('Position()');
 					}
 					this._impl = make960FromScharnagl(arg1);
@@ -221,7 +221,7 @@ export class Position {
 	 * Set the position to the starting state (in the regular chess variant).
 	 */
 	reset(): void {
-		this._impl = makeInitial(REGULAR_CHESS);
+		this._impl = makeInitial(GameVariantImpl.REGULAR_CHESS);
 	}
 
 
@@ -243,7 +243,7 @@ export class Position {
 	 * Set the position to the starting state of the antichess variant.
 	 */
 	resetAntichess(): void {
-		this._impl = makeInitial(ANTICHESS);
+		this._impl = makeInitial(GameVariantImpl.ANTICHESS);
 	}
 
 
@@ -251,7 +251,7 @@ export class Position {
 	 * Set the position to the starting state of the horde chess variant.
 	 */
 	resetHorde(): void {
-		this._impl = makeInitial(HORDE);
+		this._impl = makeInitial(GameVariantImpl.HORDE);
 	}
 
 
@@ -398,7 +398,7 @@ export class Position {
 			return cp < 0 ? '-' : coloredPieceToString(cp);
 		}
 		else if (value === '-') {
-			this._impl.board[squareCode] = EMPTY;
+			this._impl.board[squareCode] = SpI.EMPTY;
 			this._impl.legal = null;
 		}
 		else {
@@ -452,11 +452,11 @@ export class Position {
 	castling(castle: Castle | Castle960, value: boolean): void;
 
 	castling(castle: Castle | Castle960, value?: boolean) {
-		if (!(this._impl.variant === CHESS960 ? /^[wb][a-h]$/ : /^[wb][kq]$/).test(castle)) {
+		if (!(this._impl.variant === GameVariantImpl.CHESS960 ? /^[wb][a-h]$/ : /^[wb][kq]$/).test(castle)) {
 			throw new IllegalArgument('Position.castling()');
 		}
 		const color = colorFromString(castle[0]);
-		const file = this._impl.variant === CHESS960 ? fileFromString(castle[1]) : castle[1] === 'k' ? 7 : 0;
+		const file = this._impl.variant === GameVariantImpl.CHESS960 ? fileFromString(castle[1]) : castle[1] === 'k' ? 7 : 0;
 
 		if (arguments.length === 1) {
 			return (this._impl.castling[color] & 1 << file) !== 0;

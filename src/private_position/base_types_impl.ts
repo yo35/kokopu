@@ -23,34 +23,39 @@
 import { Color, Piece, ColoredPiece, File, Rank, Square, GameResult, GameVariant } from '../base_types';
 
 
-// TODO change into const enum
-export const WHITE = 0;
-export const BLACK = 1;
+export const enum ColorImpl {
+	WHITE = 0,
+	BLACK = 1,
+}
 
 
-// TODO change into const enum
-export const KING   = 0;
-export const QUEEN  = 1;
-export const ROOK   = 2;
-export const BISHOP = 3;
-export const KNIGHT = 4;
-export const PAWN   = 5;
+export const enum PieceImpl {
+	KING   = 0,
+	QUEEN  = 1,
+	ROOK   = 2,
+	BISHOP = 3,
+	KNIGHT = 4,
+	PAWN   = 5,
+}
 
 
-// TODO change into const enum
-export const WK =  0; export const BK =  1;
-export const WQ =  2; export const BQ =  3;
-export const WR =  4; export const BR =  5;
-export const WB =  6; export const BB =  7;
-export const WN =  8; export const BN =  9;
-export const WP = 10; export const BP = 11;
+export const enum CpI {
+	WK =  0, BK =  1,
+	WQ =  2, BQ =  3,
+	WR =  4, BR =  5,
+	WB =  6, BB =  7,
+	WN =  8, BN =  9,
+	WP = 10, BP = 11,
+}
 
 
 /**
- * Special constants for chessboard square state. TODO change into const enum
+ * Special constants for chessboard square state.
  */
-export const EMPTY   = -1;
-export const INVALID = -2; // Just for the internal board representation.
+export const enum SpI {
+	EMPTY   = -1,
+	INVALID = -2, // Just for the internal board representation.
+}
 
 
 export const enum SquareImpl {
@@ -72,14 +77,15 @@ export const DRAW = 2;
 export const LINE = 3;
 
 
-// TODO change into const enum
-export const REGULAR_CHESS = 0;
-export const CHESS960 = 1;
-export const NO_KING = 2;
-export const WHITE_KING_ONLY = 3;
-export const BLACK_KING_ONLY = 4;
-export const ANTICHESS = 5;
-export const HORDE = 6;
+export const enum GameVariantImpl {
+	REGULAR_CHESS = 0,
+	CHESS960 = 1,
+	NO_KING = 2,
+	WHITE_KING_ONLY = 3,
+	BLACK_KING_ONLY = 4,
+	ANTICHESS = 5,
+	HORDE = 6,
+}
 
 
 const COLOR_SYMBOL    = 'wb';

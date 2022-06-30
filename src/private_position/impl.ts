@@ -20,40 +20,40 @@
  * -------------------------------------------------------------------------- */
 
 
-import { WHITE, BLACK, KING, QUEEN, ROOK, BISHOP, KNIGHT, WK, WQ, WR, WB, WN, WP, BK, BQ, BR, BB, BN, BP, EMPTY, INVALID, SquareImpl, CHESS960, NO_KING } from './base_types_impl';
+import { ColorImpl, PieceImpl, CpI, SpI, SquareImpl, GameVariantImpl } from './base_types_impl';
 
 
 const EMPTY_BOARD = [
-	EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID,
-	EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID,
-	EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID,
-	EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID,
-	EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID,
-	EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID,
-	EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID,
-	EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY,
+	SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID,
+	SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID,
+	SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID,
+	SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID,
+	SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID,
+	SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID,
+	SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID,
+	SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY,
 ];
 
 const REGULAR_START_BOARD = [
-	WR   , WN   , WB   , WQ   , WK   , WB   , WN   , WR   , INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID,
-	WP   , WP   , WP   , WP   , WP   , WP   , WP   , WP   , INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID,
-	EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID,
-	EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID,
-	EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID,
-	EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID,
-	BP   , BP   , BP   , BP   , BP   , BP   , BP   , BP   , INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID,
-	BR   , BN   , BB   , BQ   , BK   , BB   , BN   , BR   ,
+	CpI.WR   , CpI.WN   , CpI.WB   , CpI.WQ   , CpI.WK   , CpI.WB   , CpI.WN   , CpI.WR   , SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID,
+	CpI.WP   , CpI.WP   , CpI.WP   , CpI.WP   , CpI.WP   , CpI.WP   , CpI.WP   , CpI.WP   , SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID,
+	SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID,
+	SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID,
+	SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID,
+	SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID,
+	CpI.BP   , CpI.BP   , CpI.BP   , CpI.BP   , CpI.BP   , CpI.BP   , CpI.BP   , CpI.BP   , SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID,
+	CpI.BR   , CpI.BN   , CpI.BB   , CpI.BQ   , CpI.BK   , CpI.BB   , CpI.BN   , CpI.BR   ,
 ];
 
 const HORDE_START_BOARD = [
-	WP   , WP   , WP   , WP   , WP   , WP   , WP   , WP   , INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID,
-	WP   , WP   , WP   , WP   , WP   , WP   , WP   , WP   , INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID,
-	WP   , WP   , WP   , WP   , WP   , WP   , WP   , WP   , INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID,
-	WP   , WP   , WP   , WP   , WP   , WP   , WP   , WP   , INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID,
-	EMPTY, WP   , WP   , EMPTY, EMPTY, WP   , WP   , EMPTY, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID,
-	EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID,
-	BP   , BP   , BP   , BP   , BP   , BP   , BP   , BP   , INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID,
-	BR   , BN   , BB   , BQ   , BK   , BB   , BN   , BR   ,
+	CpI.WP   , CpI.WP   , CpI.WP   , CpI.WP   , CpI.WP   , CpI.WP   , CpI.WP   , CpI.WP   , SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID,
+	CpI.WP   , CpI.WP   , CpI.WP   , CpI.WP   , CpI.WP   , CpI.WP   , CpI.WP   , CpI.WP   , SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID,
+	CpI.WP   , CpI.WP   , CpI.WP   , CpI.WP   , CpI.WP   , CpI.WP   , CpI.WP   , CpI.WP   , SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID,
+	CpI.WP   , CpI.WP   , CpI.WP   , CpI.WP   , CpI.WP   , CpI.WP   , CpI.WP   , CpI.WP   , SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID,
+	SpI.EMPTY, CpI.WP   , CpI.WP   , SpI.EMPTY, SpI.EMPTY, CpI.WP   , CpI.WP   , SpI.EMPTY, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID,
+	SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID,
+	CpI.BP   , CpI.BP   , CpI.BP   , CpI.BP   , CpI.BP   , CpI.BP   , CpI.BP   , CpI.BP   , SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID,
+	CpI.BR   , CpI.BN   , CpI.BB   , CpI.BQ   , CpI.BK   , CpI.BB   , CpI.BN   , CpI.BR   ,
 ];
 
 
@@ -126,11 +126,11 @@ export function hasCanonicalStartPosition(variant: number) {
 export function makeEmpty(variant: number): PositionImpl {
 	return {
 		board: EMPTY_BOARD.slice(),
-		turn: WHITE,
+		turn: ColorImpl.WHITE,
 		castling: [ 0, 0 ],
 		enPassant: -1,
 		variant: variant,
-		legal: variant === NO_KING,
+		legal: variant === GameVariantImpl.NO_KING,
 		king: [ -1, -1 ],
 	};
 }
@@ -143,7 +143,7 @@ export function makeInitial(variant: number): PositionImpl {
 	const info = START_POSITION_INFO[variant]!; // WARNING: applicable only to variants with a canonical start position.
 	return {
 		board: info.board.slice(),
-		turn: WHITE,
+		turn: ColorImpl.WHITE,
 		castling: info.castling.slice(),
 		enPassant: -1,
 		variant: variant,
@@ -160,23 +160,23 @@ export function makeInitial(variant: number): PositionImpl {
  */
 export function make960FromScharnagl(scharnaglCode: number): PositionImpl {
 	const info = decodeScharnagl(scharnaglCode);
-	const rank1 = info.pieceScheme.map(piece => piece * 2 + WHITE);
-	const rank8 = info.pieceScheme.map(piece => piece * 2 + BLACK);
+	const rank1 = info.pieceScheme.map(piece => piece * 2 + ColorImpl.WHITE);
+	const rank8 = info.pieceScheme.map(piece => piece * 2 + ColorImpl.BLACK);
 	return {
 		board: [
-			rank1[0] , rank1[1] , rank1[2] , rank1[3] , rank1[4] , rank1[5] , rank1[6] , rank1[7] , INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID,
-			WP   , WP   , WP   , WP   , WP   , WP   , WP   , WP   , INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID,
-			EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID,
-			EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID,
-			EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID,
-			EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID,
-			BP   , BP   , BP   , BP   , BP   , BP   , BP   , BP   , INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID,
+			rank1[0] , rank1[1] , rank1[2] , rank1[3] , rank1[4] , rank1[5] , rank1[6] , rank1[7] , SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID,
+			CpI.WP   , CpI.WP   , CpI.WP   , CpI.WP   , CpI.WP   , CpI.WP   , CpI.WP   , CpI.WP   , SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID,
+			SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID,
+			SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID,
+			SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID,
+			SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID,
+			CpI.BP   , CpI.BP   , CpI.BP   , CpI.BP   , CpI.BP   , CpI.BP   , CpI.BP   , CpI.BP   , SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID,
 			rank8[0] , rank8[1] , rank8[2] , rank8[3] , rank8[4] , rank8[5] , rank8[6] , rank8[7] ,
 		],
-		turn: WHITE,
+		turn: ColorImpl.WHITE,
 		castling: [ info.castling, info.castling ],
 		enPassant: -1,
-		variant: CHESS960,
+		variant: GameVariantImpl.CHESS960,
 		legal: true,
 		king: [ SquareImpl.A1 + info.kingFile, SquareImpl.A8 + info.kingFile ],
 	};
@@ -211,40 +211,39 @@ function decodeScharnagl(scharnaglCode: number): ScharnaglInfo {
 	}
 
 	// Light-square bishop
-	scheme[(scharnaglCode % 4) * 2 + 1] = BISHOP;
+	scheme[(scharnaglCode % 4) * 2 + 1] = PieceImpl.BISHOP;
 	scharnaglCode = Math.trunc(scharnaglCode / 4);
 
 	// Dark-square bishop
-	scheme[(scharnaglCode % 4) * 2] = BISHOP;
+	scheme[(scharnaglCode % 4) * 2] = PieceImpl.BISHOP;
 	scharnaglCode = Math.trunc(scharnaglCode / 4);
 
 	// Queen
-	setAt(QUEEN, scharnaglCode % 6, -1);
+	setAt(PieceImpl.QUEEN, scharnaglCode % 6, -1);
 	scharnaglCode = Math.trunc(scharnaglCode / 6);
 
 	// Knights
-	switch (scharnaglCode) {
-		case 0: setAt(KNIGHT, 0, 1); break;
-		case 1: setAt(KNIGHT, 0, 2); break;
-		case 2: setAt(KNIGHT, 0, 3); break;
-		case 3: setAt(KNIGHT, 0, 4); break;
-		case 4: setAt(KNIGHT, 1, 2); break;
-		case 5: setAt(KNIGHT, 1, 3); break;
-		case 6: setAt(KNIGHT, 1, 4); break;
-		case 7: setAt(KNIGHT, 2, 3); break;
-		case 8: setAt(KNIGHT, 2, 4); break;
-		case 9: setAt(KNIGHT, 3, 4); break;
-		default: break;
+	switch (scharnaglCode) { // `scharnaglCode` is guaranteed here to be between 0 and 9 inclusive
+		case 0: setAt(PieceImpl.KNIGHT, 0, 1); break;
+		case 1: setAt(PieceImpl.KNIGHT, 0, 2); break;
+		case 2: setAt(PieceImpl.KNIGHT, 0, 3); break;
+		case 3: setAt(PieceImpl.KNIGHT, 0, 4); break;
+		case 4: setAt(PieceImpl.KNIGHT, 1, 2); break;
+		case 5: setAt(PieceImpl.KNIGHT, 1, 3); break;
+		case 6: setAt(PieceImpl.KNIGHT, 1, 4); break;
+		case 7: setAt(PieceImpl.KNIGHT, 2, 3); break;
+		case 8: setAt(PieceImpl.KNIGHT, 2, 4); break;
+		case 9: setAt(PieceImpl.KNIGHT, 3, 4); break;
 	}
 
 	// Rooks and king
 	forEachEmpty((file, emptyIndex) => {
 		if (emptyIndex === 1) {
-			scheme[file] = KING;
+			scheme[file] = PieceImpl.KING;
 			kingFile = file;
 		}
 		else {
-			scheme[file] = ROOK;
+			scheme[file] = PieceImpl.ROOK;
 			castling |= 1 << file;
 		}
 	});

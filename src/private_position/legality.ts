@@ -21,7 +21,7 @@
 
 
 import { isAttacked } from './attacks';
-import { WHITE, BLACK, KING, ROOK, PAWN, WP, BP, EMPTY, INVALID, SquareImpl, CHESS960, NO_KING, BLACK_KING_ONLY, ANTICHESS, HORDE } from './base_types_impl';
+import { ColorImpl, PieceImpl, CpI, SpI, SquareImpl, GameVariantImpl } from './base_types_impl';
 import { PositionImpl } from './impl';
 
 
@@ -50,20 +50,20 @@ export function refreshLegalFlagAndKingSquares(position: PositionImpl) {
 	position.legal = false;
 
 	// Condition (1)
-	const whiteKingOK = refreshKingSquare(position, WHITE);
-	const blackKingOK = refreshKingSquare(position, BLACK);
+	const whiteKingOK = refreshKingSquare(position, ColorImpl.WHITE);
+	const blackKingOK = refreshKingSquare(position, ColorImpl.BLACK);
 	if (!whiteKingOK || !blackKingOK) {
 		return;
 	}
 
 	// Extension of (1) for variants that allow a player to have no piece at all...
-	if (position.variant === ANTICHESS) {
+	if (position.variant === GameVariantImpl.ANTICHESS) {
 		if (!hasAtLeastOnePiece(position, 1 - position.turn)) { // The player that has just played must have at least one piece in antichess.
 			return;
 		}
 	}
-	else if (position.variant === HORDE) {
-		if (position.turn === BLACK && !hasAtLeastOnePiece(position, WHITE)) { // White must have at least one piece if he/she has just played in horde chess.
+	else if (position.variant === GameVariantImpl.HORDE) {
+		if (position.turn === ColorImpl.BLACK && !hasAtLeastOnePiece(position, ColorImpl.WHITE)) { // White must have at least one piece if he/she has just played in horde chess.
 			return;
 		}
 	}
@@ -74,17 +74,17 @@ export function refreshLegalFlagAndKingSquares(position: PositionImpl) {
 	}
 
 	// Condition (3)
-	const forbiddenCPWhite1 = position.variant === HORDE ? INVALID : WP;
+	const forbiddenCPWhite1 = position.variant === GameVariantImpl.HORDE ? SpI.INVALID : CpI.WP;
 	for (let c = 0; c < 8; ++c) {
 		const cp1 = position.board[SquareImpl.A1 + c];
 		const cp8 = position.board[SquareImpl.A8 + c];
-		if (cp1 === forbiddenCPWhite1 || cp8 === WP || cp1 === BP || cp8 === BP) {
+		if (cp1 === forbiddenCPWhite1 || cp8 === CpI.WP || cp1 === CpI.BP || cp8 === CpI.BP) {
 			return;
 		}
 	}
 
 	// Condition (4)
-	const isCastlingFlagLegalFun = position.variant === CHESS960 ? isCastlingFlagLegalForChess960 : isCastlingFlagLegalForRegularChess;
+	const isCastlingFlagLegalFun = position.variant === GameVariantImpl.CHESS960 ? isCastlingFlagLegalForChess960 : isCastlingFlagLegalForRegularChess;
 	for (let color = 0; color < 2; ++color) {
 		if (!isCastlingFlagLegalFun(position, color)) {
 			return;
@@ -96,7 +96,7 @@ export function refreshLegalFlagAndKingSquares(position: PositionImpl) {
 		const square2 = (6 - position.turn * 5) * 16 + position.enPassant;
 		const square3 = (5 - position.turn * 3) * 16 + position.enPassant;
 		const square4 = (4 - position.turn    ) * 16 + position.enPassant;
-		if (position.board[square2] !== EMPTY || position.board[square3] !== EMPTY || position.board[square4] !== PAWN * 2 + 1 - position.turn) {
+		if (position.board[square2] !== SpI.EMPTY || position.board[square3] !== SpI.EMPTY || position.board[square4] !== PieceImpl.PAWN * 2 + 1 - position.turn) {
 			return;
 		}
 	}
@@ -112,16 +112,17 @@ export function refreshLegalFlagAndKingSquares(position: PositionImpl) {
  * @returns `true` if the number of found king(s) corresponds is compatible with a legal position according to the given variant. 
  */
 function refreshKingSquare(position: PositionImpl, color: number) {
-	const target = KING * 2 + color;
+	const target = PieceImpl.KING * 2 + color;
 	position.king[color] = -1;
 
 	// Expectation: king may be present (even several times), and it has no royal power.
-	if (position.variant === ANTICHESS) {
+	if (position.variant === GameVariantImpl.ANTICHESS) {
 		return true;
 	}
 
 	// Expectation: no king of the given color is supposed to be present on the board.
-	else if (position.variant === NO_KING || position.variant === BLACK_KING_ONLY - color || (position.variant === HORDE && color === WHITE)) {
+	else if (position.variant === GameVariantImpl.NO_KING || position.variant === GameVariantImpl.BLACK_KING_ONLY - color ||
+		(position.variant === GameVariantImpl.HORDE && color === ColorImpl.WHITE)) {
 		for (let sq = 0; sq < 120; sq += (sq & 0x7) === 7 ? 9 : 1) {
 			if (position.board[sq] === target) {
 				return false;
@@ -174,9 +175,9 @@ function isCastlingFlagLegalForRegularChess(position: PositionImpl, color: numbe
 	}
 	const skipOO  = (position.castling[color] & 0x80) === 0;
 	const skipOOO = (position.castling[color] & 0x01) === 0;
-	const rookHOK = skipOO              || position.board[7 + 112 * color] === ROOK * 2 + color;
-	const rookAOK = skipOOO             || position.board[0 + 112 * color] === ROOK * 2 + color;
-	const kingOK  = (skipOO && skipOOO) || position.board[4 + 112 * color] === KING * 2 + color;
+	const rookHOK = skipOO              || position.board[7 + 112 * color] === PieceImpl.ROOK * 2 + color;
+	const rookAOK = skipOOO             || position.board[0 + 112 * color] === PieceImpl.ROOK * 2 + color;
+	const kingOK  = (skipOO && skipOOO) || position.board[4 + 112 * color] === PieceImpl.KING * 2 + color;
 	return kingOK && rookAOK && rookHOK;
 }
 
@@ -189,7 +190,7 @@ function isCastlingFlagLegalForChess960(position: PositionImpl, color: number) {
 		}
 
 		// Ensure there is a rook on each square for which the corresponding file flag is set.
-		if (position.board[file + 112 * color] !== ROOK * 2 + color) {
+		if (position.board[file + 112 * color] !== PieceImpl.ROOK * 2 + color) {
 			return false;
 		}
 		files.push(file);

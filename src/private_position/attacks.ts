@@ -20,7 +20,7 @@
  * -------------------------------------------------------------------------- */
 
 
-import { KING, QUEEN, ROOK, BISHOP, KNIGHT, PAWN, EMPTY } from './base_types_impl';
+import { PieceImpl, SpI } from './base_types_impl';
 import { PositionImpl } from './impl';
 
 
@@ -52,11 +52,11 @@ export const ATTACK_DIRECTIONS = [
  * Check if any piece of the given color attacks a given square.
  */
 export function isAttacked(position: PositionImpl, square: number, attackerColor: number) {
-	return isAttackedByNonSliding(position, square, KING * 2 + attackerColor) ||
-		isAttackedByNonSliding(position, square, KNIGHT * 2 + attackerColor) ||
-		isAttackedByNonSliding(position, square, PAWN * 2 + attackerColor) ||
-		isAttackedBySliding(position, square, ROOK * 2 + attackerColor, QUEEN * 2 + attackerColor) ||
-		isAttackedBySliding(position, square, BISHOP * 2 + attackerColor, QUEEN * 2 + attackerColor);
+	return isAttackedByNonSliding(position, square, PieceImpl.KING * 2 + attackerColor) ||
+		isAttackedByNonSliding(position, square, PieceImpl.KNIGHT * 2 + attackerColor) ||
+		isAttackedByNonSliding(position, square, PieceImpl.PAWN * 2 + attackerColor) ||
+		isAttackedBySliding(position, square, PieceImpl.ROOK * 2 + attackerColor, PieceImpl.QUEEN * 2 + attackerColor) ||
+		isAttackedBySliding(position, square, PieceImpl.BISHOP * 2 + attackerColor, PieceImpl.QUEEN * 2 + attackerColor);
 }
 
 
@@ -80,7 +80,7 @@ function isAttackedBySliding(position: PositionImpl, square: number, slidingAtta
 			sq -= directions[i];
 			if ((sq & 0x88) === 0) {
 				const cp = position.board[sq];
-				if (cp === EMPTY) {
+				if (cp === SpI.EMPTY) {
 					continue;
 				}
 				else if (cp === slidingAttacker || cp === queenAttacker) {
@@ -104,11 +104,11 @@ function isAttackedBySliding(position: PositionImpl, square: number, slidingAtta
  */
 export function getAttacks(position: PositionImpl, square: number, attackerColor: number) {
 	const result: number[] = [];
-	findNonSlidingAttacks(position, square, result, KING * 2 + attackerColor);
-	findNonSlidingAttacks(position, square, result, KNIGHT * 2 + attackerColor);
-	findNonSlidingAttacks(position, square, result, PAWN * 2 + attackerColor);
-	findSlidingAttacks(position, square, result, ROOK * 2 + attackerColor, QUEEN * 2 + attackerColor);
-	findSlidingAttacks(position, square, result, BISHOP * 2 + attackerColor, QUEEN * 2 + attackerColor);
+	findNonSlidingAttacks(position, square, result, PieceImpl.KING * 2 + attackerColor);
+	findNonSlidingAttacks(position, square, result, PieceImpl.KNIGHT * 2 + attackerColor);
+	findNonSlidingAttacks(position, square, result, PieceImpl.PAWN * 2 + attackerColor);
+	findSlidingAttacks(position, square, result, PieceImpl.ROOK * 2 + attackerColor, PieceImpl.QUEEN * 2 + attackerColor);
+	findSlidingAttacks(position, square, result, PieceImpl.BISHOP * 2 + attackerColor, PieceImpl.QUEEN * 2 + attackerColor);
 	return result;
 }
 
@@ -132,7 +132,7 @@ function findSlidingAttacks(position: PositionImpl, square: number, result: numb
 			sq -= directions[i];
 			if ((sq & 0x88) === 0) {
 				const cp = position.board[sq];
-				if (cp === EMPTY) {
+				if (cp === SpI.EMPTY) {
 					continue;
 				}
 				else if (cp === slidingAttacker || cp === queenAttacker) {
