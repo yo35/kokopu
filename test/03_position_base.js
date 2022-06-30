@@ -310,14 +310,14 @@ describe('Position setters', function() {
 		});
 	});
 
-	['', 'W', 'bb'].forEach(function(elem) {
+	['', 'W', 'bb', 'wb'].forEach(function(elem) {
 		it('Error for turn with ' + (elem === '' ? '<empty string>' : elem), function() {
 			var p=new kokopu.Position();
 			test.exception(function() { p.turn(elem); }).isInstanceOf(kokopu.exception.IllegalArgument);
 		});
 	});
 
-	['', 'i', 'gg'].forEach(function(elem) {
+	['', 'i', 'gg', 'abcdefgh'].forEach(function(elem) {
 		it('Error for en-passant with ' + (elem === '' ? '<empty string>' : elem), function() {
 			var p=new kokopu.Position();
 			test.exception(function() { p.enPassant(elem); }).isInstanceOf(kokopu.exception.IllegalArgument);

@@ -455,7 +455,7 @@ export class Position {
 	castling(castle: Castle | Castle960, value: boolean): void;
 
 	castling(castle: Castle | Castle960, value?: boolean) {
-		if (!(this._impl.variant === GameVariantImpl.CHESS960 ? /^[wb][a-h]$/ : /^[wb][kq]$/).test(castle)) {
+		if (typeof castle !== 'string' || !(this._impl.variant === GameVariantImpl.CHESS960 ? /^[wb][a-h]$/ : /^[wb][kq]$/).test(castle)) {
 			throw new IllegalArgument('Position.castling()');
 		}
 		const color = colorFromString(castle[0]);

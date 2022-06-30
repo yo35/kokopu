@@ -88,31 +88,31 @@ export const enum GameVariantImpl {
 }
 
 
-const COLOR_SYMBOL    = 'wb';
-const PIECE_SYMBOL    = 'kqrbnp';
-const FIGURINE_SYMBOL = '\u2654\u265a\u2655\u265b\u2656\u265c\u2657\u265d\u2658\u265e\u2659\u265f';
-const RANK_SYMBOL     = '12345678';
-const FILE_SYMBOL     = 'abcdefgh';
+const COLOR_SYMBOL    = [ ...'wb' ];
+const PIECE_SYMBOL    = [ ...'kqrbnp' ];
+const FIGURINE_SYMBOL = [ ...'\u2654\u265a\u2655\u265b\u2656\u265c\u2657\u265d\u2658\u265e\u2659\u265f' ];
+const RANK_SYMBOL     = [ ...'12345678' ];
+const FILE_SYMBOL     = [ ...'abcdefgh' ];
 const RESULT_SYMBOL   = [ '1-0', '0-1', '1/2-1/2', '*' ];
 const VARIANT_SYMBOL  = [ 'regular', 'chess960', 'no-king', 'white-king-only', 'black-king-only', 'antichess', 'horde' ];
 
 
-export function colorToString   (color   : number) { return COLOR_SYMBOL   [color  ] as Color; }
-export function pieceToString   (piece   : number) { return PIECE_SYMBOL   [piece  ] as Piece; }
-export function figurineToString(cp      : number) { return FIGURINE_SYMBOL[cp     ] as string; }
-export function rankToString    (rank    : number) { return RANK_SYMBOL    [rank   ] as Rank; }
-export function fileToString    (file    : number) { return FILE_SYMBOL    [file   ] as File; }
-export function resultToString  (result  : number) { return RESULT_SYMBOL  [result ] as GameResult; }
+export function colorToString   (color   : number) { return COLOR_SYMBOL   [color  ] as Color      ; }
+export function pieceToString   (piece   : number) { return PIECE_SYMBOL   [piece  ] as Piece      ; }
+export function figurineToString(cp      : number) { return FIGURINE_SYMBOL[cp     ] as string     ; }
+export function rankToString    (rank    : number) { return RANK_SYMBOL    [rank   ] as Rank       ; }
+export function fileToString    (file    : number) { return FILE_SYMBOL    [file   ] as File       ; }
+export function resultToString  (result  : number) { return RESULT_SYMBOL  [result ] as GameResult ; }
 export function variantToString (variant : number) { return VARIANT_SYMBOL [variant] as GameVariant; }
 
 
-export function colorFromString   (color   : any) { return color   === '' ? -1 : COLOR_SYMBOL   .indexOf(color  ); } // TODO improve input check
-export function pieceFromString   (piece   : any) { return piece   === '' ? -1 : PIECE_SYMBOL   .indexOf(piece  ); }
-export function figurineFromString(cp      : any) { return cp      === '' ? -1 : FIGURINE_SYMBOL.indexOf(cp     ); }
-export function rankFromString    (rank    : any) { return rank    === '' ? -1 : RANK_SYMBOL    .indexOf(rank   ); }
-export function fileFromString    (file    : any) { return file    === '' ? -1 : FILE_SYMBOL    .indexOf(file   ); }
-export function resultFromString  (result  : any) { return RESULT_SYMBOL .indexOf(result ); }
-export function variantFromString (variant : any) { return VARIANT_SYMBOL.indexOf(variant); }
+export function colorFromString   (color   : any) { return COLOR_SYMBOL   .indexOf(color  ); }
+export function pieceFromString   (piece   : any) { return PIECE_SYMBOL   .indexOf(piece  ); }
+export function figurineFromString(cp      : any) { return FIGURINE_SYMBOL.indexOf(cp     ); }
+export function rankFromString    (rank    : any) { return RANK_SYMBOL    .indexOf(rank   ); }
+export function fileFromString    (file    : any) { return FILE_SYMBOL    .indexOf(file   ); }
+export function resultFromString  (result  : any) { return RESULT_SYMBOL  .indexOf(result ); }
+export function variantFromString (variant : any) { return VARIANT_SYMBOL .indexOf(variant); }
 
 
 export function squareToString(square: number) {
@@ -121,7 +121,7 @@ export function squareToString(square: number) {
 
 
 export function squareFromString(square: any) {
-	if (!/^[a-h][1-8]$/.test(square)) {
+	if (typeof square !== 'string' || !/^[a-h][1-8]$/.test(square)) {
 		return -1;
 	}
 	const file = FILE_SYMBOL.indexOf(square[0]);
@@ -136,7 +136,7 @@ export function coloredPieceToString(cp: number) {
 
 
 export function coloredPieceFromString(cp: any) {
-	if (!/^[wb][kqrbnp]$/.test(cp)) {
+	if (typeof cp !== 'string' || !/^[wb][kqrbnp]$/.test(cp)) {
 		return -1;
 	}
 	const color = COLOR_SYMBOL.indexOf(cp[0]);
