@@ -92,10 +92,17 @@ describe('Position constructor', function() {
 	doTest('Constructor FEN-based with prefix (horde)', 'horde', customFENHorde, function() { return new kokopu.Position('horde:' + customFENHorde); });
 
 	doFailureTest('Invalid variant', false, function() { return new kokopu.Position('not-a-variant', 'empty'); });
+	doFailureTest('Invalid variant (not a string)', false, function() { return new kokopu.Position(42, 'empty'); });
 	doFailureTest('Invalid variant (FEN-based)', false, function() { return new kokopu.Position('not-a-variant', startFEN); });
 	doFailureTest('Invalid variant (FEN-based with prefix)', true, function() { return new kokopu.Position('not-a-variant:' + startFEN); });
 	doFailureTest('Invalid form 1', false, function() { return new kokopu.Position(42); });
 	doFailureTest('Invalid form 2', false, function() { return new kokopu.Position({}); });
+	doFailureTest('Invalid form 3', false, function() { return new kokopu.Position('regular', 123); });
+	doFailureTest('Invalid form 4', false, function() { return new kokopu.Position('regular', {}); });
+	doFailureTest('Variant without canonical start 1', false, function() { return new kokopu.Position('no-king'); });
+	doFailureTest('Variant without canonical start 2', false, function() { return new kokopu.Position('chess960', 'start'); });
+	doFailureTest('Invalid Scharnagl code NaN', false, function() { return new kokopu.Position('chess960', NaN); });
+	doFailureTest('Invalid Scharnagl code -1', false, function() { return new kokopu.Position('chess960', -1); });
 
 	doFailureTest('Invalid FEN string 1', true, function() { return new kokopu.Position('rkr/ppp/8/8/8/8/PPP/RKR w - - 0 1'); });
 	doFailureTest('Invalid FEN string 2', true, function() { return new kokopu.Position('8/8 w - - 0 1'); });
@@ -177,6 +184,13 @@ describe('Reset 960 mutator', function() {
 			position.reset960(518);
 			test.value(position.variant()).is('chess960');
 			test.value(position.fen()).is(startXFEN);
+		});
+	});
+
+	[960, 18.3, '546'].forEach(function(elem) {
+		it('Error with Scharnagl code ' + elem, function() {
+			var p=new kokopu.Position();
+			test.exception(function() { p.reset960(elem); }).isInstanceOf(kokopu.exception.IllegalArgument);
 		});
 	});
 });
@@ -314,6 +328,13 @@ describe('Position setters', function() {
 		it('Error for turn with ' + (elem === '' ? '<empty string>' : elem), function() {
 			var p=new kokopu.Position();
 			test.exception(function() { p.turn(elem); }).isInstanceOf(kokopu.exception.IllegalArgument);
+		});
+	});
+
+	[0, 1, 'false', 'true'].forEach(function(elem) {
+		it('Error for set castling with ' + (elem === '' ? '<empty string>' : elem), function() {
+			var p=new kokopu.Position();
+			test.exception(function() { p.castling('wk', elem); }).isInstanceOf(kokopu.exception.IllegalArgument);
 		});
 	});
 
