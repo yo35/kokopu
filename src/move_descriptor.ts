@@ -25,8 +25,6 @@ import { Color, ColoredPiece, Piece, Square } from './base_types';
 
 /**
  * Describe a legal chess move, with its characteristics.
- *
- * TODO notice regarding instantiation. 
  */
 export abstract class MoveDescriptor {
 

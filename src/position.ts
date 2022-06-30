@@ -38,8 +38,11 @@ import { getUCINotation, parseUCINotation } from './private_position/uci';
 
 
 /**
- * Represent a chess position, i.e. the state of a 64-square chessboard with a few additional information
- * (who is about to play, castling rights, en-passant rights).
+ * Represent a chess position, i.e.:
+ * - the state of a 64-square chessboard,
+ * - who is about to play,
+ * - the castling rights,
+ * - and the file on which *en-passant* is possible, if any.
  */
 export class Position {
 
