@@ -376,16 +376,32 @@ var isCastlingLegal = exports.isCastlingLegal = function(position, from, to) {
 		}
 	}
 
+	// Free the king and rook square (mandatory for attack detection).
+	position.board[from] = bt.EMPTY;
+	position.board[rookFrom] = bt.EMPTY;
+
 	// Ensure that each square on the trajectory is empty.
 	for(var sq = Math.min(from, to, rookFrom, rookTo); sq <= Math.max(from, to, rookFrom, rookTo); ++sq) {
-		if(sq !== from && sq !== rookFrom && position.board[sq] !== bt.EMPTY) { return false; }
+		if(position.board[sq] !== bt.EMPTY) {
+			position.board[from] = bt.KING * 2 + position.turn;
+			position.board[rookFrom] = bt.ROOK * 2 + position.turn;
+			return false;
+		}
 	}
 
 	// The origin and destination squares of the king, and the square between them must not be attacked.
 	var byWho = 1 - position.turn;
 	for(var sq = Math.min(from, to); sq <= Math.max(from, to); ++sq) {
-		if(attacks.isAttacked(position, sq, byWho)) { return false; }
+		if(attacks.isAttacked(position, sq, byWho)) {
+			position.board[from] = bt.KING * 2 + position.turn;
+			position.board[rookFrom] = bt.ROOK * 2 + position.turn;
+			return false;
+		}
 	}
+
+	// Restore the board.
+	position.board[from] = bt.KING * 2 + position.turn;
+	position.board[rookFrom] = bt.ROOK * 2 + position.turn;
 
 	// The move is legal -> generate the move descriptor.
 	return moveDescriptor.makeCastling(from, to, rookFrom, rookTo, position.turn);
