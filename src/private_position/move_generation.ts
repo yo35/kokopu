@@ -420,23 +420,33 @@ export function isCastlingLegal(position: PositionImpl, from: number, to: number
 		return false;
 	}
 
-	// Ensure that each square on the trajectory is empty.
-	for (let sq = Math.min(from, to, rookFrom, rookTo); sq <= Math.max(from, to, rookFrom, rookTo); ++sq) {
-		if (sq !== from && sq !== rookFrom && position.board[sq] !== SpI.EMPTY) {
-			return false;
-		}
-	}
+	// Free the king and rook square (mandatory for attack detection).
+	position.board[from] = SpI.EMPTY;
+	position.board[rookFrom] = SpI.EMPTY;
+	try {
 
-	// The origin and destination squares of the king, and the square between them must not be attacked.
-	const byWho = 1 - position.turn;
-	for (let sq = Math.min(from, to); sq <= Math.max(from, to); ++sq) {
-		if (isAttacked(position, sq, byWho)) {
-			return false;
+		// Ensure that each square on the trajectory is empty.
+		for (let sq = Math.min(from, to, rookFrom, rookTo); sq <= Math.max(from, to, rookFrom, rookTo); ++sq) {
+			if (position.board[sq] !== SpI.EMPTY) {
+				return false;
+			}
 		}
-	}
 
-	// The move is legal -> generate the move descriptor.
-	return MoveDescriptorImpl.makeCastling(from, to, rookFrom, rookTo, position.turn);
+		// The origin and destination squares of the king, and the square between them must not be attacked.
+		const byWho = 1 - position.turn;
+		for (let sq = Math.min(from, to); sq <= Math.max(from, to); ++sq) {
+			if (isAttacked(position, sq, byWho)) {
+				return false;
+			}
+		}
+
+		// The move is legal -> generate the move descriptor.
+		return MoveDescriptorImpl.makeCastling(from, to, rookFrom, rookTo, position.turn);
+	}
+	finally {
+		position.board[from] = PieceImpl.KING * 2 + position.turn;
+		position.board[rookFrom] = PieceImpl.ROOK * 2 + position.turn;
+	}
 }
 
 

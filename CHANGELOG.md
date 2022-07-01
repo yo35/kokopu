@@ -1,6 +1,10 @@
 ChangeLog
 =========
 
+2.9.1 (July 1, 2022)
+--------------------
+* Fix castling move validation at Chess960 (see #29).
+
 2.9.0 (June 21, 2022)
 ---------------------
 * Introduce `Node#isVariation()` and `Variation#isVariation()` to discriminate between `Node` and `Variation` instances.
