@@ -120,7 +120,8 @@ The  value ]}
 
 1.e4 {[%clk
 01:56:25]} 1...e5 {I am comment\
-with a linebreak.}
+with a linebreak and a slash.} 2. d4 {I am comment
+with a linebreak}
 *
 
 
