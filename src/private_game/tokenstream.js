@@ -66,7 +66,7 @@ var TokenStream = exports.TokenStream = function(pgnString, initialLocation) {
 	this._matchEndHeader = /\]/g;
 	this._matchHeaderId = /(\w+)/g;
 	this._matchEnterHeaderValue = /"/g;
-	this._matchMoveNumber = /[1-9][0-9]*\.(?:\.\.)?/g;
+	this._matchMoveNumber = /[0-9][0-9]*\.(?:\.\.)?/g;
 	this._matchMove = /(?:O-O(?:-O)?|0-0(?:-0)?|[KQRBN][a-h]?[1-8]?x?[a-h][1-8]|(?:[a-h]x?)?[a-h][1-8](?:=?[KQRBNP])?)[+#]?|--/g;
 	this._matchNag = /([!?][!?]?|\+\/?[-=]|[-=]\/?\+|=|inf|~|RR|N)|\$([1-9][0-9]*)/g;
 	this._matchEnterComment = /\{/g;

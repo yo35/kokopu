@@ -288,7 +288,7 @@ exports.parseFEN = function(variant, fen, strict) {
 	if(!moveCountingRegExp.test(fields[5])) {
 		throw new exception.InvalidFEN(fen, i18n.INVALID_MOVE_NUMBER_FIELD);
 	}
-	return { position: position, fiftyMoveClock: parseInt(fields[4], 10), fullMoveNumber: parseInt(fields[5], 10) };
+	return { position: position, fiftyMoveClock: parseInt(fields[4], 10), fullMoveNumber: parseInt(fields[5], 10) || 1 };
 };
 
 
