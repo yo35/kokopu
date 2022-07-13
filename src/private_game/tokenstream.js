@@ -77,7 +77,7 @@ var TokenStream = exports.TokenStream = function(pgnString, initialLocation) {
 	// Special modes
 	this._headerValueMode = /((?:[^\\"\f\t\v\r\n]|\\[^\f\t\v\r\n])*)"/g;
 	this._headerValueDegradedMode = /[^\r\n]*/g;
-	this._commentMode = /((?:[^\\}]|\\.)*)\}/g;
+	this._commentMode = /((?:[^\\}]|\\.|\\)*)\}/g;
 	this._commentMode.needIncrementLineIndex = true;
 };
 
