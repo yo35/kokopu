@@ -18,5 +18,5 @@ Event = {Game with '0' move number}
 +---+---+---+---+---+---+---+---+
 w - -
 [start]                 -+<LONG
-[1w]                    (1w) Rha7 $2
+[0w]                    (0w) Rha7 $2
 {Black wins}
