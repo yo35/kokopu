@@ -1,6 +1,10 @@
 ChangeLog
 =========
 
+2.9.2 (July 14, 2022)
+---------------------
+* Fix PGN parsing issues regarding move number 0 and degenerated backslash followed by a linebreak (see #30).
+
 2.9.1 (July 1, 2022)
 --------------------
 * Fix castling move validation at Chess960 (see #29).
