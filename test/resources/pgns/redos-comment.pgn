@@ -1,0 +1,3 @@
+[Event "ReDoS using comment"]
+
+1. e4 {Evil unterminated comment with lots of backslashes \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\

@@ -3,7 +3,7 @@ empty	0
 mini1	1
 mini2	2
 headers	14
-misc	12
+misc	13
 chess960	4
 antichess	2
 horde	1
@@ -19,3 +19,5 @@ linebreak-linux	1
 linebreak-mac	1
 linebreak-windows	1
 missing-last-end-of-game	2
+redos-comment	1
+redos-header	1
