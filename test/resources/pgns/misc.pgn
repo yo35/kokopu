@@ -119,11 +119,18 @@ The  value ]}
 [Event "Game with linebreaks in comments"]
 
 1.e4 {[%clk
-01:56:25]} 1...e5 {I am comment
-with a linebreak.}
+01:56:25]} 1...e5 {I am comment\
+with a degenerated backslash followed by a linebreak} 2. d4 {I am comment
+with a linebreak}
 *
 
 
 [Event "Castling with character 0 instead of character O"]
 
 1. e4 e5 2. Nf3 Nf6 3. Bc4 Bc5 4. 0-0 0-1
+
+
+[Event "Game with '0' move number"]
+[FEN "8/7R/R3B3/4r1pP/p4k2/8/6PK/r7 w - - 0 0"]
+
+0. Rha7 $2 0-1
