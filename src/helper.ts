@@ -20,7 +20,7 @@
  * -------------------------------------------------------------------------- */
 
 
-import { Color, Square, Coordinates, GameVariant } from './base_types';
+import { Color, Square, Coordinates, GameVariant, DateValue } from './base_types';
 import { IllegalArgument } from './exception';
 
 import { colorFromString, colorToString, squareFromString, squareToString, fileToString, rankToString, variantFromString } from './private_position/base_types_impl';
@@ -146,4 +146,27 @@ NAG_SYMBOLS.set(146, 'N',     ); // Novelty
 export function nagSymbol(nag: number): string {
 	const result = NAG_SYMBOLS.get(nag);
 	return result === undefined ? '$' + nag : result;
+}
+
+
+/**
+ * Whether the given {@link DateValue} represents a valid date or not.
+ */
+export function isValidDate(date: DateValue): boolean {
+	switch (date.type) {
+		case 'y':
+			return Number.isInteger(date.year);
+		case 'ym':
+			return Number.isInteger(date.year) && Number.isInteger(date.month) && date.month >= 1 && date.month <= 12;
+		case 'ymd':
+			return Number.isInteger(date.year) && Number.isInteger(date.month) && Number.isInteger(date.day) && date.month >= 1 && date.month <= 12
+				&& date.day >= 1 && date.day <= daysInMonth(date.year, date.month);
+		default:
+			return false;
+	}
+}
+
+
+function daysInMonth(year: number, month: number) {
+	return new Date(year, month, 0).getDate();
 }

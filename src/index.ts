@@ -23,11 +23,12 @@
 export * as i18n from './i18n';
 export * as exception from './exception';
 
-export { Color, Piece, ColoredPiece, Castle, Castle960, File, Rank, Square, Coordinates, GameResult, GameVariant } from './base_types';
-export { forEachSquare, squareColor, squareToCoordinates, coordinatesToSquare, oppositeColor, variantWithCanonicalStartPosition, nagSymbol } from './helper';
+export { Color, Piece, ColoredPiece, Castle, Castle960, File, Rank, Square, Coordinates, GameResult, GameVariant, DateValue } from './base_types';
+export { forEachSquare, squareColor, squareToCoordinates, coordinatesToSquare, oppositeColor, variantWithCanonicalStartPosition, nagSymbol, isValidDate } from './helper';
 
 export { MoveDescriptor, isMoveDescriptor } from './move_descriptor';
 export { Position, RegularMoveFactory, PromotionMoveFactory } from './position';
+export { AbstractNode, Node, Variation } from './node_variation';
 export { Game } from './game';
 export { Database } from './database';
 
