@@ -153,6 +153,8 @@ export type GameVariant = 'regular' | 'chess960' | 'no-king' | 'white-king-only'
  *
  * When it is present, the `month` field is an integer valued between 1 (January) and 12 (December) inclusive.
  * When it is present, the `day` month is an integer valued between 1 and the number of days in the corresponding month (thus 31 at most).
+ *
+ * @see {@link Game.date}
  */
 export type DateValue =
 	{ type: 'y', year: number } |

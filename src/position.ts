@@ -46,9 +46,6 @@ import { getUCINotation, parseUCINotation } from './private_position/uci';
  */
 export class Position {
 
-	/**
-	 * @ignore
-	 */
 	private _impl: PositionImpl;
 
 
@@ -840,7 +837,7 @@ export class Position {
 	 * @param strict - If `true`, only perfectly formatted FAN moves are accepted. If `false`, "small errors" in the input
 	 *                 such as a missing capture character, an unnecessary disambiguation symbol... do not interrupt the parsing.
 	 *                 `false` by default.
-	 * @throws {@link InvalidNotation} If the move parsing fails or if the parsed move would correspond to an illegal move.
+	 * @throws {@link InvalidNotation} if the move parsing fails or if the parsed move would correspond to an illegal move.
 	 */
 	figurineNotation(move: string, strict?: boolean): MoveDescriptor;
 
@@ -888,7 +885,7 @@ export class Position {
 	 *                 are rejected in case of normal chess games. If `false`, both "king-take-rook"-encoded and UCI-standard-encoded castling moves
 	 *                 (e.g. `'e1g1'`) are accepted. For Chess960 games, only the "king-take-rook" style is accepted, whatever the value of this flag.
 	 *                 `false` by default.
-	 * @throws {@link InvalidNotation} If the move parsing fails or if the parsed move would correspond to an illegal move.
+	 * @throws {@link InvalidNotation} if the move parsing fails or if the parsed move would correspond to an illegal move.
 	 */
 	uci(move: string, strict?: boolean): MoveDescriptor;
 

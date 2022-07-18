@@ -351,7 +351,7 @@ export function isCaptureMandatory(position: PositionImpl) {
  *
  * This function implements the verification steps (7) to (9) as defined in {@link isMoveLegal}.
  *
- * @param enPassantSquare Index of the square where the "en-passant" taken pawn lies if any, `-1` otherwise.
+ * @param enPassantSquare - Index of the square where the "en-passant" taken pawn lies if any, `-1` otherwise.
  */
 export function isKingSafeAfterMove(position: PositionImpl, from: number, to: number, enPassantSquare = -1) {
 	let kingIsInCheck = false;

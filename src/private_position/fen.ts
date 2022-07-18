@@ -93,9 +93,9 @@ export function getFEN(position: PositionImpl, fiftyMoveClock = 0, fullMoveNumbe
 
 
 /**
- * @param regularFENIfPossible For Chess960, if `true`, format the flags as `KQkq` (regular FEN style) if possible
- *                             (instead of `AB...Hab...h` which is used by default, i.e. X-FEN style).
- *                             For the other variants, this flag has no effect, as regulary FEN style is always used.  
+ * @param regularFENIfPossible - For Chess960, if `true`, format the flags as `KQkq` (regular FEN style) if possible
+ *                               (instead of `AB...Hab...h` which is used by default, i.e. X-FEN style).
+ *                               For the other variants, this flag has no effect, as regulary FEN style is always used.
  */
 function castlingToString(position: PositionImpl, regularFENIfPossible = false) {
 	if (position.variant === GameVariantImpl.CHESS960) {

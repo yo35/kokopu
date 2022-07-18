@@ -137,7 +137,7 @@ export function makeEmpty(variant: number): PositionImpl {
 
 
 /**
- * @param variant Must be a variant with a canonical start position.
+ * @param variant - Must be a variant with a canonical start position.
  */
 export function makeInitial(variant: number): PositionImpl {
 	const info = START_POSITION_INFO[variant]!; // WARNING: applicable only to variants with a canonical start position.
@@ -156,7 +156,7 @@ export function makeInitial(variant: number): PositionImpl {
 /**
  * Chess960 initial position, following the numbering scheme proposed by Reinhard Scharnagl (see for instance https://chess960.net/start-positions/).
  *
- * @param scharnaglCode Integer between 0 and 959 inclusive.
+ * @param scharnaglCode - Integer between 0 and 959 inclusive.
  */
 export function make960FromScharnagl(scharnaglCode: number): PositionImpl {
 	const info = decodeScharnagl(scharnaglCode);
@@ -184,7 +184,7 @@ export function make960FromScharnagl(scharnaglCode: number): PositionImpl {
 
 
 /**
- * @param scharnaglCode Integer between 0 and 959 inclusive.
+ * @param scharnaglCode - Integer between 0 and 959 inclusive.
  */
 function decodeScharnagl(scharnaglCode: number): ScharnaglInfo {
 	const scheme = [ -1, -1, -1, -1, -1, -1, -1, -1 ];
