@@ -109,4 +109,9 @@ describe('NAG symbols', function() {
 	it('NAG without symbol', function() {
 		test.value(kokopu.nagSymbol(99)).is('$99');
 	});
+
+	it('Error with string', function() { test.exception(function() { kokopu.nagSymbol('1'); }).isInstanceOf(kokopu.exception.IllegalArgument); });
+	it('Error with null', function() { test.exception(function() { kokopu.nagSymbol(null); }).isInstanceOf(kokopu.exception.IllegalArgument); });
+	it('Error with non-integer', function() { test.exception(function() { kokopu.nagSymbol(3.2); }).isInstanceOf(kokopu.exception.IllegalArgument); });
+	it('Error with negative integer', function() { test.exception(function() { kokopu.nagSymbol(-1); }).isInstanceOf(kokopu.exception.IllegalArgument); });
 });

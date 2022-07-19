@@ -144,6 +144,9 @@ NAG_SYMBOLS.set(146, 'N',     ); // Novelty
  * Return the human-readable symbol for the given [NAG](https://en.wikipedia.org/wiki/Numeric_Annotation_Glyphs).
  */
 export function nagSymbol(nag: number): string {
+	if (!Number.isInteger(nag) || nag < 0) {
+		throw new IllegalArgument('nagSymbol()');
+	}
 	const result = NAG_SYMBOLS.get(nag);
 	return result === undefined ? '$' + nag : result;
 }
