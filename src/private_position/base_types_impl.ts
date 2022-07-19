@@ -70,11 +70,12 @@ export const enum SquareImpl {
 }
 
 
-// TODO change into const enum
-export const WHITE_WINS = 0;
-export const BLACK_WINS = 1;
-export const DRAW = 2;
-export const LINE = 3;
+export const enum GameResultImpl {
+	WHITE_WINS = 0,
+	BLACK_WINS = 1,
+	DRAW = 2,
+	LINE = 3,
+}
 
 
 export const enum GameVariantImpl {

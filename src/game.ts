@@ -30,7 +30,7 @@ import { Position } from './position';
 import { trimAndCollapseSpaces } from './private_game/common';
 import { MoveTreeRoot } from './private_game/node_variation_impl';
 
-import { ColorImpl, colorFromString, LINE, resultFromString, resultToString } from './private_position/base_types_impl';
+import { ColorImpl, GameResultImpl, colorFromString, resultFromString, resultToString } from './private_position/base_types_impl';
 
 
 /**
@@ -58,7 +58,7 @@ export class Game {
 		this._playerName = [ undefined, undefined ];
 		this._playerElo = [ undefined, undefined ];
 		this._playerTitle = [ undefined, undefined ];
-		this._result = LINE;
+		this._result = GameResultImpl.LINE;
 		this._moveTreeRoot = new MoveTreeRoot();
 	}
 
