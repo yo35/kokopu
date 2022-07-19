@@ -1,4 +1,4 @@
-/******************************************************************************
+/* -------------------------------------------------------------------------- *
  *                                                                            *
  *    This file is part of Kokopu, a JavaScript chess library.                *
  *    Copyright (C) 2018-2022  Yoann Le Montagner <yo35 -at- melix.net>       *
@@ -17,114 +17,109 @@
  *    Public License along with this program. If not, see                     *
  *    <http://www.gnu.org/licenses/>.                                         *
  *                                                                            *
- ******************************************************************************/
+ * -------------------------------------------------------------------------- */
 
 
-'use strict';
+import { GameVariant } from '../base_types';
+import { DateValue } from '../date_value';
+import { Game } from '../game';
+import { variantWithCanonicalStartPosition } from '../helper';
+import { AbstractNode, Node, Variation } from '../node_variation';
+import { Position } from '../position';
+
+import { trimAndCollapseSpaces } from '../private_game/common';
 
 
-var helper = require('../helper');
-var Position = require('../position').Position;
-var common = require('./common');
-
-
-function escapeHeaderValue(value) {
+function escapeHeaderValue(value: string) {
 	return value.replace(/([\\"])/g, '\\$1');
 }
 
 
-function escapeCommentValue(value) {
+function escapeCommentValue(value: string) {
 	return value.replace(/([\\}])/g, '\\$1');
 }
 
 
-function formatNullableHeader(value) {
+function formatNullableHeader(value: string | undefined) {
 	if (value !== undefined) {
-		value = common.trimAndCollapseSpaces(value);
+		value = trimAndCollapseSpaces(value);
 	}
 	return value ? escapeHeaderValue(value) : '?';
 }
 
 
-function formatDateHeader(date) {
+function formatDateHeader(date: DateValue | undefined) {
 	return date === undefined ? '????.??.??' : date.toPGNString();
 }
 
 
-function formatVariant(variant) {
-	if (variant === 'regular') {
-		return undefined;
-	}
-	else if (variant === 'chess960') {
-		return 'Fischerandom';
-	}
-	else if (variant === 'antichess') {
-		return 'Antichess';
-	}
-	else if (variant === 'horde') {
-		return 'Horde';
-	}
-	else {
-		return variant;
+function formatVariant(variant: GameVariant) {
+	switch (variant) {
+		case 'regular': return undefined;
+		case 'chess960': return 'Fischerandom';
+		case 'antichess': return 'Antichess';
+		case 'horde': return 'Horde';
+		default: return variant;
 	}
 }
 
 
-function writeOptionalHeader(key, value) {
+function writeOptionalHeader(key: string, value: string | undefined) {
 	if (value !== undefined) {
-		value = common.trimAndCollapseSpaces(value);
+		value = trimAndCollapseSpaces(value);
 	}
-	return value ? '[' + key + ' "' + escapeHeaderValue(value) + '"]\n' : '';
+	return value ? `[${key} "${escapeHeaderValue(value)}"]\n` : '';
 }
 
 
-function writeAnnotations(node, pushToken, skipLine, skipLineAfterCommentIfLong) {
+/**
+ * @returns `true` if the move number of the next move must be written.
+ */
+function writeAnnotations(node: AbstractNode, skipLineAfterCommentIfLong: boolean,
+	pushToken: (token: string, avoidSpaceBefore: boolean, avoidSpaceAfter: boolean) => void, skipLine: () => void): boolean {
 
 	// NAGs
-	var nags = node.nags();
-	for (var k = 0; k < nags.length; ++k) {
-		pushToken('$' + nags[k], false, false);
+	for (const nag of node.nags()) {
+		pushToken('$' + nag, false, false);
 	}
 
 	// Prepare comment
-	var comment = node.comment();
-	if (comment) {
-		comment = common.trimAndCollapseSpaces(comment);
+	let comment = node.comment();
+	if (comment !== undefined) {
+		comment = trimAndCollapseSpaces(comment);
 	}
 
 	// Prepare tags
-	var tags = node.tags();
-	var nonEmptyTagFound = false;
-	var tagValues = {};
-	for (var k = 0; k < tags.length; ++k) {
-		var tag = tags[k];
-		var tagValue = common.trimAndCollapseSpaces(node.tag(tag).replace(/[[\]]/g, '')); // Square-brackets are erased in tag values in PGN.
+	const tags = node.tags();
+	const tagValues: Map<string, string> = new Map();
+	let nonEmptyTagFound = false;
+	for (const tagKey of tags) {
+		const tagValue = trimAndCollapseSpaces(node.tag(tagKey)!.replace(/[[\]]/g, '')); // Square-brackets are erased in tag values in PGN.
 		if (tagValue) {
-			tagValues[tag] = tagValue;
+			tagValues.set(tagKey, tagValue);
 			nonEmptyTagFound = true;
 		}
 	}
 
 	// Tags & comments
 	if (nonEmptyTagFound || comment) {
-		if (comment && node.isLongComment() && !node.isVariation()) {
+		if (comment && node.isLongComment() && node instanceof Node) {
 			skipLine();
 		}
 		pushToken('{', false, true);
-		for (var k = 0; k < tags.length; ++k) {
-			var tag = tags[k];
-			var tagValue = tagValues[tag];
+		for (const tagKey of tags) {
+			var tagValue = tagValues.get(tagKey);
 			if (tagValue) {
-				pushToken('[%' + tag, false, false);
-				escapeCommentValue(tagValue + ']').split(' ').forEach(function(token) {
+				pushToken('[%' + tagKey, false, false);
+				for (const token of escapeCommentValue(tagValue + ']').split(' ')) {
 					pushToken(token, false, false);
-				});
+				}
 			}
 		}
 		if (comment) {
-			escapeCommentValue(comment).split(' ').forEach(function(token) {
+			for (const token of escapeCommentValue(comment).split(' ')) {
 				pushToken(token, false, false);
-			});
+			}
 		}
 		pushToken('}', true, false);
 		if (comment && node.isLongComment() && skipLineAfterCommentIfLong) {
@@ -138,7 +133,11 @@ function writeAnnotations(node, pushToken, skipLine, skipLineAfterCommentIfLong)
 }
 
 
-function writeNode(node, forceMoveNumber, pushToken, skipLine, isMainVariation) {
+/**
+ * @returns `true` if the move number of the next move must be written.
+ */
+function writeNode(node: Node, forceMoveNumber: boolean, isMainVariation: boolean,
+	pushToken: (token: string, avoidSpaceBefore: boolean, avoidSpaceAfter: boolean) => void, skipLine: () => void): boolean {
 
 	if (node.moveColor() === 'w') {
 		pushToken(node.fullMoveNumber() + '.', false, false);
@@ -149,27 +148,27 @@ function writeNode(node, forceMoveNumber, pushToken, skipLine, isMainVariation) 
 
 	pushToken(node.notation(), false, false);
 
-	var variations = node.variations();
-	var lastNonEmptyVariationIndex = -1;
-	for (var k = variations.length - 1; k >= 0; --k) {
-		if (variations[k].first()) {
+	const variations = node.variations();
+	let lastNonEmptyVariationIndex = -1;
+	for (let k = variations.length - 1; k >= 0; --k) {
+		if (variations[k].first() !== undefined) {
 			lastNonEmptyVariationIndex = k;
 			break;
 		}
 	}
 
-	var nextForceMoveNumber = writeAnnotations(node, pushToken, skipLine, (isMainVariation || node.next()) && lastNonEmptyVariationIndex < 0);
+	let nextForceMoveNumber = writeAnnotations(node, (isMainVariation || node.next() !== undefined) && lastNonEmptyVariationIndex < 0, pushToken, skipLine);
 
-	for (var k = 0; k < variations.length; ++k) {
-		var variation = variations[k];
-		if (!variation.first()) {
+	for (let k = 0; k < variations.length; ++k) {
+		const variation = variations[k];
+		if (variation.first() === undefined) {
 			continue;
 		}
 		if (variation.isLongVariation()) {
 			skipLine();
 		}
 		pushToken('(', false, true);
-		writeVariation(variation, pushToken, skipLine, false);
+		writeVariation(variation, false, pushToken, skipLine);
 		pushToken(')', true, false);
 		if (k === lastNonEmptyVariationIndex && variation.isLongVariation()) {
 			skipLine();
@@ -181,20 +180,25 @@ function writeNode(node, forceMoveNumber, pushToken, skipLine, isMainVariation) 
 }
 
 
-function writeVariation(variation, pushToken, skipLine, isMainVariation) {
-	writeAnnotations(variation, pushToken, skipLine, true);
+function writeVariation(variation: Variation, isMainVariation: boolean,
+	pushToken: (token: string, avoidSpaceBefore: boolean, avoidSpaceAfter: boolean) => void, skipLine: () => void): void {
 
-	var currentNode = variation.first();
-	var forceMoveNumber = true;
-	while (currentNode) {
-		forceMoveNumber = writeNode(currentNode, forceMoveNumber, pushToken, skipLine, isMainVariation);
+	writeAnnotations(variation, true, pushToken, skipLine);
+
+	let currentNode = variation.first();
+	let forceMoveNumber = true;
+	while (currentNode !== undefined) {
+		forceMoveNumber = writeNode(currentNode, forceMoveNumber, isMainVariation, pushToken, skipLine);
 		currentNode = currentNode.next();
 	}
 }
 
 
-function writeGame(game) {
-	var result = '';
+/**
+ * Generate the PGN string corresponding to the given {@link Game} object.
+ */
+export function writeGame(game: Game) {
+	let result = '';
 
 	// Mandatory tags
 	result += '[Event "' + formatNullableHeader(game.event()) + '"]\n';
@@ -205,9 +209,9 @@ function writeGame(game) {
 	result += '[Black "' + formatNullableHeader(game.playerName('b')) + '"]\n';
 	result += '[Result "' + game.result() + '"]\n';
 
-	var variant = game.variant();
-	var initialPosition = game.initialPosition();
-	var hasFENHeader = !helper.variantWithCanonicalStartPosition(variant) || !Position.isEqual(initialPosition, new Position(variant));
+	const variant = game.variant();
+	const initialPosition = game.initialPosition();
+	const hasFENHeader = !variantWithCanonicalStartPosition(variant) || !Position.isEqual(initialPosition, new Position(variant));
 
 	// Additional tags (ASCII order by tag name)
 	result += writeOptionalHeader('Annotator', game.annotator());
@@ -227,10 +231,10 @@ function writeGame(game) {
 	// Movetext
 	// --------
 
-	var currentLine = '';
-	var avoidNextSpace = false;
+	let currentLine = '';
+	let avoidNextSpace = false;
 
-	function pushToken(token, avoidSpaceBefore, avoidSpaceAfter) {
+	function pushToken(token: string, avoidSpaceBefore: boolean, avoidSpaceAfter: boolean) {
 		if (currentLine.length === 0) {
 			currentLine = token;
 		}
@@ -251,7 +255,7 @@ function writeGame(game) {
 		avoidNextSpace = false;
 	}
 
-	writeVariation(game.mainVariation(), pushToken, skipLine, true);
+	writeVariation(game.mainVariation(), true, pushToken, skipLine);
 	pushToken(game.result(), false, false);
 	result += currentLine + '\n'; // `currentLine` is non-empty here
 
@@ -262,6 +266,6 @@ function writeGame(game) {
 /**
  * Generate the PGN string corresponding to the given array of {@link Game} objects.
  */
-exports.writeGames = function(games) {
+export function writeGames(games: Game[]) {
 	return games.map(writeGame).join('\n\n');
-};
+}

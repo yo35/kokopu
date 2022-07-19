@@ -25,7 +25,7 @@
 
 var Game = require('./game').Game;
 var pgnReadImpl = require('./private_game/pgn_read_impl');
-var pgnWriteImpl = require('./private_game/pgn_write_impl');
+var pgnWriteImpl = require('./private_pgn/pgn_write_impl');
 
 
 /**
@@ -72,7 +72,7 @@ exports.pgnRead = function() {
  */
 exports.pgnWrite = function(input) {
 	if (input instanceof Game) {
-		return pgnWriteImpl.writeGames([ input ]);
+		return pgnWriteImpl.writeGame(input);
 	}
 	else {
 		return pgnWriteImpl.writeGames(input);
