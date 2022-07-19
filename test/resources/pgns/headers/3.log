@@ -3,6 +3,6 @@ Black = {Player 2}
 Event = {Some championship}
 Round = {1}
 Site = {Paris, France}
-Date = {{ month:4, year:2018 }}
+Date = {2018-04-**}
 [start]                 -+<LONG
 {Draw}

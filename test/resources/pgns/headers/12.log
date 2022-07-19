@@ -1,4 +1,4 @@
 Event = {Invalid day in date 2}
-Date = {{ month:2, year:2007 }}
+Date = {2007-02-**}
 [start]                 -+<LONG
 {Line}

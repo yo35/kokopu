@@ -3,6 +3,6 @@ Black = {Player 2}
 Event = {Some championship}
 Round = {1}
 Site = {Paris, France}
-Date = {{ year:2018 }}
+Date = {2018-**-**}
 [start]                 -+<LONG
 {Black wins}

@@ -125,86 +125,105 @@ describe('Color-dependant header', function() {
 
 describe('Date header', function() {
 
+	function testDateIsUndefined(game) {
+		test.value(game.date()).is(undefined);
+	}
+
+	function testDateIs(game, value) {
+		test.value(game.date()).isNotFalse();
+		test.value(game.date().toString()).is(value);
+	}
+
 	it('Initial state', function() {
 		var game = new kokopu.Game();
-		test.value(game.date()).is(undefined);
-		test.value(game.dateAsString()).is(undefined);
+		testDateIsUndefined(game);
+	});
+
+	it('Set JS Date & get', function() {
+		var game = new kokopu.Game();
+		game.date(new Date(2021, 8, 12));
+		testDateIs(game, '2021-09-12');
 	});
 
 	it('Set full date & get', function() {
 		var game = new kokopu.Game();
-		game.date(new Date(2021, 8, 12));
-		test.value(game.date()).isInstanceOf(Date);
-		test.value(game.date().toDateString()).is('Sun Sep 12 2021');
+		game.date(2021, 9, 12);
+		testDateIs(game, '2021-09-12');
 	});
 
-	it('Set month+year 1 date & get', function() {
+	it('Set month+year date 1 & get', function() {
 		var game = new kokopu.Game();
-		game.date({ year: 2021, month: 12 });
-		test.value(game.date()).is({ year: 2021, month: 12 });
+		game.date(2021, 12);
+		testDateIs(game, '2021-12-**');
 	});
 
-	it('Set month+year 2 date & get', function() {
+	it('Set month+year date 2 & get', function() {
 		var game = new kokopu.Game();
-		game.date({ year: 2021, month: 7.8 });
-		test.value(game.date()).is({ year: 2021, month: 8 });
+		game.date(2021, 2, undefined);
+		testDateIs(game, '2021-02-**');
 	});
 
-	it('Set month+year 3 date & get', function() {
+	it('Set month+year date 3 & get', function() {
 		var game = new kokopu.Game();
-		game.date({ year: 2021, month: 1.1 });
-		test.value(game.date()).is({ year: 2021, month: 1 });
+		game.date(2021, 2, null);
+		testDateIs(game, '2021-02-**');
 	});
 
 	it('Set year-only date 1 & get', function() {
 		var game = new kokopu.Game();
-		game.date({ year: 2021 });
-		test.value(game.date()).is({ year: 2021 });
+		game.date(2021);
+		testDateIs(game, '2021-**-**');
 	});
 
 	it('Set year-only date 2 & get', function() {
 		var game = new kokopu.Game();
-		game.date({ year: 2021.2, month: undefined });
-		test.value(game.date()).is({ year: 2021 });
+		game.date(1, undefined);
+		testDateIs(game, '0001-**-**');
 	});
 
 	it('Set year-only date 3 & get', function() {
 		var game = new kokopu.Game();
-		game.date({ year: 2020.7, month: null });
-		test.value(game.date()).is({ year: 2021 });
+		game.date(99, null);
+		testDateIs(game, '0099-**-**');
+	});
+
+	it('Set year-only date 4 & get', function() {
+		var game = new kokopu.Game();
+		game.date(1921, undefined, undefined);
+		testDateIs(game, '1921-**-**');
 	});
 
 	it('Erase with undefined', function() {
 		var game = new kokopu.Game();
-		game.date(new Date(2021, 8, 12));
+		game.date(2021, 9, 12);
 		game.date(undefined);
-		test.value(game.date()).is(undefined);
+		testDateIsUndefined(game);
 	});
 
 	it('Erase with null', function() {
 		var game = new kokopu.Game();
-		game.date(new Date(2021, 8, 12));
+		game.date(2021, 9, 12);
 		game.date(null);
-		test.value(game.date()).is(undefined);
+		testDateIsUndefined(game);
 	});
 
 	it('Get as string (full date)', function() {
 		var game = new kokopu.Game();
-		game.date(new Date(2021, 8, 12));
+		game.date(2021, 9, 12);
 		test.value(game.dateAsString('en-us')).is('September 12, 2021');
 		test.value(game.dateAsString('fr')).is('12 septembre 2021');
 	});
 
 	it('Get as string (month+year)', function() {
 		var game = new kokopu.Game();
-		game.date({ year: 2021, month: 12 });
+		game.date(2021, 12);
 		test.value(game.dateAsString('en-us')).is('December 2021');
 		test.value(game.dateAsString('fr')).is('décembre 2021');
 	});
 
 	it('Get as string (year only)', function() {
 		var game = new kokopu.Game();
-		game.date({ year: 2021 });
+		game.date(2021);
 		test.value(game.dateAsString('en-us')).is('2021');
 		test.value(game.dateAsString('fr')).is('2021');
 	});
@@ -219,11 +238,25 @@ describe('Date header', function() {
 	itInvalidValue('Set string', 'dummy');
 	itInvalidValue('Set boolean', false);
 	itInvalidValue('Set empty object', {});
-	itInvalidValue('Set object with non-number-valued fields', { year: 'blah' });
-	itInvalidValue('Set object undefined-valued fields', { year: undefined });
-	itInvalidValue('Set object null-valued fields', { year: null });
-	itInvalidValue('Set invalid month value 1', { year: 2021, month: 13 });
-	itInvalidValue('Set invalid month value 2', { year: 2021, month: 0 });
+	itInvalidValue('Set invalid year 1', -5);
+	itInvalidValue('Set invalid year 2', 1989.3);
+
+	function itInvalidYMD(label, year, month, day) {
+		it(label, function() {
+			var game = new kokopu.Game();
+			test.exception(function() { game.date(year, month, day); }).isInstanceOf(kokopu.exception.IllegalArgument);
+		});
+	}
+
+	itInvalidYMD('Set invalid month 1', 2021, 13, undefined);
+	itInvalidYMD('Set invalid month 2', 2021, 0, undefined);
+	itInvalidYMD('Set invalid month 3', 2021, 5.7, undefined);
+	itInvalidYMD('Set invalid day 1', 2021, 8, 0);
+	itInvalidYMD('Set invalid day 2', 2021, 6, 31);
+	itInvalidYMD('Set invalid day 3', 2021, 3, 3.1);
+	itInvalidYMD('Set day without month', 2021, undefined, 4);
+	itInvalidYMD('Set month without year', undefined, 8, undefined);
+	itInvalidYMD('Set all undefined', undefined, undefined, undefined);
 });
 
 

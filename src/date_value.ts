@@ -65,8 +65,8 @@ export class DateValue {
 			}
 			this.#type = type;
 			this.#year = dateOrYear;
-			this.#month = month;
-			this.#day = day;
+			this.#month = month === null ? undefined : month;
+			this.#day = day === null ? undefined : day;
 		}
 	}
 
@@ -187,10 +187,10 @@ function toStringImpl(year: number, month: number | undefined, day: number | und
 
 
 function computeType(year: number, month?: number, day?: number): false | 'y' | 'ym' | 'ymd' {
-	if (day !== undefined) {
+	if (day !== undefined && day !== null) {
 		return isValidYear(year) && isValidMonth(month) && Number.isInteger(day) && day! >= 1 && day! <= daysInMonth(year, month!) ? 'ymd' : false;
 	}
-	else if (month != undefined) {
+	else if (month !== undefined && month !== null) {
 		return isValidYear(year) && isValidMonth(month) ? 'ym' : false;
 	}
 	else {

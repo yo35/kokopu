@@ -203,23 +203,36 @@ export class Game {
 	date(year: number, month?: number, day?: number): void;
 
 	date(valueOrYear?: DateValue | Date | undefined | number, month?: number, day?: number) {
-		if (arguments.length === 0) {
-			return this._date;
-		}
-		else if (valueOrYear === undefined || valueOrYear === null) {
-			this._date = undefined;
-		}
-		else if (valueOrYear instanceof DateValue) {
-			this._date = valueOrYear;
-		}
-		else if (valueOrYear instanceof Date) {
-			this._date = new DateValue(valueOrYear);
-		}
-		else if (typeof valueOrYear === 'number' && DateValue.isValid(valueOrYear, month, day)) {
-			this._date = new DateValue(valueOrYear, month, day);
-		}
-		else {
-			throw new IllegalArgument('Game.date()');
+		switch (arguments.length) {
+			case 0:
+				return this._date;
+
+			case 1:
+				if (valueOrYear === undefined || valueOrYear === null) {
+					this._date = undefined;
+				}
+				else if (valueOrYear instanceof DateValue) {
+					this._date = valueOrYear;
+				}
+				else if (valueOrYear instanceof Date) {
+					this._date = new DateValue(valueOrYear);
+				}
+				else if (DateValue.isValid(valueOrYear)) {
+					this._date = new DateValue(valueOrYear);
+				}
+				else {
+					throw new IllegalArgument('Game.date()');
+				}
+				break;
+
+			default:
+				if (DateValue.isValid(valueOrYear as number, month, day)) {
+					this._date = new DateValue(valueOrYear as number, month, day);
+				}
+				else {
+					throw new IllegalArgument('Game.date()');
+				}
+				break;
 		}
 	}
 

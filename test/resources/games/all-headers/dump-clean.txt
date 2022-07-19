@@ -7,7 +7,7 @@ BlackTitle = {IM}
 Event = {An event name spanning several lines}
 Round = {1}
 Site = {Somewhere...}
-Date = {Sat Sep 04 2021}
+Date = {2021-09-04}
 Annotator = {The Annotator}
 [start]                 -+<LONG
 {Black wins}

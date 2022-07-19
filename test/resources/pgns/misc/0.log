@@ -2,7 +2,7 @@ White = {Player 1}
 Black = {Player 2}
 Event = {Scholar's mate}
 Site = {*}
-Date = {{ year:2013 }}
+Date = {2013-**-**}
 [start]                 -+<LONG
 [1w]                    (1w) e4
 [1b]                    (1b) e5

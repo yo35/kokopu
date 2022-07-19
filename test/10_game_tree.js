@@ -64,7 +64,7 @@ var oneGamefactories = {
 	'all-headers': function() {
 		var game = new kokopu.Game();
 		game.annotator(' The   Annotator ');
-		game.date(new Date(2021, 8, 4));
+		game.date(2021, 9, 4);
 		game.event('An event name\nspanning several lines');
 		game.playerElo('w', 1942);
 		game.playerElo('b', 2421);
@@ -80,7 +80,7 @@ var oneGamefactories = {
 
 	'missing-headers-1': function() {
 		var game = new kokopu.Game();
-		game.date({ year: 1998 });
+		game.date(1998);
 		game.playerElo('w', 2345);
 		game.playerName('w', 'John Doe');
 		game.playerTitle('b', 'GM');
@@ -91,7 +91,7 @@ var oneGamefactories = {
 
 	'missing-headers-2': function() {
 		var game = new kokopu.Game();
-		game.date({ year: 1955, month: 11 });
+		game.date(1955, 11);
 		game.round(3);
 		game.playerElo('w', '2299');
 		game.playerTitle('w', 'FM');

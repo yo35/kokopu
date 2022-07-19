@@ -2,6 +2,6 @@ White = {John Doe}
 WhiteElo = {2345}
 BlackTitle = {GM}
 Round = {3}
-Date = {{ year:1998 }}
+Date = {1998-**-**}
 [start]                 -+<LONG
 {Draw}
