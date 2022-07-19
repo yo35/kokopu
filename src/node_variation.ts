@@ -114,7 +114,7 @@ export abstract class AbstractNode {
 	/**
 	 * Whether the text comment associated to the current node or variation is long or short.
 	 *
-	 * @returns`false` if no comment is defined.
+	 * @returns `false` if no comment is defined.
 	 */
 	abstract isLongComment(): boolean;
 
@@ -242,7 +242,6 @@ export abstract class Node extends AbstractNode {
 	abstract promoteVariation(variationIndex: number): void;
 
 	/**
-	 * @ignore
 	 * @deprecated Use `obj instanceof Variation` instead.
 	 */
 	isVariation(): boolean {
@@ -314,7 +313,6 @@ export abstract class Variation extends AbstractNode {
 	abstract clearMoves(): void;
 
 	/**
-	 * @ignore
 	 * @deprecated Use `obj instanceof Variation` instead.
 	 */
 	isVariation(): boolean {
