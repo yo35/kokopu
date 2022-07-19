@@ -134,10 +134,15 @@ export class DateValue {
 	 * Get the date in a compact format (e.g. `'2022-07-19'`, `'2022-07-**'` or `'2022-**-**'` depending on the type of the current object).
 	 */
 	toString(): string {
-		const year = String(this.#year).padStart(4, '0');
-		const month = this.#month === undefined ? '**' : String(this.#month).padStart(2, '0');
-		const day = this.#day === undefined ? '**' : String(this.#day).padStart(2, '0');
-		return `${year}-${month}-${day}`;
+		return toStringImpl(this.#year, this.#month, this.#day, '-', '**');
+	}
+
+
+	/**
+	 * Get the date in a PGN format (e.g. `'2022.07.19'`, `'2022.07.??'` or `'2022.??.??'` depending on the type of the current object).
+	 */
+	toPGNString(): string {
+		return toStringImpl(this.#year, this.#month, this.#day, '.', '??');
 	}
 
 
@@ -170,6 +175,14 @@ export class DateValue {
 	static isValid(year: number, month?: number, day?: number): boolean {
 		return Boolean(computeType(year, month, day));
 	}
+}
+
+
+function toStringImpl(year: number, month: number | undefined, day: number | undefined, separator: string, undefinedToken: string) {
+	const y = String(year).padStart(4, '0');
+	const m = month === undefined ? undefinedToken : String(month).padStart(2, '0');
+	const d = day === undefined ? undefinedToken : String(day).padStart(2, '0');
+	return y + separator + m + separator + d;
 }
 
 

@@ -23,6 +23,7 @@
 'use strict';
 
 
+var DateValue = require('../date_value').DateValue;
 var helper = require('../helper');
 var exception = require('../exception');
 var i18n = require('../i18n');
@@ -46,25 +47,23 @@ function parseDateHeader(value) {
 		year = parseInt(year, 10);
 		month = parseInt(month, 10);
 		day = parseInt(day, 10);
-		if (month >= 1 && month <= 12) {
-			var daysInMonth = new Date(year, month, 0).getDate();
-			return day >= 1 && day <= daysInMonth ? new Date(year, month - 1, day) : { year: year, month: month };
-		}
-		else {
-			return { year: year };
-		}
+		return DateValue.isValid(year, month, day) ? new DateValue(year, month, day) : DateValue.isValid(year, month) ? new DateValue(year, month) :
+			DateValue.isValid(year) ? new DateValue(year) : undefined;
 	}
 	else if(/^([0-9]{4})\.([0-9]{2})\.\?\?$/.test(value)) {
 		var year = RegExp.$1;
 		var month = RegExp.$2;
 		year = parseInt(year, 10);
 		month = parseInt(month, 10);
-		return month >= 1 && month <= 12 ? { year: year, month: month } : { year: year };
+		return DateValue.isValid(year, month) ? new DateValue(year, month) : DateValue.isValid(year) ? new DateValue(year) : undefined;
 	}
 	else if(/^([0-9]{4})(?:\.\?\?\.\?\?)?$/.test(value)) {
-		return { year: parseInt(RegExp.$1, 10) };
+		var year = parseInt(RegExp.$1, 10);
+		return DateValue.isValid(year) ? new DateValue(year) : undefined;
 	}
-	return undefined;
+	else {
+		return undefined;
+	}
 }
 
 

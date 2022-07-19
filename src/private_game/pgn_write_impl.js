@@ -47,21 +47,7 @@ function formatNullableHeader(value) {
 
 
 function formatDateHeader(date) {
-	var year = '????';
-	var month = '??';
-	var day = '??';
-	if (date instanceof Date) {
-		year = String(date.getFullYear()).padStart(4, '0');
-		month = String(date.getMonth() + 1).padStart(2, '0');
-		day = String(date.getDate()).padStart(2, '0');
-	}
-	else if (date && date.year) {
-		year = String(date.year).padStart(4, '0');
-		if (date.month) {
-			month = String(date.month).padStart(2, '0');
-		}
-	}
-	return year + '.' + month + '.' + day;
+	return date === undefined ? '????.??.??' : date.toPGNString();
 }
 
 
@@ -220,14 +206,15 @@ function writeGame(game) {
 	result += '[Result "' + game.result() + '"]\n';
 
 	var variant = game.variant();
-	var hasFENHeader = !helper.variantWithCanonicalStartPosition(variant) || !Position.isEqual(game._initialPosition, new Position(variant));
+	var initialPosition = game.initialPosition();
+	var hasFENHeader = !helper.variantWithCanonicalStartPosition(variant) || !Position.isEqual(initialPosition, new Position(variant));
 
 	// Additional tags (ASCII order by tag name)
 	result += writeOptionalHeader('Annotator', game.annotator());
 	result += writeOptionalHeader('BlackElo', game.playerElo('b'));
 	result += writeOptionalHeader('BlackTitle', game.playerTitle('b'));
 	if (hasFENHeader) {
-		result += '[FEN "' + game.initialPosition().fen({ fullMoveNumber: game.mainVariation().initialFullMoveNumber(), regularFENIfPossible: true }) + '"]\n';
+		result += '[FEN "' + initialPosition.fen({ fullMoveNumber: game.mainVariation().initialFullMoveNumber(), regularFENIfPossible: true }) + '"]\n';
 		result += '[SetUp "1"]\n';
 	}
 	result += writeOptionalHeader('Variant', formatVariant(variant));
