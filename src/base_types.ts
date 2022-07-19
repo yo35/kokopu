@@ -145,18 +145,3 @@ export type GameResult = '1-0' | '1/2-1/2' | '0-1' | '*';
  * to create games explaining a particular piece scheme, concept, or sequence of moves... with a reduced number of pieces.
  */
 export type GameVariant = 'regular' | 'chess960' | 'no-king' | 'white-king-only' | 'black-king-only' | 'antichess' | 'horde';
-
-
-/**
- * Date of a chess game. It can be either partially defined (with the year only, or with the year and month but without day of month),
- * or fully defined (with year, month and day of month).
- *
- * When it is present, the `month` field is an integer valued between 1 (January) and 12 (December) inclusive.
- * When it is present, the `day` month is an integer valued between 1 and the number of days in the corresponding month (thus 31 at most).
- *
- * @see {@link Game.date}
- */
-export type DateValue =
-	{ type: 'y', year: number } |
-	{ type: 'ym', year: number, month: number } |
-	{ type: 'ymd', year: number, month: number, day: number };

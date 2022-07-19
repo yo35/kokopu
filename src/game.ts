@@ -20,9 +20,10 @@
  * -------------------------------------------------------------------------- */
 
 
-import { Color, DateValue, GameResult, GameVariant } from './base_types';
+import { Color, GameResult, GameVariant } from './base_types';
+import { DateValue } from './date_value';
 import { IllegalArgument } from './exception';
-import { isValidDate, nagSymbol, variantWithCanonicalStartPosition } from './helper';
+import { nagSymbol, variantWithCanonicalStartPosition } from './helper';
 import { AbstractNode, Node, Variation } from './node_variation';
 import { Position } from './position';
 
@@ -196,23 +197,26 @@ export class Game {
 	 */
 	date(value: DateValue | Date | undefined): void;
 
-	date(value?: DateValue | Date | undefined) {
+	/**
+	 * Set the date of the game.
+	 */
+	date(year: number, month?: number, day?: number): void;
+
+	date(valueOrYear?: DateValue | Date | undefined | number, month?: number, day?: number) {
 		if (arguments.length === 0) {
-			return this._date === undefined ? undefined : { ...this._date };
+			return this._date;
 		}
-		else if (value === undefined || value === null) {
+		else if (valueOrYear === undefined || valueOrYear === null) {
 			this._date = undefined;
 		}
-		else if (value instanceof Date) {
-			this._date = {
-				type: 'ymd',
-				year: value.getFullYear(),
-				month: value.getMonth() + 1,
-				day: value.getDate(),
-			};
+		else if (valueOrYear instanceof DateValue) {
+			this._date = valueOrYear;
 		}
-		else if (!isValidDate(value)) {
-			this._date = { ...value };
+		else if (valueOrYear instanceof Date) {
+			this._date = new DateValue(valueOrYear);
+		}
+		else if (typeof valueOrYear === 'number' && DateValue.isValid(valueOrYear, month, day)) {
+			this._date = new DateValue(valueOrYear, month, day);
 		}
 		else {
 			throw new IllegalArgument('Game.date()');
@@ -224,12 +228,7 @@ export class Game {
 	 * Get the date of the game as a standard JavaScript `Date` object.
 	 */
 	dateAsDate(): Date | undefined {
-		if (this._date === undefined) {
-			return undefined;
-		}
-		const month = this._date.type === 'y' ? 0 : this._date.month - 1;
-		const day = this._date.type === 'ymd' ? this._date.day : 1;
-		return new Date(this._date.year, month, day);
+		return this._date === undefined ? undefined : this._date.toDate();
 	}
 
 
@@ -241,20 +240,7 @@ export class Game {
 	 *                  for more details.
 	 */
 	dateAsString(locales?: string | string[] | undefined): string | undefined {
-		if (this._date === undefined) {
-			return undefined;
-		}
-		else if (this._date.type === 'ymd') {
-			const date = new Date(this._date.year, this._date.month - 1, this._date.day);
-			return new Intl.DateTimeFormat(locales, { dateStyle: 'long' }).format(date);
-		}
-		else if (this._date.type === 'ym') {
-			const date = new Date(this._date.year, this._date.month - 1, 1);
-			return new Intl.DateTimeFormat(locales, { month: 'long', year: 'numeric' }).format(date);
-		}
-		else {
-			return String(this._date.year);
-		}
+		return this._date === undefined ? undefined : this._date.toHumanReadableString(locales);
 	}
 
 
