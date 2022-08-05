@@ -42,7 +42,7 @@ function regExpWrapper(re: RegExp, needIncrementLineIndex?: boolean) {
 
 
 /**
- * Types of tokens that could be encountered in a PGN. TODO change to const enum
+ * Types of tokens that could be encountered in a PGN.
  */
 export const enum TokenType {
 	INVALID         =  0,

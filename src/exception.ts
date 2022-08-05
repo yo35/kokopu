@@ -137,7 +137,7 @@ export class InvalidPGN {
 function buildMessage(message: string, tokens: any[]) {
 	return message.replace(/{(\d+)}/g, (match, placeholder) => {
 		const placeholderIndex = Number(placeholder);
-		return placeholderIndex < tokens.length ? tokens[placeholderIndex] : match; // TODO conversion to string required?
+		return placeholderIndex < tokens.length ? tokens[placeholderIndex] : match;
 	});
 }
 
