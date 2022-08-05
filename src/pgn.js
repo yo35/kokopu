@@ -24,7 +24,7 @@
 
 
 var Game = require('./game').Game;
-var pgnReadImpl = require('./private_game/pgn_read_impl');
+var pgnReadImpl = require('./private_pgn/pgn_read_impl');
 var pgnWriteImpl = require('./private_pgn/pgn_write_impl');
 
 

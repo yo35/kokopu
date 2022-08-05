@@ -1,4 +1,4 @@
-/******************************************************************************
+/* -------------------------------------------------------------------------- *
  *                                                                            *
  *    This file is part of Kokopu, a JavaScript chess library.                *
  *    Copyright (C) 2018-2022  Yoann Le Montagner <yo35 -at- melix.net>       *
@@ -17,41 +17,31 @@
  *    Public License along with this program. If not, see                     *
  *    <http://www.gnu.org/licenses/>.                                         *
  *                                                                            *
- ******************************************************************************/
+ * -------------------------------------------------------------------------- */
 
 
-'use strict';
-
-
-/**
- * @class
- * @classdesc Describe a set of chess games (see also {@link Game}).
- *
- * @description DO NOT invoke this constructor directly. Only internal objects and functions are allowed to instantiate {@link Database} objects.
- */
-var Database = exports.Database = function(impl, gameCountGetter, gameGetter) {
-	this._impl = impl;
-	this._gameCountGetter = gameCountGetter;
-	this._gameGetter = gameGetter;
-};
+import { Game } from './game';
 
 
 /**
- * Number of games in the database.
- *
- * @returns {number}
+ * Describe a set of chess games, each of them being represented by a {@link Game} object.
  */
-Database.prototype.gameCount = function() {
-	return this._gameCountGetter(this._impl);
-};
+export abstract class Database {
 
+	/**
+	 * @ignore
+	 */
+	protected constructor() {}
 
-/**
- * Return the game corresponding to the given index.
- *
- * @param {number} index Between 0 inclusive and {@link Database#gameCount} exclusive.
- * @returns {Game}
- */
-Database.prototype.game = function(index) {
-	return this._gameGetter(this._impl, index);
-};
+	/**
+	 * Number of games in the database.
+	 */
+	abstract gameCount(): number;
+
+	/**
+	 * Return the game corresponding to the given index.
+	 *
+	 * @param gameIndex - Must be between 0 inclusive and {@link Database.gameCount} exclusive.
+	 */
+	abstract game(gameIndex: number): Game;
+}
