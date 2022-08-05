@@ -172,28 +172,30 @@ describe('Read PGN - Game content (database)', function() {
 
 describe('Read PGN - Wrong game index', function() {
 	[
-		{ label: 'Negative index', value: -2 },
-		{ label: 'Non integer index', value: 0.3 },
-		{ label: 'Too large index', value: 99 },
-		{ label: 'NaN index', value: NaN },
-		{ label: 'Non number index', value: 'xyz' },
+		{ label: 'Negative index', value: -2, invalidPGNExpected: false },
+		{ label: 'Non integer index', value: 0.3, invalidPGNExpected: false },
+		{ label: 'Too large index', value: 99, invalidPGNExpected: true },
+		{ label: 'NaN index', value: NaN, invalidPGNExpected: false },
+		{ label: 'Non number index', value: 'xyz', invalidPGNExpected: false },
 	].forEach(function(elem) {
 
 		it('Database - ' + elem.label, function() {
 			var pgn = readText('pgns/mini2.pgn');
 			var database = kokopu.pgnRead(pgn);
-			test.exception(function() { database.game(elem.value); })
-				.isInstanceOf(kokopu.exception.InvalidPGN)
-				.hasProperty('pgn', pgn)
-				.hasProperty('message', 'Game index ' + elem.value + ' is invalid (only 2 game(s) found in the PGN data).');
+			test.exception(function() { database.game(elem.value); }).isInstanceOf(kokopu.exception.IllegalArgument);
 		});
 
 		it('Direct access - ' + elem.label, function() {
 			var pgn = readText('pgns/mini2.pgn');
-			test.exception(function() { kokopu.pgnRead(pgn, elem.value); })
-				.isInstanceOf(kokopu.exception.InvalidPGN)
-				.hasProperty('pgn', pgn)
-				.hasProperty('message', 'Game index ' + elem.value + ' is invalid (only 2 game(s) found in the PGN data).');
+			if (elem.invalidPGNExpected) {
+				test.exception(function() { kokopu.pgnRead(pgn, elem.value); })
+					.isInstanceOf(kokopu.exception.InvalidPGN)
+					.hasProperty('pgn', pgn)
+					.hasProperty('message', 'Game index ' + elem.value + ' is invalid (only 2 game(s) found in the PGN data).');
+			}
+			else {
+				test.exception(function() { kokopu.pgnRead(pgn, elem.value); }).isInstanceOf(kokopu.exception.IllegalArgument);
+			}
 		});
 	});
 });

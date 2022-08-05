@@ -20,7 +20,13 @@
  * -------------------------------------------------------------------------- */
 
 
+import { IllegalArgument } from './exception';
 import { Game } from './game';
+
+
+export function isValidGameIndex(gameIndex: any) {
+	return Number.isInteger(gameIndex) && gameIndex >= 0;
+}
 
 
 /**
@@ -43,5 +49,12 @@ export abstract class Database {
 	 *
 	 * @param gameIndex - Must be between 0 inclusive and {@link Database.gameCount} exclusive.
 	 */
-	abstract game(gameIndex: number): Game;
+	game(gameIndex: number): Game {
+		if (!isValidGameIndex(gameIndex) || gameIndex >= this.gameCount()) {
+			throw new IllegalArgument('Database.game()');
+		}
+		return this.doGame(gameIndex);
+	}
+
+	protected abstract doGame(gameIndex: number): Game;
 }

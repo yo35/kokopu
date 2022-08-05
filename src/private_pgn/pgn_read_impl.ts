@@ -333,10 +333,7 @@ class PGNDatabaseImpl extends Database {
 	}
 
 
-	game(gameIndex: number) {
-		if (!Number.isInteger(gameIndex) || gameIndex < 0 || gameIndex >= this._gameLocations.length) {
-			throw new InvalidPGN(this._text, -1, -1, i18n.INVALID_GAME_INDEX, gameIndex, this._gameLocations.length);
-		}
+	doGame(gameIndex: number) {
 		if (this._currentGameIndex !== gameIndex) {
 			this._stream = new TokenStream(this._text, this._gameLocations[gameIndex]);
 		}
@@ -352,7 +349,7 @@ class PGNDatabaseImpl extends Database {
 /**
  * Read a PGN string and return a {@link Database} object.
  */
-export function readDatabase(pgnString: string) {
+export function readDatabase(pgnString: string): Database {
 	return new PGNDatabaseImpl(pgnString);
 }
 
