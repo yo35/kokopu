@@ -109,7 +109,7 @@ export function refreshLegalFlagAndKingSquares(position: PositionImpl) {
 /**
  * Detect the kings of the given color that are present on the chess board.
  *
- * @returns `true` if the number of found king(s) corresponds is compatible with a legal position according to the given variant. 
+ * @returns `true` if the number of found king(s) corresponds is compatible with a legal position according to the given variant.
  */
 function refreshKingSquare(position: PositionImpl, color: number) {
 	const target = PieceImpl.KING * 2 + color;

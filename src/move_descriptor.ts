@@ -119,7 +119,7 @@ export abstract class MoveDescriptor {
 	 * @throws {@link IllegalArgument} if the current move is not a promotion, i.e. if {@link isPromotion} returns `false`.
 	 */
 	abstract promotion(): Piece;
-	
+
 	/**
 	 * Color and type of the promoted piece, in case of a promotion.
 	 *

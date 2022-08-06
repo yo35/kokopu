@@ -393,7 +393,7 @@ function parsePawnMoveNotation(position: PositionImpl, notation: string, strict:
 		if ((from & 0x88) !== 0) {
 			throw new InvalidNotation(getFEN(position), notation, i18n.INVALID_CAPTURING_PAWN_MOVE);
 		}
-	
+
 		// Compute the "from"-square.
 		const columnFrom = fileFromString(originFile);
 		const columnTo = to % 16;
@@ -406,12 +406,12 @@ function parsePawnMoveNotation(position: PositionImpl, notation: string, strict:
 		else {
 			throw new InvalidNotation(getFEN(position), notation, i18n.INVALID_CAPTURING_PAWN_MOVE);
 		}
-	
+
 		// Check the content of the "from"-square
 		if (position.board[from] !== coloredPawn) {
 			throw new InvalidNotation(getFEN(position), notation, i18n.INVALID_CAPTURING_PAWN_MOVE);
 		}
-	
+
 		// Check the content of the "to"-square
 		if (toContent < 0) { // Look for en-passant captures
 			if (to !== (5 - position.turn * 3) * 16 + position.enPassant) {
@@ -432,12 +432,12 @@ function parsePawnMoveNotation(position: PositionImpl, notation: string, strict:
 		if ((from & 0x88) !== 0) {
 			throw new InvalidNotation(getFEN(position), notation, i18n.INVALID_NON_CAPTURING_PAWN_MOVE);
 		}
-	
+
 		// Check the content of the "to"-square
 		if (toContent !== SpI.EMPTY) {
 			throw new InvalidNotation(getFEN(position), notation, i18n.INVALID_NON_CAPTURING_PAWN_MOVE);
 		}
-	
+
 		// Check the content of the "from"-square
 		if (position.board[from] === SpI.EMPTY) { // Look for two-square pawn moves
 			from -= vector;
@@ -447,7 +447,7 @@ function parsePawnMoveNotation(position: PositionImpl, notation: string, strict:
 			}
 		}
 		else if (position.board[from] !== coloredPawn) {
-			throw new InvalidNotation(getFEN(position), notation, i18n.INVALID_NON_CAPTURING_PAWN_MOVE); 
+			throw new InvalidNotation(getFEN(position), notation, i18n.INVALID_NON_CAPTURING_PAWN_MOVE);
 		}
 	}
 

@@ -164,7 +164,7 @@ export class DateValue {
 				return new Intl.DateTimeFormat(locales, { month: 'long', year: 'numeric' }).format(date);
 			}
 			default:
-				return String(this.#year); 
+				return String(this.#year);
 		}
 	}
 

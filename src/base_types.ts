@@ -28,7 +28,7 @@ export type Color = 'w' | 'b';
 
 /**
  * Type of chess (uncolored) piece:
- * 
+ *
  * - `'k'` (king),
  * - `'q'` (queen),
  * - `'r'` (rook),

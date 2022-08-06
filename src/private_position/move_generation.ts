@@ -77,7 +77,7 @@ const SLIDING_DIRECTION = [
 
 
 /**
- * Whether there is at least one piece with the given color in the given position. 
+ * Whether there is at least one piece with the given color in the given position.
  */
 function hasAtLeastOnePiece(position: PositionImpl, color: number) {
 	for (let sq = 0; sq < 120; sq += (sq & 0x7) === 7 ? 9 : 1) {

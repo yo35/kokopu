@@ -384,7 +384,7 @@ export class Game {
 		if (!withSubVariations) {
 			return this.mainVariation().nodes();
 		}
-	
+
 		const result: Node[] = [];
 		function processVariation(variation: Variation) {
 			for (const currentNode of variation.nodes()) {

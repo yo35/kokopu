@@ -80,7 +80,7 @@ export class InvalidNotation {
 	/** FEN representation of the position used to interpret the move notation. */
 	fen: string;
 
-	/** Move notation that causes the error. */ 
+	/** Move notation that causes the error. */
 	notation: string;
 
 	/** Human-readable message describing the error. */
@@ -112,7 +112,7 @@ export class InvalidPGN {
 	/** Index (0-based) of the character in the PGN string where the parsing fails (or a negative value if no particular character is related to the error). */
 	index: number;
 
-	/** Index (1-based) of the line in the PGN string where the parsing fails (or a negative value if no particular character is related to the error). */ 
+	/** Index (1-based) of the line in the PGN string where the parsing fails (or a negative value if no particular character is related to the error). */
 	lineNumber: number;
 
 	/** Human-readable message describing the error. */

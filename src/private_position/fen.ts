@@ -151,7 +151,7 @@ function regularFENCaslingFlagIfPossible(position: PositionImpl, color: number):
 	}
 
 	// If there is no king on the first rank, return a regular-FEN-compatible string a representing the castling flags
-	// only if no castling flag is set. 
+	// only if no castling flag is set.
 	if (kingSquare < 0) {
 		return false;
 	}
@@ -351,7 +351,7 @@ function castlingFromStringXFEN(castling: string, strict: boolean, board: number
 			}
 			return 0;
 		}
-	
+
 		function searchKingSideRook(color: number) {
 			const targetRook = PieceImpl.ROOK * 2 + color;
 			const targetKing = PieceImpl.KING * 2 + color;
@@ -365,7 +365,7 @@ function castlingFromStringXFEN(castling: string, strict: boolean, board: number
 			}
 			return 7;
 		}
-	
+
 		if (castling.indexOf('K') >= 0) { result[ColorImpl.WHITE] |= 1 << searchKingSideRook (ColorImpl.WHITE); }
 		if (castling.indexOf('Q') >= 0) { result[ColorImpl.WHITE] |= 1 << searchQueenSideRook(ColorImpl.WHITE); }
 		if (castling.indexOf('k') >= 0) { result[ColorImpl.BLACK] |= 1 << searchKingSideRook (ColorImpl.BLACK); }
