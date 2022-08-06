@@ -6,7 +6,8 @@
 		"target": "es2015",
 		"lib": [ "es2020" ],
 		"sourceMap": true,
-		"allowJs": true,
+		"declaration": true,
+		"allowJs": false,
 		"strict": true,
 		"forceConsistentCasingInFileNames": true
 	}
