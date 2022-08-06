@@ -1,4 +1,4 @@
-/******************************************************************************
+/* -------------------------------------------------------------------------- *
  *                                                                            *
  *    This file is part of Kokopu, a JavaScript chess library.                *
  *    Copyright (C) 2018-2022  Yoann Le Montagner <yo35 -at- melix.net>       *
@@ -17,22 +17,16 @@
  *    Public License along with this program. If not, see                     *
  *    <http://www.gnu.org/licenses/>.                                         *
  *                                                                            *
- ******************************************************************************/
+ * -------------------------------------------------------------------------- */
 
 
-'use strict';
-
-
-var kokopu = require('../dist/lib/index');
-var program = require('commander');
+const kokopu = require('../dist/lib/index');
+const program = require('commander');
 
 
 function align(data, width) {
-	var result = String(data);
-	while(result.length < width) {
-		result = ' ' + result;
-	}
-	return result;
+	const result = String(data);
+	return result.length < width ? ' '.repeat(width - result.length) + result : result;
 }
 
 
@@ -40,16 +34,14 @@ function align(data, width) {
  * Generate recursively the successors of the given position, up to the given depth.
  */
 function generateSuccessors(pos, depth) {
-	var result = 1;
-
-	if(depth > 0) {
-		pos.moves().forEach(function(move) {
-			var nextPos = new kokopu.Position(pos);
+	let result = 1;
+	if (depth > 0) {
+		for (const move of pos.moves()) {
+			const nextPos = new kokopu.Position(pos);
 			nextPos.play(move);
-			result += generateSuccessors(nextPos, depth-1);
-		});
+			result += generateSuccessors(nextPos, depth - 1);
+		}
 	}
-
 	return result;
 }
 
@@ -60,16 +52,16 @@ function generateSuccessors(pos, depth) {
  */
 function run(fen, minDepth, maxDepth, verbose) {
 
-	var initialPos = new kokopu.Position(fen);
+	const initialPos = new kokopu.Position(fen);
 	function runAtDepth(depth) {
 
-		var startAt = Date.now();
-		var nodes = generateSuccessors(initialPos, depth);
-		var stopAt = Date.now();
+		const startAt = Date.now();
+		const nodes = generateSuccessors(initialPos, depth);
+		const stopAt = Date.now();
 
-		var duration = stopAt - startAt;
-		var speed = nodes / duration;
-		var sep = '     ';
+		const duration = stopAt - startAt;
+		const speed = nodes / duration;
+		const sep = '     ';
 		console.log(
 			'Depth: ' + align(depth, 2) + sep +
 			'Nodes: ' + align(nodes, 10) + sep +
@@ -78,12 +70,12 @@ function run(fen, minDepth, maxDepth, verbose) {
 	}
 
 	console.log('Initial position is: ' + initialPos.fen());
-	if(verbose) {
+	if (verbose) {
 		console.log(initialPos.ascii());
 	}
 	console.log('Starting generation up to depth ' + maxDepth);
 
-	for(var depth=minDepth; depth<=maxDepth; ++depth) {
+	for (let depth = minDepth; depth <= maxDepth; ++depth) {
 		runAtDepth(depth);
 	}
 }
@@ -101,5 +93,5 @@ program
 	.option('-v, --verbose', 'increase the verbosity level')
 	.parse(process.argv);
 
-var opts = program.opts();
+const opts = program.opts();
 run(opts.position, 0, parseInt(opts.depth), Boolean(opts.verbose));
