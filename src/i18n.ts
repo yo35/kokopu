@@ -25,6 +25,9 @@
  */
 export namespace i18n {
 
+/* eslint-disable prefer-const */
+// WARNING: all those constants must be declared with "let" to allow them to be re-defined if necessary by consumer codes.
+
 // FEN parsing error messages
 export let WRONG_NUMBER_OF_FEN_FIELDS                = 'A FEN string must contain exactly 6 space-separated fields.';
 export let WRONG_NUMBER_OF_SUBFIELDS_IN_BOARD_FIELD  = 'The 1st field of a FEN string must contain exactly 8 `/`-separated subfields.';

@@ -33,7 +33,7 @@ interface RegExpWrapper extends RegExp {
 
 
 function regExpWrapper(re: RegExp, needIncrementLineIndex?: boolean) {
-	let result = (re as RegExpWrapper);
+	const result = (re as RegExpWrapper);
 	result.needIncrementLineIndex = needIncrementLineIndex !== undefined && needIncrementLineIndex;
 	result.matchedIndex = -1;
 	result.matched = null;
@@ -222,7 +222,7 @@ export class TokenStream {
 	 */
 	tokenCharacterIndex() {
 		return this._tokenCharacterIndex;
-	};
+	}
 
 
 	/**

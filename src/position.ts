@@ -707,13 +707,13 @@ export class Position {
 					}
 					throw new IllegalArgument('Position.isMoveLegal()');
 				};
-				result.status = 'promotion' as 'promotion';
+				result.status = 'promotion' as const;
 				return result;
 			}
 
 			case 'regular': {
 				const result = () => moveInfo.moveDescriptor;
-				result.status = 'regular' as 'regular';
+				result.status = 'regular' as const;
 				return result;
 			}
 		}
@@ -945,5 +945,5 @@ function buildValidator(options: any, functionName: string) {
 			}
 			return value as T;
 		}
-	}
+	};
 }

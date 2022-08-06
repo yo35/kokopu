@@ -588,7 +588,7 @@ interface PromotionMoveDescriptor {
 
 function buildPromotionMoveDescriptor(from: number, to: number, variant: number, color: number, capturedColoredPiece: number): (promotion: number) => MoveDescriptorImpl | false {
 	return promotion => {
-		if (promotion == PieceImpl.PAWN || (promotion === PieceImpl.KING && variant !== GameVariantImpl.ANTICHESS)) {
+		if (promotion === PieceImpl.PAWN || (promotion === PieceImpl.KING && variant !== GameVariantImpl.ANTICHESS)) {
 			return false;
 		}
 		return MoveDescriptorImpl.makePromotion(from, to, color, capturedColoredPiece, promotion);

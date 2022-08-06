@@ -163,11 +163,11 @@ interface VariationData extends AbstractNodeData {
 }
 
 
-function createVariationData(parent: NodeData | MoveTreeRoot, isLongVariation: boolean): VariationData {
+function createVariationData(parent: NodeData | MoveTreeRoot, longVariation: boolean): VariationData {
 	return {
 		parent: parent,
 		child: undefined,
-		isLongVariation: isLongVariation,
+		isLongVariation: longVariation,
 		nags: new Set(),
 		tags: new Map(),
 		comment: undefined,
@@ -451,8 +451,8 @@ class NodeImpl extends Node {
 		this._data.child = undefined;
 	}
 
-	addVariation(isLongVariation?: boolean) {
-		const result = createVariationData(this._data, isLongVariation === undefined ? false : isLongVariation);
+	addVariation(longVariation?: boolean) {
+		const result = createVariationData(this._data, longVariation === undefined ? false : longVariation);
 		this._data.variations.push(result);
 		return new VariationImpl(result, this._positionBefore);
 	}

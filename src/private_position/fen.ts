@@ -337,35 +337,35 @@ function castlingFromStringXFEN(castling: string, strict: boolean, board: number
 		return null;
 	}
 
+	function searchQueenSideRook(color: number) {
+		const targetRook = PieceImpl.ROOK * 2 + color;
+		const targetKing = PieceImpl.KING * 2 + color;
+		for (let sq = 112 * color; sq < 112 * color + 8; ++sq) {
+			if (board[sq] === targetRook) {
+				return sq % 8;
+			}
+			else if (board[sq] === targetKing) {
+				break;
+			}
+		}
+		return 0;
+	}
+
+	function searchKingSideRook(color: number) {
+		const targetRook = PieceImpl.ROOK * 2 + color;
+		const targetKing = PieceImpl.KING * 2 + color;
+		for (let sq = 112 * color + 7; sq >= 112 * color; --sq) {
+			if (board[sq] === targetRook) {
+				return sq % 8;
+			}
+			else if (board[sq] === targetKing) {
+				break;
+			}
+		}
+		return 7;
+	}
+
 	if (!strict) {
-		function searchQueenSideRook(color: number) {
-			const targetRook = PieceImpl.ROOK * 2 + color;
-			const targetKing = PieceImpl.KING * 2 + color;
-			for (let sq = 112 * color; sq < 112 * color + 8; ++sq) {
-				if (board[sq] === targetRook) {
-					return sq % 8;
-				}
-				else if (board[sq] === targetKing) {
-					break;
-				}
-			}
-			return 0;
-		}
-
-		function searchKingSideRook(color: number) {
-			const targetRook = PieceImpl.ROOK * 2 + color;
-			const targetKing = PieceImpl.KING * 2 + color;
-			for (let sq = 112 * color + 7; sq >= 112 * color; --sq) {
-				if (board[sq] === targetRook) {
-					return sq % 8;
-				}
-				else if (board[sq] === targetKing) {
-					break;
-				}
-			}
-			return 7;
-		}
-
 		if (castling.indexOf('K') >= 0) { result[ColorImpl.WHITE] |= 1 << searchKingSideRook (ColorImpl.WHITE); }
 		if (castling.indexOf('Q') >= 0) { result[ColorImpl.WHITE] |= 1 << searchQueenSideRook(ColorImpl.WHITE); }
 		if (castling.indexOf('k') >= 0) { result[ColorImpl.BLACK] |= 1 << searchKingSideRook (ColorImpl.BLACK); }

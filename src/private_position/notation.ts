@@ -68,7 +68,7 @@ export function getNotation(position: PositionImpl, descriptor: MoveDescriptorIm
 	// Check/checkmate detection and final result.
 	result += getCheckCheckmateSymbol(position, descriptor);
 	return result;
-};
+}
 
 
 /**
@@ -381,7 +381,7 @@ function parseNonPawnNotation(position: PositionImpl, notation: string, strict: 
 function parsePawnMoveNotation(position: PositionImpl, notation: string, strict: boolean, pieceStyle: 'standard' | 'figurine',
 	originFile: string | undefined, destinationSquare: string, promotionSymbol: string | undefined, promotedPiece: string | undefined): MoveDescriptorImpl {
 
-	const coloredPawn = PieceImpl.PAWN * 2 + position.turn
+	const coloredPawn = PieceImpl.PAWN * 2 + position.turn;
 	const to = squareFromString(destinationSquare);
 	const toContent = position.board[to];
 	const vector = 16 - position.turn*32;
@@ -491,7 +491,7 @@ function parsePawnMoveNotation(position: PositionImpl, notation: string, strict:
 function parsePieceSymbol(position: PositionImpl, notation: string, pieceSymbol: string, strict: boolean, pieceStyle: 'standard' | 'figurine') {
 	switch (pieceStyle) {
 
-		case 'figurine':
+		case 'figurine': {
 			const coloredPieceCode = figurineFromString(pieceSymbol);
 			if (coloredPieceCode < 0) {
 				throw new InvalidNotation(getFEN(position), notation, i18n.INVALID_PIECE_SYMBOL, pieceSymbol);
@@ -500,12 +500,14 @@ function parsePieceSymbol(position: PositionImpl, notation: string, pieceSymbol:
 				throw new InvalidNotation(getFEN(position), notation, i18n.INVALID_PIECE_SYMBOL_COLOR, pieceSymbol);
 			}
 			return Math.trunc(coloredPieceCode / 2);
+		}
 
-		case 'standard':
+		case 'standard': {
 			const pieceCode = pieceFromString(pieceSymbol.toLowerCase());
 			if (pieceCode < 0) {
 				throw new InvalidNotation(getFEN(position), notation, i18n.INVALID_PIECE_SYMBOL, pieceSymbol);
 			}
 			return pieceCode;
+		}
 	}
 }

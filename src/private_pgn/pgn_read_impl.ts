@@ -164,7 +164,7 @@ function initializeInitialPosition(stream: TokenStream, game: Game, factory: Ini
 	// Otherwise, if a variant header has been encountered, but without FEN header...
 	else if (factory.variant !== undefined) {
 		if (variantWithCanonicalStartPosition(factory.variant)) {
-			var position = new Position(factory.variant, 'start');
+			const position = new Position(factory.variant, 'start');
 			game.initialPosition(position, 1);
 		}
 		else {
