@@ -1,10 +1,17 @@
 env:
   node: true
 
-extends: 'eslint:recommended'
+extends:
+  - 'eslint:recommended'
+  - 'plugin:@typescript-eslint/recommended'
+
+parser: '@typescript-eslint/parser'
+
+plugins:
+  - '@typescript-eslint'
 
 parserOptions:
-  ecmaVersion: 5
+  ecmaVersion: 11
 
 rules:
 
@@ -23,6 +30,7 @@ rules:
   curly:                        [ error, all ]
   eqeqeq:                       [ error, always ]
   no-alert:                     [ error ]
+  no-constructor-return:        [ error ]
   no-eval:                      [ error ]
   no-extend-native:             [ error ]
   no-floating-decimal:          [ error ]
@@ -47,12 +55,24 @@ rules:
   no-warning-comments:          [ warn, { location: anywhere, terms: [ TODO ] }]
   prefer-regex-literals:        [ error ]
 
-  # Additional rules (strict mode)
-  strict: [ error, global ]
-
   # Additional rules (variables)
-  no-shadow: [ error, { builtinGlobals: true }]
+  '@typescript-eslint/no-shadow': [ error, { builtinGlobals: true }]
+
+  # Additional rules (ES6)
+  no-confusing-arrow:      [ error ]
+  no-duplicate-imports:    [ error ]
+  no-useless-computed-key: [ error ]
+  no-useless-rename:       [ error ]
+  no-var:                  [ error ]
+  prefer-arrow-callback:   [ error ]
+  prefer-rest-params:      [ error ]
+  rest-spread-spacing:     [ error ]
 
   # Relaxed rules
-  no-redeclare:          [ off ]
-  no-constant-condition: [ error, { checkLoops: false }]
+  no-constant-condition:  [ error, { checkLoops: false }]
+
+  # Relaxed rules (typescript)
+  '@typescript-eslint/no-explicit-any':       [ off ]
+  '@typescript-eslint/no-non-null-assertion': [ off ]
+  '@typescript-eslint/no-namespace':          [ off ]
+  '@typescript-eslint/no-empty-function':     [ error, { allow: [ private-constructors, protected-constructors ] }]
