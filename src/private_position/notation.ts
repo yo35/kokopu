@@ -30,7 +30,7 @@ import { MoveDescriptorImpl } from './move_descriptor_impl';
 import { isCheckmate, isCheck, isCaptureMandatory, isCastlingLegal, isKingSafeAfterMove, play } from './move_generation';
 
 import { InvalidNotation } from '../exception';
-import i18n = require('../i18n'); // TODO fix import
+import { i18n } from '../i18n';
 
 
 /**

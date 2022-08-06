@@ -21,7 +21,7 @@
 
 
 import { InvalidPGN } from '../exception';
-import i18n = require('../i18n'); // TODO fix import
+import { i18n } from '../i18n';
 import { trimAndCollapseSpaces } from '../private_game/common';
 
 

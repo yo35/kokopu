@@ -22,7 +22,7 @@
 
 import { Color, Piece, ColoredPiece, File, Square, Castle, Castle960, GameVariant } from './base_types';
 import { IllegalArgument, InvalidFEN, InvalidNotation } from './exception';
-import i18n = require('./i18n'); // TODO fix import
+import { i18n } from './i18n';
 import { MoveDescriptor } from './move_descriptor';
 
 import { isAttacked, getAttacks } from './private_position/attacks';

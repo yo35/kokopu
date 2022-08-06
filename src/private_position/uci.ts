@@ -28,7 +28,7 @@ import { MoveDescriptorImpl } from './move_descriptor_impl';
 import { isMoveLegal } from './move_generation';
 
 import { InvalidNotation } from '../exception';
-import i18n = require('../i18n'); // TODO fix import
+import { i18n } from '../i18n';
 
 
 /**

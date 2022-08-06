@@ -26,7 +26,7 @@ import { DateValue } from '../date_value';
 import { InvalidFEN, InvalidNotation, InvalidPGN } from '../exception';
 import { Game } from '../game';
 import { variantWithCanonicalStartPosition } from '../helper';
-import i18n = require('../i18n'); // TODO fix import
+import { i18n } from '../i18n';
 import { Node, Variation } from '../node_variation';
 import { Position } from '../position';
 

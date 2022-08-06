@@ -22,7 +22,7 @@
 
 import { Color } from '../base_types';
 import { IllegalArgument, InvalidNotation } from '../exception';
-import i18n = require('../i18n'); // TODO fix import
+import { i18n } from '../i18n';
 import { MoveDescriptor } from '../move_descriptor';
 import { Node, Variation } from '../node_variation';
 import { Position } from '../position';

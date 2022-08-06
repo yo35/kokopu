@@ -20,7 +20,7 @@
  * -------------------------------------------------------------------------- */
 
 
-export * as i18n from './i18n';
+export { i18n } from './i18n';
 export * as exception from './exception';
 
 export { Color, Piece, ColoredPiece, Castle, Castle960, File, Rank, Square, Coordinates, GameResult, GameVariant } from './base_types';

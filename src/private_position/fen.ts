@@ -24,7 +24,7 @@ import { ColorImpl, PieceImpl, GameVariantImpl, colorFromString, colorToString, 
 import { PositionImpl, makeEmpty } from './impl';
 
 import { InvalidFEN } from '../exception';
-import i18n = require('../i18n'); // TODO fix import
+import { i18n } from '../i18n';
 
 const FEN_PIECE_SYMBOL = [ ...'KkQqRrBbNnPp' ];
 const EN_PASSANT_RANK = [ '6', '3' ];
