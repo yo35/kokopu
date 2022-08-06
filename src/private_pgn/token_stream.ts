@@ -157,7 +157,7 @@ export class TokenStream {
 
 		// Remove the BOM (byte order mark) if any.
 		if (text.codePointAt(0) === 0xFEFF) {
-			text = text.substr(1);
+			text = text.substring(1);
 		}
 		this._text = text;
 
