@@ -328,12 +328,12 @@ class PGNDatabaseImpl extends Database {
 	}
 
 
-	gameCount() {
+	protected doGameCount() {
 		return this._gameLocations.length;
 	}
 
 
-	doGame(gameIndex: number) {
+	protected doGame(gameIndex: number) {
 		if (this._currentGameIndex !== gameIndex) {
 			this._stream = new TokenStream(this._text, this._gameLocations[gameIndex]);
 		}

@@ -42,12 +42,15 @@ export abstract class Database {
 	/**
 	 * Number of games in the database.
 	 */
-	abstract gameCount(): number;
+	gameCount(): number {
+		return this.doGameCount();
+	}
 
 	/**
 	 * Return the game corresponding to the given index.
 	 *
 	 * @param gameIndex - Must be between 0 inclusive and {@link Database.gameCount} exclusive.
+	 * @throws {@link InvalidPGN}
 	 */
 	game(gameIndex: number): Game {
 		if (!isValidGameIndex(gameIndex) || gameIndex >= this.gameCount()) {
@@ -56,5 +59,13 @@ export abstract class Database {
 		return this.doGame(gameIndex);
 	}
 
+	/**
+	 * @ignore
+	 */
+	protected abstract doGameCount(): number;
+
+	/**
+	 * @ignore
+	 */
 	protected abstract doGame(gameIndex: number): Game;
 }
