@@ -1,4 +1,4 @@
-/******************************************************************************
+/* -------------------------------------------------------------------------- *
  *                                                                            *
  *    This file is part of Kokopu, a JavaScript chess library.                *
  *    Copyright (C) 2018-2022  Yoann Le Montagner <yo35 -at- melix.net>       *
@@ -17,19 +17,16 @@
  *    Public License along with this program. If not, see                     *
  *    <http://www.gnu.org/licenses/>.                                         *
  *                                                                            *
- ******************************************************************************/
+ * -------------------------------------------------------------------------- */
 
 
-'use strict';
-
-
-var kokopu = require('../dist/lib/index');
-var test = require('unit.js');
-var readCSV = require('./common/readcsv');
+const { exception, Position } = require('../dist/lib/index');
+const readCSV = require('./common/readcsv');
+const test = require('unit.js');
 
 
 function testData() {
-	return readCSV('fens.csv', function(fields) {
+	return readCSV('fens.csv', fields => {
 		return {
 			label             : fields[0],
 			fenIn             : fields[1],
@@ -46,58 +43,58 @@ function testData() {
 }
 
 
-describe('FEN parsing (tolerant)', function() {
-	testData().forEach(function(elem) {
-		it('Position ' + elem.label, function() {
-			var position = new kokopu.Position(elem.variant, 'empty');
+describe('FEN parsing (tolerant)', () => {
+	for (const elem of testData()) {
+		it('Position ' + elem.label, () => {
+			const position = new Position(elem.variant, 'empty');
 			position.fen(elem.fenIn);
 			test.value(position.fen()).is(elem.fenOutDefault);
 		});
-	});
+	}
 });
 
 
-describe('FEN parsing (strict)', function() {
-	testData().forEach(function(elem) {
-		it('Position ' + elem.label, function() {
-			var position = new kokopu.Position(elem.variant, 'empty');
-			if(elem.strict) {
+describe('FEN parsing (strict)', () => {
+	for (const elem of testData()) {
+		it('Position ' + elem.label, () => {
+			const position = new Position(elem.variant, 'empty');
+			if (elem.strict) {
 				position.fen(elem.fenIn, true);
 				test.value(position.fen()).is(elem.fenOutDefault);
 			}
 			else {
-				test.exception(function() { position.fen(elem.fenIn, true); }).isInstanceOf(kokopu.exception.InvalidFEN);
+				test.exception(() => position.fen(elem.fenIn, true)).isInstanceOf(exception.InvalidFEN);
 			}
 		});
-	});
+	}
 });
 
 
-describe('FEN counters', function() {
-	testData().forEach(function(elem) {
-		it('Position ' + elem.label, function() {
-			var position = new kokopu.Position(elem.variant, elem.fenIn);
-			test.value(position.fen({ fiftyMoveClock:elem.fiftyMoveClock, fullMoveNumber:elem.fullMoveNumber })).is(elem.fenOutWithCounters);
+describe('FEN counters', () => {
+	for (const elem of testData()) {
+		it('Position ' + elem.label, () => {
+			const position = new Position(elem.variant, elem.fenIn);
+			test.value(position.fen({ fiftyMoveClock: elem.fiftyMoveClock, fullMoveNumber: elem.fullMoveNumber })).is(elem.fenOutWithCounters);
 		});
-	});
+	}
 });
 
 
-describe('FEN with variant', function() {
-	testData().forEach(function(elem) {
-		it('Position ' + elem.label, function() {
-			var position = new kokopu.Position(elem.variant, elem.fenIn);
+describe('FEN with variant', () => {
+	for (const elem of testData()) {
+		it('Position ' + elem.label, () => {
+			const position = new Position(elem.variant, elem.fenIn);
 			test.value(position.fen({ withVariant: true })).is(elem.fenOutWithVariant);
 		});
-	});
+	}
 });
 
 
-describe('FEN without XFEN if possible', function() {
-	testData().forEach(function(elem) {
-		it('Position ' + elem.label, function() {
-			var position = new kokopu.Position(elem.variant, elem.fenIn);
+describe('FEN without XFEN if possible', () => {
+	for (const elem of testData()) {
+		it('Position ' + elem.label, () => {
+			const position = new Position(elem.variant, elem.fenIn);
 			test.value(position.fen({ regularFENIfPossible: true })).is(elem.fenOutWithoutXFEN);
 		});
-	});
+	}
 });

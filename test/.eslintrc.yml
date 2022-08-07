@@ -2,4 +2,5 @@ env:
   mocha: true
 
 rules:
-  no-shadow: [ error, { builtinGlobals: true, allow: [ test ] }]
+  '@typescript-eslint/no-shadow': [ error, { builtinGlobals: true, allow: [ test ] }]
+  '@typescript-eslint/no-var-requires': [ off ]

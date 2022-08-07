@@ -1,4 +1,4 @@
-/******************************************************************************
+/* -------------------------------------------------------------------------- *
  *                                                                            *
  *    This file is part of Kokopu, a JavaScript chess library.                *
  *    Copyright (C) 2018-2022  Yoann Le Montagner <yo35 -at- melix.net>       *
@@ -17,62 +17,59 @@
  *    Public License along with this program. If not, see                     *
  *    <http://www.gnu.org/licenses/>.                                         *
  *                                                                            *
- ******************************************************************************/
+ * -------------------------------------------------------------------------- */
 
 
-'use strict';
+const { exception, Game } = require('../dist/lib/index');
+const test = require('unit.js');
 
 
-var kokopu = require('../dist/lib/index');
-var test = require('unit.js');
+describe('General game header', () => {
 
-
-describe('General game header', function() {
-
-	it('Initial state', function() {
-		var game = new kokopu.Game();
+	it('Initial state', () => {
+		const game = new Game();
 		test.value(game.event()).is(undefined);
 	});
 
-	it('Set & get', function() {
-		var game = new kokopu.Game();
+	it('Set & get', () => {
+		const game = new Game();
 		game.event('The event');
 		test.value(game.event()).is('The event');
 	});
 
-	it('Set empty string', function() {
-		var game = new kokopu.Game();
+	it('Set empty string', () => {
+		const game = new Game();
 		game.event('');
 		test.value(game.event()).is('');
 	});
 
-	it('Set blank string', function() {
-		var game = new kokopu.Game();
+	it('Set blank string', () => {
+		const game = new Game();
 		game.event('  ');
 		test.value(game.event()).is('  ');
 	});
 
-	it('Set non-string (number)', function() {
-		var game = new kokopu.Game();
+	it('Set non-string (number)', () => {
+		const game = new Game();
 		game.event(42);
 		test.value(game.event()).is('42');
 	});
 
-	it('Set non-string (boolean)', function() {
-		var game = new kokopu.Game();
+	it('Set non-string (boolean)', () => {
+		const game = new Game();
 		game.event(false);
 		test.value(game.event()).is('false');
 	});
 
-	it('Erase with undefined', function() {
-		var game = new kokopu.Game();
+	it('Erase with undefined', () => {
+		const game = new Game();
 		game.event('The event');
 		game.event(undefined);
 		test.value(game.event()).is(undefined);
 	});
 
-	it('Erase with null', function() {
-		var game = new kokopu.Game();
+	it('Erase with null', () => {
+		const game = new Game();
 		game.event('The event');
 		game.event(null);
 		test.value(game.event()).is(undefined);
@@ -80,23 +77,23 @@ describe('General game header', function() {
 });
 
 
-describe('Result header', function() {
+describe('Result header', () => {
 
-	it('Default value', function() {
-		var game = new kokopu.Game();
+	it('Default value', () => {
+		const game = new Game();
 		test.value(game.result()).is('*');
 	});
 
-	it('Set & get', function() {
-		var game = new kokopu.Game();
+	it('Set & get', () => {
+		const game = new Game();
 		game.result('1-0');
 		test.value(game.result()).is('1-0');
 	});
 
 	function itInvalidValue(label, value) {
-		it(label, function() {
-			var game = new kokopu.Game();
-			test.exception(function() { game.result(value); }).isInstanceOf(kokopu.exception.IllegalArgument);
+		it(label, () => {
+			const game = new Game();
+			test.exception(() => game.result(value)).isInstanceOf(exception.IllegalArgument);
 		});
 	}
 
@@ -107,23 +104,23 @@ describe('Result header', function() {
 });
 
 
-describe('Color-dependant header', function() {
+describe('Color-dependant header', () => {
 
 	function itInvalidColor(label, action) {
-		it(label, function() {
-			var game = new kokopu.Game();
-			test.exception(function() { action(game); }).isInstanceOf(kokopu.exception.IllegalArgument);
+		it(label, () => {
+			const game = new Game();
+			test.exception(() => action(game)).isInstanceOf(exception.IllegalArgument);
 		});
 	}
 
-	itInvalidColor('Dummy color 1', function(game) { game.playerName('dummy', 'TheName'); });
-	itInvalidColor('Dummy color 2', function(game) { game.playerTitle('ww', 'GM'); });
-	itInvalidColor('Dummy color 3', function(game) { game.playerTitle('B', 'IM'); });
-	itInvalidColor('Empty color', function(game) { game.playerElo('', '1234'); });
+	itInvalidColor('Dummy color 1', game => game.playerName('dummy', 'TheName'));
+	itInvalidColor('Dummy color 2', game => game.playerTitle('ww', 'GM'));
+	itInvalidColor('Dummy color 3', game => game.playerTitle('B', 'IM'));
+	itInvalidColor('Empty color', game => game.playerElo('', '1234'));
 });
 
 
-describe('Date header', function() {
+describe('Date header', () => {
 
 	function testDateIsUndefined(game) {
 		test.value(game.date()).is(undefined);
@@ -134,104 +131,104 @@ describe('Date header', function() {
 		test.value(game.date().toString()).is(value);
 	}
 
-	it('Initial state', function() {
-		var game = new kokopu.Game();
+	it('Initial state', () => {
+		const game = new Game();
 		testDateIsUndefined(game);
 	});
 
-	it('Set JS Date & get', function() {
-		var game = new kokopu.Game();
+	it('Set JS Date & get', () => {
+		const game = new Game();
 		game.date(new Date(2021, 8, 12));
 		testDateIs(game, '2021-09-12');
 	});
 
-	it('Set full date & get', function() {
-		var game = new kokopu.Game();
+	it('Set full date & get', () => {
+		const game = new Game();
 		game.date(2021, 9, 12);
 		testDateIs(game, '2021-09-12');
 	});
 
-	it('Set month+year date 1 & get', function() {
-		var game = new kokopu.Game();
+	it('Set month+year date 1 & get', () => {
+		const game = new Game();
 		game.date(2021, 12);
 		testDateIs(game, '2021-12-**');
 	});
 
-	it('Set month+year date 2 & get', function() {
-		var game = new kokopu.Game();
+	it('Set month+year date 2 & get', () => {
+		const game = new Game();
 		game.date(2021, 2, undefined);
 		testDateIs(game, '2021-02-**');
 	});
 
-	it('Set month+year date 3 & get', function() {
-		var game = new kokopu.Game();
+	it('Set month+year date 3 & get', () => {
+		const game = new Game();
 		game.date(2021, 2, null);
 		testDateIs(game, '2021-02-**');
 	});
 
-	it('Set year-only date 1 & get', function() {
-		var game = new kokopu.Game();
+	it('Set year-only date 1 & get', () => {
+		const game = new Game();
 		game.date(2021);
 		testDateIs(game, '2021-**-**');
 	});
 
-	it('Set year-only date 2 & get', function() {
-		var game = new kokopu.Game();
+	it('Set year-only date 2 & get', () => {
+		const game = new Game();
 		game.date(1, undefined);
 		testDateIs(game, '0001-**-**');
 	});
 
-	it('Set year-only date 3 & get', function() {
-		var game = new kokopu.Game();
+	it('Set year-only date 3 & get', () => {
+		const game = new Game();
 		game.date(99, null);
 		testDateIs(game, '0099-**-**');
 	});
 
-	it('Set year-only date 4 & get', function() {
-		var game = new kokopu.Game();
+	it('Set year-only date 4 & get', () => {
+		const game = new Game();
 		game.date(1921, undefined, undefined);
 		testDateIs(game, '1921-**-**');
 	});
 
-	it('Erase with undefined', function() {
-		var game = new kokopu.Game();
+	it('Erase with undefined', () => {
+		const game = new Game();
 		game.date(2021, 9, 12);
 		game.date(undefined);
 		testDateIsUndefined(game);
 	});
 
-	it('Erase with null', function() {
-		var game = new kokopu.Game();
+	it('Erase with null', () => {
+		const game = new Game();
 		game.date(2021, 9, 12);
 		game.date(null);
 		testDateIsUndefined(game);
 	});
 
-	it('Get as string (full date)', function() {
-		var game = new kokopu.Game();
+	it('Get as string (full date)', () => {
+		const game = new Game();
 		game.date(2021, 9, 12);
 		test.value(game.dateAsString('en-us')).is('September 12, 2021');
 		test.value(game.dateAsString('fr')).is('12 septembre 2021');
 	});
 
-	it('Get as string (month+year)', function() {
-		var game = new kokopu.Game();
+	it('Get as string (month+year)', () => {
+		const game = new Game();
 		game.date(2021, 12);
 		test.value(game.dateAsString('en-us')).is('December 2021');
 		test.value(game.dateAsString('fr')).is('décembre 2021');
 	});
 
-	it('Get as string (year only)', function() {
-		var game = new kokopu.Game();
+	it('Get as string (year only)', () => {
+		const game = new Game();
 		game.date(2021);
 		test.value(game.dateAsString('en-us')).is('2021');
 		test.value(game.dateAsString('fr')).is('2021');
 	});
 
 	function itInvalidValue(label, value) {
-		it(label, function() {
-			var game = new kokopu.Game();
-			test.exception(function() { game.date(value); }).isInstanceOf(kokopu.exception.IllegalArgument);
+		it(label, () => {
+			const game = new Game();
+			test.exception(() => game.date(value)).isInstanceOf(exception.IllegalArgument);
 		});
 	}
 
@@ -242,9 +239,9 @@ describe('Date header', function() {
 	itInvalidValue('Set invalid year 2', 1989.3);
 
 	function itInvalidYMD(label, year, month, day) {
-		it(label, function() {
-			var game = new kokopu.Game();
-			test.exception(function() { game.date(year, month, day); }).isInstanceOf(kokopu.exception.IllegalArgument);
+		it(label, () => {
+			const game = new Game();
+			test.exception(() => game.date(year, month, day)).isInstanceOf(exception.IllegalArgument);
 		});
 	}
 
@@ -260,26 +257,26 @@ describe('Date header', function() {
 });
 
 
-describe('NAGs', function() {
+describe('NAGs', () => {
 
-	it('Set & test', function() {
-		var game = new kokopu.Game();
+	it('Set & test', () => {
+		const game = new Game();
 		game.mainVariation().addNag(34);
 		test.value(game.mainVariation().nags()).is([ 34 ]);
 		test.value(game.mainVariation().hasNag(34)).is(true);
 		test.value(game.mainVariation().hasNag(42)).is(false);
 	});
 
-	it('Erase', function() {
-		var game = new kokopu.Game();
+	it('Erase', () => {
+		const game = new Game();
 		game.mainVariation().addNag(18);
 		game.mainVariation().removeNag(18);
 		test.value(game.mainVariation().nags()).is([]);
 		test.value(game.mainVariation().hasNag(18)).is(false);
 	});
 
-	it('Sorted NAGs', function() {
-		var game = new kokopu.Game();
+	it('Sorted NAGs', () => {
+		const game = new Game();
 		game.mainVariation().addNag(18);
 		game.mainVariation().addNag(11);
 		game.mainVariation().addNag(34);
@@ -290,13 +287,13 @@ describe('NAGs', function() {
 	});
 
 	function itInvalidNag(label, value) {
-		it(label, function() {
-			var gameAdd = new kokopu.Game();
-			var gameRemove = new kokopu.Game();
-			var gameHas = new kokopu.Game();
-			test.exception(function() { gameAdd.mainVariation().addNag(value); }).isInstanceOf(kokopu.exception.IllegalArgument);
-			test.exception(function() { gameRemove.mainVariation().removeNag(value); }).isInstanceOf(kokopu.exception.IllegalArgument);
-			test.exception(function() { gameHas.mainVariation().hasNag(value); }).isInstanceOf(kokopu.exception.IllegalArgument);
+		it(label, () => {
+			const gameAdd = new Game();
+			const gameRemove = new Game();
+			const gameHas = new Game();
+			test.exception(() => gameAdd.mainVariation().addNag(value)).isInstanceOf(exception.IllegalArgument);
+			test.exception(() => gameRemove.mainVariation().removeNag(value)).isInstanceOf(exception.IllegalArgument);
+			test.exception(() => gameHas.mainVariation().hasNag(value)).isInstanceOf(exception.IllegalArgument);
 		});
 	}
 
@@ -307,62 +304,62 @@ describe('NAGs', function() {
 });
 
 
-describe('Tags', function() {
+describe('Tags', () => {
 
-	it('Set & get', function() {
-		var game = new kokopu.Game();
+	it('Set & get', () => {
+		const game = new Game();
 		game.mainVariation().tag('TheKey', 'TheValue');
 		test.value(game.mainVariation().tags()).is([ 'TheKey' ]);
 		test.value(game.mainVariation().tag('TheKey')).is('TheValue');
 		test.value(game.mainVariation().tag('AnotherKey')).is(undefined);
 	});
 
-	it('Set empty string', function() {
-		var game = new kokopu.Game();
+	it('Set empty string', () => {
+		const game = new Game();
 		game.mainVariation().tag('TheKey1', '');
 		test.value(game.mainVariation().tags()).is([ 'TheKey1' ]);
 		test.value(game.mainVariation().tag('TheKey1')).is('');
 	});
 
-	it('Set blank string', function() {
-		var game = new kokopu.Game();
+	it('Set blank string', () => {
+		const game = new Game();
 		game.mainVariation().tag('__TheKey__', '  ');
 		test.value(game.mainVariation().tags()).is([ '__TheKey__' ]);
 		test.value(game.mainVariation().tag('__TheKey__')).is('  ');
 	});
 
-	it('Set non-string (number)', function() {
-		var game = new kokopu.Game();
+	it('Set non-string (number)', () => {
+		const game = new Game();
 		game.mainVariation().tag('_', 42);
 		test.value(game.mainVariation().tags()).is([ '_' ]);
 		test.value(game.mainVariation().tag('_')).is('42');
 	});
 
-	it('Set non-string (boolean)', function() {
-		var game = new kokopu.Game();
+	it('Set non-string (boolean)', () => {
+		const game = new Game();
 		game.mainVariation().tag('123', false);
 		test.value(game.mainVariation().tags()).is([ '123' ]);
 		test.value(game.mainVariation().tag('123')).is('false');
 	});
 
-	it('Erase with undefined', function() {
-		var game = new kokopu.Game();
+	it('Erase with undefined', () => {
+		const game = new Game();
 		game.mainVariation().tag('TheKey', 'TheValue');
 		game.mainVariation().tag('TheKey', undefined);
 		test.value(game.mainVariation().tags()).is([]);
 		test.value(game.mainVariation().tag('TheKey')).is(undefined);
 	});
 
-	it('Erase with null', function() {
-		var game = new kokopu.Game();
+	it('Erase with null', () => {
+		const game = new Game();
 		game.mainVariation().tag('TheKey', 'TheValue');
 		game.mainVariation().tag('TheKey', null);
 		test.value(game.mainVariation().tags()).is([]);
 		test.value(game.mainVariation().tag('TheKey')).is(undefined);
 	});
 
-	it('Sorted keys', function() {
-		var game = new kokopu.Game();
+	it('Sorted keys', () => {
+		const game = new Game();
 		game.mainVariation().tag('TheKey', 'TheValue');
 		game.mainVariation().tag('ABCD', 'Another value');
 		game.mainVariation().tag('1234', 'Some number');
@@ -374,41 +371,42 @@ describe('Tags', function() {
 	});
 
 	function itInvalidKey(label, action) {
-		it(label, function() {
-			var game = new kokopu.Game();
-			test.exception(function() { action(game.mainVariation()); }).isInstanceOf(kokopu.exception.IllegalArgument);
+		it(label, () => {
+			const game = new Game();
+			test.exception(() => action(game.mainVariation())).isInstanceOf(exception.IllegalArgument);
 		});
 	}
 
-	itInvalidKey('Dummy key 1', function(node) { node.tag('.', 'TheValue'); });
-	itInvalidKey('Dummy key 2', function(node) { node.tag('-', undefined); });
-	itInvalidKey('Empty key', function(node) { node.tag('', 'Whatever'); });
-	itInvalidKey('Blank key', function(node) { node.tag(' ', 'The value'); });
+	itInvalidKey('Dummy key 1', node => node.tag('.', 'TheValue'));
+	itInvalidKey('Dummy key 2', node => node.tag('-', undefined));
+	itInvalidKey('Empty key', node => node.tag('', 'Whatever'));
+	itInvalidKey('Blank key', node => node.tag(' ', 'The value'));
 });
 
 
-describe('Invalid findById', function() {
-
-	var game = new kokopu.Game();
-	var current = game.mainVariation();
-	current = current.play('e4');
-	current = current.play('e5');
-
-	var alternative1 = current.addVariation();
-	alternative1.play('c5').play('Nf3');
-
-	var alternative2 = current.addVariation();
-	alternative2.play('e6').play('d4');
-
-	current = current.play('Bc4');
-	current = current.play('Nc6');
-	current = current.play('Qh5');
-	current = current.play('Nf6');
-	current = current.play('Qxf7#');
-	game.result('1-0');
+describe('Invalid findById', () => {
 
 	function itInvalidId(label, id) {
-		it(label, function() {
+		it(label, () => {
+
+			const game = new Game();
+			let current = game.mainVariation();
+			current = current.play('e4');
+			current = current.play('e5');
+
+			const alternative1 = current.addVariation();
+			alternative1.play('c5').play('Nf3');
+
+			const alternative2 = current.addVariation();
+			alternative2.play('e6').play('d4');
+
+			current = current.play('Bc4');
+			current = current.play('Nc6');
+			current = current.play('Qh5');
+			current = current.play('Nf6');
+			current = current.play('Qxf7#');
+			game.result('1-0');
+
 			test.value(game.findById(id)).is(undefined);
 		});
 	}

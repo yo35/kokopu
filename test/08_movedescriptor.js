@@ -1,4 +1,4 @@
-/******************************************************************************
+/* -------------------------------------------------------------------------- *
  *                                                                            *
  *    This file is part of Kokopu, a JavaScript chess library.                *
  *    Copyright (C) 2018-2022  Yoann Le Montagner <yo35 -at- melix.net>       *
@@ -17,14 +17,11 @@
  *    Public License along with this program. If not, see                     *
  *    <http://www.gnu.org/licenses/>.                                         *
  *                                                                            *
- ******************************************************************************/
+ * -------------------------------------------------------------------------- */
 
 
-'use strict';
-
-
-var kokopu = require('../dist/lib/index');
-var test = require('unit.js');
+const { exception, Position, isMoveDescriptor } = require('../dist/lib/index');
+const test = require('unit.js');
 
 
 function makeDescriptor(from, to) {
@@ -48,179 +45,209 @@ function makeDescriptor(from, to) {
 	// +---+---+---+---+---+---+---+---+
 	// w K f6
 
-	var position = new kokopu.Position('1nb1k1nr/Ppqp3p/4p3/5pP1/8/2Q5/1P1PPP1P/RNB1K2R w K f6 0 1');
+	const position = new Position('1nb1k1nr/Ppqp3p/4p3/5pP1/8/2Q5/1P1PPP1P/RNB1K2R w K f6 0 1');
 	return position.isMoveLegal(from, to);
 }
 
 
-describe('Illegal move', function() {
-	it('Status?', function() { test.value(makeDescriptor('c1', 'a3')).is(false); });
+describe('Illegal move', () => {
+	it('Status?', () => { test.value(makeDescriptor('c1', 'a3')).is(false); });
 });
 
 
-describe('Normal move', function() {
-	var preDescriptor = makeDescriptor('b1', 'a3');
+describe('Normal move', () => {
 
-	it('Status?', function() { test.value(preDescriptor.status).is('regular'); });
-	var descriptor = preDescriptor();
+	function itDescriptor(label, action) {
+		it(label, () => {
+			const preDescriptor = makeDescriptor('b1', 'a3');
+			test.value(preDescriptor.status).is('regular');
+			const descriptor = preDescriptor();
+			action(descriptor);
+		});
+	}
 
-	it('Is descriptor?', function() { test.value(kokopu.isMoveDescriptor(descriptor)).is(true); });
-	it('Is castling?'  , function() { test.value(descriptor.isCastling()).is(false); });
-	it('Is en-passant?', function() { test.value(descriptor.isEnPassant()).is(false); });
-	it('Is capture?'   , function() { test.value(descriptor.isCapture()).is(false); });
-	it('Is promotion?' , function() { test.value(descriptor.isPromotion()).is(false); });
+	itDescriptor('Is descriptor?', descriptor => test.value(isMoveDescriptor(descriptor)).is(true));
+	itDescriptor('Is castling?'  , descriptor => test.value(descriptor.isCastling()).is(false));
+	itDescriptor('Is en-passant?', descriptor => test.value(descriptor.isEnPassant()).is(false));
+	itDescriptor('Is capture?'   , descriptor => test.value(descriptor.isCapture()).is(false));
+	itDescriptor('Is promotion?' , descriptor => test.value(descriptor.isPromotion()).is(false));
 
-	it('Square from'           , function() { test.value(descriptor.from()).is('b1'); });
-	it('Square to'             , function() { test.value(descriptor.to()).is('a3'); });
-	it('Color'                 , function() { test.value(descriptor.color()).is('w'); });
-	it('Moving piece'          , function() { test.value(descriptor.movingPiece()).is('n'); });
-	it('Moving colored piece'  , function() { test.value(descriptor.movingColoredPiece()).is('wn'); });
-	it('Captured piece'        , function() { test.exception(function() { descriptor.capturedPiece(); }).isInstanceOf(kokopu.exception.IllegalArgument); });
-	it('Captured colored piece', function() { test.exception(function() { descriptor.capturedColoredPiece(); }).isInstanceOf(kokopu.exception.IllegalArgument); });
-	it('Rook from'             , function() { test.exception(function() { descriptor.rookFrom(); }).isInstanceOf(kokopu.exception.IllegalArgument); });
-	it('Rook to'               , function() { test.exception(function() { descriptor.rookTo(); }).isInstanceOf(kokopu.exception.IllegalArgument); });
-	it('En-passant square'     , function() { test.exception(function() { descriptor.enPassantSquare(); }).isInstanceOf(kokopu.exception.IllegalArgument); });
-	it('Promotion'             , function() { test.exception(function() { descriptor.promotion(); }).isInstanceOf(kokopu.exception.IllegalArgument); });
-	it('Colored promotion'     , function() { test.exception(function() { descriptor.coloredPromotion(); }).isInstanceOf(kokopu.exception.IllegalArgument); });
-	it('To string'             , function() { test.value(descriptor.toString()).is('b1a3'); });
+	itDescriptor('Square from'           , descriptor => test.value(descriptor.from()).is('b1'));
+	itDescriptor('Square to'             , descriptor => test.value(descriptor.to()).is('a3'));
+	itDescriptor('Color'                 , descriptor => test.value(descriptor.color()).is('w'));
+	itDescriptor('Moving piece'          , descriptor => test.value(descriptor.movingPiece()).is('n'));
+	itDescriptor('Moving colored piece'  , descriptor => test.value(descriptor.movingColoredPiece()).is('wn'));
+	itDescriptor('Captured piece'        , descriptor => test.exception(() => descriptor.capturedPiece()).isInstanceOf(exception.IllegalArgument));
+	itDescriptor('Captured colored piece', descriptor => test.exception(() => descriptor.capturedColoredPiece()).isInstanceOf(exception.IllegalArgument));
+	itDescriptor('Rook from'             , descriptor => test.exception(() => descriptor.rookFrom()).isInstanceOf(exception.IllegalArgument));
+	itDescriptor('Rook to'               , descriptor => test.exception(() => descriptor.rookTo()).isInstanceOf(exception.IllegalArgument));
+	itDescriptor('En-passant square'     , descriptor => test.exception(() => descriptor.enPassantSquare()).isInstanceOf(exception.IllegalArgument));
+	itDescriptor('Promotion'             , descriptor => test.exception(() => descriptor.promotion()).isInstanceOf(exception.IllegalArgument));
+	itDescriptor('Colored promotion'     , descriptor => test.exception(() => descriptor.coloredPromotion()).isInstanceOf(exception.IllegalArgument));
+	itDescriptor('To string'             , descriptor => test.value(descriptor.toString()).is('b1a3'));
 });
 
 
-describe('Normal move with capture', function() {
-	var preDescriptor = makeDescriptor('c3', 'c7');
+describe('Normal move with capture', () => {
 
-	it('Status?', function() { test.value(preDescriptor.status).is('regular'); });
-	var descriptor = preDescriptor();
+	function itDescriptor(label, action) {
+		it(label, () => {
+			const preDescriptor = makeDescriptor('c3', 'c7');
+			test.value(preDescriptor.status).is('regular');
+			const descriptor = preDescriptor();
+			action(descriptor);
+		});
+	}
 
-	it('Is descriptor?', function() { test.value(kokopu.isMoveDescriptor(descriptor)).is(true); });
-	it('Is castling?'  , function() { test.value(descriptor.isCastling()).is(false); });
-	it('Is en-passant?', function() { test.value(descriptor.isEnPassant()).is(false); });
-	it('Is capture?'   , function() { test.value(descriptor.isCapture()).is(true); });
-	it('Is promotion?' , function() { test.value(descriptor.isPromotion()).is(false); });
+	itDescriptor('Is descriptor?', descriptor => test.value(isMoveDescriptor(descriptor)).is(true));
+	itDescriptor('Is castling?'  , descriptor => test.value(descriptor.isCastling()).is(false));
+	itDescriptor('Is en-passant?', descriptor => test.value(descriptor.isEnPassant()).is(false));
+	itDescriptor('Is capture?'   , descriptor => test.value(descriptor.isCapture()).is(true));
+	itDescriptor('Is promotion?' , descriptor => test.value(descriptor.isPromotion()).is(false));
 
-	it('Square from'           , function() { test.value(descriptor.from()).is('c3'); });
-	it('Square to'             , function() { test.value(descriptor.to()).is('c7'); });
-	it('Color'                 , function() { test.value(descriptor.color()).is('w'); });
-	it('Moving piece'          , function() { test.value(descriptor.movingPiece()).is('q'); });
-	it('Moving colored piece'  , function() { test.value(descriptor.movingColoredPiece()).is('wq'); });
-	it('Captured piece'        , function() { test.value(descriptor.capturedPiece()).is('q'); });
-	it('Captured colored piece', function() { test.value(descriptor.capturedColoredPiece()).is('bq'); });
-	it('Rook from'             , function() { test.exception(function() { descriptor.rookFrom(); }).isInstanceOf(kokopu.exception.IllegalArgument); });
-	it('Rook to'               , function() { test.exception(function() { descriptor.rookTo(); }).isInstanceOf(kokopu.exception.IllegalArgument); });
-	it('En-passant square'     , function() { test.exception(function() { descriptor.enPassantSquare(); }).isInstanceOf(kokopu.exception.IllegalArgument); });
-	it('Promotion'             , function() { test.exception(function() { descriptor.promotion(); }).isInstanceOf(kokopu.exception.IllegalArgument); });
-	it('Colored promotion'     , function() { test.exception(function() { descriptor.coloredPromotion(); }).isInstanceOf(kokopu.exception.IllegalArgument); });
-	it('To string'             , function() { test.value(descriptor.toString()).is('c3c7'); });
+	itDescriptor('Square from'           , descriptor => test.value(descriptor.from()).is('c3'));
+	itDescriptor('Square to'             , descriptor => test.value(descriptor.to()).is('c7'));
+	itDescriptor('Color'                 , descriptor => test.value(descriptor.color()).is('w'));
+	itDescriptor('Moving piece'          , descriptor => test.value(descriptor.movingPiece()).is('q'));
+	itDescriptor('Moving colored piece'  , descriptor => test.value(descriptor.movingColoredPiece()).is('wq'));
+	itDescriptor('Captured piece'        , descriptor => test.value(descriptor.capturedPiece()).is('q'));
+	itDescriptor('Captured colored piece', descriptor => test.value(descriptor.capturedColoredPiece()).is('bq'));
+	itDescriptor('Rook from'             , descriptor => test.exception(() => descriptor.rookFrom()).isInstanceOf(exception.IllegalArgument));
+	itDescriptor('Rook to'               , descriptor => test.exception(() => descriptor.rookTo()).isInstanceOf(exception.IllegalArgument));
+	itDescriptor('En-passant square'     , descriptor => test.exception(() => descriptor.enPassantSquare()).isInstanceOf(exception.IllegalArgument));
+	itDescriptor('Promotion'             , descriptor => test.exception(() => descriptor.promotion()).isInstanceOf(exception.IllegalArgument));
+	itDescriptor('Colored promotion'     , descriptor => test.exception(() => descriptor.coloredPromotion()).isInstanceOf(exception.IllegalArgument));
+	itDescriptor('To string'             , descriptor => test.value(descriptor.toString()).is('c3c7'));
 });
 
 
-describe('Castling move', function() {
-	var preDescriptor = makeDescriptor('e1', 'g1');
+describe('Castling move', () => {
 
-	it('Status?', function() { test.value(preDescriptor.status).is('regular'); });
-	var descriptor = preDescriptor();
+	function itDescriptor(label, action) {
+		it(label, () => {
+			const preDescriptor = makeDescriptor('e1', 'g1');
+			test.value(preDescriptor.status).is('regular');
+			const descriptor = preDescriptor();
+			action(descriptor);
+		});
+	}
 
-	it('Is descriptor?', function() { test.value(kokopu.isMoveDescriptor(descriptor)).is(true); });
-	it('Is castling?'  , function() { test.value(descriptor.isCastling()).is(true); });
-	it('Is en-passant?', function() { test.value(descriptor.isEnPassant()).is(false); });
-	it('Is capture?'   , function() { test.value(descriptor.isCapture()).is(false); });
-	it('Is promotion?' , function() { test.value(descriptor.isPromotion()).is(false); });
+	itDescriptor('Is descriptor?', descriptor => test.value(isMoveDescriptor(descriptor)).is(true));
+	itDescriptor('Is castling?'  , descriptor => test.value(descriptor.isCastling()).is(true));
+	itDescriptor('Is en-passant?', descriptor => test.value(descriptor.isEnPassant()).is(false));
+	itDescriptor('Is capture?'   , descriptor => test.value(descriptor.isCapture()).is(false));
+	itDescriptor('Is promotion?' , descriptor => test.value(descriptor.isPromotion()).is(false));
 
-	it('Square from'           , function() { test.value(descriptor.from()).is('e1'); });
-	it('Square to'             , function() { test.value(descriptor.to()).is('g1'); });
-	it('Color'                 , function() { test.value(descriptor.color()).is('w'); });
-	it('Moving piece'          , function() { test.value(descriptor.movingPiece()).is('k'); });
-	it('Moving colored piece'  , function() { test.value(descriptor.movingColoredPiece()).is('wk'); });
-	it('Captured piece'        , function() { test.exception(function() { descriptor.capturedPiece(); }).isInstanceOf(kokopu.exception.IllegalArgument); });
-	it('Captured colored piece', function() { test.exception(function() { descriptor.capturedColoredPiece(); }).isInstanceOf(kokopu.exception.IllegalArgument); });
-	it('Rook from'             , function() { test.value(descriptor.rookFrom()).is('h1'); });
-	it('Rook to'               , function() { test.value(descriptor.rookTo()).is('f1'); });
-	it('En-passant square'     , function() { test.exception(function() { descriptor.enPassantSquare(); }).isInstanceOf(kokopu.exception.IllegalArgument); });
-	it('Promotion'             , function() { test.exception(function() { descriptor.promotion(); }).isInstanceOf(kokopu.exception.IllegalArgument); });
-	it('Colored promotion'     , function() { test.exception(function() { descriptor.coloredPromotion(); }).isInstanceOf(kokopu.exception.IllegalArgument); });
-	it('To string'             , function() { test.value(descriptor.toString()).is('e1g1O'); });
+	itDescriptor('Square from'           , descriptor => test.value(descriptor.from()).is('e1'));
+	itDescriptor('Square to'             , descriptor => test.value(descriptor.to()).is('g1'));
+	itDescriptor('Color'                 , descriptor => test.value(descriptor.color()).is('w'));
+	itDescriptor('Moving piece'          , descriptor => test.value(descriptor.movingPiece()).is('k'));
+	itDescriptor('Moving colored piece'  , descriptor => test.value(descriptor.movingColoredPiece()).is('wk'));
+	itDescriptor('Captured piece'        , descriptor => test.exception(() => descriptor.capturedPiece()).isInstanceOf(exception.IllegalArgument));
+	itDescriptor('Captured colored piece', descriptor => test.exception(() => descriptor.capturedColoredPiece()).isInstanceOf(exception.IllegalArgument));
+	itDescriptor('Rook from'             , descriptor => test.value(descriptor.rookFrom()).is('h1'));
+	itDescriptor('Rook to'               , descriptor => test.value(descriptor.rookTo()).is('f1'));
+	itDescriptor('En-passant square'     , descriptor => test.exception(() => descriptor.enPassantSquare()).isInstanceOf(exception.IllegalArgument));
+	itDescriptor('Promotion'             , descriptor => test.exception(() => descriptor.promotion()).isInstanceOf(exception.IllegalArgument));
+	itDescriptor('Colored promotion'     , descriptor => test.exception(() => descriptor.coloredPromotion()).isInstanceOf(exception.IllegalArgument));
+	itDescriptor('To string'             , descriptor => test.value(descriptor.toString()).is('e1g1O'));
 });
 
 
-describe('En-passant move', function() {
-	var preDescriptor = makeDescriptor('g5', 'f6');
+describe('En-passant move', () => {
 
-	it('Status?', function() { test.value(preDescriptor.status).is('regular'); });
-	var descriptor = preDescriptor();
+	function itDescriptor(label, action) {
+		it(label, () => {
+			const preDescriptor = makeDescriptor('g5', 'f6');
+			test.value(preDescriptor.status).is('regular');
+			const descriptor = preDescriptor();
+			action(descriptor);
+		});
+	}
 
-	it('Is descriptor?', function() { test.value(kokopu.isMoveDescriptor(descriptor)).is(true); });
-	it('Is castling?'  , function() { test.value(descriptor.isCastling()).is(false); });
-	it('Is en-passant?', function() { test.value(descriptor.isEnPassant()).is(true); });
-	it('Is capture?'   , function() { test.value(descriptor.isCapture()).is(true); });
-	it('Is promotion?' , function() { test.value(descriptor.isPromotion()).is(false); });
+	itDescriptor('Is descriptor?', descriptor => test.value(isMoveDescriptor(descriptor)).is(true));
+	itDescriptor('Is castling?'  , descriptor => test.value(descriptor.isCastling()).is(false));
+	itDescriptor('Is en-passant?', descriptor => test.value(descriptor.isEnPassant()).is(true));
+	itDescriptor('Is capture?'   , descriptor => test.value(descriptor.isCapture()).is(true));
+	itDescriptor('Is promotion?' , descriptor => test.value(descriptor.isPromotion()).is(false));
 
-	it('Square from'           , function() { test.value(descriptor.from()).is('g5'); });
-	it('Square to'             , function() { test.value(descriptor.to()).is('f6'); });
-	it('Color'                 , function() { test.value(descriptor.color()).is('w'); });
-	it('Moving piece'          , function() { test.value(descriptor.movingPiece()).is('p'); });
-	it('Moving colored piece'  , function() { test.value(descriptor.movingColoredPiece()).is('wp'); });
-	it('Captured piece'        , function() { test.value(descriptor.capturedPiece()).is('p'); });
-	it('Captured colored piece', function() { test.value(descriptor.capturedColoredPiece()).is('bp'); });
-	it('Rook from'             , function() { test.exception(function() { descriptor.rookFrom(); }).isInstanceOf(kokopu.exception.IllegalArgument); });
-	it('Rook to'               , function() { test.exception(function() { descriptor.rookTo(); }).isInstanceOf(kokopu.exception.IllegalArgument); });
-	it('En-passant square'     , function() { test.value(descriptor.enPassantSquare()).is('f5'); });
-	it('Promotion'             , function() { test.exception(function() { descriptor.promotion(); }).isInstanceOf(kokopu.exception.IllegalArgument); });
-	it('Colored promotion'     , function() { test.exception(function() { descriptor.coloredPromotion(); }).isInstanceOf(kokopu.exception.IllegalArgument); });
-	it('To string'             , function() { test.value(descriptor.toString()).is('g5f6'); });
+	itDescriptor('Square from'           , descriptor => test.value(descriptor.from()).is('g5'));
+	itDescriptor('Square to'             , descriptor => test.value(descriptor.to()).is('f6'));
+	itDescriptor('Color'                 , descriptor => test.value(descriptor.color()).is('w'));
+	itDescriptor('Moving piece'          , descriptor => test.value(descriptor.movingPiece()).is('p'));
+	itDescriptor('Moving colored piece'  , descriptor => test.value(descriptor.movingColoredPiece()).is('wp'));
+	itDescriptor('Captured piece'        , descriptor => test.value(descriptor.capturedPiece()).is('p'));
+	itDescriptor('Captured colored piece', descriptor => test.value(descriptor.capturedColoredPiece()).is('bp'));
+	itDescriptor('Rook from'             , descriptor => test.exception(() => descriptor.rookFrom()).isInstanceOf(exception.IllegalArgument));
+	itDescriptor('Rook to'               , descriptor => test.exception(() => descriptor.rookTo()).isInstanceOf(exception.IllegalArgument));
+	itDescriptor('En-passant square'     , descriptor => test.value(descriptor.enPassantSquare()).is('f5'));
+	itDescriptor('Promotion'             , descriptor => test.exception(() => descriptor.promotion()).isInstanceOf(exception.IllegalArgument));
+	itDescriptor('Colored promotion'     , descriptor => test.exception(() => descriptor.coloredPromotion()).isInstanceOf(exception.IllegalArgument));
+	itDescriptor('To string'             , descriptor => test.value(descriptor.toString()).is('g5f6'));
 });
 
 
-describe('Promotion move', function() {
-	var preDescriptor = makeDescriptor('a7', 'a8');
+describe('Promotion move', () => {
 
-	it('Status?', function() { test.value(preDescriptor.status).is('promotion'); });
-	var descriptor = preDescriptor('q');
+	function itDescriptor(label, action) {
+		it(label, () => {
+			const preDescriptor = makeDescriptor('a7', 'a8');
+			test.value(preDescriptor.status).is('promotion');
+			const descriptor = preDescriptor('q');
+			action(descriptor);
+		});
+	}
 
-	it('Is descriptor?', function() { test.value(kokopu.isMoveDescriptor(descriptor)).is(true); });
-	it('Is castling?'  , function() { test.value(descriptor.isCastling()).is(false); });
-	it('Is en-passant?', function() { test.value(descriptor.isEnPassant()).is(false); });
-	it('Is capture?'   , function() { test.value(descriptor.isCapture()).is(false); });
-	it('Is promotion?' , function() { test.value(descriptor.isPromotion()).is(true); });
+	itDescriptor('Is descriptor?', descriptor => test.value(isMoveDescriptor(descriptor)).is(true));
+	itDescriptor('Is castling?'  , descriptor => test.value(descriptor.isCastling()).is(false));
+	itDescriptor('Is en-passant?', descriptor => test.value(descriptor.isEnPassant()).is(false));
+	itDescriptor('Is capture?'   , descriptor => test.value(descriptor.isCapture()).is(false));
+	itDescriptor('Is promotion?' , descriptor => test.value(descriptor.isPromotion()).is(true));
 
-	it('Square from'           , function() { test.value(descriptor.from()).is('a7'); });
-	it('Square to'             , function() { test.value(descriptor.to()).is('a8'); });
-	it('Color'                 , function() { test.value(descriptor.color()).is('w'); });
-	it('Moving piece'          , function() { test.value(descriptor.movingPiece()).is('p'); });
-	it('Moving colored piece'  , function() { test.value(descriptor.movingColoredPiece()).is('wp'); });
-	it('Captured piece'        , function() { test.exception(function() { descriptor.capturedPiece(); }).isInstanceOf(kokopu.exception.IllegalArgument); });
-	it('Captured colored piece', function() { test.exception(function() { descriptor.capturedColoredPiece(); }).isInstanceOf(kokopu.exception.IllegalArgument); });
-	it('Rook from'             , function() { test.exception(function() { descriptor.rookFrom(); }).isInstanceOf(kokopu.exception.IllegalArgument); });
-	it('Rook to'               , function() { test.exception(function() { descriptor.rookTo(); }).isInstanceOf(kokopu.exception.IllegalArgument); });
-	it('En-passant square'     , function() { test.exception(function() { descriptor.enPassantSquare(); }).isInstanceOf(kokopu.exception.IllegalArgument); });
-	it('Promotion'             , function() { test.value(descriptor.promotion()).is('q'); });
-	it('Colored promotion'     , function() { test.value(descriptor.coloredPromotion()).is('wq'); });
-	it('To string'             , function() { test.value(descriptor.toString()).is('a7a8Q'); });
+	itDescriptor('Square from'           , descriptor => test.value(descriptor.from()).is('a7'));
+	itDescriptor('Square to'             , descriptor => test.value(descriptor.to()).is('a8'));
+	itDescriptor('Color'                 , descriptor => test.value(descriptor.color()).is('w'));
+	itDescriptor('Moving piece'          , descriptor => test.value(descriptor.movingPiece()).is('p'));
+	itDescriptor('Moving colored piece'  , descriptor => test.value(descriptor.movingColoredPiece()).is('wp'));
+	itDescriptor('Captured piece'        , descriptor => test.exception(() => descriptor.capturedPiece()).isInstanceOf(exception.IllegalArgument));
+	itDescriptor('Captured colored piece', descriptor => test.exception(() => descriptor.capturedColoredPiece()).isInstanceOf(exception.IllegalArgument));
+	itDescriptor('Rook from'             , descriptor => test.exception(() => descriptor.rookFrom()).isInstanceOf(exception.IllegalArgument));
+	itDescriptor('Rook to'               , descriptor => test.exception(() => descriptor.rookTo()).isInstanceOf(exception.IllegalArgument));
+	itDescriptor('En-passant square'     , descriptor => test.exception(() => descriptor.enPassantSquare()).isInstanceOf(exception.IllegalArgument));
+	itDescriptor('Promotion'             , descriptor => test.value(descriptor.promotion()).is('q'));
+	itDescriptor('Colored promotion'     , descriptor => test.value(descriptor.coloredPromotion()).is('wq'));
+	itDescriptor('To string'             , descriptor => test.value(descriptor.toString()).is('a7a8Q'));
 });
 
 
-describe('Promotion move with capture', function() {
-	var preDescriptor = makeDescriptor('a7', 'b8');
+describe('Promotion move with capture', () => {
 
-	it('Status?', function() { test.value(preDescriptor.status).is('promotion'); });
-	var descriptor = preDescriptor('r');
+	function itDescriptor(label, action) {
+		it(label, () => {
+			const preDescriptor = makeDescriptor('a7', 'b8');
+			test.value(preDescriptor.status).is('promotion');
+			const descriptor = preDescriptor('r');
+			action(descriptor);
+		});
+	}
 
-	it('Is descriptor?', function() { test.value(kokopu.isMoveDescriptor(descriptor)).is(true); });
-	it('Is castling?'  , function() { test.value(descriptor.isCastling()).is(false); });
-	it('Is en-passant?', function() { test.value(descriptor.isEnPassant()).is(false); });
-	it('Is capture?'   , function() { test.value(descriptor.isCapture()).is(true); });
-	it('Is promotion?' , function() { test.value(descriptor.isPromotion()).is(true); });
+	itDescriptor('Is descriptor?', descriptor => test.value(isMoveDescriptor(descriptor)).is(true));
+	itDescriptor('Is castling?'  , descriptor => test.value(descriptor.isCastling()).is(false));
+	itDescriptor('Is en-passant?', descriptor => test.value(descriptor.isEnPassant()).is(false));
+	itDescriptor('Is capture?'   , descriptor => test.value(descriptor.isCapture()).is(true));
+	itDescriptor('Is promotion?' , descriptor => test.value(descriptor.isPromotion()).is(true));
 
-	it('Square from'           , function() { test.value(descriptor.from()).is('a7'); });
-	it('Square to'             , function() { test.value(descriptor.to()).is('b8'); });
-	it('Color'                 , function() { test.value(descriptor.color()).is('w'); });
-	it('Moving piece'          , function() { test.value(descriptor.movingPiece()).is('p'); });
-	it('Moving colored piece'  , function() { test.value(descriptor.movingColoredPiece()).is('wp'); });
-	it('Captured piece'        , function() { test.value(descriptor.capturedPiece()).is('n'); });
-	it('Captured colored piece', function() { test.value(descriptor.capturedColoredPiece()).is('bn'); });
-	it('Rook from'             , function() { test.exception(function() { descriptor.rookFrom(); }).isInstanceOf(kokopu.exception.IllegalArgument); });
-	it('Rook to'               , function() { test.exception(function() { descriptor.rookTo(); }).isInstanceOf(kokopu.exception.IllegalArgument); });
-	it('En-passant square'     , function() { test.exception(function() { descriptor.enPassantSquare(); }).isInstanceOf(kokopu.exception.IllegalArgument); });
-	it('Promotion'             , function() { test.value(descriptor.promotion()).is('r'); });
-	it('Colored promotion'     , function() { test.value(descriptor.coloredPromotion()).is('wr'); });
-	it('To string'             , function() { test.value(descriptor.toString()).is('a7b8R'); });
+	itDescriptor('Square from'           , descriptor => test.value(descriptor.from()).is('a7'));
+	itDescriptor('Square to'             , descriptor => test.value(descriptor.to()).is('b8'));
+	itDescriptor('Color'                 , descriptor => test.value(descriptor.color()).is('w'));
+	itDescriptor('Moving piece'          , descriptor => test.value(descriptor.movingPiece()).is('p'));
+	itDescriptor('Moving colored piece'  , descriptor => test.value(descriptor.movingColoredPiece()).is('wp'));
+	itDescriptor('Captured piece'        , descriptor => test.value(descriptor.capturedPiece()).is('n'));
+	itDescriptor('Captured colored piece', descriptor => test.value(descriptor.capturedColoredPiece()).is('bn'));
+	itDescriptor('Rook from'             , descriptor => test.exception(() => descriptor.rookFrom()).isInstanceOf(exception.IllegalArgument));
+	itDescriptor('Rook to'               , descriptor => test.exception(() => descriptor.rookTo()).isInstanceOf(exception.IllegalArgument));
+	itDescriptor('En-passant square'     , descriptor => test.exception(() => descriptor.enPassantSquare()).isInstanceOf(exception.IllegalArgument));
+	itDescriptor('Promotion'             , descriptor => test.value(descriptor.promotion()).is('r'));
+	itDescriptor('Colored promotion'     , descriptor => test.value(descriptor.coloredPromotion()).is('wr'));
+	itDescriptor('To string'             , descriptor => test.value(descriptor.toString()).is('a7b8R'));
 });

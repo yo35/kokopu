@@ -1,4 +1,4 @@
-/******************************************************************************
+/* -------------------------------------------------------------------------- *
  *                                                                            *
  *    This file is part of Kokopu, a JavaScript chess library.                *
  *    Copyright (C) 2018-2022  Yoann Le Montagner <yo35 -at- melix.net>       *
@@ -17,26 +17,20 @@
  *    Public License along with this program. If not, see                     *
  *    <http://www.gnu.org/licenses/>.                                         *
  *                                                                            *
- ******************************************************************************/
+ * -------------------------------------------------------------------------- */
 
 
-'use strict';
+const { Position } = require('../../dist/lib/index');
 
 
-var kokopu = require('../../dist/lib/index');
-
-
-var ID_PADDING = '                        ';
+const ID_PADDING = '                        ';
 
 
 /**
  * Dump the content of a Game object.
- *
- * @param {Game} game
- * @returns {string}
  */
 module.exports = function(game) {
-	var res = '\n';
+	let res = '\n';
 
 	function dumpHeader(key, value) {
 		if (value !== undefined) {
@@ -46,7 +40,7 @@ module.exports = function(game) {
 
 	function dumpResult(result) {
 		res += '{';
-		switch(result) {
+		switch (result) {
 			case '1-0': res += 'White wins'; break;
 			case '0-1': res += 'Black wins'; break;
 			case '1/2-1/2': res += 'Draw'; break;
@@ -57,46 +51,43 @@ module.exports = function(game) {
 	}
 
 	function dumpVariant(variant) {
-		if(variant !== 'regular') {
-			res += 'Variant = {' + variant + '}\n';
+		if (variant !== 'regular') {
+			res += `Variant = {${variant}}\n`;
 		}
 	}
 
 	function dumpInitialPosition(position) {
-		if(position.fen() !== new kokopu.Position().fen()) {
+		if (position.fen() !== new Position().fen()) {
 			res += position.ascii() + '\n';
 		}
 	}
 
 	function dumpNags(node) {
-		var nags = node.nags();
-		for(var k=0; k<nags.length; ++k) {
-			res += ' $' + nags[k];
+		for (const nag of node.nags()) {
+			res += ' $' + nag;
 		}
 	}
 
 	function dumpTags(node) {
-		var tags = node.tags();
-		for(var k=0; k<tags.length; ++k) {
-			var key = tags[k];
-			res += ' [' + key + ' = {' + node.tag(key) + '}]';
+		for (const key of node.tags()) {
+			res += ` [${key} = {${node.tag(key)}}]`;
 		}
 	}
 
 	function dumpComment(node) {
-		var comment = node.comment();
-		if(comment !== undefined) {
-			res += ' {' + node.comment() + '}';
-			if(node.isLongComment()) {
+		const comment = node.comment();
+		if (comment !== undefined) {
+			res += ` {${node.comment()}}`;
+			if (node.isLongComment()) {
 				res += '<LONG';
 			}
 		}
 	}
 
 	function formatNodeOrVariationId(id) {
-		var result = '[' + id + ']';
-		while (result.length < ID_PADDING.length) {
-			result += ' ';
+		let result = `[${id}]`;
+		if (result.length < ID_PADDING.length) {
+			result += ' '.repeat(ID_PADDING.length - result.length);
 		}
 		return result;
 	}
@@ -111,12 +102,12 @@ module.exports = function(game) {
 		res += '\n';
 
 		// Print the sub-variations
-		var subVariations = node.variations();
-		for(var k=0; k<subVariations.length; ++k) {
+		const subVariations = node.variations();
+		for (const subVariation of subVariations) {
 			res += ID_PADDING + indent + ' |\n';
-			dumpVariation(subVariations[k], indent + ' |  ', indent + ' +--');
+			dumpVariation(subVariation, indent + ' |  ', indent + ' +--');
 		}
-		if(subVariations.length > 0) {
+		if (subVariations.length > 0) {
 			res += ID_PADDING + indent + ' |\n';
 		}
 	}
@@ -135,7 +126,7 @@ module.exports = function(game) {
 		res += '\n';
 
 		// List of moves
-		var node = variation.first();
+		let node = variation.first();
 		while (node !== undefined) {
 			dumpNode(node, indent);
 			node = node.next();

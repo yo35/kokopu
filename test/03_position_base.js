@@ -1,4 +1,4 @@
-/******************************************************************************
+/* -------------------------------------------------------------------------- *
  *                                                                            *
  *    This file is part of Kokopu, a JavaScript chess library.                *
  *    Copyright (C) 2018-2022  Yoann Le Montagner <yo35 -at- melix.net>       *
@@ -17,115 +17,110 @@
  *    Public License along with this program. If not, see                     *
  *    <http://www.gnu.org/licenses/>.                                         *
  *                                                                            *
- ******************************************************************************/
+ * -------------------------------------------------------------------------- */
 
 
-'use strict';
+const { exception, Position } = require('../dist/lib/index');
+const readCSV = require('./common/readcsv');
+const test = require('unit.js');
+
+const startFEN  = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+const startXFEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w AHah - 0 1';
+const startFENAntichess = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w - - 0 1';
+const startFENHorde = 'rnbqkbnr/pppppppp/8/1PP2PP1/PPPPPPPP/PPPPPPPP/PPPPPPPP/PPPPPPPP w kq - 0 1';
+const emptyFEN  = '8/8/8/8/8/8/8/8 w - - 0 1';
+const customFEN = 'k7/n1PB4/1K6/8/8/8/8/8 w KQkq d6 0 1';
+const customXFEN = 'k7/n1PB4/1K6/8/8/8/8/8 w AHah d6 0 1';
+const customFENHorde = '1Q3rk1/2P4p/1P2pp2/2PP4/5P1P/2q1PPPP/2P1PPPP/2PPPPPP b - - 0 1';
+
+const variants = ['regular', 'chess960', 'no-king', 'white-king-only', 'black-king-only', 'antichess', 'horde'];
 
 
-var kokopu = require('../dist/lib/index');
-var test = require('unit.js');
-var readCSV = require('./common/readcsv');
-
-var startFEN  = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
-var startXFEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w AHah - 0 1';
-var startFENAntichess = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w - - 0 1';
-var startFENHorde = 'rnbqkbnr/pppppppp/8/1PP2PP1/PPPPPPPP/PPPPPPPP/PPPPPPPP/PPPPPPPP w kq - 0 1';
-var emptyFEN  = '8/8/8/8/8/8/8/8 w - - 0 1';
-var customFEN = 'k7/n1PB4/1K6/8/8/8/8/8 w KQkq d6 0 1';
-var customXFEN = 'k7/n1PB4/1K6/8/8/8/8/8 w AHah d6 0 1';
-var customFENHorde = '1Q3rk1/2P4p/1P2pp2/2PP4/5P1P/2q1PPPP/2P1PPPP/2PPPPPP b - - 0 1';
-
-var variants = ['regular', 'chess960', 'no-king', 'white-king-only', 'black-king-only', 'antichess', 'horde'];
-
-
-describe('Position constructor', function() {
+describe('Position constructor', () => {
 
 	function doTest(label, expectedVariant, expectedFEN, positionFactory) {
-		it(label, function() {
-			var position = positionFactory();
+		it(label, () => {
+			const position = positionFactory();
 			test.value(position.variant()).is(expectedVariant);
 			test.value(position.fen()).is(expectedFEN);
 		});
 	}
 
+	doTest('Default constructor'  , 'regular', startFEN , () => new Position());
+	doTest('Constructor \'start\'', 'regular', startFEN , () => new Position('start'));
+	doTest('Constructor \'empty\'', 'regular', emptyFEN , () => new Position('empty'));
+	doTest('Constructor FEN-based', 'regular', customFEN, () => new Position(customFEN));
+
+	doTest('Default constructor (force regular)'              , 'regular', startFEN , () => new Position('regular'));
+	doTest('Constructor \'start\' (force regular)'            , 'regular', startFEN , () => new Position('regular', 'start'));
+	doTest('Constructor \'empty\' (force regular)'            , 'regular', emptyFEN , () => new Position('regular', 'empty'));
+	doTest('Constructor FEN-based (force regular)'            , 'regular', customFEN, () => new Position('regular', customFEN));
+	doTest('Constructor FEN-based with prefix (force regular)', 'regular', customFEN, () => new Position('regular:' + customFEN));
+
+	doTest('Scharnagl constructor'                         , 'chess960', startXFEN , () => new Position('chess960', 518));
+	doTest('Constructor \'empty\' (Chess960)'              , 'chess960', emptyFEN  , () => new Position('chess960', 'empty'));
+	doTest('Constructor FEN-based (Chess960)'              , 'chess960', customXFEN, () => new Position('chess960', customFEN));
+	doTest('Constructor X-FEN-based (Chess960)'            , 'chess960', customXFEN, () => new Position('chess960', customXFEN));
+	doTest('Constructor X-FEN-based with prefix (Chess960)', 'chess960', customXFEN, () => new Position('chess960:' + customXFEN));
+
+	doTest('Constructor \'empty\' (no-king)'        , 'no-king'        , emptyFEN , () => new Position('no-king', 'empty'));
+	doTest('Constructor FEN-based (no-king)'        , 'no-king'        , customFEN, () => new Position('no-king', customFEN));
+	doTest('Constructor \'empty\' (white-king-only)', 'white-king-only', emptyFEN , () => new Position('white-king-only', 'empty'));
+	doTest('Constructor FEN-based (white-king-only)', 'white-king-only', customFEN, () => new Position('white-king-only', customFEN));
+	doTest('Constructor \'empty\' (black-king-only)', 'black-king-only', emptyFEN , () => new Position('black-king-only', 'empty'));
+	doTest('Constructor FEN-based (black-king-only)', 'black-king-only', customFEN, () => new Position('black-king-only', customFEN));
+
+	doTest('Default constructor (antichess)'              , 'antichess', startFENAntichess, () => new Position('antichess'));
+	doTest('Constructor \'start\' (antichess)'            , 'antichess', startFENAntichess, () => new Position('antichess', 'start'));
+	doTest('Constructor \'empty\' (antichess)'            , 'antichess', emptyFEN         , () => new Position('antichess', 'empty'));
+	doTest('Constructor FEN-based (antichess)'            , 'antichess', customFEN        , () => new Position('antichess', customFEN));
+	doTest('Constructor FEN-based with prefix (antichess)', 'antichess', customFEN        , () => new Position('antichess:' + customFEN));
+
+	doTest('Default constructor (horde)'              , 'horde', startFENHorde , () => new Position('horde'));
+	doTest('Constructor \'start\' (horde)'            , 'horde', startFENHorde , () => new Position('horde', 'start'));
+	doTest('Constructor \'empty\' (horde)'            , 'horde', emptyFEN      , () => new Position('horde', 'empty'));
+	doTest('Constructor FEN-based (horde)'            , 'horde', customFENHorde, () => new Position('horde', customFENHorde));
+	doTest('Constructor FEN-based with prefix (horde)', 'horde', customFENHorde, () => new Position('horde:' + customFENHorde));
+
 	function doFailureTest(label, fenParsingErrorExpected, positionFactory) {
-		it(label, function() {
-			test.exception(positionFactory).isInstanceOf(fenParsingErrorExpected ? kokopu.exception.InvalidFEN : kokopu.exception.IllegalArgument);
-		});
+		it(label, () => { test.exception(positionFactory).isInstanceOf(fenParsingErrorExpected ? exception.InvalidFEN : exception.IllegalArgument); });
 	}
 
-	doTest('Default constructor'  , 'regular', startFEN , function() { return new kokopu.Position(); });
-	doTest('Constructor \'start\'', 'regular', startFEN , function() { return new kokopu.Position('start'); });
-	doTest('Constructor \'empty\'', 'regular', emptyFEN , function() { return new kokopu.Position('empty'); });
-	doTest('Constructor FEN-based', 'regular', customFEN, function() { return new kokopu.Position(customFEN); });
+	doFailureTest('Invalid variant', false, () => new Position('not-a-variant', 'empty'));
+	doFailureTest('Invalid variant (not a string)', false, () => new Position(42, 'empty'));
+	doFailureTest('Invalid variant (FEN-based)', false, () => new Position('not-a-variant', startFEN));
+	doFailureTest('Invalid variant (FEN-based with prefix)', true, () => new Position('not-a-variant:' + startFEN));
+	doFailureTest('Invalid form 1', false, () => new Position(42));
+	doFailureTest('Invalid form 2', false, () => new Position({}));
+	doFailureTest('Invalid form 3', false, () => new Position('regular', 123));
+	doFailureTest('Invalid form 4', false, () => new Position('regular', {}));
+	doFailureTest('Variant without canonical start 1', false, () => new Position('no-king'));
+	doFailureTest('Variant without canonical start 2', false, () => new Position('chess960', 'start'));
+	doFailureTest('Invalid Scharnagl code NaN', false, () => new Position('chess960', NaN));
+	doFailureTest('Invalid Scharnagl code -1', false, () => new Position('chess960', -1));
 
-	doTest('Default constructor (force regular)'              , 'regular', startFEN , function() { return new kokopu.Position('regular'); });
-	doTest('Constructor \'start\' (force regular)'            , 'regular', startFEN , function() { return new kokopu.Position('regular', 'start'); });
-	doTest('Constructor \'empty\' (force regular)'            , 'regular', emptyFEN , function() { return new kokopu.Position('regular', 'empty'); });
-	doTest('Constructor FEN-based (force regular)'            , 'regular', customFEN, function() { return new kokopu.Position('regular', customFEN); });
-	doTest('Constructor FEN-based with prefix (force regular)', 'regular', customFEN, function() { return new kokopu.Position('regular:' + customFEN); });
-
-	doTest('Scharnagl constructor'                         , 'chess960', startXFEN, function() { return new kokopu.Position('chess960', 518); });
-	doTest('Constructor \'empty\' (Chess960)'              , 'chess960', emptyFEN , function() { return new kokopu.Position('chess960', 'empty'); });
-	doTest('Constructor FEN-based (Chess960)'              , 'chess960', customXFEN, function() { return new kokopu.Position('chess960', customFEN); }) ;
-	doTest('Constructor X-FEN-based (Chess960)'            , 'chess960', customXFEN, function() { return new kokopu.Position('chess960', customXFEN); }) ;
-	doTest('Constructor X-FEN-based with prefix (Chess960)', 'chess960', customXFEN, function() { return new kokopu.Position('chess960:' + customXFEN); }) ;
-
-	doTest('Constructor \'empty\' (no-king)'        , 'no-king'        , emptyFEN , function() { return new kokopu.Position('no-king', 'empty'); });
-	doTest('Constructor FEN-based (no-king)'        , 'no-king'        , customFEN, function() { return new kokopu.Position('no-king', customFEN); });
-	doTest('Constructor \'empty\' (white-king-only)', 'white-king-only', emptyFEN , function() { return new kokopu.Position('white-king-only', 'empty'); });
-	doTest('Constructor FEN-based (white-king-only)', 'white-king-only', customFEN, function() { return new kokopu.Position('white-king-only', customFEN); });
-	doTest('Constructor \'empty\' (black-king-only)', 'black-king-only', emptyFEN , function() { return new kokopu.Position('black-king-only', 'empty'); });
-	doTest('Constructor FEN-based (black-king-only)', 'black-king-only', customFEN, function() { return new kokopu.Position('black-king-only', customFEN); });
-
-	doTest('Default constructor (antichess)'              , 'antichess', startFENAntichess, function() { return new kokopu.Position('antichess'); });
-	doTest('Constructor \'start\' (antichess)'            , 'antichess', startFENAntichess, function() { return new kokopu.Position('antichess', 'start'); });
-	doTest('Constructor \'empty\' (antichess)'            , 'antichess', emptyFEN         , function() { return new kokopu.Position('antichess', 'empty'); });
-	doTest('Constructor FEN-based (antichess)'            , 'antichess', customFEN        , function() { return new kokopu.Position('antichess', customFEN); });
-	doTest('Constructor FEN-based with prefix (antichess)', 'antichess', customFEN        , function() { return new kokopu.Position('antichess:' + customFEN); });
-
-	doTest('Default constructor (horde)'              , 'horde', startFENHorde , function() { return new kokopu.Position('horde'); });
-	doTest('Constructor \'start\' (horde)'            , 'horde', startFENHorde , function() { return new kokopu.Position('horde', 'start'); });
-	doTest('Constructor \'empty\' (horde)'            , 'horde', emptyFEN      , function() { return new kokopu.Position('horde', 'empty'); });
-	doTest('Constructor FEN-based (horde)'            , 'horde', customFENHorde, function() { return new kokopu.Position('horde', customFENHorde); });
-	doTest('Constructor FEN-based with prefix (horde)', 'horde', customFENHorde, function() { return new kokopu.Position('horde:' + customFENHorde); });
-
-	doFailureTest('Invalid variant', false, function() { return new kokopu.Position('not-a-variant', 'empty'); });
-	doFailureTest('Invalid variant (not a string)', false, function() { return new kokopu.Position(42, 'empty'); });
-	doFailureTest('Invalid variant (FEN-based)', false, function() { return new kokopu.Position('not-a-variant', startFEN); });
-	doFailureTest('Invalid variant (FEN-based with prefix)', true, function() { return new kokopu.Position('not-a-variant:' + startFEN); });
-	doFailureTest('Invalid form 1', false, function() { return new kokopu.Position(42); });
-	doFailureTest('Invalid form 2', false, function() { return new kokopu.Position({}); });
-	doFailureTest('Invalid form 3', false, function() { return new kokopu.Position('regular', 123); });
-	doFailureTest('Invalid form 4', false, function() { return new kokopu.Position('regular', {}); });
-	doFailureTest('Variant without canonical start 1', false, function() { return new kokopu.Position('no-king'); });
-	doFailureTest('Variant without canonical start 2', false, function() { return new kokopu.Position('chess960', 'start'); });
-	doFailureTest('Invalid Scharnagl code NaN', false, function() { return new kokopu.Position('chess960', NaN); });
-	doFailureTest('Invalid Scharnagl code -1', false, function() { return new kokopu.Position('chess960', -1); });
-
-	doFailureTest('Invalid FEN string 1', true, function() { return new kokopu.Position('rkr/ppp/8/8/8/8/PPP/RKR w - - 0 1'); });
-	doFailureTest('Invalid FEN string 2', true, function() { return new kokopu.Position('8/8 w - - 0 1'); });
-	doFailureTest('Invalid FEN string 3', true, function() { return new kokopu.Position('8/8/8/X7/8/8/8/8 w - - 0 1'); });
-	doFailureTest('Invalid FEN string 4', true, function() { return new kokopu.Position('8/8/8/8/8/8/8/8 x - - 0 1'); });
-	doFailureTest('Invalid FEN string 5a', true, function() { return new kokopu.Position('8/8/8/8/8/8/8/8 w - j6 0 1'); });
-	doFailureTest('Invalid FEN string 5b', true, function() { return new kokopu.Position('8/8/8/8/8/8/8/8 w - a5 0 1'); });
-	doFailureTest('Invalid FEN string 6a', true, function() { return new kokopu.Position('8/8/8/8/8/8/8/8 w - - xxx 1'); });
-	doFailureTest('Invalid FEN string 6b', true, function() { return new kokopu.Position('8/8/8/8/8/8/8/8 w - - 0 xxx'); });
-	doFailureTest('Invalid FEN string with invalid variant', true, function() { return new kokopu.Position('Something strange: a string with a colon in it...'); });
-	doFailureTest('Invalid FEN string with variant', true, function() { return new kokopu.Position('regular', 'NotAFENString'); });
-	doFailureTest('Invalid FEN string with variant (as prefix)', true, function() { return new kokopu.Position('regular:NotAFENString'); });
+	doFailureTest('Invalid FEN string 1', true, () => new Position('rkr/ppp/8/8/8/8/PPP/RKR w - - 0 1'));
+	doFailureTest('Invalid FEN string 2', true, () => new Position('8/8 w - - 0 1'));
+	doFailureTest('Invalid FEN string 3', true, () => new Position('8/8/8/X7/8/8/8/8 w - - 0 1'));
+	doFailureTest('Invalid FEN string 4', true, () => new Position('8/8/8/8/8/8/8/8 x - - 0 1'));
+	doFailureTest('Invalid FEN string 5a', true, () => new Position('8/8/8/8/8/8/8/8 w - j6 0 1'));
+	doFailureTest('Invalid FEN string 5b', true, () => new Position('8/8/8/8/8/8/8/8 w - a5 0 1'));
+	doFailureTest('Invalid FEN string 6a', true, () => new Position('8/8/8/8/8/8/8/8 w - - xxx 1'));
+	doFailureTest('Invalid FEN string 6b', true, () => new Position('8/8/8/8/8/8/8/8 w - - 0 xxx'));
+	doFailureTest('Invalid FEN string with invalid variant', true, () => new Position('Something strange: a string with a colon in it...'));
+	doFailureTest('Invalid FEN string with variant', true, () => new Position('regular', 'NotAFENString'));
+	doFailureTest('Invalid FEN string with variant (as prefix)', true, () => new Position('regular:NotAFENString'));
 });
 
 
-describe('Position copy constructor', function() {
-	variants.forEach(function(variant) {
-		it('Copy from ' + variant, function() {
-			var currentCustomFEN = variant === 'chess960' ? customXFEN : customFEN;
+describe('Position copy constructor', () => {
+	for (const variant of variants) {
+		it('Copy from ' + variant, () => {
+			const currentCustomFEN = variant === 'chess960' ? customXFEN : customFEN;
 
 			// Initialize the positions.
-			var p1 = new kokopu.Position(variant, currentCustomFEN);
-			var p2 = new kokopu.Position(p1);
+			const p1 = new Position(variant, currentCustomFEN);
+			const p2 = new Position(p1);
 			p1.clear(variant);
 
 			// Check their states
@@ -134,246 +129,246 @@ describe('Position copy constructor', function() {
 			test.value(p1.fen()).is(emptyFEN);
 			test.value(p2.fen()).is(currentCustomFEN);
 		});
-	});
+	}
 });
 
 
-describe('Clear mutator', function() {
-	variants.forEach(function(variantSource) {
+describe('Clear mutator', () => {
+	for (const variantSource of variants) {
 
-		it('From ' + variantSource + ' to default', function() {
-			var position = new kokopu.Position(variantSource, customFEN);
+		it('From ' + variantSource + ' to default', () => {
+			const position = new Position(variantSource, customFEN);
 			position.clear();
 			test.value(position.variant()).is('regular');
 			test.value(position.fen()).is(emptyFEN);
 		});
 
-		variants.forEach(function(variantTarget) {
-			it('From ' + variantSource + ' to ' + variantTarget, function() {
-				var position = new kokopu.Position(variantSource, customFEN);
+		for (const variantTarget of variants) {
+			it('From ' + variantSource + ' to ' + variantTarget, () => {
+				const position = new Position(variantSource, customFEN);
 				position.clear(variantTarget);
 				test.value(position.variant()).is(variantTarget);
 				test.value(position.fen()).is(emptyFEN);
 			});
-		});
+		}
 
-		it('From ' + variantSource + ' to error', function() {
-			var position = new kokopu.Position(variantSource, customFEN);
-			test.exception(function() { position.clear('not-a-variant'); }).isInstanceOf(kokopu.exception.IllegalArgument);
+		it('From ' + variantSource + ' to error', () => {
+			const position = new Position(variantSource, customFEN);
+			test.exception(() => position.clear('not-a-variant')).isInstanceOf(exception.IllegalArgument);
 		});
-	});
+	}
 });
 
 
-describe('Reset mutator', function() {
-	variants.forEach(function(variant) {
-		it('From ' + variant, function() {
-			var position = new kokopu.Position(variant, customFEN);
+describe('Reset mutator', () => {
+	for (const variant of variants) {
+		it('From ' + variant, () => {
+			const position = new Position(variant, customFEN);
 			position.reset();
 			test.value(position.variant()).is('regular');
 			test.value(position.fen()).is(startFEN);
 		});
-	});
+	}
 });
 
 
-describe('Reset 960 mutator', function() {
-	variants.forEach(function(variant) {
-		it('From ' + variant, function() {
-			var position = new kokopu.Position(variant, customFEN);
+describe('Reset 960 mutator', () => {
+	for (const variant of variants) {
+		it('From ' + variant, () => {
+			const position = new Position(variant, customFEN);
 			position.reset960(518);
 			test.value(position.variant()).is('chess960');
 			test.value(position.fen()).is(startXFEN);
 		});
-	});
+	}
 
-	[960, 18.3, '546'].forEach(function(elem) {
-		it('Error with Scharnagl code ' + elem, function() {
-			var p=new kokopu.Position();
-			test.exception(function() { p.reset960(elem); }).isInstanceOf(kokopu.exception.IllegalArgument);
+	for (const elem of [960, 18.3, '546']) {
+		it('Error with Scharnagl code ' + elem, () => {
+			const p = new Position();
+			test.exception(() => p.reset960(elem)).isInstanceOf(exception.IllegalArgument);
 		});
-	});
+	}
 });
 
 
-describe('Reset antichess mutator', function() {
-	variants.forEach(function(variant) {
-		it('From ' + variant, function() {
-			var position = new kokopu.Position(variant, customFEN);
+describe('Reset antichess mutator', () => {
+	for (const variant of variants) {
+		it('From ' + variant, () => {
+			const position = new Position(variant, customFEN);
 			position.resetAntichess();
 			test.value(position.variant()).is('antichess');
 			test.value(position.fen()).is(startFENAntichess);
 		});
-	});
+	}
 });
 
 
-describe('Reset horde mutator', function() {
-	variants.forEach(function(variant) {
-		it('From ' + variant, function() {
-			var position = new kokopu.Position(variant, customFEN);
+describe('Reset horde mutator', () => {
+	for (const variant of variants) {
+		it('From ' + variant, () => {
+			const position = new Position(variant, customFEN);
 			position.resetHorde();
 			test.value(position.variant()).is('horde');
 			test.value(position.fen()).is(startFENHorde);
 		});
-	});
+	}
 });
 
 
-describe('Position Scharnagl constructor', function() {
+describe('Position Scharnagl constructor', () => {
 
-	var testData = readCSV('scharnagl.csv', function(fields) {
+	const testData = readCSV('scharnagl.csv', fields => {
 		return {
 			scharnaglCode: parseInt(fields[0]),
-			fen: fields[3]
+			fen: fields[3],
 		};
 	});
 
-	testData.forEach(function(elem) {
-		it('Chess960 initial position ' + elem.scharnaglCode, function() {
-			var position = new kokopu.Position('chess960', elem.scharnaglCode);
+	for (const elem of testData) {
+		it('Chess960 initial position ' + elem.scharnaglCode, () => {
+			const position = new Position('chess960', elem.scharnaglCode);
 			test.value(position.variant()).is('chess960');
 			test.value(position.fen()).is(elem.fen);
 		});
-	});
+	}
 });
 
 
-describe('Position getters', function() {
+describe('Position getters', () => {
 
-	var currentFEN = 'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b Kk e3 0 1';
+	const currentFEN = 'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b Kk e3 0 1';
 
-	it('Get board 1', function() { var p=new kokopu.Position(); test.value(p.square('e1')).is('wk'); });
-	it('Get board 2', function() { var p=new kokopu.Position(); test.value(p.square('f7')).is('bp'); });
-	it('Get board 3', function() { var p=new kokopu.Position(); test.value(p.square('b4')).is('-'); });
+	it('Get board 1', () => { const p = new Position(); test.value(p.square('e1')).is('wk'); });
+	it('Get board 2', () => { const p = new Position(); test.value(p.square('f7')).is('bp'); });
+	it('Get board 3', () => { const p = new Position(); test.value(p.square('b4')).is('-'); });
 
-	it('Get turn 1', function() { var p=new kokopu.Position(); test.value(p.turn()).is('w'); });
-	it('Get turn 2', function() { var p=new kokopu.Position(currentFEN); test.value(p.turn()).is('b'); });
+	it('Get turn 1', () => { const p = new Position(); test.value(p.turn()).is('w'); });
+	it('Get turn 2', () => { const p = new Position(currentFEN); test.value(p.turn()).is('b'); });
 
-	it('Get castling 1', function() { var p=new kokopu.Position(); test.value(p.castling('wq')).is(true); });
-	it('Get castling 2', function() { var p=new kokopu.Position(currentFEN); test.value(p.castling('bq')).is(false); });
-	it('Get castling 3', function() { var p=new kokopu.Position(currentFEN); test.value(p.castling('bk')).is(true); });
-	it('Get castling 4 (chess960)', function() { var p=new kokopu.Position('chess960', 763); test.value(p.castling('wa')).is(true); });
-	it('Get castling 5 (chess960)', function() { var p=new kokopu.Position('chess960', 763); test.value(p.castling('wb')).is(false); });
-	it('Get castling 6 (chess960)', function() { var p=new kokopu.Position('chess960', 763); test.value(p.castling('bf')).is(true); });
-	it('Get castling 7 (chess960)', function() { var p=new kokopu.Position('chess960', 763); test.value(p.castling('bh')).is(false); });
-	it('Get castling 8 (no-king)'         , function() { var p=new kokopu.Position('no-king', 'empty'); test.value(p.castling('bq')).is(false); });
-	it('Get castling 9 (no-king)'         , function() { var p=new kokopu.Position('no-king', startFEN); test.value(p.castling('wk')).is(true); });
-	it('Get castling 10 (white-king-only)', function() { var p=new kokopu.Position('white-king-only', 'empty'); test.value(p.castling('wk')).is(false); });
-	it('Get castling 11 (white-king-only)', function() { var p=new kokopu.Position('white-king-only', 'empty'); test.value(p.castling('bq')).is(false); });
-	it('Get castling 12 (white-king-only)', function() { var p=new kokopu.Position('white-king-only', startFEN); test.value(p.castling('wq')).is(true); });
-	it('Get castling 13 (white-king-only)', function() { var p=new kokopu.Position('white-king-only', startFEN); test.value(p.castling('bk')).is(true); });
-	it('Get castling 14 (black-king-only)', function() { var p=new kokopu.Position('black-king-only', 'empty'); test.value(p.castling('wk')).is(false); });
-	it('Get castling 15 (black-king-only)', function() { var p=new kokopu.Position('black-king-only', 'empty'); test.value(p.castling('bq')).is(false); });
-	it('Get castling 16 (black-king-only)', function() { var p=new kokopu.Position('black-king-only', startFEN); test.value(p.castling('wq')).is(true); });
-	it('Get castling 17 (black-king-only)', function() { var p=new kokopu.Position('black-king-only', startFEN); test.value(p.castling('bk')).is(true); });
+	it('Get castling 1', () => { const p = new Position(); test.value(p.castling('wq')).is(true); });
+	it('Get castling 2', () => { const p = new Position(currentFEN); test.value(p.castling('bq')).is(false); });
+	it('Get castling 3', () => { const p = new Position(currentFEN); test.value(p.castling('bk')).is(true); });
+	it('Get castling 4 (chess960)', () => { const p = new Position('chess960', 763); test.value(p.castling('wa')).is(true); });
+	it('Get castling 5 (chess960)', () => { const p = new Position('chess960', 763); test.value(p.castling('wb')).is(false); });
+	it('Get castling 6 (chess960)', () => { const p = new Position('chess960', 763); test.value(p.castling('bf')).is(true); });
+	it('Get castling 7 (chess960)', () => { const p = new Position('chess960', 763); test.value(p.castling('bh')).is(false); });
+	it('Get castling 8 (no-king)', () => { const p = new Position('no-king', 'empty'); test.value(p.castling('bq')).is(false); });
+	it('Get castling 9 (no-king)', () => { const p = new Position('no-king', startFEN); test.value(p.castling('wk')).is(true); });
+	it('Get castling 10 (white-king-only)', () => { const p = new Position('white-king-only', 'empty'); test.value(p.castling('wk')).is(false); });
+	it('Get castling 11 (white-king-only)', () => { const p = new Position('white-king-only', 'empty'); test.value(p.castling('bq')).is(false); });
+	it('Get castling 12 (white-king-only)', () => { const p = new Position('white-king-only', startFEN); test.value(p.castling('wq')).is(true); });
+	it('Get castling 13 (white-king-only)', () => { const p = new Position('white-king-only', startFEN); test.value(p.castling('bk')).is(true); });
+	it('Get castling 14 (black-king-only)', () => { const p = new Position('black-king-only', 'empty'); test.value(p.castling('wk')).is(false); });
+	it('Get castling 15 (black-king-only)', () => { const p = new Position('black-king-only', 'empty'); test.value(p.castling('bq')).is(false); });
+	it('Get castling 16 (black-king-only)', () => { const p = new Position('black-king-only', startFEN); test.value(p.castling('wq')).is(true); });
+	it('Get castling 17 (black-king-only)', () => { const p = new Position('black-king-only', startFEN); test.value(p.castling('bk')).is(true); });
 
-	it('Get en-passant 1', function() { var p=new kokopu.Position(); test.value(p.enPassant()).is('-'); });
-	it('Get en-passant 2', function() { var p=new kokopu.Position(currentFEN); test.value(p.enPassant()).is('e'); });
+	it('Get en-passant 1', () => { const p = new Position(); test.value(p.enPassant()).is('-'); });
+	it('Get en-passant 2', () => { const p = new Position(currentFEN); test.value(p.enPassant()).is('e'); });
 
-	['j1', 'f9'].forEach(function(elem) {
-		it('Error for board with ' + elem, function() {
-			var p=new kokopu.Position();
-			test.exception(function() { p.square(elem); }).isInstanceOf(kokopu.exception.IllegalArgument);
+	for (const elem of ['j1', 'f9']) {
+		it('Error for board with ' + elem, () => {
+			const p = new Position();
+			test.exception(() => p.square(elem)).isInstanceOf(exception.IllegalArgument);
 		});
-	});
-
-	['bK', 'wa'].forEach(function(elem) {
-		it('Error for castling with ' + elem, function() {
-			var p=new kokopu.Position();
-			test.exception(function() { p.castling(elem); }).isInstanceOf(kokopu.exception.IllegalArgument);
-		});
-	});
-});
-
-
-describe('Position setters', function() {
-
-	var pos1 = new kokopu.Position('start');
-	var pos2 = new kokopu.Position('empty');
-	var pos3 = new kokopu.Position('chess960', 763);
-
-	it('Set board 1a', function() { pos1.square('a8', '-'); test.value(pos1.fen()).is('1nbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'); });
-	it('Set board 1b', function() { pos1.square('f6', 'wb'); test.value(pos1.fen()).is('1nbqkbnr/pppppppp/5B2/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'); });
-
-	it('Set board 2a', function() { pos2.square('c3', 'bk'); test.value(pos2.fen()).is('8/8/8/8/8/2k5/8/8 w - - 0 1'); });
-	it('Set board 2b', function() { pos2.square('g5', 'wk'); test.value(pos2.fen()).is('8/8/8/6K1/8/2k5/8/8 w - - 0 1'); });
-	it('Set board 2c', function() { pos2.square('c3', '-'); test.value(pos2.fen()).is('8/8/8/6K1/8/8/8/8 w - - 0 1'); });
-
-	it('Set turn 1', function() { pos1.turn('w'); test.value(pos1.fen()).is('1nbqkbnr/pppppppp/5B2/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'); });
-	it('Set turn 2', function() { pos2.turn('b'); test.value(pos2.fen()).is('8/8/8/6K1/8/8/8/8 b - - 0 1'); });
-
-	it('Set castling 1a', function() { pos1.castling('wk', false); test.value(pos1.fen()).is('1nbqkbnr/pppppppp/5B2/8/8/8/PPPPPPPP/RNBQKBNR w Qkq - 0 1'); });
-	it('Set castling 1b', function() { pos1.castling('bk', true ); test.value(pos1.fen()).is('1nbqkbnr/pppppppp/5B2/8/8/8/PPPPPPPP/RNBQKBNR w Qkq - 0 1'); });
-	it('Set castling 2a', function() { pos2.castling('wq', false); test.value(pos2.fen()).is('8/8/8/6K1/8/8/8/8 b - - 0 1'); });
-	it('Set castling 2b', function() { pos2.castling('bq', true ); test.value(pos2.fen()).is('8/8/8/6K1/8/8/8/8 b q - 0 1'); });
-	it('Set castling 3a (Chess960)', function() { pos3.castling('wa', false); test.value(pos3.fen()).is('rknnbrqb/pppppppp/8/8/8/8/PPPPPPPP/RKNNBRQB w Faf - 0 1'); });
-	it('Set castling 3b (Chess960)', function() { pos3.castling('wh', true ); test.value(pos3.fen()).is('rknnbrqb/pppppppp/8/8/8/8/PPPPPPPP/RKNNBRQB w FHaf - 0 1'); });
-	it('Set castling 3c (Chess960)', function() { pos3.castling('bd', true ); test.value(pos3.fen()).is('rknnbrqb/pppppppp/8/8/8/8/PPPPPPPP/RKNNBRQB w FHadf - 0 1'); });
-	it('Set castling 3d (Chess960)', function() { pos3.castling('bf', false); test.value(pos3.fen()).is('rknnbrqb/pppppppp/8/8/8/8/PPPPPPPP/RKNNBRQB w FHad - 0 1'); });
-
-	it('Set en-passant 1a', function() { pos1.enPassant('e'); test.value(pos1.fen()).is('1nbqkbnr/pppppppp/5B2/8/8/8/PPPPPPPP/RNBQKBNR w Qkq e6 0 1'); });
-	it('Set en-passant 1b', function() { pos1.enPassant('-'); test.value(pos1.fen()).is('1nbqkbnr/pppppppp/5B2/8/8/8/PPPPPPPP/RNBQKBNR w Qkq - 0 1'); });
-	it('Set en-passant 2a', function() { pos2.enPassant('a'); test.value(pos2.fen()).is('8/8/8/6K1/8/8/8/8 b q a3 0 1'); });
-	it('Set en-passant 2b', function() { pos2.enPassant('h'); test.value(pos2.fen()).is('8/8/8/6K1/8/8/8/8 b q h3 0 1'); });
-
-	['p', 'Q', 'kw'].forEach(function(elem) {
-		it('Error for board with colored piece ' + elem, function() {
-			var p=new kokopu.Position();
-			test.exception(function() { p.square('d4', elem); }).isInstanceOf(kokopu.exception.IllegalArgument);
-		});
-	});
-
-	['', 'W', 'bb', 'wb'].forEach(function(elem) {
-		it('Error for turn with ' + (elem === '' ? '<empty string>' : elem), function() {
-			var p=new kokopu.Position();
-			test.exception(function() { p.turn(elem); }).isInstanceOf(kokopu.exception.IllegalArgument);
-		});
-	});
-
-	[0, 1, 'false', 'true'].forEach(function(elem) {
-		it('Error for set castling with ' + (elem === '' ? '<empty string>' : elem), function() {
-			var p=new kokopu.Position();
-			test.exception(function() { p.castling('wk', elem); }).isInstanceOf(kokopu.exception.IllegalArgument);
-		});
-	});
-
-	['', 'i', 'gg', 'abcdefgh'].forEach(function(elem) {
-		it('Error for en-passant with ' + (elem === '' ? '<empty string>' : elem), function() {
-			var p=new kokopu.Position();
-			test.exception(function() { p.enPassant(elem); }).isInstanceOf(kokopu.exception.IllegalArgument);
-		});
-	});
-});
-
-
-describe('Position equality', function() {
-
-	function checkIsEqual(p1, p2, expected) {
-		test.value(kokopu.Position.isEqual(p1, p2)).is(expected);
-		test.value(kokopu.Position.isEqual(p2, p1)).is(expected);
 	}
 
-	it('On copy (base)', function() {
-		var p1 = new kokopu.Position();
-		var p2 = new kokopu.Position(p1);
+	for (const elem of ['bK', 'wa']) {
+		it('Error for castling with ' + elem, () => {
+			const p = new Position();
+			test.exception(() => p.castling(elem)).isInstanceOf(exception.IllegalArgument);
+		});
+	}
+});
+
+
+describe('Position setters', () => {
+
+	const pos1 = new Position('start');
+	const pos2 = new Position('empty');
+	const pos3 = new Position('chess960', 763);
+
+	it('Set board 1a', () => { pos1.square('a8', '-'); test.value(pos1.fen()).is('1nbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'); });
+	it('Set board 1b', () => { pos1.square('f6', 'wb'); test.value(pos1.fen()).is('1nbqkbnr/pppppppp/5B2/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'); });
+
+	it('Set board 2a', () => { pos2.square('c3', 'bk'); test.value(pos2.fen()).is('8/8/8/8/8/2k5/8/8 w - - 0 1'); });
+	it('Set board 2b', () => { pos2.square('g5', 'wk'); test.value(pos2.fen()).is('8/8/8/6K1/8/2k5/8/8 w - - 0 1'); });
+	it('Set board 2c', () => { pos2.square('c3', '-'); test.value(pos2.fen()).is('8/8/8/6K1/8/8/8/8 w - - 0 1'); });
+
+	it('Set turn 1', () => { pos1.turn('w'); test.value(pos1.fen()).is('1nbqkbnr/pppppppp/5B2/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'); });
+	it('Set turn 2', () => { pos2.turn('b'); test.value(pos2.fen()).is('8/8/8/6K1/8/8/8/8 b - - 0 1'); });
+
+	it('Set castling 1a', () => { pos1.castling('wk', false); test.value(pos1.fen()).is('1nbqkbnr/pppppppp/5B2/8/8/8/PPPPPPPP/RNBQKBNR w Qkq - 0 1'); });
+	it('Set castling 1b', () => { pos1.castling('bk', true ); test.value(pos1.fen()).is('1nbqkbnr/pppppppp/5B2/8/8/8/PPPPPPPP/RNBQKBNR w Qkq - 0 1'); });
+	it('Set castling 2a', () => { pos2.castling('wq', false); test.value(pos2.fen()).is('8/8/8/6K1/8/8/8/8 b - - 0 1'); });
+	it('Set castling 2b', () => { pos2.castling('bq', true ); test.value(pos2.fen()).is('8/8/8/6K1/8/8/8/8 b q - 0 1'); });
+	it('Set castling 3a (Chess960)', () => { pos3.castling('wa', false); test.value(pos3.fen()).is('rknnbrqb/pppppppp/8/8/8/8/PPPPPPPP/RKNNBRQB w Faf - 0 1'); });
+	it('Set castling 3b (Chess960)', () => { pos3.castling('wh', true ); test.value(pos3.fen()).is('rknnbrqb/pppppppp/8/8/8/8/PPPPPPPP/RKNNBRQB w FHaf - 0 1'); });
+	it('Set castling 3c (Chess960)', () => { pos3.castling('bd', true ); test.value(pos3.fen()).is('rknnbrqb/pppppppp/8/8/8/8/PPPPPPPP/RKNNBRQB w FHadf - 0 1'); });
+	it('Set castling 3d (Chess960)', () => { pos3.castling('bf', false); test.value(pos3.fen()).is('rknnbrqb/pppppppp/8/8/8/8/PPPPPPPP/RKNNBRQB w FHad - 0 1'); });
+
+	it('Set en-passant 1a', () => { pos1.enPassant('e'); test.value(pos1.fen()).is('1nbqkbnr/pppppppp/5B2/8/8/8/PPPPPPPP/RNBQKBNR w Qkq e6 0 1'); });
+	it('Set en-passant 1b', () => { pos1.enPassant('-'); test.value(pos1.fen()).is('1nbqkbnr/pppppppp/5B2/8/8/8/PPPPPPPP/RNBQKBNR w Qkq - 0 1'); });
+	it('Set en-passant 2a', () => { pos2.enPassant('a'); test.value(pos2.fen()).is('8/8/8/6K1/8/8/8/8 b q a3 0 1'); });
+	it('Set en-passant 2b', () => { pos2.enPassant('h'); test.value(pos2.fen()).is('8/8/8/6K1/8/8/8/8 b q h3 0 1'); });
+
+	for (const elem of ['p', 'Q', 'kw']) {
+		it('Error for board with colored piece ' + elem, () => {
+			const p = new Position();
+			test.exception(() => p.square('d4', elem)).isInstanceOf(exception.IllegalArgument);
+		});
+	}
+
+	for (const elem of ['', 'W', 'bb', 'wb']) {
+		it('Error for turn with ' + (elem === '' ? '<empty string>' : elem), () => {
+			const p = new Position();
+			test.exception(() => p.turn(elem)).isInstanceOf(exception.IllegalArgument);
+		});
+	}
+
+	for (const elem of [0, 1, 'false', 'true']) {
+		it('Error for set castling with ' + (elem === '' ? '<empty string>' : elem), () => {
+			const p = new Position();
+			test.exception(() => p.castling('wk', elem)).isInstanceOf(exception.IllegalArgument);
+		});
+	}
+
+	for (const elem of ['', 'i', 'gg', 'abcdefgh']) {
+		it('Error for en-passant with ' + (elem === '' ? '<empty string>' : elem), () => {
+			const p = new Position();
+			test.exception(() => p.enPassant(elem)).isInstanceOf(exception.IllegalArgument);
+		});
+	}
+});
+
+
+describe('Position equality', () => {
+
+	function checkIsEqual(p1, p2, expected) {
+		test.value(Position.isEqual(p1, p2)).is(expected);
+		test.value(Position.isEqual(p2, p1)).is(expected);
+	}
+
+	it('On copy (base)', () => {
+		const p1 = new Position();
+		const p2 = new Position(p1);
 		checkIsEqual(p1, p2, true);
 	});
-	it('On copy (FEN)', function() {
-		var p1 = new kokopu.Position(customFEN);
-		var p2 = new kokopu.Position(p1);
+	it('On copy (FEN)', () => {
+		const p1 = new Position(customFEN);
+		const p2 = new Position(p1);
 		checkIsEqual(p1, p2, true);
 	});
-	it('On copy (with variant)', function() {
-		var p1 = new kokopu.Position('horde', customFENHorde);
-		var p2 = new kokopu.Position(p1);
+	it('On copy (with variant)', () => {
+		const p1 = new Position('horde', customFENHorde);
+		const p2 = new Position(p1);
 		checkIsEqual(p1, p2, true);
 	});
 
 	function itOnBoardChange(label, square, firstValue, secondValue) {
-		it('On board changed ' + label, function() {
-			var p1 = new kokopu.Position();
-			var p2 = new kokopu.Position();
+		it('On board changed ' + label, () => {
+			const p1 = new Position();
+			const p2 = new Position();
 			p2.square(square, firstValue);
 			checkIsEqual(p1, p2, false);
 			p2.square(square, secondValue);
@@ -384,9 +379,9 @@ describe('Position equality', function() {
 	itOnBoardChange(2, 'a1', '-', 'wr');
 	itOnBoardChange(3, 'e4', 'bq', '-');
 
-	it('On turn changed', function() {
-		var p1 = new kokopu.Position();
-		var p2 = new kokopu.Position();
+	it('On turn changed', () => {
+		const p1 = new Position();
+		const p2 = new Position();
 		p2.turn('b');
 		checkIsEqual(p1, p2, false);
 		p2.turn('w');
@@ -394,9 +389,9 @@ describe('Position equality', function() {
 	});
 
 	function itOnCastlingChange(label, castle) {
-		it('On castling changed ' + label, function() {
-			var p1 = new kokopu.Position();
-			var p2 = new kokopu.Position();
+		it('On castling changed ' + label, () => {
+			const p1 = new Position();
+			const p2 = new Position();
 			p2.castling(castle, false);
 			checkIsEqual(p1, p2, false);
 			p2.castling(castle, true);
@@ -406,31 +401,31 @@ describe('Position equality', function() {
 	itOnCastlingChange(1, 'wk');
 	itOnCastlingChange(2, 'bq');
 
-	it('On en-passant changed', function() {
-		var p1 = new kokopu.Position(customFEN);
-		var p2 = new kokopu.Position(customFEN);
+	it('On en-passant changed', () => {
+		const p1 = new Position(customFEN);
+		const p2 = new Position(customFEN);
 		p2.enPassant('-');
 		checkIsEqual(p1, p2, false);
 		p2.enPassant('d');
 		checkIsEqual(p1, p2, true);
 	});
 
-	it('After 2-square pawn move', function() {
-		var p1 = new kokopu.Position();
+	it('After 2-square pawn move', () => {
+		const p1 = new Position();
 		p1.play('e4');
-		var p2 = new kokopu.Position('rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1');
+		const p2 = new Position('rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1');
 		checkIsEqual(p1, p2, true);
 	});
 
-	it('With distinct variants', function() {
-		var p1 = new kokopu.Position('regular', 'empty');
-		var p2 = new kokopu.Position('antichess', 'empty');
+	it('With distinct variants', () => {
+		const p1 = new Position('regular', 'empty');
+		const p2 = new Position('antichess', 'empty');
 		checkIsEqual(p1, p2, false);
 	});
 
-	it('With non-position objects', function() {
-		var pos = new kokopu.Position();
-		var obj = {};
+	it('With non-position objects', () => {
+		const pos = new Position();
+		const obj = {};
 		checkIsEqual(pos, obj, false);
 		checkIsEqual(obj, obj, false);
 	});

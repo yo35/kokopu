@@ -1,4 +1,4 @@
-/******************************************************************************
+/* -------------------------------------------------------------------------- *
  *                                                                            *
  *    This file is part of Kokopu, a JavaScript chess library.                *
  *    Copyright (C) 2018-2022  Yoann Le Montagner <yo35 -at- melix.net>       *
@@ -17,101 +17,92 @@
  *    Public License along with this program. If not, see                     *
  *    <http://www.gnu.org/licenses/>.                                         *
  *                                                                            *
- ******************************************************************************/
+ * -------------------------------------------------------------------------- */
 
 
-'use strict';
+const { exception, squareColor, squareToCoordinates, coordinatesToSquare, oppositeColor, variantWithCanonicalStartPosition, nagSymbol } = require('../dist/lib/index');
+const readText = require('./common/readtext');
+const test = require('unit.js');
 
 
-var kokopu = require('../dist/lib/index');
-var test = require('unit.js');
-var readText = require('./common/readtext');
+describe('Square color', () => {
+	it('a1', () => { test.value(squareColor('a1')).is('b'); });
+	it('h1', () => { test.value(squareColor('h1')).is('w'); });
+	it('a8', () => { test.value(squareColor('a8')).is('w'); });
+	it('h8', () => { test.value(squareColor('h8')).is('b'); });
+	it('b3', () => { test.value(squareColor('b3')).is('w'); });
+	it('b4', () => { test.value(squareColor('b4')).is('b'); });
+	it('c4', () => { test.value(squareColor('c4')).is('w'); });
+	it('f5', () => { test.value(squareColor('f5')).is('w'); });
+	it('e5', () => { test.value(squareColor('e5')).is('b'); });
+	it('e6', () => { test.value(squareColor('e6')).is('w'); });
 
-
-describe('Square color', function() {
-	it('a1', function() { test.value(kokopu.squareColor('a1')).is('b'); });
-	it('h1', function() { test.value(kokopu.squareColor('h1')).is('w'); });
-	it('a8', function() { test.value(kokopu.squareColor('a8')).is('w'); });
-	it('h8', function() { test.value(kokopu.squareColor('h8')).is('b'); });
-	it('b3', function() { test.value(kokopu.squareColor('b3')).is('w'); });
-	it('b4', function() { test.value(kokopu.squareColor('b4')).is('b'); });
-	it('c4', function() { test.value(kokopu.squareColor('c4')).is('w'); });
-	it('f5', function() { test.value(kokopu.squareColor('f5')).is('w'); });
-	it('e5', function() { test.value(kokopu.squareColor('e5')).is('b'); });
-	it('e6', function() { test.value(kokopu.squareColor('e6')).is('w'); });
-
-	it('Error with 7', function() { test.exception(function() { kokopu.squareColor('7'); }).isInstanceOf(kokopu.exception.IllegalArgument); });
-	it('Error with b8g', function() { test.exception(function() { kokopu.squareColor('b8g'); }).isInstanceOf(kokopu.exception.IllegalArgument); });
+	it('Error with 7', () => { test.exception(() => squareColor('7')).isInstanceOf(exception.IllegalArgument); });
+	it('Error with b8g', () => { test.exception(() => squareColor('b8g')).isInstanceOf(exception.IllegalArgument); });
 });
 
 
-describe('Square to coordinates', function() {
-	it('a1', function() { test.value(kokopu.squareToCoordinates('a1')).is({ file:0, rank:0 }); });
-	it('h1', function() { test.value(kokopu.squareToCoordinates('h1')).is({ file:7, rank:0 }); });
-	it('a8', function() { test.value(kokopu.squareToCoordinates('a8')).is({ file:0, rank:7 }); });
-	it('h8', function() { test.value(kokopu.squareToCoordinates('h8')).is({ file:7, rank:7 }); });
-	it('e3', function() { test.value(kokopu.squareToCoordinates('e3')).is({ file:4, rank:2 }); });
+describe('Square to coordinates', () => {
+	it('a1', () => { test.value(squareToCoordinates('a1')).is({ file:0, rank:0 }); });
+	it('h1', () => { test.value(squareToCoordinates('h1')).is({ file:7, rank:0 }); });
+	it('a8', () => { test.value(squareToCoordinates('a8')).is({ file:0, rank:7 }); });
+	it('h8', () => { test.value(squareToCoordinates('h8')).is({ file:7, rank:7 }); });
+	it('e3', () => { test.value(squareToCoordinates('e3')).is({ file:4, rank:2 }); });
 
-	it('Error with <empty string>', function() { test.exception(function() { kokopu.squareToCoordinates(''); }).isInstanceOf(kokopu.exception.IllegalArgument); });
-	it('Error with cc', function() { test.exception(function() { kokopu.squareToCoordinates('cc'); }).isInstanceOf(kokopu.exception.IllegalArgument); });
+	it('Error with <empty string>', () => { test.exception(() => squareToCoordinates('')).isInstanceOf(exception.IllegalArgument); });
+	it('Error with cc', () => { test.exception(() => squareToCoordinates('cc')).isInstanceOf(exception.IllegalArgument); });
 });
 
 
-describe('Coordinates to square', function() {
-	it('a1', function() { test.value(kokopu.coordinatesToSquare(0, 0)).is('a1'); });
-	it('h1', function() { test.value(kokopu.coordinatesToSquare(7, 0)).is('h1'); });
-	it('a8', function() { test.value(kokopu.coordinatesToSquare(0, 7)).is('a8'); });
-	it('h8', function() { test.value(kokopu.coordinatesToSquare(7, 7)).is('h8'); });
-	it('e3', function() { test.value(kokopu.coordinatesToSquare(4, 2)).is('e3'); });
+describe('Coordinates to square', () => {
+	it('a1', () => { test.value(coordinatesToSquare(0, 0)).is('a1'); });
+	it('h1', () => { test.value(coordinatesToSquare(7, 0)).is('h1'); });
+	it('a8', () => { test.value(coordinatesToSquare(0, 7)).is('a8'); });
+	it('h8', () => { test.value(coordinatesToSquare(7, 7)).is('h8'); });
+	it('e3', () => { test.value(coordinatesToSquare(4, 2)).is('e3'); });
 
-	it('Error with (-1,4)', function() { test.exception(function() { kokopu.coordinatesToSquare(-1, 4); }).isInstanceOf(kokopu.exception.IllegalArgument); });
-	it('Error with (8,3)', function() { test.exception(function() { kokopu.coordinatesToSquare(8, 3); }).isInstanceOf(kokopu.exception.IllegalArgument); });
-	it('Error with (5,-1)', function() { test.exception(function() { kokopu.coordinatesToSquare(5, -1); }).isInstanceOf(kokopu.exception.IllegalArgument); });
-	it('Error with (5,8)', function() { test.exception(function() { kokopu.coordinatesToSquare(7, 8); }).isInstanceOf(kokopu.exception.IllegalArgument); });
+	it('Error with (-1,4)', () => { test.exception(() => coordinatesToSquare(-1, 4)).isInstanceOf(exception.IllegalArgument); });
+	it('Error with (8,3)', () => { test.exception(() => coordinatesToSquare(8, 3)).isInstanceOf(exception.IllegalArgument); });
+	it('Error with (5,-1)', () => { test.exception(() => coordinatesToSquare(5, -1)).isInstanceOf(exception.IllegalArgument); });
+	it('Error with (5,8)', () => { test.exception(() => coordinatesToSquare(7, 8)).isInstanceOf(exception.IllegalArgument); });
 });
 
 
-describe('Opposite color', function() {
-	it('white to black', function() { test.value(kokopu.oppositeColor('w')).is('b'); });
-	it('black to white', function() { test.value(kokopu.oppositeColor('b')).is('w'); });
+describe('Opposite color', () => {
+	it('white to black', () => { test.value(oppositeColor('w')).is('b'); });
+	it('black to white', () => { test.value(oppositeColor('b')).is('w'); });
 
-	it('Error with z', function() { test.exception(function() { kokopu.oppositeColor('z'); }).isInstanceOf(kokopu.exception.IllegalArgument); });
-	it('Error with bb', function() { test.exception(function() { kokopu.oppositeColor('bb'); }).isInstanceOf(kokopu.exception.IllegalArgument); });
+	it('Error with z', () => { test.exception(() => oppositeColor('z')).isInstanceOf(exception.IllegalArgument); });
+	it('Error with bb', () => { test.exception(() => oppositeColor('bb')).isInstanceOf(exception.IllegalArgument); });
 });
 
 
-describe('Variant with canonical start position', function() {
-	it('no-king', function() { test.value(kokopu.variantWithCanonicalStartPosition('no-king')).is(false); });
-	it('chess960', function() { test.value(kokopu.variantWithCanonicalStartPosition('chess960')).is(false); });
-	it('antichess', function() { test.value(kokopu.variantWithCanonicalStartPosition('antichess')).is(true); });
+describe('Variant with canonical start position', () => {
+	it('no-king', () => { test.value(variantWithCanonicalStartPosition('no-king')).is(false); });
+	it('chess960', () => { test.value(variantWithCanonicalStartPosition('chess960')).is(false); });
+	it('antichess', () => { test.value(variantWithCanonicalStartPosition('antichess')).is(true); });
 
-	it('Error with invalid variant', function() {
-		test.exception(function() { kokopu.variantWithCanonicalStartPosition('whatever'); }).isInstanceOf(kokopu.exception.IllegalArgument);
-	});
+	it('Error with invalid variant', () => { test.exception(() => variantWithCanonicalStartPosition('whatever')).isInstanceOf(exception.IllegalArgument); });
 });
 
 
-describe('NAG symbols', function() {
-	var nags = [ 3, 1, 5, 6, 2, 4, 18, 16, 14, 10, 11, 13, 15, 17, 19, 7, 8, 22, 32, 36, 40, 132, 138, 140, 141, 142, 143, 145, 146 ];
-	var expectedSymbols = readText('nags.txt').trim().split(/\s+/);
+describe('NAG symbols', () => {
+	const nags = [ 3, 1, 5, 6, 2, 4, 18, 16, 14, 10, 11, 13, 15, 17, 19, 7, 8, 22, 32, 36, 40, 132, 138, 140, 141, 142, 143, 145, 146 ];
+	const expectedSymbols = readText('nags.txt').trim().split(/\s+/);
 
 	function itNagWithSymbol(i) {
-		var nag = nags[i];
-		it('NAG ' + nag, function() {
-			test.value(kokopu.nagSymbol(nag)).is(expectedSymbols[i]);
-		});
+		const nag = nags[i];
+		it('NAG ' + nag, () => { test.value(nagSymbol(nag)).is(expectedSymbols[i]); });
 	}
 
-	for (var i = 0; i < nags.length; ++i) {
+	for (let i = 0; i < nags.length; ++i) {
 		itNagWithSymbol(i);
 	}
 
-	it('NAG without symbol', function() {
-		test.value(kokopu.nagSymbol(99)).is('$99');
-	});
+	it('NAG without symbol', () => { test.value(nagSymbol(99)).is('$99'); });
 
-	it('Error with string', function() { test.exception(function() { kokopu.nagSymbol('1'); }).isInstanceOf(kokopu.exception.IllegalArgument); });
-	it('Error with null', function() { test.exception(function() { kokopu.nagSymbol(null); }).isInstanceOf(kokopu.exception.IllegalArgument); });
-	it('Error with non-integer', function() { test.exception(function() { kokopu.nagSymbol(3.2); }).isInstanceOf(kokopu.exception.IllegalArgument); });
-	it('Error with negative integer', function() { test.exception(function() { kokopu.nagSymbol(-1); }).isInstanceOf(kokopu.exception.IllegalArgument); });
+	it('Error with string', () => { test.exception(() => nagSymbol('1')).isInstanceOf(exception.IllegalArgument); });
+	it('Error with null', () => { test.exception(() => nagSymbol(null)).isInstanceOf(exception.IllegalArgument); });
+	it('Error with non-integer', () => { test.exception(() => nagSymbol(3.2)).isInstanceOf(exception.IllegalArgument); });
+	it('Error with negative integer', () => { test.exception(() => nagSymbol(-1)).isInstanceOf(exception.IllegalArgument); });
 });

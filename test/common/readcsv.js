@@ -1,4 +1,4 @@
-/******************************************************************************
+/* -------------------------------------------------------------------------- *
  *                                                                            *
  *    This file is part of Kokopu, a JavaScript chess library.                *
  *    Copyright (C) 2018-2022  Yoann Le Montagner <yo35 -at- melix.net>       *
@@ -17,32 +17,29 @@
  *    Public License along with this program. If not, see                     *
  *    <http://www.gnu.org/licenses/>.                                         *
  *                                                                            *
- ******************************************************************************/
+ * -------------------------------------------------------------------------- */
 
 
-'use strict';
-
-
-var fs = require('fs');
+const fs = require('fs');
 
 
 /**
  * Read a CSV file and process it line by line.
  */
 module.exports = function(filename, parser) {
-	var result = [];
-	var lines = fs.readFileSync('./test/resources/' + filename, 'utf8').split('\n');
+	const result = [];
+	const lines = fs.readFileSync('./test/resources/' + filename, 'utf8').split('\n');
 
-	lines.forEach(function(elem, index) {
+	for (let index = 0; index < lines.length; ++index) {
 
 		// Skip header and empty lines.
-		if(elem === '' || index === 0) {
-			return;
+		if (index === 0 || lines[index] === '') {
+			continue;
 		}
 
-		var fields = elem.split('\t');
+		const fields = lines[index].split('\t');
 		result.push(parser(fields));
 
-	});
+	}
 	return result;
 };

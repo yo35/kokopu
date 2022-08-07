@@ -1,4 +1,4 @@
-/******************************************************************************
+/* -------------------------------------------------------------------------- *
  *                                                                            *
  *    This file is part of Kokopu, a JavaScript chess library.                *
  *    Copyright (C) 2018-2022  Yoann Le Montagner <yo35 -at- melix.net>       *
@@ -17,57 +17,52 @@
  *    Public License along with this program. If not, see                     *
  *    <http://www.gnu.org/licenses/>.                                         *
  *                                                                            *
- ******************************************************************************/
+ * -------------------------------------------------------------------------- */
 
 
-'use strict';
+const { Position } = require('../dist/lib/index');
+const readCSV = require('./common/readcsv');
+const test = require('unit.js');
 
 
-var kokopu = require('../dist/lib/index');
-var readCSV = require('./common/readcsv');
-var test = require('unit.js');
-
-
-var NODE_COUNT_MAX_MAX = 10000000; // -1 for "no limit"
-var SPEED_MIN = 100; // kN/s
-var FIXED_TIMOUT = 100; // ms
-
+const NODE_COUNT_MAX_MAX = 10000000; // -1 for "no limit"
+const SPEED_MIN = 100; // kN/s
+const FIXED_TIMOUT = 100; // ms
 
 
 function generateSuccessors(pos, depth) {
-	var result = 1;
-
-	if(depth > 0) {
-		pos.moves().forEach(function(move) {
-			var nextPos = new kokopu.Position(pos);
+	let result = 1;
+	if (depth > 0) {
+		for (const move of pos.moves()) {
+			const nextPos = new Position(pos);
 			nextPos.play(move);
-			result += generateSuccessors(nextPos, depth-1);
-		});
+			result += generateSuccessors(nextPos, depth - 1);
+		}
 	}
-
 	return result;
 }
 
 
 function testData() {
-	return readCSV('performance.csv', function(fields) {
+	return readCSV('performance.csv', fields => {
 		return {
 			fen: fields[0],
-			nodes: fields.slice(1)
+			nodes: fields.slice(1),
 		};
 	});
 }
 
 
-describe('Recursive move generation', function() {
-	testData().forEach(function(elem) {
-		var initialPos = new kokopu.Position(elem.fen);
-		elem.nodes.forEach(function(expectedNodeCount, depth) {
-			if(NODE_COUNT_MAX_MAX >= 0 && expectedNodeCount <= NODE_COUNT_MAX_MAX) {
-				it('From ' + elem.fen + ' up to depth ' + depth, function() {
+describe('Recursive move generation', () => {
+	for (const elem of testData()) {
+		const initialPos = new Position(elem.fen);
+		for (let depth = 0; depth < elem.nodes.length; ++depth) {
+			const expectedNodeCount = elem.nodes[depth];
+			if (NODE_COUNT_MAX_MAX >= 0 && expectedNodeCount <= NODE_COUNT_MAX_MAX) {
+				it(`From ${elem.fen} up to depth ${depth}`, () => {
 					test.value(generateSuccessors(initialPos, depth), expectedNodeCount);
 				}).timeout(FIXED_TIMOUT + expectedNodeCount / SPEED_MIN);
 			}
-		});
-	});
+		}
+	}
 });

@@ -1,4 +1,4 @@
-/******************************************************************************
+/* -------------------------------------------------------------------------- *
  *                                                                            *
  *    This file is part of Kokopu, a JavaScript chess library.                *
  *    Copyright (C) 2018-2022  Yoann Le Montagner <yo35 -at- melix.net>       *
@@ -17,34 +17,31 @@
  *    Public License along with this program. If not, see                     *
  *    <http://www.gnu.org/licenses/>.                                         *
  *                                                                            *
- ******************************************************************************/
+ * -------------------------------------------------------------------------- */
 
 
-'use strict';
+const { Game, Position, pgnRead, pgnWrite } = require('../dist/lib/index');
+const readText = require('./common/readtext');
+const resourceExists = require('./common/resourceexists');
+const dumpGame = require('./common/dumpgame');
+const test = require('unit.js');
 
+const oneGamefactories = {
 
-var kokopu = require('../dist/lib/index');
-var readText = require('./common/readtext');
-var resourceExists = require('./common/resourceexists');
-var dumpGame = require('./common/dumpgame');
-var test = require('unit.js');
-
-var oneGamefactories = {
-
-	'base': function() {
-		var game = new kokopu.Game();
+	'base': () => {
+		const game = new Game();
 		game.playerName('w', 'Alice');
 		game.playerName('b', 'Bob');
 		game.event('1st International Open of Whatever');
 
-		var current = game.mainVariation();
+		let current = game.mainVariation();
 		current = current.play('e4');
 		current = current.play('e5');
 
-		var alternative1 = current.addVariation();
+		const alternative1 = current.addVariation();
 		alternative1.play('c5').play('Nf3');
 
-		var alternative2 = current.addVariation();
+		const alternative2 = current.addVariation();
 		alternative2.play('e6').play('d4');
 
 		current = current.play('Bc4');
@@ -57,12 +54,10 @@ var oneGamefactories = {
 		return game;
 	},
 
-	'empty': function() {
-		return new kokopu.Game();
-	},
+	'empty': () => new Game(),
 
-	'all-headers': function() {
-		var game = new kokopu.Game();
+	'all-headers': () => {
+		const game = new Game();
 		game.annotator(' The   Annotator ');
 		game.date(2021, 9, 4);
 		game.event('An event name\nspanning several lines');
@@ -78,8 +73,8 @@ var oneGamefactories = {
 		return game;
 	},
 
-	'missing-headers-1': function() {
-		var game = new kokopu.Game();
+	'missing-headers-1': () => {
+		const game = new Game();
 		game.date(1998);
 		game.playerElo('w', 2345);
 		game.playerName('w', 'John Doe');
@@ -89,8 +84,8 @@ var oneGamefactories = {
 		return game;
 	},
 
-	'missing-headers-2': function() {
-		var game = new kokopu.Game();
+	'missing-headers-2': () => {
+		const game = new Game();
 		game.date(1955, 11);
 		game.round(3);
 		game.playerElo('w', '2299');
@@ -100,8 +95,8 @@ var oneGamefactories = {
 		return game;
 	},
 
-	'blank-headers-1': function() {
-		var game = new kokopu.Game();
+	'blank-headers-1': () => {
+		const game = new Game();
 		game.event('');
 		game.round('');
 		game.playerName('w', '');
@@ -116,8 +111,8 @@ var oneGamefactories = {
 		return game;
 	},
 
-	'blank-headers-2': function() {
-		var game = new kokopu.Game();
+	'blank-headers-2': () => {
+		const game = new Game();
 		game.event(' ');
 		game.round(' ');
 		game.annotator(' ');
@@ -126,59 +121,59 @@ var oneGamefactories = {
 		return game;
 	},
 
-	'custom-initial-position-1': function() {
-		var game = new kokopu.Game();
+	'custom-initial-position-1': () => {
+		const game = new Game();
 		game.event('Custom initial position');
-		game.initialPosition(new kokopu.Position('8/2k5/p1P5/P1K5/8/8/8/8 w - - 0 60'), 60);
+		game.initialPosition(new Position('8/2k5/p1P5/P1K5/8/8/8/8 w - - 0 60'), 60);
 		game.mainVariation().play('Kd5').play('Kc8').play('Kd4').play('Kd8').play('Kc4').play('Kc8').play('Kd5').play('Kc7').play('Kc5').play('Kc8').play('Kb6').addNag(18);
 		game.result('1-0');
 		return game;
 	},
 
-	'custom-initial-position-2': function() {
-		var game = new kokopu.Game();
+	'custom-initial-position-2': () => {
+		const game = new Game();
 		game.event('Custom initial position (Black to play)');
-		game.initialPosition(new kokopu.Position('rnbqk2r/pppp1ppp/5n2/2b1p3/2B1P3/5N2/PPPP1PPP/RNBQ1RK1 b kq - 5 4'), 4);
+		game.initialPosition(new Position('rnbqk2r/pppp1ppp/5n2/2b1p3/2B1P3/5N2/PPPP1PPP/RNBQ1RK1 b kq - 5 4'), 4);
 		game.mainVariation().play('O-O');
 		return game;
 	},
 
-	'variant-chess960': function() {
-		var game = new kokopu.Game();
+	'variant-chess960': () => {
+		const game = new Game();
 		game.event('Chess game variant - Chess960');
-		game.initialPosition(new kokopu.Position('chess960', 'rnbqnkrb/pppppppp/8/8/8/8/PPPPPPPP/RNBQNKRB w KQkq - 0 1'));
+		game.initialPosition(new Position('chess960', 'rnbqnkrb/pppppppp/8/8/8/8/PPPPPPPP/RNBQNKRB w KQkq - 0 1'));
 		game.mainVariation().play('O-O');
 		return game;
 	},
 
-	'variant-no-king': function() {
-		var game = new kokopu.Game();
+	'variant-no-king': () => {
+		const game = new Game();
 		game.event('Chess game variant - No king');
-		game.initialPosition(new kokopu.Position('no-king', 'r7/8/8/8/8/8/8/7R w - - 0 1'));
+		game.initialPosition(new Position('no-king', 'r7/8/8/8/8/8/8/7R w - - 0 1'));
 		game.mainVariation().play('Rh8').play('Ra1').play('Ra8').play('Rh1').play('Ra1').play('Rh8').play('Rh1').play('Ra8');
 		return game;
 	},
 
-	'variant-antichess': function() {
-		var game = new kokopu.Game();
+	'variant-antichess': () => {
+		const game = new Game();
 		game.event('Chess game variant - Antichess');
-		game.initialPosition(new kokopu.Position('antichess'));
+		game.initialPosition(new Position('antichess'));
 		return game;
 	},
 
-	'variant-horde': function() {
-		var game = new kokopu.Game();
+	'variant-horde': () => {
+		const game = new Game();
 		game.event('Chess game variant - Horde');
-		game.initialPosition(new kokopu.Position('horde'));
+		game.initialPosition(new Position('horde'));
 		return game;
 	},
 
-	'annotations-1': function() {
-		var game = new kokopu.Game();
+	'annotations-1': () => {
+		const game = new Game();
 		game.event('Game with annotations 1');
 		game.annotator('Myself');
 
-		var current = game.mainVariation().play('e4').play('e5').play('Bc4').play('Nc6').play('Qh5');
+		let current = game.mainVariation().play('e4').play('e5').play('Bc4').play('Nc6').play('Qh5');
 		current.comment('Threatening checkmate');
 		current.tag('csl', 'Rf7');
 		current.tag('cal', 'Gc4f7,Gh5f7');
@@ -188,7 +183,7 @@ var oneGamefactories = {
 		current.addNag(1);
 		current.tag('cal', 'Rg6h5');
 
-		var alternative = current.addVariation();
+		const alternative = current.addVariation();
 		alternative.comment('Other defenses are possible, for instance:');
 		alternative.play('Nf6');
 
@@ -198,11 +193,11 @@ var oneGamefactories = {
 		return game;
 	},
 
-	'annotations-2': function() {
-		var game = new kokopu.Game();
+	'annotations-2': () => {
+		const game = new Game();
 		game.event('Game with annotations 2');
 
-		var current = game.mainVariation();
+		let current = game.mainVariation();
 		current.addNag(10);
 
 		current = current.play('e4');
@@ -229,15 +224,15 @@ var oneGamefactories = {
 		current.comment(' ');
 
 		current = current.play('exd4').play('cxd4');
-		var alternative1 = current.addVariation();
+		const alternative1 = current.addVariation();
 		alternative1.comment('You should not see in PGN this since there is no move in the variation...');
 
 		current = current.play('Bb4+');
-		var alternative2 = current.addVariation();
+		const alternative2 = current.addVariation();
 		alternative2.comment('');
 
 		current = current.play('Nc3');
-		var alternative3 = current.addVariation();
+		const alternative3 = current.addVariation();
 		alternative3.comment(' ');
 
 		current = current.play('O-O');
@@ -247,20 +242,20 @@ var oneGamefactories = {
 		return game;
 	},
 
-	'sub-variations': function() {
-		var game = new kokopu.Game();
+	'sub-variations': () => {
+		const game = new Game();
 		game.event('Game with variations and sub-variations');
 		game.annotator('Myself');
 		game.mainVariation().comment('I\'m the main variation header comment.');
 
-		var current = game.mainVariation().play('e4').play('e5');
+		let current = game.mainVariation().play('e4').play('e5');
 		current.addVariation().play('c6');
 		current.addVariation().play('c5').play('Nc3').addVariation().play('Nf3').play('d6');
 		current = current.play('Nf3');
 		current.addVariation();
 		current = current.play('Nc6').play('Bc4');
 
-		var variation = current.addVariation();
+		let variation = current.addVariation();
 		variation = variation.play('Bb5').play('a6');
 		variation.addVariation().play('Nf6');
 		variation = variation.play('Ba4');
@@ -270,27 +265,27 @@ var oneGamefactories = {
 		return game;
 	},
 
-	'escaped-text': function() {
-		var game = new kokopu.Game();
+	'escaped-text': () => {
+		const game = new Game();
 		game.event('Event with a \\ backslash');
 		game.site('Site with " double-quotes');
 		game.mainVariation().comment('Comment with \\ backslash and { some } braces...');
 		return game;
 	},
 
-	'long-short-comments-variations-1': function() {
-		var game = new kokopu.Game();
+	'long-short-comments-variations-1': () => {
+		const game = new Game();
 		game.event('Game with long & short comments and variations 1.');
 		game.mainVariation().comment('I\'m the main variation header (long) comment.', true);
 
-		var current = game.mainVariation().play('e4');
+		let current = game.mainVariation().play('e4');
 		current.comment('I\'m a long comment.', true);
 
 		current = current.play('e5');
 		current.addVariation(true).play('c5').play('Nf3');
 
 		current = current.play('Nf3').play('Nc6').play('Bc4');
-		var alternative = current.addVariation(true);
+		const alternative = current.addVariation(true);
 		alternative.comment('I\'m a long comment too.', true);
 		alternative.play('Bb5').play('a6').comment('I\'m a short comment.', false);
 
@@ -298,12 +293,12 @@ var oneGamefactories = {
 		return game;
 	},
 
-	'long-short-comments-variations-2': function() {
-		var game = new kokopu.Game();
+	'long-short-comments-variations-2': () => {
+		const game = new Game();
 		game.event('Game with long & short comments and variations 2.');
 		game.mainVariation().comment('I\'m the main variation header (short) comment.', false);
 
-		var current = game.mainVariation().play('e4');
+		let current = game.mainVariation().play('e4');
 		current.comment('I\'m a long comment with sub-variation siblings.', true);
 		current.addVariation(false).play('d4').play('d5');
 
@@ -315,22 +310,22 @@ var oneGamefactories = {
 		current.addVariation(false).play('d4');
 
 		current = current.play('Bc5');
-		var alternative = current.addVariation(true);
+		const alternative = current.addVariation(true);
 		alternative.comment('I\'m a long comment at the beginning of a variation.', true);
 		alternative.play('d6');
 		return game;
 	},
 
-	'long-short-comments-variations-3': function() {
-		var game = new kokopu.Game();
+	'long-short-comments-variations-3': () => {
+		const game = new Game();
 		game.event('Game with long & short comments and variations 3.');
 
-		var current = game.mainVariation().play('e4');
+		let current = game.mainVariation().play('e4');
 		current.comment('I\'m a long comment with an empty sub-variation sibling.', true);
 		current.addVariation();
 
 		current = current.play('e5').play('Nf3');
-		var alternative = current.addVariation(true);
+		const alternative = current.addVariation(true);
 		alternative.comment('I\'m a long variation followed by an empty variation.');
 		alternative.play('Nc3');
 
@@ -339,27 +334,27 @@ var oneGamefactories = {
 		return game;
 	},
 
-	'shortened-variation': function() {
-		var game = new kokopu.Game();
+	'shortened-variation': () => {
+		const game = new Game();
 		game.event('Game with shortened variation.');
-		var node = game.mainVariation().play('e4');
+		const node = game.mainVariation().play('e4');
 		node.play('e5').play('Nf3');
 		node.removeFollowingMoves();
 		return game;
 	},
 
-	'cleared-variation': function() {
-		var game = new kokopu.Game();
+	'cleared-variation': () => {
+		const game = new Game();
 		game.event('Game with cleared variation.');
 		game.mainVariation().play('e4').play('e5').play('Nf3');
 		game.mainVariation().clearMoves();
 		return game;
 	},
 
-	'removed-variation': function() {
-		var game = new kokopu.Game();
+	'removed-variation': () => {
+		const game = new Game();
 		game.event('Game with removed variation.');
-		var node = game.mainVariation().play('e4').play('e5');
+		const node = game.mainVariation().play('e4').play('e5');
 		node.play('Nf3');
 		node.addVariation().play('c5');
 		node.addVariation().play('h5').comment('Will be removed');
@@ -369,10 +364,10 @@ var oneGamefactories = {
 		return game;
 	},
 
-	'swapped-variations': function() {
-		var game = new kokopu.Game();
+	'swapped-variations': () => {
+		const game = new Game();
 		game.event('Game with swapped variations.');
-		var node = game.mainVariation().play('e4').play('e5');
+		const node = game.mainVariation().play('e4').play('e5');
 		node.play('Nf3');
 		node.addVariation().play('c5');
 		node.addVariation().play('c6').comment('Used to be at index 1');
@@ -385,13 +380,13 @@ var oneGamefactories = {
 		return game;
 	},
 
-	'promoted-variation': function() {
-		var game = new kokopu.Game();
+	'promoted-variation': () => {
+		const game = new Game();
 		game.event('Game with promoted variation.');
-		var node = game.mainVariation().play('e4').play('e5');
+		const node = game.mainVariation().play('e4').play('e5');
 		node.play('Nf3').comment('Used to be the main line');
 		node.addVariation().play('c5');
-		var newNode = node.addVariation().play('d5');
+		const newNode = node.addVariation().play('d5');
 		newNode.play('exd5').play('Qxd5').comment('Used to be the variation at index 1');
 		newNode.addVariation().play('d6').play('d4').comment('Used to be a nested variation');
 		node.addVariation().play('c6');
@@ -401,15 +396,13 @@ var oneGamefactories = {
 	},
 };
 
-var fullPgnFactories = {
+const fullPgnFactories = {
 
-	'empty': function() {
-		return [];
-	},
+	'empty': () => [],
 
-	'mini2': function() {
+	'mini2': () => {
 
-		var game0 = new kokopu.Game();
+		const game0 = new Game();
 		game0.event('TV Show');
 		game0.date(new Date(2014, 0, 23));
 		game0.playerName('w', 'Bill Gates');
@@ -417,7 +410,7 @@ var fullPgnFactories = {
 		game0.result('0-1');
 		game0.mainVariation().play('e4').play('Nc6').play('Nf3').play('d5').play('Bd3').play('Nf6').play('exd5').play('Qxd5').play('Nc3').play('Qh5').play('O-O').play('Bg4').play('h3').play('Ne5').play('hxg4').play('Nfxg4').play('Nxe5').play('Qh2#');
 
-		var game1 = new kokopu.Game();
+		const game1 = new Game();
 		game1.event('Sample game');
 		game1.result('1-0');
 		game1.mainVariation().play('e4').play('e5').play('Bc4').play('Nc6').play('Qh5').play('Nf6').play('Qxf7#');
@@ -427,7 +420,7 @@ var fullPgnFactories = {
 };
 
 
-describe('Check isVariation', function() {
+describe('Check isVariation', () => {
 
 	function checkNode(game, node) {
 
@@ -435,9 +428,8 @@ describe('Check isVariation', function() {
 		test.value(node.isVariation()).is(false);
 
 		// Check the variations.
-		var subVariations = node.variations();
-		for (var k = 0; k < subVariations.length; ++k) {
-			checkVariation(game, subVariations[k]);
+		for (const subVariation of node.variations()) {
+			checkVariation(game, subVariation);
 		}
 	}
 
@@ -447,86 +439,85 @@ describe('Check isVariation', function() {
 		test.value(variation.isVariation()).is(true);
 
 		// Check the moves.
-		var node = variation.first();
-		while (node) {
+		let node = variation.first();
+		while (node !== undefined) {
 			checkNode(game, node);
 			node = node.next();
 		}
 	}
 
 	function itCheckIsVariation(filename, factory) {
-		it(filename, function() {
-			var game = factory();
+		it(filename, () => {
+			const game = factory();
 			checkVariation(game, game.mainVariation());
 		});
 	}
 
-	for (var f in oneGamefactories) {
+	for (const f in oneGamefactories) {
 		itCheckIsVariation(f, oneGamefactories[f]);
 	}
 });
 
 
-describe('Check IDs', function() {
+describe('Check IDs', () => {
 
 	function checkNode(game, node) {
 
 		// Check the current node.
-		var nodeId = node.id();
-		var searchedNode = game.findById(nodeId);
+		const nodeId = node.id();
+		const searchedNode = game.findById(nodeId);
 		test.value(searchedNode).isNotFalse();
 		test.value(searchedNode.id()).is(nodeId);
 		test.value(searchedNode.positionBefore().fen()).is(node.positionBefore().fen());
 
 		// Check the variations.
-		var subVariations = node.variations();
-		for(var k = 0; k < subVariations.length; ++k) {
-			checkVariation(game, subVariations[k]);
+		for (const subVariation of node.variations()) {
+			checkVariation(game, subVariation);
 		}
 	}
 
 	function checkVariation(game, variation) {
 
 		// Check the current variation.
-		var variationId = variation.id();
-		var searchedVariation = game.findById(variationId);
+		const variationId = variation.id();
+		const searchedVariation = game.findById(variationId);
 		test.value(searchedVariation).isNotFalse();
 		test.value(searchedVariation.id()).is(variationId);
 		test.value(searchedVariation.initialPosition().fen()).is(variation.initialPosition().fen());
 
 		// Check the moves.
-		var node = variation.first();
-		while (node) {
+		let node = variation.first();
+		while (node !== undefined) {
 			checkNode(game, node);
 			node = node.next();
 		}
 	}
 
 	function itCheckId(filename, factory) {
-		it(filename, function() {
-			var game = factory();
+		it(filename, () => {
+			const game = factory();
 			checkVariation(game, game.mainVariation());
 		});
 	}
 
-	for (var f in oneGamefactories) {
+	for (const f in oneGamefactories) {
 		itCheckId(f, oneGamefactories[f]);
 	}
 });
 
 
-describe('Backward iterators', function() {
+describe('Backward iterators', () => {
 
 	function checkNode(parentVariation, previousNode, node) {
 
 		// Check the parent variation.
-		var actualParentVariation = node.parentVariation();
+		const actualParentVariation = node.parentVariation();
 		test.value(actualParentVariation.id()).is(parentVariation.id());
 		test.value(actualParentVariation.initialPosition().fen()).is(parentVariation.initialPosition().fen());
 
 		// Check the previous node.
-		var actualPreviousNode = node.previous();
-		if (previousNode) {
+		const actualPreviousNode = node.previous();
+		if (previousNode !== undefined) {
 			test.value(actualPreviousNode.id()).is(previousNode.id());
 			test.value(actualPreviousNode.positionBefore().fen()).is(previousNode.positionBefore().fen());
 		}
@@ -535,17 +526,16 @@ describe('Backward iterators', function() {
 		}
 
 		// Check the variations.
-		var subVariations = node.variations();
-		for(var k = 0; k < subVariations.length; ++k) {
-			checkVariation(node, subVariations[k]);
+		for (const subVariation of node.variations()) {
+			checkVariation(node, subVariation);
 		}
 	}
 
 	function checkVariation(parentNode, variation) {
 
 		// Check the current variation.
-		var actualParentNode = variation.parentNode();
-		if (parentNode) {
+		const actualParentNode = variation.parentNode();
+		if (parentNode !== undefined) {
 			test.value(actualParentNode.id()).is(parentNode.id());
 			test.value(actualParentNode.positionBefore().fen()).is(parentNode.positionBefore().fen());
 		}
@@ -554,9 +544,9 @@ describe('Backward iterators', function() {
 		}
 
 		// Check the moves.
-		var node = variation.first();
-		var previousNode = false;
-		while (node) {
+		let node = variation.first();
+		let previousNode = undefined;
+		while (node !== undefined) {
 			checkNode(variation, previousNode, node);
 			previousNode = node;
 			node = node.next();
@@ -564,112 +554,110 @@ describe('Backward iterators', function() {
 	}
 
 	function itBackwardIterators(filename, factory) {
-		it(filename, function() {
-			var game = factory();
-			checkVariation(false, game.mainVariation());
+		it(filename, () => {
+			const game = factory();
+			checkVariation(undefined, game.mainVariation());
 		});
 	}
 
-	for (var f in oneGamefactories) {
+	for (const f in oneGamefactories) {
 		itBackwardIterators(f, oneGamefactories[f]);
 	}
 });
 
 
-describe('Game nodes', function() {
+describe('Game nodes', () => {
 
 	function itGameNodes(filename, withSubVariations, factory) {
-		it(filename + (withSubVariations ? ' (with sub-variations)' : ' (main variation only)'), function() {
-			var expectedText = readText('games/' + filename + (withSubVariations ? '/all-nodes.txt' : '/main-nodes.txt')).trim();
-			var game = factory();
-			var text = game.nodes(withSubVariations).map(function(node) {
-				return '[' + node.id() + '] ' + node.notation();
-			}).join('\n');
+		it(filename + (withSubVariations ? ' (with sub-variations)' : ' (main variation only)'), () => {
+			const expectedText = readText(`games/${filename}/${withSubVariations ? 'all-nodes' : 'main-nodes'}.txt`).trim();
+			const game = factory();
+			const text = game.nodes(withSubVariations).map(node => `[${node.id()}] ${node.notation()}`).join('\n');
 			test.value(text).is(expectedText);
 		});
 	}
 
-	for (var f in oneGamefactories) {
+	for (const f in oneGamefactories) {
 		itGameNodes(f, false, oneGamefactories[f]);
 		itGameNodes(f, true, oneGamefactories[f]);
 	}
 });
 
 
-describe('Write ASCII', function() {
+describe('Write ASCII', () => {
 
 	function itAscii(filename, factory) {
-		it(filename, function() {
-			var expectedText = readText('games/' + filename + '/ascii.txt').trim();
-			var game = factory();
+		it(filename, () => {
+			const expectedText = readText(`games/${filename}/ascii.txt`).trim();
+			const game = factory();
 			test.value(game.ascii().trim()).is(expectedText);
 		});
 	}
 
-	for (var f in oneGamefactories) {
+	for (const f in oneGamefactories) {
 		itAscii(f, oneGamefactories[f]);
 	}
 });
 
 
-describe('Write ASCII (extensive)', function() {
+describe('Write ASCII (extensive)', () => {
 
 	function itAsciiExtensive(filename, factory) {
-		it(filename, function() {
-			var expectedText = readText('games/' + filename + '/dump.txt').trim();
-			var game = factory();
+		it(filename, () => {
+			const expectedText = readText(`games/${filename}/dump.txt`).trim();
+			const game = factory();
 			test.value(dumpGame(game).trim()).is(expectedText);
 		});
 	}
 
-	for (var f in oneGamefactories) {
+	for (const f in oneGamefactories) {
 		itAsciiExtensive(f, oneGamefactories[f]);
 	}
 });
 
 
-describe('Write PGN', function() {
+describe('Write PGN', () => {
 
 	function itOneGamePgn(filename, factory) {
-		it(filename, function() {
-			var expectedText = readText('games/' + filename + '/database.pgn');
-			var game = factory();
-			test.value(kokopu.pgnWrite(game)).is(expectedText);
+		it(filename, () => {
+			const expectedText = readText(`games/${filename}/database.pgn`);
+			const game = factory();
+			test.value(pgnWrite(game)).is(expectedText);
 		});
 	}
 
-	for (var f in oneGamefactories) {
+	for (const f in oneGamefactories) {
 		itOneGamePgn(f, oneGamefactories[f]);
 	}
 
 	function itFullPgn(filename, factory) {
-		it('Full PGN - ' + filename, function() {
-			var expectedText = readText('pgns/' + filename + '.pgn');
-			var games = factory();
-			test.value(kokopu.pgnWrite(games)).is(expectedText);
+		it('Full PGN - ' + filename, () => {
+			const expectedText = readText(`pgns/${filename}.pgn`);
+			const games = factory();
+			test.value(pgnWrite(games)).is(expectedText);
 		});
 	}
 
-	for (var f in fullPgnFactories) {
+	for (const f in fullPgnFactories) {
 		itFullPgn(f, fullPgnFactories[f]);
 	}
 });
 
 
-describe('Read PGN', function() {
+describe('Read PGN', () => {
 
 	function itReadPgn(filename) {
-		it(filename, function() {
-			var inputText = readText('games/' + filename + '/database.pgn');
-			var cleanedResource = 'games/' + filename + '/dump-clean.txt';
-			var actualResource = resourceExists(cleanedResource) ? cleanedResource : 'games/' + filename + '/dump.txt';
-			var expectedText = readText(actualResource).trim();
-			var game = kokopu.pgnRead(inputText, 0);
+		it(filename, () => {
+			const inputText = readText(`games/${filename}/database.pgn`);
+			const cleanedResource = `games/${filename}/dump-clean.txt`;
+			const actualResource = resourceExists(cleanedResource) ? cleanedResource : `games/${filename}/dump.txt`;
+			const expectedText = readText(actualResource).trim();
+			const game = pgnRead(inputText, 0);
 			test.value(dumpGame(game).trim()).is(expectedText);
 		});
 	}
 
-	for (var f in oneGamefactories) {
+	for (const f in oneGamefactories) {
 		itReadPgn(f);
 	}
 });

@@ -1,4 +1,4 @@
-/******************************************************************************
+/* -------------------------------------------------------------------------- *
  *                                                                            *
  *    This file is part of Kokopu, a JavaScript chess library.                *
  *    Copyright (C) 2018-2022  Yoann Le Montagner <yo35 -at- melix.net>       *
@@ -17,22 +17,22 @@
  *    Public License along with this program. If not, see                     *
  *    <http://www.gnu.org/licenses/>.                                         *
  *                                                                            *
- ******************************************************************************/
+ * -------------------------------------------------------------------------- */
 
 
 'use strict';
 
 
-var kokopu = require('../dist/lib/index');
-var readCSV = require('./common/readcsv');
-var readText = require('./common/readtext');
-var resourceExists = require('./common/resourceexists');
-var dumpGame = require('./common/dumpgame');
-var test = require('unit.js');
+const { exception, pgnRead } = require('../dist/lib/index');
+const dumpGame = require('./common/dumpgame');
+const readCSV = require('./common/readcsv');
+const readText = require('./common/readtext');
+const resourceExists = require('./common/resourceexists');
+const test = require('unit.js');
 
 
 function testData() {
-	return readCSV('pgns.csv', function(fields) {
+	return readCSV('pgns.csv', fields => {
 		return {
 			label: fields[0],
 			gameCount: parseInt(fields[1]),
@@ -45,22 +45,18 @@ function testData() {
 /**
  * Return whether the PGN item corresponding to the given index in the PGN file corresponding to the given name is expected to be parsed
  * as a valid PGN item, or is expected to throw an exception on a parsing attempt.
- *
- * @param {string} pgnName Name of the PGN file (without the .pgn extension)
- * @param {number} gameIndex Index of the item within the PGN file.
- * @returns {string} `'log'` if the PGN item is valid, `'err'` if an exception is expected to be thrown on parsing.
  */
 function getItemType(pgnName, gameIndex) {
-	var fileBasename = 'pgns/' + pgnName + '/' + gameIndex;
-	var logExist = resourceExists(fileBasename + '.log');
-	var errExist = resourceExists(fileBasename + '.err');
-	if(logExist && errExist) {
+	const fileBasename = `pgns/${pgnName}/${gameIndex}`;
+	const logExist = resourceExists(fileBasename + '.log');
+	const errExist = resourceExists(fileBasename + '.err');
+	if (logExist && errExist) {
 		throw 'Both .log not .err defined for ' + fileBasename; // eslint-disable-line no-throw-literal
 	}
-	else if(logExist) {
+	else if (logExist) {
 		return 'log';
 	}
-	else if(errExist) {
+	else if (errExist) {
 		return 'err';
 	}
 	else {
@@ -71,131 +67,127 @@ function getItemType(pgnName, gameIndex) {
 
 /**
  * Load the descriptor corresponding to a valid PGN item.
- *
- * @param {string} pgnName Name of the PGN file (without the .pgn extension)
- * @param {number} gameIndex Index of the item within the PGN file.
- * @returns {string}
  */
 function loadValidItemDescriptor(pgnName, gameIndex) {
-	var filename = 'pgns/' + pgnName + '/' + gameIndex + '.log';
+	const filename = `pgns/${pgnName}/${gameIndex}.log`;
 	return readText(filename).trim();
 }
 
 
 /**
  * Load the descriptor corresponding to an invalid PGN item.
- *
- * @param {string} pgnName Name of the PGN file (without the .pgn extension)
- * @param {number} gameIndex Index of the item within the PGN file.
- * @returns {{index:number, lineNumber:number, message:string}}
  */
 function loadErrorItemDescriptor(pgnName, gameIndex) {
-	var filename = 'pgns/' + pgnName + '/' + gameIndex + '.err';
-	var fields = readText(filename).split('\n');
+	const filename = `pgns/${pgnName}/${gameIndex}.err`;
+	const fields = readText(filename).split('\n');
 	return { index: parseInt(fields[0]), lineNumber: parseInt(fields[1]), message: fields[2].trim() };
 }
 
 
-describe('Read PGN - Game count', function() {
-	testData().forEach(function(elem) {
-		it('File ' + elem.label, function() {
-			test.value(kokopu.pgnRead(elem.pgn).gameCount()).is(elem.gameCount);
+describe('Read PGN - Game count', () => {
+	for (const elem of testData()) {
+		it('File ' + elem.label, () => {
+			test.value(pgnRead(elem.pgn).gameCount()).is(elem.gameCount);
 		});
-	});
+	}
 });
 
 
-function pgnItemChecker(pgnName, gameIndex, loader) {
-	return function() {
+function itCheckPgnItem(label, pgnName, gameIndex, loader) {
+	it(label, () => {
 
 		// LOG type => ensure that the item is valid, and compare its dump result to the descriptor.
-		if(getItemType(pgnName, gameIndex) === 'log') {
-			var expectedDescriptor = loadValidItemDescriptor(pgnName, gameIndex);
+		if (getItemType(pgnName, gameIndex) === 'log') {
+			const expectedDescriptor = loadValidItemDescriptor(pgnName, gameIndex);
 			test.value(dumpGame(loader(gameIndex)).trim()).is(expectedDescriptor);
 		}
 
 		// ERR type => ensure that an exception is thrown, and check its attributes.
 		else {
-			var expectedDescriptor = loadErrorItemDescriptor(pgnName, gameIndex);
-			test.exception(function() { loader(gameIndex); })
-				.isInstanceOf(kokopu.exception.InvalidPGN)
+			const expectedDescriptor = loadErrorItemDescriptor(pgnName, gameIndex);
+			test.exception(() => loader(gameIndex))
+				.isInstanceOf(exception.InvalidPGN)
 				.hasProperty('index', expectedDescriptor.index)
 				.hasProperty('lineNumber', expectedDescriptor.lineNumber)
 				.hasProperty('message', expectedDescriptor.message);
 		}
-	};
-}
-
-
-describe('Read PGN - Game content (direct access)', function() {
-	testData().forEach(function(elem) {
-		for(var gameIndex = 0; gameIndex < elem.gameCount; ++gameIndex) {
-			it('File ' + elem.label + ' - Game ' + gameIndex, pgnItemChecker(elem.label, gameIndex, function(i) {
-				return kokopu.pgnRead(elem.pgn, i);
-			}));
-		}
 	});
-});
-
-
-function DatabaseHolder(pgn) {
-	this._pgn = pgn;
 }
 
 
-DatabaseHolder.prototype.database = function() {
-	if(!(this._database)) {
-		this._database = kokopu.pgnRead(this._pgn);
+describe('Read PGN - Game content (direct access)', () => {
+	for (const elem of testData()) {
+		for (let gameIndex = 0; gameIndex < elem.gameCount; ++gameIndex) {
+			itCheckPgnItem(`File ${elem.label} - Game ${gameIndex}`, elem.label, gameIndex, i => pgnRead(elem.pgn, i));
+		}
 	}
-	return this._database;
-};
-
-
-describe('Read PGN - Game content (database)', function() {
-	testData().forEach(function(elem) {
-		var holder = new DatabaseHolder(elem.pgn);
-		for(var gameIndex = 0; gameIndex < elem.gameCount; ++gameIndex) {
-			if(gameIndex % 3 === 2) { continue; }
-			it('File ' + elem.label + ' - Game ' + gameIndex, pgnItemChecker(elem.label, gameIndex, function(i) {
-				return holder.database().game(i);
-			}));
-		}
-		for(var gameIndex = 0; gameIndex < elem.gameCount; ++gameIndex) {
-			if(gameIndex % 3 !== 2) { continue; }
-			it('File ' + elem.label + ' - Game ' + gameIndex, pgnItemChecker(elem.label, gameIndex, function(i) {
-				return holder.database().game(i);
-			}));
-		}
-	});
 });
 
 
-describe('Read PGN - Wrong game index', function() {
-	[
-		{ label: 'Negative index', value: -2, invalidPGNExpected: false },
-		{ label: 'Non integer index', value: 0.3, invalidPGNExpected: false },
-		{ label: 'Too large index', value: 99, invalidPGNExpected: true },
-		{ label: 'NaN index', value: NaN, invalidPGNExpected: false },
-		{ label: 'Non number index', value: 'xyz', invalidPGNExpected: false },
-	].forEach(function(elem) {
+/**
+ * Wrapper that implements lazy-instantiation of a database.
+ */
+class DatabaseHolder {
 
-		it('Database - ' + elem.label, function() {
-			var pgn = readText('pgns/mini2.pgn');
-			var database = kokopu.pgnRead(pgn);
-			test.exception(function() { database.game(elem.value); }).isInstanceOf(kokopu.exception.IllegalArgument);
+	constructor(pgn) {
+		this._pgn = pgn;
+	}
+
+	database() {
+		if (this._database === undefined) {
+			this._database = pgnRead(this._pgn);
+		}
+		return this._database;
+	}
+}
+
+
+describe('Read PGN - Game content (database)', () => {
+	for (const elem of testData()) {
+		const holder = new DatabaseHolder(elem.pgn);
+		for (let gameIndex = 0; gameIndex < elem.gameCount; ++gameIndex) {
+			if (gameIndex % 3 === 2) {
+				continue;
+			}
+			itCheckPgnItem(`File ${elem.label} - Game ${gameIndex}`, elem.label, gameIndex, i => holder.database().game(i));
+		}
+		for (let gameIndex = 0; gameIndex < elem.gameCount; ++gameIndex) {
+			if (gameIndex % 3 !== 2) {
+				continue;
+			}
+			itCheckPgnItem(`File ${elem.label} - Game ${gameIndex}`, elem.label, gameIndex, i => holder.database().game(i));
+		}
+	}
+});
+
+
+describe('Read PGN - Wrong game index', () => {
+
+	function itInvalidGameIndex(label, gameIndex, invalidPGNExpected) {
+
+		it('Database - ' + label, () => {
+			const pgn = readText('pgns/mini2.pgn');
+			const database = pgnRead(pgn);
+			test.exception(() => database.game(gameIndex)).isInstanceOf(exception.IllegalArgument);
 		});
 
-		it('Direct access - ' + elem.label, function() {
-			var pgn = readText('pgns/mini2.pgn');
-			if (elem.invalidPGNExpected) {
-				test.exception(function() { kokopu.pgnRead(pgn, elem.value); })
-					.isInstanceOf(kokopu.exception.InvalidPGN)
+		it('Direct access - ' + label, () => {
+			const pgn = readText('pgns/mini2.pgn');
+			if (invalidPGNExpected) {
+				test.exception(() => pgnRead(pgn, gameIndex))
+					.isInstanceOf(exception.InvalidPGN)
 					.hasProperty('pgn', pgn)
-					.hasProperty('message', 'Game index ' + elem.value + ' is invalid (only 2 game(s) found in the PGN data).');
+					.hasProperty('message', `Game index ${gameIndex} is invalid (only 2 game(s) found in the PGN data).`);
 			}
 			else {
-				test.exception(function() { kokopu.pgnRead(pgn, elem.value); }).isInstanceOf(kokopu.exception.IllegalArgument);
+				test.exception(() => pgnRead(pgn, gameIndex)).isInstanceOf(exception.IllegalArgument);
 			}
 		});
-	});
+	}
+
+	itInvalidGameIndex('Negative index', -2, false);
+	itInvalidGameIndex('Non integer index', 0.3, false);
+	itInvalidGameIndex('Too large index', 99, true);
+	itInvalidGameIndex('NaN index', NaN, false);
+	itInvalidGameIndex('Non number index', 'xyz', false);
 });
