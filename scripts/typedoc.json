@@ -1,6 +1,7 @@
 {
 	"entryPoints": [ "../src/index.ts" ],
 	"out": "../dist/docs",
+	"readme": "../doc_src/home.md",
 	"excludePrivate": true,
 	"tsconfig": "tsconfig.json"
 }

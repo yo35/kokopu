@@ -1,8 +1,5 @@
-Kokopu documentation
-====================
-
-Kokopu is a JavaScript library for chess applications. It implements the chess game rules,
-and provides tools to read/write the standard chess file formats
+Kokopu is a JavaScript/TypeScript library for chess applications.
+It implements the chess game rules, and provides tools to read/write the standard chess file formats
 ([PGN](https://en.wikipedia.org/wiki/Portable_Game_Notation),
 [FEN](https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation),
 [UCI](https://en.wikipedia.org/wiki/Universal_Chess_Interface),
@@ -50,10 +47,10 @@ Example
 -------
 
 ```
-var kokopu = require('kokopu');
+const kokopu = require('kokopu');
 
 // Create a new position, play some moves...
-var position = new kokopu.Position();
+const position = new kokopu.Position();
 position.play('e4');
 position.play('e5');
 position.play('Nf3');
@@ -81,11 +78,12 @@ console.log(position.ascii());
 // b KQkq -
 
 // List the available moves.
-var moves = position.moves();
-console.log(moves.map(function(move) { return position.notation(move); }));
+const moves = position.moves();
+console.log(moves.map(move => position.notation(move)));
 
-// [ 'a6', 'a5', 'b6', 'b5', 'c6', 'c5', 'd6','d5', 'f6', 'f5', 'g6', 'g5', 'h6', 'h5', 'Na6', 'Nc6',
-// 'Qe7', 'Qf6', 'Qg5', 'Qh4', 'Ke7', 'Be7', 'Bd6', 'Bc5', 'Bb4', 'Ba3', 'Nf6', 'Nh6', 'Ne7' ]
+// [ 'a6', 'a5', 'b6', 'b5', 'c6', 'c5', 'd6','d5', 'f6', 'f5', 'g6',
+// 'g5', 'h6', 'h5', 'Na6', 'Nc6', 'Qe7', 'Qf6', 'Qg5', 'Qh4', 'Ke7',
+// 'Be7', 'Bd6', 'Bc5', 'Bb4', 'Ba3', 'Nf6', 'Nh6', 'Ne7' ]
 ```
 
 Or within a browser:
@@ -93,7 +91,7 @@ Or within a browser:
 ```
 <script src="kokopu.js"></script>
 <script>
-	var position = new kokopu.Position();
+	const position = new kokopu.Position();
 	position.play('e4');
 	position.play('e5');
 	// etc...
