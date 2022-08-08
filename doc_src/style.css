@@ -23,3 +23,9 @@
 .tsd-navigation.settings {
 	display: none;
 }
+
+hr {
+	border: none;
+	height: 1px;
+	background-color: var(--color-accent);
+}
