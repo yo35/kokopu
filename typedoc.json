@@ -3,11 +3,23 @@
 	"out": "./dist/docs",
 	"readme": "./doc_src/home.md",
 	"favicon": "./doc_src/kokopu-favicon.png",
+	"media": "./doc_src/media",
 	"excludePrivate": true,
 	"includeVersion": true,
 	"disableSources": true,
 	"footerDate": true,
 	"name": "Kokopu",
 	"customTitle": "Kokopu documentation",
-	"tsconfig": "tsconfig.json"
+	"pluginPages": {
+		"source": "./doc_src",
+		"pages": [
+			{ "title": "Tutorials & examples", "childrenDir": "tutorials", "children": [
+				{ "title": "Getting started", "source": "01_getting_started.md" },
+				{ "title": "Set-up a position", "source": "02_set_up_position.md" },
+				{ "title": "Load a PGN file", "source": "03_load_pgn.md" },
+				{ "title": "Set-up a game from scratch", "source": "04_set_up_game.md" },
+				{ "title": "Chess960", "source": "05_chess960.md" }
+			]}
+		]
+	}
 }

@@ -2,31 +2,31 @@ The [Portable Game Notation](https://en.wikipedia.org/wiki/Portable_Game_Notatio
 The format is capable to describe not only the game moves, but also all the meta-data associated to the games (name of the players,
 date at which the game has been played, etc.), and move annotations (text comment, alternative variations, etc.).
 
-An example of such PGN file is provided here: [`example.pgn`](tutorial_data/example.pgn).
+An example of such PGN file is provided here: [`example.pgn`](media://example.pgn).
 
 ```
-var kokopu = require('kokopu');
-var fs = require('fs');
+const kokopu = require('kokopu');
+const fs = require('fs');
 
 // Read the content of the PGN file provided above.
-var pgnText = fs.readFileSync('example.pgn', 'utf8');
+const pgnText = fs.readFileSync('example.pgn', 'utf8');
 
 // Parse this content.
-var database = kokopu.pgnRead(pgnText);
+const database = kokopu.pgnRead(pgnText);
 
 // Get the number of games in the PGN file.
 database.gameCount(); // 2
 
 // Retrieve the first game, and get information about it.
-var firstGame = database.game(0);
+const firstGame = database.game(0);
 firstGame.playerName('w'); // 'Bill Gates'
 firstGame.playerName('b'); // 'Magnus Carlsen'
 firstGame.date(); // 2014-01-22T23:00:00.000Z
 firstGame.result(); // '0-1'
 
 // Display the moves that compose the main variation.
-var mainVariation = firstGame.mainVariation();
-mainVariation.nodes().map(function(node) { return node.notation(); });
+const mainVariation = firstGame.mainVariation();
+mainVariation.nodes().map(node => node.notation());
 
 // [ 'e4', 'Nc6', 'Nf3', 'd5', 'Bd3', 'Nf6', 'exd5', 'Qxd5', 'Nc3', 'Qh5',
 // 'O-O', 'Bg4', 'h3', 'Ne5', 'hxg4', 'Nfxg4', 'Nxe5', 'Qh2#' ]
@@ -35,23 +35,23 @@ mainVariation.nodes().map(function(node) { return node.notation(); });
 Another example, that handles an annotated game, with text comments and sub-variations (more details on this topic in {@link Node} and {@link Variation}):
 
 ```
-var database = /* initialized as above */;
-var secondGame = database.game(1);
+const database = /* initialized as above */;
+const secondGame = database.game(1);
 
-for(var node = secondGame.mainVariation().first(); node; node = node.next()) { // iteration over the nodes of the main variation
+for (let node = secondGame.mainVariation().first(); node; node = node.next()) { // iteration over the nodes of the main variation
 
 	// Display the move and the associated text comment, if any.
 	console.log(node.notation() + (node.comment() ? ' ' + node.comment() : ''));
 
 	// Display the alternative variations, if any.
-	node.variations().forEach(function(variation, index) {
-		var text = '  variation ' + (index + 1) + ' ->';
-		if(variation.comment()) {
+	node.variations().forEach((variation, index) => {
+		let text = '  variation ' + (index + 1) + ' ->';
+		if (variation.comment()) {
 			text += ' ' + variation.comment();
 		}
-		for(var nodeInVariation = variation.first(); nodeInVariation; nodeInVariation = nodeInVariation.next()) {
+		for (let nodeInVariation = variation.first(); nodeInVariation; nodeInVariation = nodeInVariation.next()) {
 			text += ' ' + nodeInVariation.notation();
-			if(nodeInVariation.comment()) {
+			if (nodeInVariation.comment()) {
 				text += ' ' + nodeInVariation.comment();
 			}
 		}
