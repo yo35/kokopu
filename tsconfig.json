@@ -1,7 +1,7 @@
 {
-	"include": [ "../src/**/*" ],
+	"include": [ "./src/**/*" ],
 	"compilerOptions": {
-		"outDir": "../dist/lib",
+		"outDir": "./dist/lib",
 		"module": "CommonJS",
 		"target": "es2015",
 		"lib": [ "es2020" ],

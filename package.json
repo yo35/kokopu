@@ -52,9 +52,9 @@
 		"test": "npm run lint && npm run unit",
 		"publish_coverage": "nyc report --reporter=text-lcov | coveralls",
 		"build": "make -f scripts/build.mk",
-		"build:doc": "typedoc --options scripts/typedoc.json",
-		"build:lib": "tsc --project scripts/tsconfig.json",
-		"start": "typedoc --options scripts/typedoc.json --watch --preserveWatchOutput",
+		"build:doc": "typedoc",
+		"build:lib": "tsc",
+		"start": "typedoc --watch --preserveWatchOutput",
 		"clean": "make -f scripts/build.mk clean",
 		"predeploy": "npm run test && npm run build",
 		"deploy": "npm publish && node scripts/deploy.js"

@@ -1,7 +1,7 @@
 {
-	"entryPoints": [ "../src/index.ts" ],
-	"out": "../dist/docs",
-	"readme": "../doc_src/home.md",
+	"entryPoints": [ "./src/index.ts" ],
+	"out": "./dist/docs",
+	"readme": "./doc_src/home.md",
 	"favicon": "./doc_src/kokopu-favicon.png",
 	"excludePrivate": true,
 	"includeVersion": true,
