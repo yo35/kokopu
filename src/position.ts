@@ -95,7 +95,7 @@ export class Position {
 	 *
 	 * If the chess game variant is Chess960, [X-FEN](https://en.wikipedia.org/wiki/X-FEN) can be used instead of regular FEN.
 	 *
-	 * @throws {@link InvalidFEN} if the given string cannot be parsed as a valid FEN string.
+	 * @throws {@link exception.InvalidFEN} if the given string cannot be parsed as a valid FEN string.
 	 */
 	constructor(fen: string);
 
@@ -105,7 +105,7 @@ export class Position {
 	 *
 	 * If the chess game variant is Chess960, [X-FEN](https://en.wikipedia.org/wiki/X-FEN) can be used instead of regular FEN.
 	 *
-	 * @throws {@link InvalidFEN} if the given string cannot be parsed as a valid FEN string.
+	 * @throws {@link exception.InvalidFEN} if the given string cannot be parsed as a valid FEN string.
 	 */
 	constructor(variant: GameVariant, fen: string);
 
@@ -322,7 +322,7 @@ export class Position {
 	 * Parse the given [FEN](https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation) string and set the position accordingly.
 	 *
 	 * @param strict - If `true`, only perfectly formatted FEN strings are accepted. `false` by default.
-	 * @throws {@link InvalidFEN} if the given string cannot be parsed as a valid FEN string.
+	 * @throws {@link exception.InvalidFEN} if the given string cannot be parsed as a valid FEN string.
 	 */
 	fen(fen: string, strict?: boolean): { fiftyMoveClock: number, fullMoveNumber: number };
 
@@ -802,7 +802,7 @@ export class Position {
 	 * @param strict - If `true`, only perfectly formatted SAN moves are accepted. If `false`, "small errors" in the input
 	 *                 such as a missing capture character, an unnecessary disambiguation symbol... do not interrupt the parsing.
 	 *                 `false` by default.
-	 * @throws {@link InvalidNotation} if the move parsing fails or if the parsed move would correspond to an illegal move.
+	 * @throws {@link exception.InvalidNotation} if the move parsing fails or if the parsed move would correspond to an illegal move.
 	 */
 	notation(move: string, strict?: boolean): MoveDescriptor;
 
@@ -837,7 +837,7 @@ export class Position {
 	 * @param strict - If `true`, only perfectly formatted FAN moves are accepted. If `false`, "small errors" in the input
 	 *                 such as a missing capture character, an unnecessary disambiguation symbol... do not interrupt the parsing.
 	 *                 `false` by default.
-	 * @throws {@link InvalidNotation} if the move parsing fails or if the parsed move would correspond to an illegal move.
+	 * @throws {@link exception.InvalidNotation} if the move parsing fails or if the parsed move would correspond to an illegal move.
 	 */
 	figurineNotation(move: string, strict?: boolean): MoveDescriptor;
 
@@ -885,7 +885,7 @@ export class Position {
 	 *                 are rejected in case of normal chess games. If `false`, both "king-take-rook"-encoded and UCI-standard-encoded castling moves
 	 *                 (e.g. `'e1g1'`) are accepted. For Chess960 games, only the "king-take-rook" style is accepted, whatever the value of this flag.
 	 *                 `false` by default.
-	 * @throws {@link InvalidNotation} if the move parsing fails or if the parsed move would correspond to an illegal move.
+	 * @throws {@link exception.InvalidNotation} if the move parsing fails or if the parsed move would correspond to an illegal move.
 	 */
 	uci(move: string, strict?: boolean): MoveDescriptor;
 

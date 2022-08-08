@@ -50,7 +50,7 @@ export abstract class Database {
 	 * Return the game corresponding to the given index.
 	 *
 	 * @param gameIndex - Must be between 0 inclusive and {@link Database.gameCount} exclusive.
-	 * @throws {@link InvalidPGN}
+	 * @throws {@link exception.InvalidPGN}
 	 */
 	game(gameIndex: number): Game {
 		if (!isValidGameIndex(gameIndex) || gameIndex >= this.gameCount()) {

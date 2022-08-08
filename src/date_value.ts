@@ -93,7 +93,7 @@ export class DateValue {
 	/**
 	 * Month index, valued between 1 (January) and 12 (December) inclusive.
 	 *
-	 * @throws {@link IllegalArgument} if the current type is `'y'` (see {@link DateValue.type}).
+	 * @throws {@link exception.IllegalArgument} if the current type is `'y'` (see {@link DateValue.type}).
 	 */
 	month(): number {
 		if (this.#month === undefined) {
@@ -106,7 +106,7 @@ export class DateValue {
 	/**
 	 * Day in month, valued between 1 and the number of days in the corresponding month (thus 31 at most).
 	 *
-	 * @throws {@link IllegalArgument} if the current type is `'y'` or `'ym'` (see {@link DateValue.type}).
+	 * @throws {@link exception.IllegalArgument} if the current type is `'y'` or `'ym'` (see {@link DateValue.type}).
 	 */
 	day(): number {
 		if (this.#day === undefined) {

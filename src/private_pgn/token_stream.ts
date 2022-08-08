@@ -245,7 +245,7 @@ export class TokenStream {
 	 * Try to consume 1 token.
 	 *
 	 * @returns `true` if a token could have been read, `false` if the end of the text has been reached.
-	 * @throws {@link InvalidPGN} If the text cannot be interpreted as a valid token.
+	 * @throws {@link exception.InvalidPGN} if the text cannot be interpreted as a valid token.
 	 */
 	consumeToken() {
 

@@ -81,49 +81,49 @@ export abstract class MoveDescriptor {
 	/**
 	 * Type of the captured piece.
 	 *
-	 * @throws {@link IllegalArgument} if the current move is not a capture, i.e. if {@link isCapture} returns `false`.
+	 * @throws {@link exception.IllegalArgument} if the current move is not a capture, i.e. if {@link isCapture} returns `false`.
 	 */
 	abstract capturedPiece(): Piece;
 
 	/**
 	 * Color and type of the captured piece.
 	 *
-	 * @throws {@link IllegalArgument} if the current move is not a capture, i.e. if {@link isCapture} returns `false`.
+	 * @throws {@link exception.IllegalArgument} if the current move is not a capture, i.e. if {@link isCapture} returns `false`.
 	 */
 	abstract capturedColoredPiece(): ColoredPiece;
 
 	/**
 	 * Origin square of the rook, in case of a castling move.
 	 *
-	 * @throws {@link IllegalArgument} if the current move is not a castling move, i.e. if {@link isCastling} returns `false`.
+	 * @throws {@link exception.IllegalArgument} if the current move is not a castling move, i.e. if {@link isCastling} returns `false`.
 	 */
 	abstract rookFrom(): Square;
 
 	/**
 	 * Destination square of the rook, in case of a castling move.
 	 *
-	 * @throws {@link IllegalArgument} if the current move is not a castling move, i.e. if {@link isCastling} returns `false`.
+	 * @throws {@link exception.IllegalArgument} if the current move is not a castling move, i.e. if {@link isCastling} returns `false`.
 	 */
 	abstract rookTo(): Square;
 
 	/**
 	 * Square containing the captured pawn, in case of a *en-passant* capture.
 	 *
-	 * @throws {@link IllegalArgument} if the current move is not a *en-passant* capture, i.e. if {@link isEnPassant} returns `false`.
+	 * @throws {@link exception.IllegalArgument} if the current move is not a *en-passant* capture, i.e. if {@link isEnPassant} returns `false`.
 	 */
 	abstract enPassantSquare(): Square;
 
 	/**
 	 * Type of the promoted piece, in case of a promotion.
 	 *
-	 * @throws {@link IllegalArgument} if the current move is not a promotion, i.e. if {@link isPromotion} returns `false`.
+	 * @throws {@link exception.IllegalArgument} if the current move is not a promotion, i.e. if {@link isPromotion} returns `false`.
 	 */
 	abstract promotion(): Piece;
 
 	/**
 	 * Color and type of the promoted piece, in case of a promotion.
 	 *
-	 * @throws {@link IllegalArgument} if the current move is not a promotion, i.e. if {@link isPromotion} returns `false`.
+	 * @throws {@link exception.IllegalArgument} if the current move is not a promotion, i.e. if {@link isPromotion} returns `false`.
 	 */
 	abstract coloredPromotion(): ColoredPiece;
 

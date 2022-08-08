@@ -125,7 +125,7 @@ export abstract class AbstractNode {
 	 *
 	 * @param move - [SAN](https://en.wikipedia.org/wiki/Algebraic_notation_(chess)) representation of the move, or `'--'` for a null-move.
 	 * @returns The newly created {@link Node}.
-	 * @throws {@link InvalidNotation} if the move notation cannot be parsed, or if the parsed move would correspond to an illegal move.
+	 * @throws {@link exception.InvalidNotation} if the move notation cannot be parsed, or if the parsed move would correspond to an illegal move.
 	 */
 	abstract play(move: string): Node;
 }
