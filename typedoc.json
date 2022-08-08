@@ -4,6 +4,7 @@
 	"readme": "./doc_src/home.md",
 	"favicon": "./doc_src/kokopu-favicon.png",
 	"media": "./doc_src/media",
+	"customCss": "./doc_src/style.css",
 	"excludePrivate": true,
 	"includeVersion": true,
 	"disableSources": true,
