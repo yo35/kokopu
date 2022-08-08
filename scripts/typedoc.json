@@ -2,6 +2,12 @@
 	"entryPoints": [ "../src/index.ts" ],
 	"out": "../dist/docs",
 	"readme": "../doc_src/home.md",
+	"favicon": "./doc_src/kokopu-favicon.png",
 	"excludePrivate": true,
+	"includeVersion": true,
+	"disableSources": true,
+	"footerDate": true,
+	"name": "Kokopu",
+	"customTitle": "Kokopu documentation",
 	"tsconfig": "tsconfig.json"
 }
