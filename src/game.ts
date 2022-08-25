@@ -199,6 +199,9 @@ export class Game {
 
 	/**
 	 * Set the date of the game.
+	 *
+	 * If the month and/or the day of month are missing, the date of the game will be partially defined
+	 * (see {@link DateValue} for more details regarding partially defined dates).
 	 */
 	date(year: number, month?: number, day?: number): void;
 
@@ -239,6 +242,9 @@ export class Game {
 
 	/**
 	 * Get the date of the game as a standard JavaScript `Date` object.
+	 *
+	 * If the day of month is undefined for the current game, the returned `Date` object points at the first day of the corresponding month.
+	 * If neither the day of month nor the month are undefined for the current game, the returned `Date` object points at the first day of the corresponding year.
 	 */
 	dateAsDate(): Date | undefined {
 		return this._date === undefined ? undefined : this._date.toDate();
