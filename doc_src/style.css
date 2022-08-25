@@ -24,8 +24,13 @@
 	display: none;
 }
 
-hr {
+.tsd-typography hr {
 	border: none;
 	height: 1px;
 	background-color: var(--color-accent);
+}
+
+.tsd-typography h2 {
+	margin-top: 1.5rem;
+	margin-bottom: 1rem;
 }
