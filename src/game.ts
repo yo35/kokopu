@@ -41,7 +41,7 @@ export class Game {
 
 	// Headers
 	private _playerName: (string | undefined)[];
-	private _playerElo: (string | undefined)[];
+	private _playerElo: (number | undefined)[];
 	private _playerTitle: (string | undefined)[];
 	private _event?: string;
 	private _round?: string;
@@ -91,17 +91,19 @@ export class Game {
 
 	/**
 	 * Get the elo of the player corresponding to the given color.
+	 *
+	 * If defined, the returned value is guaranteed to be an integer >= 0.
 	 */
-	playerElo(color: Color): string | undefined;
+	playerElo(color: Color): number | undefined;
 
 	/**
 	 * Set the elo of the player corresponding to the given color.
 	 *
-	 * @param value - If `undefined`, the existing value (if any) is erased.
+	 * @param value - If `undefined`, the existing value (if any) is erased. Must be an integer >= 0.
 	 */
-	playerElo(color: Color, value: string | undefined): void;
+	playerElo(color: Color, value: number | undefined): void;
 
-	playerElo(color: Color, value?: string | undefined) {
+	playerElo(color: Color, value?: number | undefined) {
 		const colorCode = colorFromString(color);
 		if (colorCode < 0) {
 			throw new IllegalArgument('Game.playerElo()');
@@ -110,7 +112,13 @@ export class Game {
 			return this._playerElo[colorCode];
 		}
 		else {
-			this._playerElo[colorCode] = sanitizeStringHeader(value);
+			value = sanitizeNumberHeader(value);
+			if (value === undefined || (Number.isInteger(value) && value >= 0)) {
+				this._playerElo[colorCode] = value;
+			}
+			else {
+				throw new IllegalArgument('Game.playerElo()');
+			}
 		}
 	}
 
@@ -507,6 +515,11 @@ function sanitizeStringHeader(value: any) {
 }
 
 
+function sanitizeNumberHeader(value: any) {
+	return value === undefined || value === null ? undefined : Number(value);
+}
+
+
 function trimCollapseAndMarkEmpty(text: string) {
 	text = trimAndCollapseSpaces(text);
 	return text === '' ? '<empty>' : text;
@@ -535,16 +548,16 @@ function formatDate(dateAsString: string | undefined) {
 }
 
 
-function formatPlayer(key: string, playerName: string | undefined, playerElo: string | undefined, playerTitle: string | undefined) {
+function formatPlayer(key: string, playerName: string | undefined, playerElo: number | undefined, playerTitle: string | undefined) {
 	if (playerName === undefined && playerElo === undefined && playerTitle === undefined) {
 		return undefined;
 	}
 	let result = playerName === undefined ? `${key}: <undefined>` : `${key}: ${trimCollapseAndMarkEmpty(playerName)}`;
 	if (playerElo !== undefined && playerTitle !== undefined) {
-		result += ` (${trimCollapseAndMarkEmpty(playerTitle)} ${trimCollapseAndMarkEmpty(playerElo)})`;
+		result += ` (${trimCollapseAndMarkEmpty(playerTitle)} ${playerElo})`;
 	}
 	else if (playerElo !== undefined) {
-		result += ` (${trimCollapseAndMarkEmpty(playerElo)})`;
+		result += ` (${playerElo})`;
 	}
 	else if (playerTitle !== undefined) {
 		result +=  ` (${trimCollapseAndMarkEmpty(playerTitle)})`;

@@ -74,3 +74,11 @@ game.date({ year: 2022 }); // (2) Setting a partial date, with the year only.
 game.date(2022, 8); // (1)
 game.date(2022); // (2)
 ```
+
+
+
+Game.playerElo() (getter and setter)
+------------------------------------
+
+As of 3.0.0, the getter {@link Game.playerElo | Game.playerElo()} returns a positive integer instead of a string,
+and similarly the corresponding setter expects a positive integer (or any string that can be converted to a positive integer).

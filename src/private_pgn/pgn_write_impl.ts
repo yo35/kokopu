@@ -72,6 +72,11 @@ function writeOptionalHeader(key: string, value: string | undefined) {
 }
 
 
+function writeOptionalIntegerHeader(key: string, value: number | undefined) {
+	return value === undefined ? '' : `[${key} "${value}"]\n`;
+}
+
+
 /**
  * @returns `true` if the move number of the next move must be written.
  */
@@ -215,14 +220,14 @@ export function writeGame(game: Game) {
 
 	// Additional tags (ASCII order by tag name)
 	result += writeOptionalHeader('Annotator', game.annotator());
-	result += writeOptionalHeader('BlackElo', game.playerElo('b'));
+	result += writeOptionalIntegerHeader('BlackElo', game.playerElo('b'));
 	result += writeOptionalHeader('BlackTitle', game.playerTitle('b'));
 	if (hasFENHeader) {
 		result += '[FEN "' + initialPosition.fen({ fullMoveNumber: game.mainVariation().initialFullMoveNumber(), regularFENIfPossible: true }) + '"]\n';
 		result += '[SetUp "1"]\n';
 	}
 	result += writeOptionalHeader('Variant', formatVariant(variant));
-	result += writeOptionalHeader('WhiteElo', game.playerElo('w'));
+	result += writeOptionalIntegerHeader('WhiteElo', game.playerElo('w'));
 	result += writeOptionalHeader('WhiteTitle', game.playerTitle('w'));
 
 	// Separator

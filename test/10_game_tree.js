@@ -100,10 +100,8 @@ const oneGamefactories = {
 		game.event('');
 		game.round('');
 		game.playerName('w', '');
-		game.playerElo('w', '');
 		game.playerTitle('w', '');
 		game.playerName('b', ' ');
-		game.playerElo('b', ' ');
 		game.playerTitle('b', ' ');
 		game.annotator('');
 		game.mainVariation().comment('');

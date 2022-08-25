@@ -38,6 +38,17 @@ function parseNullableHeader(value: string): string | undefined {
 }
 
 
+function parsePositiveIntegerHeader(value: string): number | undefined {
+	if (/^\d+$/.test(value)) {
+		const result = Number(value);
+		if (Number.isInteger(result)) {
+			return result;
+		}
+	}
+	return undefined;
+}
+
+
 function parseDateHeader(value: string): DateValue | undefined {
 	if (/^([0-9]{4})\.([0-9]{2})\.([0-9]{2})$/.test(value)) {
 		const y = RegExp.$1;
@@ -110,8 +121,8 @@ function processHeader(stream: TokenStream, game: Game, factory: InitialPosition
 	switch (key) {
 		case 'White': game.playerName('w', parseNullableHeader(value)); break;
 		case 'Black': game.playerName('b', parseNullableHeader(value)); break;
-		case 'WhiteElo': game.playerElo('w', value); break;
-		case 'BlackElo': game.playerElo('b', value); break;
+		case 'WhiteElo': game.playerElo('w', parsePositiveIntegerHeader(value)); break;
+		case 'BlackElo': game.playerElo('b', parsePositiveIntegerHeader(value)); break;
 		case 'WhiteTitle': game.playerTitle('w', value); break;
 		case 'BlackTitle': game.playerTitle('b', value); break;
 		case 'Event': game.event(parseNullableHeader(value)); break;

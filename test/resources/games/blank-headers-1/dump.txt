@@ -1,8 +1,6 @@
 White = {}
-WhiteElo = {}
 WhiteTitle = {}
 Black = { }
-BlackElo = { }
 BlackTitle = { }
 Event = {}
 Round = {}
