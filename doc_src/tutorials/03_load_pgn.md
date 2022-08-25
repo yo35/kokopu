@@ -5,14 +5,14 @@ date at which the game has been played, etc.), and move annotations (text commen
 An example of such PGN file is provided here: [`example.pgn`](media://example.pgn).
 
 ```
-const kokopu = require('kokopu');
+const { pgnRead } = require('kokopu');
 const fs = require('fs');
 
 // Read the content of the PGN file provided above.
 const pgnText = fs.readFileSync('example.pgn', 'utf8');
 
 // Parse this content.
-const database = kokopu.pgnRead(pgnText);
+const database = pgnRead(pgnText);
 
 // Get the number of games in the PGN file.
 database.gameCount(); // 2

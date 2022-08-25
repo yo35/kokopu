@@ -16,9 +16,9 @@ if any (see {@link Node.variations}).
 You can create a {@link Game} object from scratch as follows:
 
 ```
-const kokopu = require('kokopu');
+const { Game, pgnWrite } = require('kokopu');
 
-const game = new kokopu.Game();
+const game = new Game();
 
 // Set the player's names and event
 game.playerName('w', 'Alice');
@@ -72,7 +72,7 @@ console.log(game.ascii());
 // 1-0
 
 // Generate the PGN-representation of the game.
-console.log(kokopu.pgnWrite(game));
+console.log(pgnWrite(game));
 
 // [Event "1st International Open of Whatever"]
 // [Site "?"]

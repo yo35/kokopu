@@ -2,10 +2,10 @@ This example shows how to create a chess position, how to play some moves, and h
 More details available in {@link Position}.
 
 ```
-const kokopu = require('kokopu');
+const { Position } = require('kokopu');
 
 // Create a new position, play some moves...
-const position = new kokopu.Position();
+const position = new Position();
 position.play('e4');
 position.play('e5');
 position.play('Nf3');

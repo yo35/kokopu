@@ -20,7 +20,7 @@
  * -------------------------------------------------------------------------- */
 
 
-const kokopu = require('../dist/lib/index');
+const { Position } = require('../dist/lib/index');
 const program = require('commander');
 
 
@@ -37,7 +37,7 @@ function generateSuccessors(pos, depth) {
 	let result = 1;
 	if (depth > 0) {
 		for (const move of pos.moves()) {
-			const nextPos = new kokopu.Position(pos);
+			const nextPos = new Position(pos);
 			nextPos.play(move);
 			result += generateSuccessors(nextPos, depth - 1);
 		}
@@ -52,7 +52,7 @@ function generateSuccessors(pos, depth) {
  */
 function run(fen, minDepth, maxDepth, verbose) {
 
-	const initialPos = new kokopu.Position(fen);
+	const initialPos = new Position(fen);
 	function runAtDepth(depth) {
 
 		const startAt = Date.now();

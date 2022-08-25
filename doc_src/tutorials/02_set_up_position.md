@@ -9,9 +9,9 @@ Set-up from scratch
 -------------------
 
 ```
-const kokopu = require('kokopu');
+const { Position } = require('kokopu');
 
-const position = new kokopu.Position('empty'); // initialize the position with an empty board
+const position = new Position('empty'); // initialize the position with an empty board
 
 position.square('a8', 'bk'); // put a black king on square a8
 position.square('b6', 'wk'); // put a white king on square b6
@@ -68,9 +68,9 @@ console.log(position.ascii());
 It is also possible to initialize the board from the usual starting position:
 
 ```
-const kokopu = require('kokopu');
+const { Position } = require('kokopu');
 
-const position = new kokopu.Position('start'); // initialize the position with the usual starting position
+const position = new Position('start'); // initialize the position with the usual starting position
 
 position.square('e5', 'wp'); // put a white pawn on square e5
 position.square('e2', '-'); // clear square e2
@@ -111,13 +111,13 @@ Copy another position
 ---------------------
 
 ```
-const kokopu = require('kokopu');
+const { Position } = require('kokopu');
 
-const p1 = new kokopu.Position('start');
+const p1 = new Position('start');
 p1.play('e4');
 
 // Create a copy p2 of position p1. After the copy, each position can be modified without affecting the other.
-const p2 = new kokopu.Position(p1);
+const p2 = new Position(p1);
 
 p1.play('e5');
 p2.play('c5');
@@ -172,10 +172,10 @@ The [Forsyth-Edwards Notation](https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edw
 that it is supported by many chess softwares. Kokopu is capable of loading such FEN strings.
 
 ```
-const kokopu = require('kokopu');
+const { Position } = require('kokopu');
 
 // Load the FEN that characterizes the beginning of the Italian game variation.
-const position = new kokopu.Position('r1bqkbnr/pppp1ppp/2n5/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R b KQkq - 3 3');
+const position = new Position('r1bqkbnr/pppp1ppp/2n5/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R b KQkq - 3 3');
 
 console.log(position.ascii());
 // +---+---+---+---+---+---+---+---+

@@ -20,7 +20,7 @@
  * -------------------------------------------------------------------------- */
 
 
-const kokopu = require('../dist/lib/index');
+const { exception, pgnRead } = require('../dist/lib/index');
 const fs = require('fs');
 const program = require('commander');
 
@@ -39,10 +39,10 @@ function alignRight(data, width) {
 
 function loadDatabase(text, path, errors) {
 	try {
-		return kokopu.pgnRead(text);
+		return pgnRead(text);
 	}
 	catch (error) {
-		if (error instanceof kokopu.exception.InvalidPGN) {
+		if (error instanceof exception.InvalidPGN) {
 			errors.set(path, error);
 			return null;
 		}
@@ -65,7 +65,7 @@ function loadGames(database, path, errors) {
 		}
 	}
 	catch (error) {
-		if (error instanceof kokopu.exception.InvalidPGN) {
+		if (error instanceof exception.InvalidPGN) {
 			errors.set(path, error);
 		}
 		else {
