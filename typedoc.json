@@ -12,7 +12,7 @@
 	"name": "Kokopu",
 	"customTitle": "Kokopu documentation",
 	"pluginPages": {
-		"source": "./doc_src",
+		"source": "./doc_src/pages",
 		"pages": [
 			{ "title": "Tutorials & examples", "childrenDir": "tutorials", "children": [
 				{ "title": "Getting started", "source": "01_getting_started.md" },
