@@ -168,7 +168,15 @@ describe('Read PGN - Wrong game index', () => {
 		it('Database - ' + label, () => {
 			const pgn = readText('pgns/mini2.pgn');
 			const database = pgnRead(pgn);
-			test.exception(() => database.game(gameIndex)).isInstanceOf(exception.IllegalArgument);
+			if (invalidPGNExpected) {
+				test.exception(() => database.game(gameIndex))
+					.isInstanceOf(exception.InvalidPGN)
+					.hasProperty('pgn', pgn)
+					.hasProperty('message', `Game index ${gameIndex} is invalid (only 2 game(s) found in the PGN data).`);
+			}
+			else {
+				test.exception(() => database.game(gameIndex)).isInstanceOf(exception.IllegalArgument);
+			}
 		});
 
 		it('Direct access - ' + label, () => {

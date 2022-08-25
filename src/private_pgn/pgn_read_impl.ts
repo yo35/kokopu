@@ -334,6 +334,9 @@ class PGNDatabaseImpl extends Database {
 
 
 	protected doGame(gameIndex: number) {
+		if (gameIndex >= this._gameLocations.length) {
+			throw new InvalidPGN(this._text, -1, -1, i18n.INVALID_GAME_INDEX, gameIndex, this._gameLocations.length);
+		}
 		if (this._currentGameIndex !== gameIndex) {
 			this._stream = new TokenStream(this._text, this._gameLocations[gameIndex]);
 		}

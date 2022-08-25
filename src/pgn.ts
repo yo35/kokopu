@@ -40,7 +40,7 @@ export function pgnRead(pgnString: string): Database;
  *
  * @param pgnString - String to parse.
  * @param gameIndex - Only the game corresponding to this index is parsed. Must be between 0 (inclusive) and the number of games in the PGN (exclusive).
- * @throws {@link exception.InvalidPGN}
+ * @throws {@link exception.InvalidPGN} if the corresponding game cannot be parsed, or if the given game index is larger than the number of games in the underlying PGN string.
  */
 export function pgnRead(pgnString: string, gameIndex: number): Game;
 

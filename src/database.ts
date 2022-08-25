@@ -50,10 +50,10 @@ export abstract class Database {
 	 * Return the game corresponding to the given index.
 	 *
 	 * @param gameIndex - Must be between 0 inclusive and {@link Database.gameCount} exclusive.
-	 * @throws {@link exception.InvalidPGN}
+	 * @throws {@link exception.InvalidPGN} if the corresponding game cannot be parsed, or if the given game index is larger than the number of games in the underlying PGN data.
 	 */
 	game(gameIndex: number): Game {
-		if (!isValidGameIndex(gameIndex) || gameIndex >= this.gameCount()) {
+		if (!isValidGameIndex(gameIndex)) {
 			throw new IllegalArgument('Database.game()');
 		}
 		return this.doGame(gameIndex);
