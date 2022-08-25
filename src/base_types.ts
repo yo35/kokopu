@@ -99,7 +99,7 @@ export type Square =
 /**
  * Rank index and file index of a chessboard square.
  */
-export interface Coordinates {
+export type Coordinates = {
 
 	/**
 	 * - `0` for file A
@@ -107,7 +107,7 @@ export interface Coordinates {
 	 * - ...
 	 * - `7` for file H
 	 */
-	file: number,
+	file: number;
 
 	/**
 	 * - `0` for rank 1
@@ -115,8 +115,8 @@ export interface Coordinates {
 	 * - ...
 	 * - `7` for rank 8
 	 */
-	rank: number,
-}
+	rank: number;
+};
 
 
 /**

@@ -76,7 +76,7 @@ export function coordinatesToSquare(coordinates: Coordinates): Square;
 export function coordinatesToSquare(fileOrCoordinates: number | Coordinates, rankOrUndefined?: number): Square {
 	const file = typeof fileOrCoordinates === 'number' ? fileOrCoordinates : fileOrCoordinates.file;
 	const rank = typeof fileOrCoordinates === 'number' ? rankOrUndefined! : fileOrCoordinates.rank;
-	if (file < 0 || file >= 8 || rank < 0 || rank >= 8) { // TODO add integer check
+	if (!Number.isInteger(file) || !Number.isInteger(rank) || file < 0 || file >= 8 || rank < 0 || rank >= 8) {
 		throw new IllegalArgument('coordinatesToSquare()');
 	}
 	return fileToString(file) + rankToString(rank) as Square;
