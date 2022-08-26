@@ -221,7 +221,6 @@ function enPassantToString(position: PositionImpl) {
 
 export function parseFEN(variant: number, fen: string, strict: boolean): { position: PositionImpl, fiftyMoveClock: number, fullMoveNumber: number } {
 
-	// TODO use regex instead of split to improve the error message displayed on random string.
 	// Trim the input string and split it into 6 fields.
 	const fields = strict ? fen.split(' ') : fen.replace(/^\s+|\s+$/g, '').split(/\s+/);
 	if (fields.length !== 6) {
