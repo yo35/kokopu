@@ -20,6 +20,7 @@
  * -------------------------------------------------------------------------- */
 
 
+const process = require('process');
 const readline = require('readline');
 const { Readable } = require('stream');
 const Client = require('ssh2-sftp-client');
@@ -88,5 +89,5 @@ promptPassword(`Pass for ${USER}@${HOST}: `, pass => {
 		let htaccess = Readable.from([ `Redirect "/docs/current" "/docs/${version}"` ]);
 		return client.put(htaccess, `${ROOT_DIR}/docs/.htaccess`, { mode: 0o644 });
 
-	}).then(() => console.log('Done.')).catch(() => console.log(err)).finally(() => client.end());
+	}).then(() => console.log('Done.')).catch(err => { console.error(err); process.exitCode = 1; }).finally(() => client.end());
 });
