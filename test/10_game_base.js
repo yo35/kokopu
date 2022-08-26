@@ -261,18 +261,30 @@ describe('NAGs', () => {
 
 	it('Set & test', () => {
 		const game = new Game();
+		const node = game.mainVariation().play('e4');
 		game.mainVariation().addNag(34);
+		node.addNag(28);
 		test.value(game.mainVariation().nags()).is([ 34 ]);
 		test.value(game.mainVariation().hasNag(34)).is(true);
 		test.value(game.mainVariation().hasNag(42)).is(false);
+		test.value(node.nags()).is([ 28 ]);
+		test.value(node.hasNag(28)).is(true);
+		test.value(node.hasNag(75)).is(false);
 	});
 
 	it('Erase', () => {
 		const game = new Game();
+		const node = game.mainVariation().play('d4');
 		game.mainVariation().addNag(18);
 		game.mainVariation().removeNag(18);
+		node.addNag(62);
+		node.addNag(13);
+		node.removeNag(62);
 		test.value(game.mainVariation().nags()).is([]);
 		test.value(game.mainVariation().hasNag(18)).is(false);
+		test.value(node.nags()).is([ 13 ]);
+		test.value(node.hasNag(13)).is(true);
+		test.value(node.hasNag(62)).is(false);
 	});
 
 	it('Sorted NAGs', () => {

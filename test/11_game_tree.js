@@ -186,6 +186,8 @@ const oneGamefactories = {
 		alternative.play('Nf6');
 
 		current = current.play('Qf3');
+		current.comment('I will be removed.');
+		current.comment(undefined);
 
 		game.annotator(null); // erase the annotator
 		return game;
@@ -196,6 +198,8 @@ const oneGamefactories = {
 		game.event('Game with annotations 2');
 
 		let current = game.mainVariation();
+		current.comment('I will be removed.', true);
+		current.comment(undefined);
 		current.addNag(10);
 
 		current = current.play('e4');
