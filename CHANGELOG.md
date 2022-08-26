@@ -1,6 +1,12 @@
 ChangeLog
 =========
 
+3.0.0 (August 26, 2022)
+-----------------------
+* Migration to TypeScript.
+* Breaking changes affecting ES6 default imports, and methods `Game.date()` and `Game.playerElo()`:
+look at the [migration guide](https://kokopu.yo35.org/docs/current/pages/migrate_to_3_x.html) for more details.
+
 2.9.2 (July 14, 2022)
 ---------------------
 * Fix PGN parsing issues regarding move number 0 and degenerated backslash followed by a linebreak (see #30).
