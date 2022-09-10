@@ -27,8 +27,12 @@ const test = require('unit.js');
 
 function itForEach(fun) {
 	const testData = readCSV('positions.csv', fields => {
+		const label = fields[0].trim();
+		if (label.length === 0 || label.charAt(0) === '#') {
+			return false;
+		}
 		return {
-			label       : fields[ 0],
+			label       : label,
 			constructor : fields[ 1],
 			variant     : fields[ 2],
 			fen         : fields[ 3],
@@ -48,7 +52,9 @@ function itForEach(fun) {
 	});
 
 	for (const elem of testData) {
-		it(elem.label, () => { fun(elem); });
+		if (elem) {
+			it(elem.label, () => { fun(elem); });
+		}
 	}
 }
 
