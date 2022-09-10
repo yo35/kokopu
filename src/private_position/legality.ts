@@ -161,7 +161,7 @@ function refreshKingSquare(position: PositionImpl, color: number) {
  */
 function hasAtLeastOnePiece(position: PositionImpl, color: number) {
 	for (let sq = 0; sq < 120; sq += (sq & 0x7) === 7 ? 9 : 1) {
-		if (position.board[sq] >= 0 && position.board[sq] % 2 === color) {
+		if (position.board[sq] !== SpI.EMPTY && position.board[sq] % 2 === color) {
 			return true;
 		}
 	}

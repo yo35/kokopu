@@ -20,7 +20,7 @@
  * -------------------------------------------------------------------------- */
 
 
-import { PieceImpl, colorToString, coloredPieceToString, pieceToString, squareToString } from './base_types_impl';
+import { PieceImpl, SpI, colorToString, coloredPieceToString, pieceToString, squareToString } from './base_types_impl';
 
 import { IllegalArgument } from '../exception';
 import { MoveDescriptor } from '../move_descriptor';
@@ -41,7 +41,7 @@ export class MoveDescriptorImpl extends MoveDescriptor {
 	 * Instantiate a normal (aka. non-en-passant, non-promotion, non-castling) move.
 	 */
 	static make(from: number, to: number, movingColoredPiece: number, capturedColoredPiece: number) {
-		const flags = capturedColoredPiece >= 0 ? CAPTURE_FLAG : 0x00;
+		const flags = capturedColoredPiece === SpI.EMPTY ? 0x00 : CAPTURE_FLAG;
 		return new MoveDescriptorImpl(flags, from, to, movingColoredPiece, movingColoredPiece, capturedColoredPiece, -1, -1);
 	}
 
@@ -68,7 +68,7 @@ export class MoveDescriptorImpl extends MoveDescriptor {
 	 * Instantiate a promotion.
 	 */
 	static makePromotion(from: number, to: number, color: number, capturedColoredPiece: number, promotion: number) {
-		const flags = PROMOTION_FLAG | (capturedColoredPiece >= 0 ? CAPTURE_FLAG : 0x00);
+		const flags = PROMOTION_FLAG | (capturedColoredPiece === SpI.EMPTY ? 0x00 : CAPTURE_FLAG);
 		const movingColoredPawn = PieceImpl.PAWN * 2 + color;
 		const finalColoredPiece = promotion * 2 + color;
 		return new MoveDescriptorImpl(flags, from, to, movingColoredPawn, finalColoredPiece, capturedColoredPiece, -1, -1);

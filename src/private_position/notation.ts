@@ -316,12 +316,12 @@ function parseNonPawnNotation(position: PositionImpl, notation: string, strict: 
 	const toContent = position.board[to];
 
 	// Cannot take your own pieces!
-	if (toContent >= 0 && toContent % 2 === position.turn) {
+	if (toContent !== SpI.EMPTY && toContent % 2 === position.turn) {
 		throw new InvalidNotation(getFEN(position), notation, i18n.TRYING_TO_CAPTURE_YOUR_OWN_PIECES);
 	}
 
 	// Capture may be mandatory in some variants.
-	if (toContent < 0 && isCaptureMandatory(position)) {
+	if (toContent === SpI.EMPTY && isCaptureMandatory(position)) {
 		throw new InvalidNotation(getFEN(position), notation, i18n.CAPTURE_IS_MANDATORY);
 	}
 
@@ -413,7 +413,7 @@ function parsePawnMoveNotation(position: PositionImpl, notation: string, strict:
 		}
 
 		// Check the content of the "to"-square
-		if (toContent < 0) { // Look for en-passant captures
+		if (toContent === SpI.EMPTY) { // Look for en-passant captures
 			if (to !== (5 - position.turn * 3) * 16 + position.enPassant) {
 				throw new InvalidNotation(getFEN(position), notation, i18n.INVALID_CAPTURING_PAWN_MOVE);
 			}

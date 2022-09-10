@@ -195,7 +195,7 @@ function generateMoves(position: PositionImpl, moveDescriptorConsumer: (moveDesc
 		// Nothing to do if the current square does not contain a piece of the right color.
 		const fromContent = position.board[from];
 		const movingPiece = Math.trunc(fromContent / 2);
-		if (fromContent < 0 || fromContent % 2 !== position.turn) {
+		if (fromContent === SpI.EMPTY || fromContent % 2 !== position.turn) {
 			continue;
 		}
 
@@ -208,10 +208,10 @@ function generateMoves(position: PositionImpl, moveDescriptorConsumer: (moveDesc
 				const to = from + attackDirections[i];
 				if ((to & 0x88) === 0) {
 					const toContent = position.board[to];
-					if (toContent >= 0 && toContent % 2 !== position.turn && isKingSafeAfterMove(position, from, to)) { // regular capturing move
+					if (toContent !== SpI.EMPTY && toContent % 2 !== position.turn && isKingSafeAfterMove(position, from, to)) { // regular capturing move
 						generateRegularPawnMoveOrPromotion(position, from, to, moveDescriptorConsumer);
 					}
-					else if (toContent < 0 && to === (5 - position.turn * 3) * 16 + position.enPassant) { // en-passant capture
+					else if (toContent === SpI.EMPTY && to === (5 - position.turn * 3) * 16 + position.enPassant) { // en-passant capture
 						const enPassantSquare = (4 - position.turn) * 16 + position.enPassant;
 						if (isKingSafeAfterMove(position, from, to, enPassantSquare)) {
 							moveDescriptorConsumer(MoveDescriptorImpl.makeEnPassant(from, to, enPassantSquare, position.turn));
@@ -224,7 +224,7 @@ function generateMoves(position: PositionImpl, moveDescriptorConsumer: (moveDesc
 			if (nonCaptureIsAllowed) {
 				const moveDirection = 16 - position.turn * 32;
 				let to = from + moveDirection;
-				if (position.board[to] < 0) {
+				if (position.board[to] === SpI.EMPTY) {
 					if (isKingSafeAfterMove(position, from, to)) {
 						generateRegularPawnMoveOrPromotion(position, from, to, moveDescriptorConsumer);
 					}
@@ -233,7 +233,7 @@ function generateMoves(position: PositionImpl, moveDescriptorConsumer: (moveDesc
 					const firstSquareOfArea = position.turn * 96; // a1 for white, a7 for black (2-square pawn move is allowed from 1st row at horde chess)
 					if (from >= firstSquareOfArea && from < firstSquareOfArea + 24) {
 						to += moveDirection;
-						if (position.board[to] < 0 && isKingSafeAfterMove(position, from, to)) {
+						if (position.board[to] === SpI.EMPTY && isKingSafeAfterMove(position, from, to)) {
 							moveDescriptorConsumer(MoveDescriptorImpl.make(from, to, fromContent, SpI.EMPTY));
 						}
 					}
@@ -248,7 +248,7 @@ function generateMoves(position: PositionImpl, moveDescriptorConsumer: (moveDesc
 				const to = from + directions[i];
 				if ((to & 0x88) === 0) {
 					const toContent = position.board[to];
-					if ((toContent < 0 ? nonCaptureIsAllowed : toContent % 2 !== position.turn) && isKingSafeAfterMove(position, from, to)) {
+					if ((toContent === SpI.EMPTY ? nonCaptureIsAllowed : toContent % 2 !== position.turn) && isKingSafeAfterMove(position, from, to)) {
 						moveDescriptorConsumer(MoveDescriptorImpl.make(from, to, fromContent, toContent));
 					}
 				}
@@ -261,10 +261,10 @@ function generateMoves(position: PositionImpl, moveDescriptorConsumer: (moveDesc
 			for (let i = 0; i < directions.length; ++i) {
 				for (let to = from + directions[i]; (to & 0x88) === 0; to += directions[i]) {
 					const toContent = position.board[to];
-					if ((toContent < 0 ? nonCaptureIsAllowed : toContent % 2 !== position.turn) && isKingSafeAfterMove(position, from, to)) {
+					if ((toContent === SpI.EMPTY ? nonCaptureIsAllowed : toContent % 2 !== position.turn) && isKingSafeAfterMove(position, from, to)) {
 						moveDescriptorConsumer(MoveDescriptorImpl.make(from, to, fromContent, toContent));
 					}
-					if (toContent >= 0) {
+					if (toContent !== SpI.EMPTY) {
 						break;
 					}
 				}
@@ -329,7 +329,7 @@ export function isCaptureMandatory(position: PositionImpl) {
 	// Look for regular captures
 	for (let sq = 0; sq < 120; sq += (sq & 0x7) === 7 ? 9 : 1) {
 		const cp = position.board[sq];
-		if (cp >= 0 && cp % 2 !== position.turn && isAttacked(position, sq, position.turn)) {
+		if (cp !== SpI.EMPTY && cp % 2 !== position.turn && isAttacked(position, sq, position.turn)) {
 			return true;
 		}
 	}
@@ -481,7 +481,7 @@ export function isMoveLegal(position: PositionImpl, from: number, to: number): R
 	const fromContent = position.board[from];
 	const toContent = position.board[to];
 	const movingPiece = Math.trunc(fromContent / 2);
-	if (fromContent < 0 || fromContent % 2 !== position.turn) {
+	if (fromContent === SpI.EMPTY || fromContent % 2 !== position.turn) {
 		return false;
 	}
 
@@ -537,7 +537,7 @@ export function isMoveLegal(position: PositionImpl, from: number, to: number): R
 		}
 	}
 	else { // piece move
-		if (toContent < 0 ? captureIsMandatory : toContent % 2 === position.turn) {
+		if (toContent === SpI.EMPTY ? captureIsMandatory : toContent % 2 === position.turn) {
 			return false;
 		}
 	}

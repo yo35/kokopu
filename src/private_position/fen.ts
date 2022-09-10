@@ -20,7 +20,7 @@
  * -------------------------------------------------------------------------- */
 
 
-import { ColorImpl, PieceImpl, GameVariantImpl, colorFromString, colorToString, fileFromString, fileToString, variantToString } from './base_types_impl';
+import { ColorImpl, PieceImpl, SpI, GameVariantImpl, colorFromString, colorToString, fileFromString, fileToString, variantToString } from './base_types_impl';
 import { PositionImpl, makeEmpty } from './impl';
 
 import { InvalidFEN } from '../exception';
@@ -41,7 +41,7 @@ export function ascii(position: PositionImpl) {
 	for (let r = 7; r >= 0; --r) {
 		for (let c = 0; c < 8; ++c) {
 			const cp = position.board[r * 16 + c];
-			result += '| ' + (cp < 0 ? ' ' : FEN_PIECE_SYMBOL[cp]) + ' ';
+			result += '| ' + (cp === SpI.EMPTY ? ' ' : FEN_PIECE_SYMBOL[cp]) + ' ';
 		}
 		result += '|\n';
 		result += '+---+---+---+---+---+---+---+---+\n';
@@ -65,7 +65,7 @@ export function getFEN(position: PositionImpl, fiftyMoveClock = 0, fullMoveNumbe
 		let emptyCount = 0;
 		for (let c = 0; c < 8; ++c) {
 			const cp = position.board[r * 16 + c];
-			if (cp < 0) {
+			if (cp === SpI.EMPTY) {
 				++emptyCount;
 			}
 			else {

@@ -395,7 +395,7 @@ export class Position {
 		}
 		if (arguments.length === 1) {
 			const cp = this._impl.board[squareCode];
-			return cp < 0 ? '-' : coloredPieceToString(cp);
+			return cp === SpI.EMPTY ? '-' : coloredPieceToString(cp);
 		}
 		else if (value === '-') {
 			this._impl.board[squareCode] = SpI.EMPTY;
