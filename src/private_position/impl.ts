@@ -74,6 +74,7 @@ export interface PositionImpl {
 	// Computed attributes
 	legal: boolean | null,
 	king: number[],
+	effectiveEnPassant: number | null,
 }
 
 
@@ -132,6 +133,7 @@ export function makeEmpty(variant: number): PositionImpl {
 		variant: variant,
 		legal: variant === GameVariantImpl.NO_KING,
 		king: [ -1, -1 ],
+		effectiveEnPassant: -1,
 	};
 }
 
@@ -149,6 +151,7 @@ export function makeInitial(variant: number): PositionImpl {
 		variant: variant,
 		legal: true,
 		king: info.king.slice(),
+		effectiveEnPassant: -1,
 	};
 }
 
@@ -179,6 +182,7 @@ export function make960FromScharnagl(scharnaglCode: number): PositionImpl {
 		variant: GameVariantImpl.CHESS960,
 		legal: true,
 		king: [ SquareImpl.A1 + info.kingFile, SquareImpl.A8 + info.kingFile ],
+		effectiveEnPassant: -1,
 	};
 }
 
@@ -258,26 +262,13 @@ function decodeScharnagl(scharnaglCode: number): ScharnaglInfo {
 
 export function makeCopy(position: PositionImpl): PositionImpl {
 	return {
-		board    : position.board.slice(),
-		turn     : position.turn,
-		castling : position.castling.slice(),
-		enPassant: position.enPassant,
-		variant  : position.variant,
-		legal    : position.legal,
-		king     : position.king.slice(),
+		board              : position.board.slice(),
+		turn               : position.turn,
+		castling           : position.castling.slice(),
+		enPassant          : position.enPassant,
+		variant            : position.variant,
+		legal              : position.legal,
+		king               : position.king.slice(),
+		effectiveEnPassant : position.effectiveEnPassant,
 	};
-}
-
-
-export function isEqual(pos1: PositionImpl, pos2: PositionImpl) {
-	if (pos1.turn !== pos2.turn || pos1.variant !== pos2.variant) {
-		return false;
-	}
-	for (let sq = 0; sq < 120; sq += (sq & 0x7) === 7 ? 9 : 1) {
-		if (pos1.board[sq] !== pos2.board[sq]) {
-			return false;
-		}
-	}
-	// No check on `.legal` and `.king` as they are computed attributes.
-	return pos1.castling[0] === pos2.castling[0] && pos1.castling[1] === pos2.castling[1] && pos1.enPassant === pos2.enPassant;
 }

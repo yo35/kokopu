@@ -29,8 +29,9 @@ const startXFEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w AHah - 0 1';
 const startFENAntichess = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w - - 0 1';
 const startFENHorde = 'rnbqkbnr/pppppppp/8/1PP2PP1/PPPPPPPP/PPPPPPPP/PPPPPPPP/PPPPPPPP w kq - 0 1';
 const emptyFEN  = '8/8/8/8/8/8/8/8 w - - 0 1';
-const customFEN = 'k7/n1PB4/1K6/8/8/8/8/8 w KQkq d6 0 1';
-const customXFEN = 'k7/n1PB4/1K6/8/8/8/8/8 w AHah d6 0 1';
+const customFEN = 'r3k2r/pb3pbp/1p4p1/3n4/1PpP4/P4NB1/5PPP/R3KB1R b KQkq d3 0 1';
+const customXFEN = 'qrkbrnbn/pppppppp/8/8/8/8/PPPPPPPP/QRKBRNBN w BEbe - 0 1';
+const customXFENAsFEN = 'qrkbrnbn/pppppppp/8/8/8/8/PPPPPPPP/QRKBRNBN w KQkq - 0 1';
 const customFENHorde = '1Q3rk1/2P4p/1P2pp2/2PP4/5P1P/2q1PPPP/2P1PPPP/2PPPPPP b - - 0 1';
 
 const variants = ['regular', 'chess960', 'no-king', 'white-king-only', 'black-king-only', 'antichess', 'horde'];
@@ -59,7 +60,7 @@ describe('Position constructor', () => {
 
 	doTest('Scharnagl constructor'                         , 'chess960', startXFEN , () => new Position('chess960', 518));
 	doTest('Constructor \'empty\' (Chess960)'              , 'chess960', emptyFEN  , () => new Position('chess960', 'empty'));
-	doTest('Constructor FEN-based (Chess960)'              , 'chess960', customXFEN, () => new Position('chess960', customFEN));
+	doTest('Constructor FEN-based (Chess960)'              , 'chess960', customXFEN, () => new Position('chess960', customXFENAsFEN));
 	doTest('Constructor X-FEN-based (Chess960)'            , 'chess960', customXFEN, () => new Position('chess960', customXFEN));
 	doTest('Constructor X-FEN-based with prefix (Chess960)', 'chess960', customXFEN, () => new Position('chess960:' + customXFEN));
 
@@ -410,11 +411,37 @@ describe('Position equality', () => {
 		checkIsEqual(p1, p2, true);
 	});
 
-	it('After 2-square pawn move', () => {
+	it('After 2-square pawn move 1', () => {
 		const p1 = new Position();
 		p1.play('e4');
 		const p2 = new Position('rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1');
 		checkIsEqual(p1, p2, true);
+	});
+
+	it('After 2-square pawn move 2', () => {
+		const p1 = new Position();
+		p1.play('e4');
+		p1.play('d5');
+		p1.play('d4');
+		const p2 = new Position();
+		p2.play('d4');
+		p2.play('d5');
+		p2.play('e4');
+		checkIsEqual(p1, p2, true);
+	});
+
+	it('After 2-square pawn move 3', () => {
+		const p1 = new Position();
+		p1.play('e4');
+		p1.play('Nc6');
+		p1.play('e5');
+		p1.play('f5');
+		const p2 = new Position();
+		p2.play('e4');
+		p2.play('f5');
+		p2.play('e5');
+		p2.play('Nc6');
+		checkIsEqual(p1, p2, false);
 	});
 
 	it('With distinct variants', () => {

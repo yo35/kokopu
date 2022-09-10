@@ -25,9 +25,9 @@ import { ColorImpl, PieceImpl, SpI, GameVariantImpl, figurineFromString, figurin
 	pieceFromString, pieceToString, squareFromString, squareToString } from './base_types_impl';
 import { getFEN } from './fen';
 import { PositionImpl, makeCopy } from './impl';
-import { isLegal } from './legality';
+import { isLegal, isKingSafeAfterMove, refreshEffectiveEnPassant } from './legality';
 import { MoveDescriptorImpl } from './move_descriptor_impl';
-import { isCheckmate, isCheck, isCaptureMandatory, isCastlingLegal, isKingSafeAfterMove, play } from './move_generation';
+import { isCheckmate, isCheck, isCaptureMandatory, isCastlingLegal, play } from './move_generation';
 
 import { InvalidNotation } from '../exception';
 import { i18n } from '../i18n';
@@ -414,10 +414,11 @@ function parsePawnMoveNotation(position: PositionImpl, notation: string, strict:
 
 		// Check the content of the "to"-square
 		if (toContent === SpI.EMPTY) { // Look for en-passant captures
-			if (to !== (5 - position.turn * 3) * 16 + position.enPassant) {
+			refreshEffectiveEnPassant(position);
+			if (to !== (5 - position.turn * 3) * 16 + position.effectiveEnPassant!) {
 				throw new InvalidNotation(getFEN(position), notation, i18n.INVALID_CAPTURING_PAWN_MOVE);
 			}
-			enPassantSquare = (4 - position.turn) * 16 + position.enPassant;
+			enPassantSquare = (4 - position.turn) * 16 + position.effectiveEnPassant!;
 		}
 		else if (toContent % 2 === position.turn) { // detecting regular captures
 			throw new InvalidNotation(getFEN(position), notation, i18n.INVALID_CAPTURING_PAWN_MOVE);

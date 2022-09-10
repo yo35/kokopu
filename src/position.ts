@@ -29,8 +29,8 @@ import { isAttacked, getAttacks } from './private_position/attacks';
 import { SpI, GameVariantImpl, colorFromString, colorToString, pieceFromString, coloredPieceFromString, coloredPieceToString,
 	fileFromString, fileToString, squareFromString, squareToString, variantFromString, variantToString } from './private_position/base_types_impl';
 import { ascii, getFEN, parseFEN } from './private_position/fen';
-import { PositionImpl, makeCopy, makeEmpty, makeInitial, make960FromScharnagl, isEqual, hasCanonicalStartPosition } from './private_position/impl';
-import { isLegal, refreshLegalFlagAndKingSquares } from './private_position/legality';
+import { PositionImpl, makeCopy, makeEmpty, makeInitial, make960FromScharnagl, hasCanonicalStartPosition } from './private_position/impl';
+import { isLegal, refreshLegalFlagAndKingSquares, refreshEffectiveEnPassant, isEqual } from './private_position/legality';
 import { MoveDescriptorImpl } from './private_position/move_descriptor_impl';
 import { isCheck, isCheckmate, isStalemate, hasMove, moves, isMoveLegal, play, isNullMoveLegal, playNullMove } from './private_position/move_generation';
 import { getNotation, parseNotation } from './private_position/notation';
@@ -400,6 +400,7 @@ export class Position {
 		else if (value === '-') {
 			this._impl.board[squareCode] = SpI.EMPTY;
 			this._impl.legal = null;
+			this._impl.effectiveEnPassant = null;
 		}
 		else {
 			const cp = coloredPieceFromString(value);
@@ -408,6 +409,7 @@ export class Position {
 			}
 			this._impl.board[squareCode] = cp;
 			this._impl.legal = null;
+			this._impl.effectiveEnPassant = null;
 		}
 	}
 
@@ -433,6 +435,7 @@ export class Position {
 			}
 			this._impl.turn = colorCode;
 			this._impl.legal = null;
+			this._impl.effectiveEnPassant = null;
 		}
 	}
 
@@ -478,6 +481,9 @@ export class Position {
 
 	/**
 	 * Get the *en-passant* flag (i.e. the file on which a 2-square pawn move has just happen, if any).
+	 *
+	 * WARNING: even if this method returns something different from `'-'`, *en-passant* capture may not be possible on the corresponding file.
+	 * Use {@link Position.effectiveEnPassant} to determine whether *en-passant* capture is actually possible or not.
 	 */
 	enPassant(): File | '-';
 
@@ -492,7 +498,7 @@ export class Position {
 		}
 		else if (value === '-') {
 			this._impl.enPassant = -1;
-			this._impl.legal = null;
+			this._impl.effectiveEnPassant = -1;
 		}
 		else {
 			const enPassantCode = fileFromString(value);
@@ -500,10 +506,22 @@ export class Position {
 				throw new IllegalArgument('Position.enPassant()');
 			}
 			this._impl.enPassant = enPassantCode;
-			this._impl.legal = null;
+			this._impl.effectiveEnPassant = null;
 		}
 	}
 
+
+	/**
+	 * Get the effective *en-passant* flag (i.e. the column on which a *en-passant* capture is possible, if any).
+	 *
+	 * If {@link Position.enPassant} returns `'-'`, this method returns `'-'`. Otherwise, it returns:
+	 * - either the same file that is returned by {@link Position.enPassant} if a *en-passant* capture is allowed on this file,
+	 * - or `'-'` otherwise.
+	 */
+	effectiveEnPassant(): File | '-' {
+		refreshEffectiveEnPassant(this._impl);
+		return this._impl.effectiveEnPassant! < 0 ? '-' : fileToString(this._impl.effectiveEnPassant!);
+	}
 
 
 	// -------------------------------------------------------------------------
@@ -554,9 +572,6 @@ export class Position {
 	 *    in which kings have no royal power).
 	 * 3. There are no pawn on ranks 1 and 8 (except if the game variant of the position allows it).
 	 * 4. For each castle flag set, there is a rook and a king on the corresponding initial squares.
-	 * 5. The pawn situation is consistent with the *en-passant* flag if it is set.
-	 *    For instance, if it is set to file E and black is about to play,
-	 *    the squares e2 and e3 must be empty, and there must be a white pawn on e4.
 	 */
 	isLegal(): boolean {
 		return isLegal(this._impl);

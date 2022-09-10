@@ -23,7 +23,7 @@
 import { ATTACK_DIRECTIONS, isAttacked } from './attacks';
 import { ColorImpl, PieceImpl, SpI, GameVariantImpl } from './base_types_impl';
 import { PositionImpl } from './impl';
-import { isLegal } from './legality';
+import { isLegal, isKingSafeAfterMove, refreshEffectiveEnPassant } from './legality';
 import { MoveDescriptorImpl } from './move_descriptor_impl';
 
 import { MoveDescriptor } from '../move_descriptor';
@@ -189,6 +189,20 @@ function generateMoves(position: PositionImpl, moveDescriptorConsumer: (moveDesc
 	// In some variants, capture may be mandatory (typically in antichess).
 	const nonCaptureIsAllowed = !isCaptureMandatory(position);
 
+	// Generate en-passant captures
+	refreshEffectiveEnPassant(position);
+	if (position.effectiveEnPassant! >= 0) {
+		const square3 = (5 - position.turn * 3) * 16 + position.effectiveEnPassant!;
+		const square4 = (4 - position.turn    ) * 16 + position.effectiveEnPassant!;
+		const capturingPawn = PieceImpl.PAWN * 2 + position.turn;
+		if (((square4 - 1) & 0x88) === 0 && position.board[square4 - 1] === capturingPawn && isKingSafeAfterMove(position, square4 - 1, square3, square4)) {
+			moveDescriptorConsumer(MoveDescriptorImpl.makeEnPassant(square4 - 1, square3, square4, position.turn));
+		}
+		if (((square4 + 1) & 0x88) === 0 && position.board[square4 + 1] === capturingPawn && isKingSafeAfterMove(position, square4 + 1, square3, square4)) {
+			moveDescriptorConsumer(MoveDescriptorImpl.makeEnPassant(square4 + 1, square3, square4, position.turn));
+		}
+	}
+
 	// For all potential 'from' square...
 	for (let from = 0; from < 120; from += (from & 0x7) === 7 ? 9 : 1) {
 
@@ -202,21 +216,12 @@ function generateMoves(position: PositionImpl, moveDescriptorConsumer: (moveDesc
 		// Generate moves for pawns
 		if (movingPiece === PieceImpl.PAWN) {
 
-			// Capturing moves
+			// Regular capturing moves (en-passant not handled here)
 			const attackDirections = ATTACK_DIRECTIONS[fromContent];
 			for (let i = 0; i < attackDirections.length; ++i) {
 				const to = from + attackDirections[i];
-				if ((to & 0x88) === 0) {
-					const toContent = position.board[to];
-					if (toContent !== SpI.EMPTY && toContent % 2 !== position.turn && isKingSafeAfterMove(position, from, to)) { // regular capturing move
-						generateRegularPawnMoveOrPromotion(position, from, to, moveDescriptorConsumer);
-					}
-					else if (toContent === SpI.EMPTY && to === (5 - position.turn * 3) * 16 + position.enPassant) { // en-passant capture
-						const enPassantSquare = (4 - position.turn) * 16 + position.enPassant;
-						if (isKingSafeAfterMove(position, from, to, enPassantSquare)) {
-							moveDescriptorConsumer(MoveDescriptorImpl.makeEnPassant(from, to, enPassantSquare, position.turn));
-						}
-					}
+				if ((to & 0x88) === 0 && position.board[to] !== SpI.EMPTY && position.board[to] % 2 !== position.turn && isKingSafeAfterMove(position, from, to)) {
+					generateRegularPawnMoveOrPromotion(position, from, to, moveDescriptorConsumer);
 				}
 			}
 
@@ -335,51 +340,12 @@ export function isCaptureMandatory(position: PositionImpl) {
 	}
 
 	// Look for "en-passant" captures
-	if (position.enPassant >= 0) {
-		const enPassantSquare = (4 - position.turn) * 16 + position.enPassant;
-		const pawnTarget = PieceImpl.PAWN * 2 + position.turn;
-		if (((enPassantSquare - 1) & 0x88) === 0 && position.board[enPassantSquare - 1] === pawnTarget) { return true; }
-		if (((enPassantSquare + 1) & 0x88) === 0 && position.board[enPassantSquare + 1] === pawnTarget) { return true; }
+	refreshEffectiveEnPassant(position);
+	if (position.effectiveEnPassant! >= 0) {
+		return true;
 	}
 
 	return false;
-}
-
-
-/**
- * Check whether the current player king is in check after moving from `from` to `to`.
- *
- * This function implements the verification steps (7) to (9) as defined in {@link isMoveLegal}.
- *
- * @param enPassantSquare - Index of the square where the "en-passant" taken pawn lies if any, `-1` otherwise.
- */
-export function isKingSafeAfterMove(position: PositionImpl, from: number, to: number, enPassantSquare = -1) {
-	let kingIsInCheck = false;
-
-	if (position.king[position.turn] >= 0) {
-		const fromContent = position.board[from];
-		const toContent = position.board[to];
-		const movingPiece = Math.trunc(fromContent / 2);
-
-		// Step (7) -> Execute the displacement (castling moves are processed separately).
-		position.board[to] = fromContent;
-		position.board[from] = SpI.EMPTY;
-		if (enPassantSquare >= 0) {
-			position.board[enPassantSquare] = SpI.EMPTY;
-		}
-
-		// Step (8) -> Is the king safe after the displacement?
-		kingIsInCheck = isAttacked(position, movingPiece === PieceImpl.KING ? to : position.king[position.turn], 1 - position.turn);
-
-		// Step (9) -> Reverse the displacement.
-		position.board[from] = fromContent;
-		position.board[to] = toContent;
-		if (enPassantSquare >= 0) {
-			position.board[enPassantSquare] = PieceImpl.PAWN * 2 + 1 - position.turn;
-		}
-	}
-
-	return !kingIsInCheck;
 }
 
 
@@ -519,16 +485,17 @@ export function isMoveLegal(position: PositionImpl, from: number, to: number): R
 
 	// Step (5) -> check the content of the destination square
 	if (movingPiece === PieceImpl.PAWN) {
+		refreshEffectiveEnPassant(position);
 		if (displacement === 135 - position.turn * 32 || isTwoSquarePawnMove) { // non-capturing pawn move
 			if (captureIsMandatory || toContent !== SpI.EMPTY) {
 				return false;
 			}
 		}
 		else if (toContent === SpI.EMPTY) { // en-passant pawn move
-			if (to !== (5 - position.turn * 3) * 16 + position.enPassant) {
+			if (to !== (5 - position.turn * 3) * 16 + position.effectiveEnPassant!) {
 				return false;
 			}
-			enPassantSquare = (4 - position.turn) * 16 + position.enPassant;
+			enPassantSquare = (4 - position.turn) * 16 + position.effectiveEnPassant!;
 		}
 		else { // regular capturing pawn move
 			if (toContent % 2 === position.turn) {
@@ -625,10 +592,18 @@ export function play(position: PositionImpl, descriptor: MoveDescriptorImpl) {
 
 	// Update the en-passant flag.
 	position.enPassant = -1;
+	position.effectiveEnPassant = -1;
 	if (movingPiece === PieceImpl.PAWN && Math.abs(descriptor._from - descriptor._to) === 32) {
 		const firstSquareOf2ndRow = (1 + 5 * position.turn) * 16;
 		if (descriptor._from >= firstSquareOf2ndRow && descriptor._from < firstSquareOf2ndRow + 8) {
-			position.enPassant = descriptor._to % 16;
+			const otherPawn = descriptor._movingColoredPiece ^ 0x01;
+			if (
+				(((descriptor._to - 1) & 0x88) === 0 && position.board[descriptor._to - 1] === otherPawn) ||
+				(((descriptor._to + 1) & 0x88) === 0 && position.board[descriptor._to + 1] === otherPawn)
+			) {
+				position.enPassant = descriptor._to % 16;
+				position.effectiveEnPassant = null; // Only geometric conditions have been validated so far.
+			}
 		}
 	}
 
@@ -660,6 +635,7 @@ export function playNullMove(position: PositionImpl) {
 	if (isNullMoveLegal(position)) {
 		position.turn = 1 - position.turn;
 		position.enPassant = -1;
+		position.effectiveEnPassant = -1;
 		return true;
 	}
 	else {

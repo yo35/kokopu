@@ -91,17 +91,7 @@ export function refreshLegalFlagAndKingSquares(position: PositionImpl) {
 		}
 	}
 
-	// Condition (5)
-	if (position.enPassant >= 0) {
-		const square2 = (6 - position.turn * 5) * 16 + position.enPassant;
-		const square3 = (5 - position.turn * 3) * 16 + position.enPassant;
-		const square4 = (4 - position.turn    ) * 16 + position.enPassant;
-		if (position.board[square2] !== SpI.EMPTY || position.board[square3] !== SpI.EMPTY || position.board[square4] !== PieceImpl.PAWN * 2 + 1 - position.turn) {
-			return;
-		}
-	}
-
-	// At this point, all the conditions (1) to (6) hold, so the position can be flagged as legal.
+	// At this point, all the conditions (1) to (4) hold, so the position can be flagged as legal.
 	position.legal = true;
 }
 
@@ -208,4 +198,113 @@ function isCastlingFlagLegalForChess960(position: PositionImpl, color: number) {
 
 		default: return false;
 	}
+}
+
+
+/**
+ * Check whether the current player king is in check after moving from `from` to `to`.
+ *
+ * This function implements the verification steps (7) to (9) as defined in {@link isMoveLegal}.
+ *
+ * Precondition: {@link refreshLegalFlagAndKingSquares} must have been invoked beforehand.
+ *
+ * @param enPassantSquare - Index of the square where the "en-passant" taken pawn lies if any, `-1` otherwise.
+ */
+export function isKingSafeAfterMove(position: PositionImpl, from: number, to: number, enPassantSquare = -1) {
+	let kingIsInCheck = false;
+
+	if (position.king[position.turn] >= 0) {
+		const fromContent = position.board[from];
+		const toContent = position.board[to];
+		const movingPiece = Math.trunc(fromContent / 2);
+
+		// Step (7) -> Execute the displacement (castling moves are processed separately).
+		position.board[to] = fromContent;
+		position.board[from] = SpI.EMPTY;
+		if (enPassantSquare >= 0) {
+			position.board[enPassantSquare] = SpI.EMPTY;
+		}
+
+		// Step (8) -> Is the king safe after the displacement?
+		kingIsInCheck = isAttacked(position, movingPiece === PieceImpl.KING ? to : position.king[position.turn], 1 - position.turn);
+
+		// Step (9) -> Reverse the displacement.
+		position.board[from] = fromContent;
+		position.board[to] = toContent;
+		if (enPassantSquare >= 0) {
+			position.board[enPassantSquare] = PieceImpl.PAWN * 2 + 1 - position.turn;
+		}
+	}
+
+	return !kingIsInCheck;
+}
+
+
+/**
+ * Refresh the effective en-passant flag of the given position if it is set to null
+ * (which means that the its state is unknown).
+ */
+export function refreshEffectiveEnPassant(position: PositionImpl) {
+	if (position.effectiveEnPassant !== null) {
+		return;
+	}
+	position.effectiveEnPassant = -1;
+
+	// If the en-passant flag is unset, so is the effective en-passant flag.
+	if (position.enPassant < 0) {
+		return;
+	}
+
+	// Geometric condition: for the effective en-passant flag to be set for instance to file E, assuming black is about to play:
+	// - e2 and e3 must be empty,
+	// - there must be a white pawn on e4,
+	// - and there must be at least one black pawn on d4 or f4.
+	const square2 = (6 - position.turn * 5) * 16 + position.enPassant;
+	const square3 = (5 - position.turn * 3) * 16 + position.enPassant;
+	const square4 = (4 - position.turn    ) * 16 + position.enPassant;
+	const capturingPawn = PieceImpl.PAWN * 2 + position.turn;
+	const capturedPawn = PieceImpl.PAWN * 2 + 1 - position.turn;
+	if (position.board[square2] !== SpI.EMPTY || position.board[square3] !== SpI.EMPTY || position.board[square4] !== capturedPawn) {
+		return;
+	}
+	const hasCapturingPawnBefore = ((square4 - 1) & 0x88) === 0 && position.board[square4 - 1] === capturingPawn;
+	const hasCapturingPawnAfter  = ((square4 + 1) & 0x88) === 0 && position.board[square4 + 1] === capturingPawn;
+	if (!hasCapturingPawnBefore && !hasCapturingPawnAfter) {
+		return;
+	}
+
+	// If en-passant is geometrically valid, ensure that it do not let the king in check.
+	refreshLegalFlagAndKingSquares(position);
+	if (
+		!(hasCapturingPawnBefore && isKingSafeAfterMove(position, square4 - 1, square3, square4)) &&
+		!(hasCapturingPawnAfter && isKingSafeAfterMove(position, square4 + 1, square3, square4))
+	) {
+		return;
+	}
+
+	// At this point, the en-passant flag can be considered as effective.
+	position.effectiveEnPassant = position.enPassant;
+}
+
+
+export function isEqual(pos1: PositionImpl, pos2: PositionImpl) {
+	if (pos1.turn !== pos2.turn || pos1.variant !== pos2.variant) {
+		return false;
+	}
+	for (let sq = 0; sq < 120; sq += (sq & 0x7) === 7 ? 9 : 1) {
+		if (pos1.board[sq] !== pos2.board[sq]) {
+			return false;
+		}
+	}
+
+	// No check on `.legal` and `.king` as they are computed attributes.
+
+	if (pos1.castling[0] !== pos2.castling[0] || pos1.castling[1] !== pos2.castling[1]) {
+		return false;
+	}
+
+	// Ignore `.enPassant`, compare `.effectiveEnPassant` instead.
+	refreshEffectiveEnPassant(pos1);
+	refreshEffectiveEnPassant(pos2);
+	return pos1.effectiveEnPassant === pos2.effectiveEnPassant;
 }

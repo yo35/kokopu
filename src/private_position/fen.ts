@@ -22,6 +22,7 @@
 
 import { ColorImpl, PieceImpl, SpI, GameVariantImpl, colorFromString, colorToString, fileFromString, fileToString, variantToString } from './base_types_impl';
 import { PositionImpl, makeEmpty } from './impl';
+import { refreshEffectiveEnPassant } from './legality';
 
 import { InvalidFEN } from '../exception';
 import { i18n } from '../i18n';
@@ -215,7 +216,8 @@ function regularFENCaslingFlagIfPossible(position: PositionImpl, color: number):
 
 
 function enPassantToString(position: PositionImpl) {
-	return position.enPassant < 0 ? '-' : fileToString(position.enPassant) + EN_PASSANT_RANK[position.turn];
+	refreshEffectiveEnPassant(position);
+	return position.effectiveEnPassant! < 0 ? '-' : fileToString(position.effectiveEnPassant!) + EN_PASSANT_RANK[position.turn];
 }
 
 
@@ -236,6 +238,7 @@ export function parseFEN(variant: number, fen: string, strict: boolean): { posit
 	// Initialize the position
 	const position = makeEmpty(variant);
 	position.legal = null;
+	position.effectiveEnPassant = null;
 
 	// Board parsing
 	for (let r = 7; r >= 0; --r) {

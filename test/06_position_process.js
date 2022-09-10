@@ -32,22 +32,23 @@ function itForEach(fun) {
 			return false;
 		}
 		return {
-			label       : label,
-			constructor : fields[ 1],
-			variant     : fields[ 2],
-			fen         : fields[ 3],
-			turn        : fields[ 4],
-			isLegal     : fields[ 5]==='true',
-			whiteKing   : fields[ 6]==='-' ? false : fields[6],
-			blackKing   : fields[ 7]==='-' ? false : fields[7],
-			isCheck     : fields[ 8]==='true',
-			isCheckmate : fields[ 9]==='true',
-			isStalemate : fields[10]==='true',
-			hasMove     : fields[11]==='true',
-			moves       : fields[12],
-			uciMoves    : fields[13],
-			notations   : fields[14],
-			successors  : fields[15],
+			label              : label,
+			constructor        : fields[ 1],
+			variant            : fields[ 2],
+			fen                : fields[ 3],
+			turn               : fields[ 4],
+			isLegal            : fields[ 5]==='true',
+			whiteKing          : fields[ 6]==='-' ? false : fields[6],
+			blackKing          : fields[ 7]==='-' ? false : fields[7],
+			effectiveEnPassant : fields[ 8],
+			isCheck            : fields[ 9]==='true',
+			isCheckmate        : fields[10]==='true',
+			isStalemate        : fields[11]==='true',
+			hasMove            : fields[12]==='true',
+			moves              : fields[13],
+			uciMoves           : fields[14],
+			notations          : fields[15],
+			successors         : fields[16],
 		};
 	});
 
@@ -92,6 +93,14 @@ describe('Legality check & king squares', () => {
 		test.value(pos.isLegal()).is(elem.isLegal);
 		test.value(pos.kingSquare('w')).is(elem.whiteKing);
 		test.value(pos.kingSquare('b')).is(elem.blackKing);
+	});
+});
+
+
+describe('Effective en-passant', () => {
+	itForEach(elem => {
+		const pos = createPosition(elem);
+		test.value(pos.effectiveEnPassant()).is(elem.effectiveEnPassant);
 	});
 });
 
