@@ -63,7 +63,7 @@ rules:
   prefer-rest-params:           [ error ]
   rest-spread-spacing:          [ error ]
 
-  # Additional rules (variables)
+  # Additional rules (typescript)
   '@typescript-eslint/no-shadow': [ error, { builtinGlobals: true }]
 
   # Relaxed rules
