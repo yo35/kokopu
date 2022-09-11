@@ -285,33 +285,59 @@ describe('Position getters', () => {
 
 describe('Position setters', () => {
 
-	const pos1 = new Position('start');
-	const pos2 = new Position('empty');
-	const pos3 = new Position('chess960', 763);
+	it('Scenario 1', () => {
+		const p = new Position('start');
+		p.square('a8', '-');
+		test.value(p.fen()).is('1nbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
+		p.square('f6', 'wb');
+		test.value(p.fen()).is('1nbqkbnr/pppppppp/5B2/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
+		p.turn('w');
+		test.value(p.fen()).is('1nbqkbnr/pppppppp/5B2/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
+		p.castling('wk', false);
+		test.value(p.fen()).is('1nbqkbnr/pppppppp/5B2/8/8/8/PPPPPPPP/RNBQKBNR w Qkq - 0 1');
+		p.castling('bk', true);
+		test.value(p.fen()).is('1nbqkbnr/pppppppp/5B2/8/8/8/PPPPPPPP/RNBQKBNR w Qkq - 0 1');
+		p.enPassant('e');
+		test.value(p.enPassant()).is('e');
+		test.value(p.fen()).is('1nbqkbnr/pppppppp/5B2/8/8/8/PPPPPPPP/RNBQKBNR w Qkq - 0 1');
+		p.enPassant('-');
+		test.value(p.enPassant()).is('-');
+		test.value(p.fen()).is('1nbqkbnr/pppppppp/5B2/8/8/8/PPPPPPPP/RNBQKBNR w Qkq - 0 1');
+	});
 
-	it('Set board 1a', () => { pos1.square('a8', '-'); test.value(pos1.fen()).is('1nbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'); });
-	it('Set board 1b', () => { pos1.square('f6', 'wb'); test.value(pos1.fen()).is('1nbqkbnr/pppppppp/5B2/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'); });
+	it('Scenario 2', () => {
+		const p = new Position('empty');
+		p.square('c3', 'bk');
+		test.value(p.fen()).is('8/8/8/8/8/2k5/8/8 w - - 0 1');
+		p.square('g5', 'wk');
+		test.value(p.fen()).is('8/8/8/6K1/8/2k5/8/8 w - - 0 1');
+		p.square('c3', '-');
+		test.value(p.fen()).is('8/8/8/6K1/8/8/8/8 w - - 0 1');
+		p.turn('b');
+		test.value(p.fen()).is('8/8/8/6K1/8/8/8/8 b - - 0 1');
+		p.castling('wq', false);
+		test.value(p.fen()).is('8/8/8/6K1/8/8/8/8 b - - 0 1');
+		p.castling('bq', true);
+		test.value(p.fen()).is('8/8/8/6K1/8/8/8/8 b q - 0 1');
+		p.enPassant('a');
+		test.value(p.enPassant()).is('a');
+		test.value(p.fen()).is('8/8/8/6K1/8/8/8/8 b q - 0 1');
+		p.enPassant('h');
+		test.value(p.enPassant()).is('h');
+		test.value(p.fen()).is('8/8/8/6K1/8/8/8/8 b q - 0 1');
+	});
 
-	it('Set board 2a', () => { pos2.square('c3', 'bk'); test.value(pos2.fen()).is('8/8/8/8/8/2k5/8/8 w - - 0 1'); });
-	it('Set board 2b', () => { pos2.square('g5', 'wk'); test.value(pos2.fen()).is('8/8/8/6K1/8/2k5/8/8 w - - 0 1'); });
-	it('Set board 2c', () => { pos2.square('c3', '-'); test.value(pos2.fen()).is('8/8/8/6K1/8/8/8/8 w - - 0 1'); });
-
-	it('Set turn 1', () => { pos1.turn('w'); test.value(pos1.fen()).is('1nbqkbnr/pppppppp/5B2/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'); });
-	it('Set turn 2', () => { pos2.turn('b'); test.value(pos2.fen()).is('8/8/8/6K1/8/8/8/8 b - - 0 1'); });
-
-	it('Set castling 1a', () => { pos1.castling('wk', false); test.value(pos1.fen()).is('1nbqkbnr/pppppppp/5B2/8/8/8/PPPPPPPP/RNBQKBNR w Qkq - 0 1'); });
-	it('Set castling 1b', () => { pos1.castling('bk', true ); test.value(pos1.fen()).is('1nbqkbnr/pppppppp/5B2/8/8/8/PPPPPPPP/RNBQKBNR w Qkq - 0 1'); });
-	it('Set castling 2a', () => { pos2.castling('wq', false); test.value(pos2.fen()).is('8/8/8/6K1/8/8/8/8 b - - 0 1'); });
-	it('Set castling 2b', () => { pos2.castling('bq', true ); test.value(pos2.fen()).is('8/8/8/6K1/8/8/8/8 b q - 0 1'); });
-	it('Set castling 3a (Chess960)', () => { pos3.castling('wa', false); test.value(pos3.fen()).is('rknnbrqb/pppppppp/8/8/8/8/PPPPPPPP/RKNNBRQB w Faf - 0 1'); });
-	it('Set castling 3b (Chess960)', () => { pos3.castling('wh', true ); test.value(pos3.fen()).is('rknnbrqb/pppppppp/8/8/8/8/PPPPPPPP/RKNNBRQB w FHaf - 0 1'); });
-	it('Set castling 3c (Chess960)', () => { pos3.castling('bd', true ); test.value(pos3.fen()).is('rknnbrqb/pppppppp/8/8/8/8/PPPPPPPP/RKNNBRQB w FHadf - 0 1'); });
-	it('Set castling 3d (Chess960)', () => { pos3.castling('bf', false); test.value(pos3.fen()).is('rknnbrqb/pppppppp/8/8/8/8/PPPPPPPP/RKNNBRQB w FHad - 0 1'); });
-
-	it('Set en-passant 1a', () => { pos1.enPassant('e'); test.value(pos1.fen()).is('1nbqkbnr/pppppppp/5B2/8/8/8/PPPPPPPP/RNBQKBNR w Qkq e6 0 1'); });
-	it('Set en-passant 1b', () => { pos1.enPassant('-'); test.value(pos1.fen()).is('1nbqkbnr/pppppppp/5B2/8/8/8/PPPPPPPP/RNBQKBNR w Qkq - 0 1'); });
-	it('Set en-passant 2a', () => { pos2.enPassant('a'); test.value(pos2.fen()).is('8/8/8/6K1/8/8/8/8 b q a3 0 1'); });
-	it('Set en-passant 2b', () => { pos2.enPassant('h'); test.value(pos2.fen()).is('8/8/8/6K1/8/8/8/8 b q h3 0 1'); });
+	it('Scenario 3 (Chess960)', () => {
+		const p = new Position('chess960', 763);
+		p.castling('wa', false);
+		test.value(p.fen()).is('rknnbrqb/pppppppp/8/8/8/8/PPPPPPPP/RKNNBRQB w Faf - 0 1');
+		p.castling('wh', true);
+		test.value(p.fen()).is('rknnbrqb/pppppppp/8/8/8/8/PPPPPPPP/RKNNBRQB w FHaf - 0 1');
+		p.castling('bd', true);
+		test.value(p.fen()).is('rknnbrqb/pppppppp/8/8/8/8/PPPPPPPP/RKNNBRQB w FHadf - 0 1');
+		p.castling('bf', false);
+		test.value(p.fen()).is('rknnbrqb/pppppppp/8/8/8/8/PPPPPPPP/RKNNBRQB w FHad - 0 1');
+	});
 
 	for (const elem of ['p', 'Q', 'kw']) {
 		it('Error for board with colored piece ' + elem, () => {
