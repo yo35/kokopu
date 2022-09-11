@@ -296,10 +296,16 @@ export function parseFEN(variant: number, fen: string, strict: boolean): { posit
 		if (!/^[a-h][36]$/.test(enPassantField)) {
 			throw new InvalidFEN(fen, i18n.INVALID_EN_PASSANT_FIELD);
 		}
-		if (strict && enPassantField[1] !== EN_PASSANT_RANK[position.turn]) {
-			throw new InvalidFEN(fen, i18n.WRONG_RANK_IN_EN_PASSANT_FIELD);
-		}
 		position.enPassant = fileFromString(enPassantField[0]);
+		if (strict) {
+			if (enPassantField[1] !== EN_PASSANT_RANK[position.turn]) {
+				throw new InvalidFEN(fen, i18n.WRONG_RANK_IN_EN_PASSANT_FIELD);
+			}
+			refreshEffectiveEnPassant(position);
+			if (position.enPassant !== position.effectiveEnPassant) {
+				throw new InvalidFEN(fen, i18n.INEFFECTIVE_EN_PASSANT_FIELD, fileToString(position.enPassant));
+			}
+		}
 	}
 
 	// Move counting flags parsing

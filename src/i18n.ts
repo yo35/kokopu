@@ -37,6 +37,7 @@ export let INVALID_TURN_FIELD                        = 'The 2nd field of a FEN s
 export let INVALID_CASTLING_FIELD                    = 'The 3rd field of a FEN string must be either `-` or a list of characters among `K`, `Q`, `k` and `q` (in this order).';
 export let INVALID_EN_PASSANT_FIELD                  = 'The 4th field of a FEN string must be either `-` or a square from the 3rd or 6th rank where en-passant is allowed.';
 export let WRONG_RANK_IN_EN_PASSANT_FIELD            = 'The rank number indicated in the FEN string 4th field is inconsistent with respect to the 2nd field.';
+export let INEFFECTIVE_EN_PASSANT_FIELD              = 'No en-passant capture can happen on file {0} in the position defined in the FEN string.';
 export let INVALID_HALF_MOVE_COUNT_FIELD             = 'The 5th field of a FEN string must be a number, indicating the number of half-move since the last pawn move or capture.';
 export let INVALID_MOVE_NUMBER_FIELD                 = 'The 6th field of a FEN string must be a number, indicating the move number of the game.';
 export let INVALID_VARIANT_PREFIX                    = 'Invalid variant prefix: `{0}`.';

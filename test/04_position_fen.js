@@ -25,76 +25,95 @@ const readCSV = require('./common/readcsv');
 const test = require('unit.js');
 
 
-function testData() {
-	return readCSV('fens.csv', fields => {
+function itForEach(fun) {
+	const testData = readCSV('fens.csv', fields => {
+		const label = fields[0].trim();
+		if (label.length === 0 || label.charAt(0) === '#') {
+			return false;
+		}
 		return {
 			label             : fields[0],
 			fenIn             : fields[1],
 			variant           : fields[2],
 			strict            : fields[3]==='true',
-			fiftyMoveClock    : parseInt(fields[4]),
-			fullMoveNumber    : parseInt(fields[5]),
-			fenOutDefault     : fields[6],
-			fenOutWithCounters: fields[7],
-			fenOutWithVariant : fields[8],
+			enPassant         : fields[4],
+			fiftyMoveClock    : parseInt(fields[5]),
+			fullMoveNumber    : parseInt(fields[6]),
+			fenOutDefault     : fields[7],
+			fenOutWithCounters: fields[8],
 			fenOutWithoutXFEN : fields[9],
 		};
 	});
+
+	for (const elem of testData) {
+		if (elem) {
+			it(elem.label, () => { fun(elem); });
+		}
+	}
 }
 
 
 describe('FEN parsing (tolerant)', () => {
-	for (const elem of testData()) {
-		it('Position ' + elem.label, () => {
-			const position = new Position(elem.variant, 'empty');
-			position.fen(elem.fenIn);
-			test.value(position.fen()).is(elem.fenOutDefault);
-		});
-	}
+	itForEach(elem => {
+		const position = new Position(elem.variant, 'empty');
+		position.fen(elem.fenIn);
+		test.value(position.fen()).is(elem.fenOutDefault);
+	});
 });
 
 
 describe('FEN parsing (strict)', () => {
-	for (const elem of testData()) {
-		it('Position ' + elem.label, () => {
-			const position = new Position(elem.variant, 'empty');
-			if (elem.strict) {
-				position.fen(elem.fenIn, true);
-				test.value(position.fen()).is(elem.fenOutDefault);
-			}
-			else {
-				test.exception(() => position.fen(elem.fenIn, true)).isInstanceOf(exception.InvalidFEN);
-			}
-		});
-	}
+	itForEach(elem => {
+		const position = new Position(elem.variant, 'empty');
+		if (elem.strict) {
+			position.fen(elem.fenIn, true);
+			test.value(position.fen()).is(elem.fenOutDefault);
+		}
+		else {
+			test.exception(() => position.fen(elem.fenIn, true)).isInstanceOf(exception.InvalidFEN);
+		}
+	});
+});
+
+
+describe('En-passant flag parsing', () => {
+	itForEach(elem => {
+		const position = new Position(elem.variant, 'empty');
+		position.fen(elem.fenIn);
+		test.value(position.enPassant()).is(elem.enPassant);
+	});
+});
+
+
+describe('FEN counter parsing', () => {
+	itForEach(elem => {
+		const position = new Position(elem.variant, 'empty');
+		const { fiftyMoveClock, fullMoveNumber } = position.fen(elem.fenIn);
+		test.value(fiftyMoveClock).is(elem.fiftyMoveClock);
+		test.value(fullMoveNumber).is(elem.fullMoveNumber);
+	});
 });
 
 
 describe('FEN counters', () => {
-	for (const elem of testData()) {
-		it('Position ' + elem.label, () => {
-			const position = new Position(elem.variant, elem.fenIn);
-			test.value(position.fen({ fiftyMoveClock: elem.fiftyMoveClock, fullMoveNumber: elem.fullMoveNumber })).is(elem.fenOutWithCounters);
-		});
-	}
+	itForEach(elem => {
+		const position = new Position(elem.variant, elem.fenIn);
+		test.value(position.fen({ fiftyMoveClock: elem.fiftyMoveClock * 2, fullMoveNumber: elem.fullMoveNumber + 1 })).is(elem.fenOutWithCounters);
+	});
 });
 
 
 describe('FEN with variant', () => {
-	for (const elem of testData()) {
-		it('Position ' + elem.label, () => {
-			const position = new Position(elem.variant, elem.fenIn);
-			test.value(position.fen({ withVariant: true })).is(elem.fenOutWithVariant);
-		});
-	}
+	itForEach(elem => {
+		const position = new Position(elem.variant, elem.fenIn);
+		test.value(position.fen({ withVariant: true })).is(elem.variant + ':' + elem.fenOutDefault);
+	});
 });
 
 
 describe('FEN without XFEN if possible', () => {
-	for (const elem of testData()) {
-		it('Position ' + elem.label, () => {
-			const position = new Position(elem.variant, elem.fenIn);
-			test.value(position.fen({ regularFENIfPossible: true })).is(elem.fenOutWithoutXFEN);
-		});
-	}
+	itForEach(elem => {
+		const position = new Position(elem.variant, elem.fenIn);
+		test.value(position.fen({ regularFENIfPossible: true })).is(elem.fenOutWithoutXFEN === '' ? elem.fenOutDefault : elem.fenOutWithoutXFEN);
+	});
 });
