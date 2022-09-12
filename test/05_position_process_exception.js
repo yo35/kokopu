@@ -138,6 +138,45 @@ describe('Move legality check', () => {
 });
 
 
+describe('Figurine notation', () => {
+
+	function itParseFigurineNotation(label, fen, figurineMove, sanMove) {
+		it(`Generate ${label}`, () => {
+			const position = new Position(fen);
+			const md = position.notation(sanMove, true);
+			test.value(position.figurineNotation(md)).is(figurineMove);
+		});
+		it(`Parse ${label}`, () => {
+			const position = new Position(fen);
+			const md = position.figurineNotation(figurineMove);
+			test.value(position.notation(md)).is(sanMove);
+		});
+		it(`Parse ${label} (strict)`, () => {
+			const position = new Position(fen);
+			const md = position.figurineNotation(figurineMove, true);
+			test.value(position.notation(md)).is(sanMove);
+		});
+	}
+
+	itParseFigurineNotation('white pawn move', 'r1bqk2r/pPp2pp1/2n1n3/2bpp3/4P3/2Q2N2/1PPP1PpP/R3KB1R w KQkq - 0 1', 'b4', 'b4');
+	itParseFigurineNotation('black pawn move', 'r1bqk2r/pPp2pp1/2n1n3/2bpp3/4P3/2Q2N2/1PPP1PpP/R3KB1R b KQkq - 0 1', 'dxe4', 'dxe4');
+	itParseFigurineNotation('white pawn move with promotion', 'r1bqk2r/pPp2pp1/2n1n3/2bpp3/4P3/2Q2N2/1PPP1PpP/R3KB1R w KQkq - 0 1', 'b8=\u2655', 'b8=Q');
+	itParseFigurineNotation('black pawn move with promotion', 'r1bqk2r/pPp2pp1/2n1n3/2bpp3/4P3/2Q2N2/1PPP1PpP/R3KB1R b KQkq - 0 1', 'gxh1=\u265e', 'gxh1=N');
+	itParseFigurineNotation('white knight move', 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', '\u2658f3', 'Nf3');
+	itParseFigurineNotation('black knight move', 'r1bqk2r/pPp2pp1/2n1n3/2bpp3/4P3/2Q2N2/1PPP1PpP/R3KB1R b KQkq - 0 1', '\u265ecd4', 'Ncd4');
+	itParseFigurineNotation('white bishop move', 'r1bqk2r/pPp2pp1/2n1n3/2bpp3/4P3/2Q2N2/1PPP1PpP/R3KB1R w KQkq - 0 1', '\u2657b5', 'Bb5');
+	itParseFigurineNotation('black bishop move', 'r1bqk2r/pPp2pp1/2n1n3/2bpp3/4P3/2Q2N2/1PPP1PpP/R3KB1R b KQkq - 0 1', '\u265dxf2+', 'Bxf2+');
+	itParseFigurineNotation('white rook move', 'r1bqk2r/pPp2pp1/2n1n3/2bpp3/4P3/2Q2N2/1PPP1PpP/R3KB1R w KQkq - 0 1', '\u2656xa7', 'Rxa7');
+	itParseFigurineNotation('black rook move', 'r1bqk2r/pPp2pp1/2n1n3/2bpp3/4P3/2Q2N2/1PPP1PpP/R3KB1R b KQkq - 0 1', '\u265cg8', 'Rg8');
+	itParseFigurineNotation('white queen move', 'r1bqk2r/pPp2pp1/2n1n3/2bpp3/4P3/2Q2N2/1PPP1PpP/R3KB1R w KQkq - 0 1', '\u2655xc5', 'Qxc5');
+	itParseFigurineNotation('black queen move', 'r1bqk2r/pPp2pp1/2n1n3/2bpp3/4P3/2Q2N2/1PPP1PpP/R3KB1R b KQkq - 0 1', '\u265be7', 'Qe7');
+	itParseFigurineNotation('white king move', 'r1bqk2r/pPp2pp1/2n1n3/2bpp3/4P3/2Q2N2/1PPP1PpP/R3KB1R w KQkq - 0 1', '\u2654e2', 'Ke2');
+	itParseFigurineNotation('black king move', 'r1bqk2r/pPp2pp1/2n1n3/2bpp3/4P3/2Q2N2/1PPP1PpP/R3KB1R b KQkq - 0 1', '\u265af8', 'Kf8');
+	itParseFigurineNotation('white castling move', 'r1bqk2r/pPp2pp1/2n1n3/2bpp3/4P3/2Q2N2/1PPP1PpP/R3KB1R w KQkq - 0 1', 'O-O-O', 'O-O-O');
+	itParseFigurineNotation('black castling move', 'r1bqk2r/pPp2pp1/2n1n3/2bpp3/4P3/2Q2N2/1PPP1PpP/R3KB1R b KQkq - 0 1', 'O-O', 'O-O');
+});
+
+
 describe('Parse invalid notation', () => {
 
 	function itInvalidNotation(label, parsingAction) {
@@ -150,7 +189,6 @@ describe('Parse invalid notation', () => {
 	itInvalidNotation('Invalid input for SAN notation parsing 1', p => p.notation('e2e4'));
 	itInvalidNotation('Invalid input for SAN notation parsing 2', p => p.notation('Zf3'));
 	itInvalidNotation('Invalid input for figurine notation parsing', p => p.figurineNotation('Nf3'));
-	itInvalidNotation('Invalid input for figurine notation parsing (strict mode)', p => p.figurineNotation('\u265ef3', true));
 	itInvalidNotation('Invalid input for UCI notation parsing', p => p.uci('Nf3'));
 });
 
@@ -181,6 +219,26 @@ describe('Parse degenerated notation', () => {
 	itDegeneratedNotation('Missing checkmate symbol', '4k3/R7/8/8/8/8/7R/4K3 w - - 0 1', 'Rh8', 'h2h8', 'Rh8#');
 	itDegeneratedNotation('Unexpected check symbol', 'r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w KQkq - 0 1', 'O-O+', 'e1g1O', 'O-O');
 	itDegeneratedNotation('Unexpected checkmate symbol', 'r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w KQkq - 0 1', 'O-O-O#', 'e1c1O', 'O-O-O');
+});
+
+
+describe('Parse degenerated figurine notation', () => {
+
+	function itDegeneratedNotation(label, fen, move, expected, expectedSAN) {
+		it(label, () => {
+			const position = new Position(fen);
+			const md = position.figurineNotation(move);
+			test.value(md.toString()).is(expected);
+			test.value(position.notation(md)).is(expectedSAN);
+		});
+		it(label + ' (error if strict)', () => {
+			const position = new Position(fen);
+			test.exception(() => position.figurineNotation(move, true)).isInstanceOf(exception.InvalidNotation);
+		});
+	}
+
+	itDegeneratedNotation('Invalid color', 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', '\u265ef3', 'g1f3', 'Nf3');
+	itDegeneratedNotation('Invalid color on promotion', 'r1bqk2r/pPp2pp1/2n1n3/2bpp3/4P3/2Q2N2/1PPP1PpP/R3KB1R b KQkq - 0 1', 'gxh1=\u2658', 'g2h1N', 'gxh1=N');
 });
 
 

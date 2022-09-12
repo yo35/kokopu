@@ -188,36 +188,22 @@ describe('Play', () => {
 });
 
 
-function notationGenerationTest(elem, expectedNotations, testedFunction) {
-	const pos = createPosition(elem);
-	const moves = pos.moves().sort((e1, e2) => e1.toString().localeCompare(e2.toString()));
-	const actionNotations = moves.map(move => testedFunction(pos, move));
-	test.value(actionNotations.join('/')).is(expectedNotations);
-}
-
-
 describe('UCI notation generation', () => {
 	itForEach(elem => {
-		notationGenerationTest(elem, elem.uciMoves, (pos, move) => pos.uci(move));
+		const pos = createPosition(elem);
+		const moves = pos.moves().sort((e1, e2) => e1.toString().localeCompare(e2.toString()));
+		const actionNotations = moves.map(move => pos.uci(move));
+		test.value(actionNotations.join('/')).is(elem.uciMoves);
 	});
 });
 
 
 describe('Standard algebraic notation generation', () => {
 	itForEach(elem => {
-		notationGenerationTest(elem, elem.notations, (pos, move) => pos.notation(move));
-	});
-});
-
-
-describe('Figurine notation generation', () => {
-
-	const WHITE_FIGURINES = { 'K': '\u2654', 'Q': '\u2655', 'R': '\u2656', 'B': '\u2657', 'N': '\u2658', 'P': '\u2659'};
-	const BLACK_FIGURINES = { 'K': '\u265a', 'Q': '\u265b', 'R': '\u265c', 'B': '\u265d', 'N': '\u265e', 'P': '\u265f'};
-
-	itForEach(elem => {
-		const figNotations = elem.notations.replace(/[KQRBNP]/g, elem.turn === 'w' ? val => WHITE_FIGURINES[val] : val => BLACK_FIGURINES[val]);
-		notationGenerationTest(elem, figNotations, (pos, move) => pos.figurineNotation(move));
+		const pos = createPosition(elem);
+		const moves = pos.moves().sort((e1, e2) => e1.toString().localeCompare(e2.toString()));
+		const actionNotations = moves.map(move => pos.notation(move));
+		test.value(actionNotations.join('/')).is(elem.notations);
 	});
 });
 
@@ -255,73 +241,57 @@ describe('UCI notation parsing', () => {
 });
 
 
-function notationParsingTest(elem, testedPieces, testedPromos, testedFunction) {
-
+describe('Standard algebraic notation parsing', () => {
 	const RANK_DISAMBIGUATION = ['', '1', '2', '3', '4', '5', '6', '7', '8'];
 	const FILE_DISAMBIGUATION = ['', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
 
-	const pos = createPosition(elem);
-	let moves = [];
+	itForEach(elem => {
+		const pos = createPosition(elem);
+		let moves = [];
 
-	// Catch the exceptions thrown by the parsing function.
-	function parseNotation(text) {
-		try {
-			const descriptor = testedFunction(pos, text);
-			moves.push(descriptor.toString());
-		}
-		catch (e) {
-			if (!(e instanceof exception.InvalidNotation)) {
-				throw e;
+		// Catch the exceptions thrown by the parsing function.
+		function parseNotation(text) {
+			try {
+				const descriptor = pos.notation(text, false);
+				moves.push(descriptor.toString());
 			}
-		}
-	}
-
-	// Castling moves
-	parseNotation('O-O-O');
-	parseNotation('O-O');
-
-	// Pawn move
-	forEachSquare(to => {
-		for (const fd of FILE_DISAMBIGUATION) {
-			for (const promo of testedPromos) {
-				const text = fd + to + promo;
-				parseNotation(text);
-			}
-		}
-	});
-
-	// Non-pawn moves
-	forEachSquare(to => {
-		for (const piece of testedPieces) {
-			for (const rd of RANK_DISAMBIGUATION) {
-				for (const fd of FILE_DISAMBIGUATION) {
-					const text = piece + fd + rd + to;
-					parseNotation(text);
+			catch (e) {
+				if (!(e instanceof exception.InvalidNotation)) {
+					throw e;
 				}
 			}
 		}
-	});
 
-	// Sort the moves and remove the duplicates.
-	moves.sort();
-	moves = moves.filter((move, index, tab) => index === 0 || move !== tab[index-1]);
+		// Castling moves
+		parseNotation('O-O-O');
+		parseNotation('O-O');
 
-	test.value(moves.join('/')).is(elem.moves);
-}
+		// Pawn move
+		forEachSquare(to => {
+			for (const fd of FILE_DISAMBIGUATION) {
+				for (const promo of ['', '=K', '=Q', '=R', '=B', '=N', '=P']) {
+					const text = fd + to + promo;
+					parseNotation(text);
+				}
+			}
+		});
 
+		// Non-pawn moves
+		forEachSquare(to => {
+			for (const piece of 'KQRBN') {
+				for (const rd of RANK_DISAMBIGUATION) {
+					for (const fd of FILE_DISAMBIGUATION) {
+						const text = piece + fd + rd + to;
+						parseNotation(text);
+					}
+				}
+			}
+		});
 
-describe('Standard algebraic notation parsing', () => {
-	itForEach(elem => {
-		notationParsingTest(elem, 'KQRBN', ['', 'K', 'Q', 'R', 'B', 'N', 'P'], (pos, text) => pos.notation(text, false));
-	});
-});
+		// Sort the moves and remove the duplicates.
+		moves.sort();
+		moves = moves.filter((move, index, tab) => index === 0 || move !== tab[index-1]);
 
-
-describe('Figurine notation parsing', () => {
-	itForEach(elem => {
-		const testedPieces = elem.turn === 'w' ? '\u2654\u2655\u2656\u2657\u2658' : '\u265a\u265b\u265c\u265d\u265e';
-		const testedPromos = elem.turn === 'w' ? ['', '\u2654', '\u2655', '\u2656', '\u2657', '\u2658', '\u2659'] :
-			['', '\u265a', '\u265b', '\u265c', '\u265d', '\u265e', '\u265f'];
-		notationParsingTest(elem, testedPieces, testedPromos, (pos, text) => pos.figurineNotation(text, false));
+		test.value(moves.join('/')).is(elem.moves);
 	});
 });
