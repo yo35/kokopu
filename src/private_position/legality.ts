@@ -161,32 +161,34 @@ function hasAtLeastOnePiece(position: PositionImpl, color: number) {
  * @param enPassantSquare - Index of the square where the "en-passant" taken pawn lies if any, `-1` otherwise.
  */
 export function isKingSafeAfterMove(position: PositionImpl, from: number, to: number, enPassantSquare = -1) {
-	let kingIsInCheck = false;
+	if (position.king[position.turn] < 0) {
+		return true;
+	}
 
-	if (position.king[position.turn] >= 0) {
-		const fromContent = position.board[from];
-		const toContent = position.board[to];
-		const movingPiece = Math.trunc(fromContent / 2);
+	const fromContent = position.board[from];
+	const toContent = position.board[to];
+	const movingPiece = Math.trunc(fromContent / 2);
 
-		// Step (7) -> Execute the displacement (castling moves are processed separately).
-		position.board[to] = fromContent;
-		position.board[from] = SpI.EMPTY;
-		if (enPassantSquare >= 0) {
-			position.board[enPassantSquare] = SpI.EMPTY;
-		}
+	// Step (7) -> Execute the displacement (castling moves are processed separately).
+	position.board[to] = fromContent;
+	position.board[from] = SpI.EMPTY;
+	if (enPassantSquare >= 0) {
+		position.board[enPassantSquare] = SpI.EMPTY;
+	}
 
-		// Step (8) -> Is the king safe after the displacement?
-		kingIsInCheck = isAttacked(position, movingPiece === PieceImpl.KING ? to : position.king[position.turn], 1 - position.turn);
+	// Step (8) -> Is the king safe after the displacement?
+	try {
+		return !isAttacked(position, movingPiece === PieceImpl.KING ? to : position.king[position.turn], 1 - position.turn);
+	}
 
-		// Step (9) -> Reverse the displacement.
+	// Step (9) -> Reverse the displacement.
+	finally {
 		position.board[from] = fromContent;
 		position.board[to] = toContent;
 		if (enPassantSquare >= 0) {
 			position.board[enPassantSquare] = PieceImpl.PAWN * 2 + 1 - position.turn;
 		}
 	}
-
-	return !kingIsInCheck;
 }
 
 
