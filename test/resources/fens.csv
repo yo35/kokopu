@@ -25,3 +25,4 @@ Valid FEN style with 3 rooks 2	bnrknqrb/pppppppp/8/8/8/8/PPPPPPPP/BRRKNQRB w G -
 Ambiguous FEN style with 3 rooks 2	bnrknqrb/pppppppp/8/8/8/8/PPPPPPPP/BRRKNQRB w B - 0 1	chess960	true	B	-	0	1	bnrknqrb/pppppppp/8/8/8/8/PPPPPPPP/BRRKNQRB w B - 0 1	bnrknqrb/pppppppp/8/8/8/8/PPPPPPPP/BRRKNQRB w B - 0 2	
 Ambiguous FEN style with flag not on rook file 2	bnrknqrb/pppppppp/8/8/8/8/PPPPPPPP/BRRKNQRB w F - 0 1	chess960	true	F	-	0	1	bnrknqrb/pppppppp/8/8/8/8/PPPPPPPP/BRRKNQRB w - - 0 1	bnrknqrb/pppppppp/8/8/8/8/PPPPPPPP/BRRKNQRB w - - 0 2	
 Ambiguous FEN style with flag on king file	bnrknqrb/pppppppp/8/8/8/8/PPPPPPPP/BNRKNQRB w d - 0 1	chess960	true	d	-	0	1	bnrknqrb/pppppppp/8/8/8/8/PPPPPPPP/BNRKNQRB w - - 0 1	bnrknqrb/pppppppp/8/8/8/8/PPPPPPPP/BNRKNQRB w - - 0 2	
+Castling flag decoding without rooks	q1n5/pppppppp/4k3/8/8/8/PPPPPPPP/4K3 w KQkq - 0 1	chess960	false	AHah	-	0	1	q1n5/pppppppp/4k3/8/8/8/PPPPPPPP/4K3 w - - 0 1	q1n5/pppppppp/4k3/8/8/8/PPPPPPPP/4K3 w - - 0 2	

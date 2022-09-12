@@ -138,27 +138,65 @@ describe('Move legality check', () => {
 });
 
 
+describe('Parse invalid notation', () => {
+
+	function itInvalidNotation(label, parsingAction) {
+		it(label, () => {
+			const position = new Position();
+			test.exception(() => parsingAction(position)).isInstanceOf(exception.InvalidNotation);
+		});
+	}
+
+	itInvalidNotation('Invalid input for SAN notation parsing 1', p => p.notation('e2e4'));
+	itInvalidNotation('Invalid input for SAN notation parsing 2', p => p.notation('Zf3'));
+	itInvalidNotation('Invalid input for figurine notation parsing', p => p.figurineNotation('Nf3'));
+	itInvalidNotation('Invalid input for figurine notation parsing (strict mode)', p => p.figurineNotation('\u265ef3', true));
+	itInvalidNotation('Invalid input for UCI notation parsing', p => p.uci('Nf3'));
+});
+
+
 describe('Parse degenerated notation', () => {
 
-	function itDegeneratedNotation(label, fen, move, expected) {
+	function itDegeneratedNotation(label, fen, move, expected, expectedSAN) {
 		it(label, () => {
 			const position = new Position(fen);
 			const md = position.notation(move);
 			test.value(md.toString()).is(expected);
+			test.value(position.notation(md)).is(expectedSAN);
+		});
+		it(label + ' (error if strict)', () => {
+			const position = new Position(fen);
+			test.exception(() => position.notation(move, true)).isInstanceOf(exception.InvalidNotation);
 		});
 	}
 
-	itDegeneratedNotation('King-side castling move with zero characters', 'r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w KQkq - 0 1', '0-0', 'e1g1O');
-	itDegeneratedNotation('Queen-side castling move with zero characters', 'r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R b KQkq - 0 1', '0-0-0', 'e8c8O');
+	itDegeneratedNotation('King-side castling move with zero characters', 'r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w KQkq - 0 1', '0-0', 'e1g1O', 'O-O');
+	itDegeneratedNotation('Queen-side castling move with zero characters', 'r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R b KQkq - 0 1', '0-0-0', 'e8c8O', 'O-O-O');
+	itDegeneratedNotation('Unexpected capture symbol', 'rnbqkbnr/pppp1ppp/8/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2', 'Nxf6', 'g8f6', 'Nf6');
+	itDegeneratedNotation('Missing capture symbol', 'rnbqkb1r/pppp1ppp/5n2/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq - 2 3', 'Ne5', 'f3e5', 'Nxe5');
+	itDegeneratedNotation('Missing promotion symbol', 'K6k/8/8/8/8/8/3p4/8 b - - 0 1', 'd1Q', 'd2d1Q', 'd1=Q');
+	itDegeneratedNotation('Error on disambiguation symbol 1', '1n2k3/8/8/4n3/8/8/8/4K3 b - - 0 1', 'N8c6', 'b8c6', 'Nbc6');
+	itDegeneratedNotation('Error on disambiguation symbol 2', 'R7/8/8/7k/8/8/8/R6K w - - 0 1', 'Ra1a5+', 'a1a5', 'R1a5+');
+	itDegeneratedNotation('Missing check symbol', '4k3/8/8/8/8/8/7R/4K3 w - - 0 1', 'Rh8', 'h2h8', 'Rh8+');
+	itDegeneratedNotation('Missing checkmate symbol', '4k3/R7/8/8/8/8/7R/4K3 w - - 0 1', 'Rh8', 'h2h8', 'Rh8#');
+	itDegeneratedNotation('Unexpected check symbol', 'r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w KQkq - 0 1', 'O-O+', 'e1g1O', 'O-O');
+	itDegeneratedNotation('Unexpected checkmate symbol', 'r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w KQkq - 0 1', 'O-O-O#', 'e1c1O', 'O-O-O');
 });
 
 
 describe('Parse and play move', () => {
 
-	it('Legal move', () => {
+	it('Legal move (notation)', () => {
 		const position = new Position();
 		test.value(position.play('e4')).is(true);
 		test.value(position.fen()).is('rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1');
+	});
+
+	it('Legal move (descriptor)', () => {
+		const position = new Position();
+		const md = position.notation('Nf3', true);
+		test.value(position.play(md)).is(true);
+		test.value(position.fen()).is('rnbqkbnr/pppppppp/8/8/8/5N2/PPPPPPPP/RNBQKB1R b KQkq - 0 1');
 	});
 
 	function itInvalidMove(label, fen, move) {

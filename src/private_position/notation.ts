@@ -228,7 +228,7 @@ export function parseNotation(position: PositionImpl, notation: string, strict: 
 
 	// Parse castling moves
 	if (m[1] !== undefined || m[2] !== undefined) {
-		descriptor = parseCastlingNotation(position, notation, m[2] !== undefined);
+		descriptor = parseCastlingNotation(position, notation, strict, m[1], m[2]);
 	}
 
 	// Non-pawn move
@@ -263,19 +263,31 @@ export function parseNotation(position: PositionImpl, notation: string, strict: 
 /**
  * Delegate function that computes the move descriptor corresponding to a castling move (corresponding notation: "O-O" or "O-O-O").
  */
-function parseCastlingNotation(position: PositionImpl, notation: string, isKingSideCastling: boolean): MoveDescriptorImpl {
+function parseCastlingNotation(position: PositionImpl, notation: string, strict: boolean, queenSideCastlingSymbol: string | undefined,
+	kingSideCastlingSymbol: string | undefined): MoveDescriptorImpl {
+
 	const from = position.king[position.turn];
 	if (from < 0) {
 		throw new InvalidNotation(getFEN(position), notation, i18n.ILLEGAL_NO_KING_CASTLING);
 	}
 
 	refreshEffectiveCastling(position);
+	const isKingSideCastling = kingSideCastlingSymbol !== undefined;
 	const toFile = getCastlingDestinationFile(position, isKingSideCastling);
 	const descriptor = toFile >= 0 ? isCastlingMoveLegal(position, from, toFile + 112 * position.turn) : false;
 	if (!descriptor) {
 		const message = isKingSideCastling ? i18n.ILLEGAL_KING_SIDE_CASTLING : i18n.ILLEGAL_QUEEN_SIDE_CASTLING;
 		throw new InvalidNotation(getFEN(position), notation, message);
 	}
+
+	// STRICT-MODE -> ensure that upper-case O is used instead of digit 0.
+	if (strict) {
+		const firstChar = (isKingSideCastling ? kingSideCastlingSymbol : queenSideCastlingSymbol!).charAt(0);
+		if (firstChar === '0') {
+			throw new InvalidNotation(getFEN(position), notation, i18n.CASTLING_MOVE_ENCODED_WITH_ZERO);
+		}
+	}
+
 	return descriptor;
 }
 
