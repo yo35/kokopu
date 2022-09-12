@@ -3,9 +3,10 @@ ChangeLog
 
 3.1.0 (September 12, 2022)
 --------------------------
-* Introduce effective castling (see #32) and effective en-passant (see #31), in order to make parsing of FEN strings
-with unreliable castling and/or en-passant flags easier, and to ensure that `Position.isEqual(..)` do work as expected
-even in case of move order transposition (see discussion in #27).
+* Introduce effective castling (see [#32](https://github.com/yo35/kokopu/issues/32)) and effective en-passant
+(see [#31](https://github.com/yo35/kokopu/issues/31)), in order to make parsing of FEN strings with unreliable castling and/or
+en-passant flags easier, and to ensure that `Position.isEqual(..)` do work as expected even in case of move order transposition
+(see discussion in [#27](https://github.com/yo35/kokopu/issues/27)).
 
 3.0.0 (August 26, 2022)
 -----------------------
@@ -15,11 +16,12 @@ look at the [migration guide](https://kokopu.yo35.org/docs/current/pages/migrate
 
 2.9.2 (July 14, 2022)
 ---------------------
-* Fix PGN parsing issues regarding move number 0 and degenerated backslash followed by a linebreak (see #30).
+* Fix PGN parsing issues regarding move number 0 and degenerated backslash followed by a linebreak
+(see [#30](https://github.com/yo35/kokopu/issues/30)).
 
 2.9.1 (July 1, 2022)
 --------------------
-* Fix castling move validation at Chess960 (see #29).
+* Fix castling move validation at Chess960 (see [#29](https://github.com/yo35/kokopu/issues/29)).
 
 2.9.0 (June 21, 2022)
 ---------------------
@@ -34,7 +36,7 @@ from now on, a variation comment is considered as "long" if and only if it is *f
 
 2.8.1 (June 16, 2022)
 ---------------------
-* Fix update procedure for en-passant flag in `Position#play(..)` (see #27).
+* Fix update procedure for en-passant flag in `Position#play(..)` (see [#27](https://github.com/yo35/kokopu/issues/27)).
 
 2.8.0 (May 18, 2022)
 --------------------
@@ -58,7 +60,7 @@ from now on, a variation comment is considered as "long" if and only if it is *f
 
 2.4.1 (March 27, 2022)
 ----------------------
-* Fix behavior of `Database#game(..)` with invalid indexes (see #24).
+* Fix behavior of `Database#game(..)` with invalid indexes (see [#24](https://github.com/yo35/kokopu/issues/24)).
 
 2.4.0 (March 27, 2022)
 ----------------------
@@ -67,7 +69,7 @@ from now on, a variation comment is considered as "long" if and only if it is *f
 2.3.0 (February 22, 2022)
 -------------------------
 * Enrich variation-management methods on `Game` and related objects: `Node#promoteVariation()`,
-`Node#removeVariation()`, `Node#removeFollowingMoves()`... (see #22).
+`Node#removeVariation()`, `Node#removeFollowingMoves()`... (see [#22](https://github.com/yo35/kokopu/issues/22)).
 
 2.2.1 (January 1, 2022)
 -----------------------
@@ -93,7 +95,7 @@ This change affects only Chess960; regular chess and other variants are not impa
 
 1.10.2 (August 15, 2021)
 ------------------------
-* Support castling moves encoded with zeros (see #6).
+* Support castling moves encoded with zeros (see [#6](https://github.com/yo35/kokopu/issues/6)).
 
 1.10.1 (August 10, 2021)
 ------------------------
@@ -151,42 +153,43 @@ in which king has no "royal power".
 
 1.4.0 (August 22, 2020)
 -----------------------
-* Add variants "No king" and "White/Black king only" (see #12).
+* Add variants "No king" and "White/Black king only" (see [#12](https://github.com/yo35/kokopu/issues/12)).
 
 1.3.1 (January 1, 2020)
 -----------------------
-* Add some tutorials (see #10).
+* Add some tutorials (see [#10](https://github.com/yo35/kokopu/issues/10)).
 
 1.3.0 (December 20, 2019)
 -------------------------
-* Improve PGN parsing robustness to linebreak issues (see #11).
-* Introduce `Variations#nodes()` (see #9). WARNING! This impacts the lifecycle of the `Node` objects returned by `Node#next()` and
-`Node#play(..)`: now, these functions always return a new instance of `Node`, instead of reusing the current one.
+* Improve PGN parsing robustness to linebreak issues (see [#11](https://github.com/yo35/kokopu/issues/11)).
+* Introduce `Variations#nodes()` (see [#9](https://github.com/yo35/kokopu/issues/9)).
+WARNING! This impacts the lifecycle of the `Node` objects returned by `Node#next()` and `Node#play(..)`:
+now, these functions always return a new instance of `Node`, instead of reusing the current one.
 
 1.2.6 (December 15, 2019)
 -------------------------
-* Add some missing documentation (see #10).
+* Add some missing documentation (see [#10](https://github.com/yo35/kokopu/issues/10)).
 
 1.2.5 (June 8, 2019)
 --------------------
-* Fix PGN parsing in presence of byte order mark (see #7).
-* Fix parsing of comment tags spanning on more than one line (see #8).
+* Fix PGN parsing in presence of byte order mark (see [#7](https://github.com/yo35/kokopu/issues/7)).
+* Fix parsing of comment tags spanning on more than one line (see [#8](https://github.com/yo35/kokopu/issues/8)).
 
 1.2.4 (April 21, 2019)
 ----------------------
-* Fix disambiguation issue (see #5).
+* Fix disambiguation issue (see [#5](https://github.com/yo35/kokopu/issues/5)).
 
 1.2.3 (April 20, 2019)
 ----------------------
-* Fix parsing of lichess syntax for %csl/%cal (see #4).
+* Fix parsing of lichess syntax for %csl/%cal (see [#4](https://github.com/yo35/kokopu/issues/4)).
 
 1.2.2 (March 23, 2019)
 ----------------------
-* Fix parsing for games having a variant tag set to "Standard" (see #3).
+* Fix parsing for games having a variant tag set to "Standard" (see [#3](https://github.com/yo35/kokopu/issues/3)).
 
 1.2.1 (March 10, 2019)
 ----------------------
-* Fix invalid move notation issue (see #2).
+* Fix invalid move notation issue (see [#2](https://github.com/yo35/kokopu/issues/2)).
 
 1.2.0 (September 30, 2018)
 --------------------------
@@ -200,7 +203,7 @@ in which king has no "royal power".
 
 1.0.3 (July 9, 2018)
 --------------------
-* Fix invalid move notation issue (see #1).
+* Fix invalid move notation issue (see [#1](https://github.com/yo35/kokopu/issues/1)).
 
 1.0.2 (July 7, 2018)
 --------------------
