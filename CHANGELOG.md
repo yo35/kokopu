@@ -1,6 +1,12 @@
 ChangeLog
 =========
 
+3.1.0 (September 12, 2022)
+--------------------------
+* Introduce effective castling (see #32) and effective en-passant (see #31), in order to make parsing of FEN strings
+with unreliable castling and/or en-passant flags easier, and to ensure that `Position.isEqual(..)` do work as expected
+even in case of move order transposition (see discussion in #27).
+
 3.0.0 (August 26, 2022)
 -----------------------
 * Migration to TypeScript.

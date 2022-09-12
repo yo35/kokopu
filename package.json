@@ -1,6 +1,6 @@
 {
 	"name": "kokopu",
-	"version": "3.0.0",
+	"version": "3.1.0",
 	"description": "A JavaScript library implementing the chess game rules and providing tools to read/write the standard chess file formats.",
 	"keywords": [
 		"chess",
