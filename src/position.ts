@@ -30,7 +30,7 @@ import { SpI, GameVariantImpl, colorFromString, colorToString, pieceFromString, 
 	fileFromString, fileToString, squareFromString, squareToString, variantFromString, variantToString } from './private_position/base_types_impl';
 import { ascii, getFEN, parseFEN } from './private_position/fen';
 import { PositionImpl, makeCopy, makeEmpty, makeInitial, make960FromScharnagl, hasCanonicalStartPosition } from './private_position/impl';
-import { isLegal, refreshLegalFlagAndKingSquares, refreshEffectiveEnPassant, isEqual } from './private_position/legality';
+import { isLegal, refreshLegalFlagAndKingSquares, refreshEffectiveEnPassant, isEqual, refreshEffectiveCastling } from './private_position/legality';
 import { MoveDescriptorImpl } from './private_position/move_descriptor_impl';
 import { isCheck, isCheckmate, isStalemate, hasMove, moves, isMoveLegal, play, isNullMoveLegal, playNullMove } from './private_position/move_generation';
 import { getNotation, parseNotation } from './private_position/notation';
@@ -400,6 +400,7 @@ export class Position {
 		else if (value === '-') {
 			this._impl.board[squareCode] = SpI.EMPTY;
 			this._impl.legal = null;
+			this._impl.effectiveCastling = null;
 			this._impl.effectiveEnPassant = null;
 		}
 		else {
@@ -409,6 +410,7 @@ export class Position {
 			}
 			this._impl.board[squareCode] = cp;
 			this._impl.legal = null;
+			this._impl.effectiveCastling = null;
 			this._impl.effectiveEnPassant = null;
 		}
 	}
@@ -471,11 +473,30 @@ export class Position {
 			else {
 				this._impl.castling[color] &= ~(1 << file);
 			}
-			this._impl.legal = null;
+			this._impl.effectiveCastling = null;
 		}
 		else {
 			throw new IllegalArgument('Position.castling()');
 		}
+	}
+
+
+	/**
+	 * Get a validated (aka. effective) castle flag (i.e. whether or not the corresponding castle is allowed or not).
+	 *
+	 * Compared to {@link Position.castling}, if this method returns `true`, then it is guaranteed that there are a king and a rook on the squares
+	 * corresponding to the given castle.
+	 *
+	 * @param castle - Must be {@link Castle960} if the {@link Position} is configured for Chess960, or {@link Castle} otherwise.
+	 */
+	effectiveCastling(castle: Castle | Castle960): boolean {
+		if (typeof castle !== 'string' || !(this._impl.variant === GameVariantImpl.CHESS960 ? /^[wb][a-h]$/ : /^[wb][kq]$/).test(castle)) {
+			throw new IllegalArgument('Position.effectiveCastling()');
+		}
+		const color = colorFromString(castle[0]);
+		const file = this._impl.variant === GameVariantImpl.CHESS960 ? fileFromString(castle[1]) : castle[1] === 'k' ? 7 : 0;
+		refreshEffectiveCastling(this._impl);
+		return (this._impl.effectiveCastling![color] & 1 << file) !== 0;
 	}
 
 
@@ -571,7 +592,6 @@ export class Position {
 	 * 2. The player that is not about to play is not in check (this condition is omitted for variants
 	 *    in which kings have no royal power).
 	 * 3. There are no pawn on ranks 1 and 8 (except if the game variant of the position allows it).
-	 * 4. For each castle flag set, there is a rook and a king on the corresponding initial squares.
 	 */
 	isLegal(): boolean {
 		return isLegal(this._impl);

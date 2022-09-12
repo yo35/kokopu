@@ -21,6 +21,7 @@
 
 
 const { exception, Position, forEachSquare } = require('../dist/lib/index');
+const dumpCastlingFlags = require('./common/dumpcastlingflags');
 const readCSV = require('./common/readcsv');
 const test = require('unit.js');
 
@@ -40,15 +41,16 @@ function itForEach(fun) {
 			isLegal            : fields[ 5]==='true',
 			whiteKing          : fields[ 6]==='-' ? false : fields[6],
 			blackKing          : fields[ 7]==='-' ? false : fields[7],
-			effectiveEnPassant : fields[ 8],
-			isCheck            : fields[ 9]==='true',
-			isCheckmate        : fields[10]==='true',
-			isStalemate        : fields[11]==='true',
-			hasMove            : fields[12]==='true',
-			moves              : fields[13],
-			uciMoves           : fields[14],
-			notations          : fields[15],
-			successors         : fields[16],
+			effectiveCastling  : fields[ 8],
+			effectiveEnPassant : fields[ 9],
+			isCheck            : fields[10]==='true',
+			isCheckmate        : fields[11]==='true',
+			isStalemate        : fields[12]==='true',
+			hasMove            : fields[13]==='true',
+			moves              : fields[14],
+			uciMoves           : fields[15],
+			notations          : fields[16],
+			successors         : fields[17],
 		};
 	});
 
@@ -93,6 +95,14 @@ describe('Legality check & king squares', () => {
 		test.value(pos.isLegal()).is(elem.isLegal);
 		test.value(pos.kingSquare('w')).is(elem.whiteKing);
 		test.value(pos.kingSquare('b')).is(elem.blackKing);
+	});
+});
+
+
+describe('Effective castling', () => {
+	itForEach(elem => {
+		const pos = createPosition(elem);
+		test.value(dumpCastlingFlags(pos, (p, castle) => p.effectiveCastling(castle))).is(elem.effectiveCastling);
 	});
 });
 

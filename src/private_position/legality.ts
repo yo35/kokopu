@@ -83,14 +83,6 @@ export function refreshLegalFlagAndKingSquares(position: PositionImpl) {
 		}
 	}
 
-	// Condition (4)
-	const isCastlingFlagLegalFun = position.variant === GameVariantImpl.CHESS960 ? isCastlingFlagLegalForChess960 : isCastlingFlagLegalForRegularChess;
-	for (let color = 0; color < 2; ++color) {
-		if (!isCastlingFlagLegalFun(position, color)) {
-			return;
-		}
-	}
-
 	// At this point, all the conditions (1) to (4) hold, so the position can be flagged as legal.
 	position.legal = true;
 }
@@ -159,48 +151,6 @@ function hasAtLeastOnePiece(position: PositionImpl, color: number) {
 }
 
 
-function isCastlingFlagLegalForRegularChess(position: PositionImpl, color: number) {
-	if (position.king[color] < 0) {
-		return position.castling[color] === 0;
-	}
-	const skipOO  = (position.castling[color] & 0x80) === 0;
-	const skipOOO = (position.castling[color] & 0x01) === 0;
-	const rookHOK = skipOO              || position.board[7 + 112 * color] === PieceImpl.ROOK * 2 + color;
-	const rookAOK = skipOOO             || position.board[0 + 112 * color] === PieceImpl.ROOK * 2 + color;
-	const kingOK  = (skipOO && skipOOO) || position.board[4 + 112 * color] === PieceImpl.KING * 2 + color;
-	return kingOK && rookAOK && rookHOK;
-}
-
-
-function isCastlingFlagLegalForChess960(position: PositionImpl, color: number) {
-	const files: number[] = [];
-	for (let file = 0; file < 8; ++file) {
-		if ((position.castling[color] & 1 << file) === 0) {
-			continue;
-		}
-
-		// Ensure there is a rook on each square for which the corresponding file flag is set.
-		if (position.board[file + 112 * color] !== PieceImpl.ROOK * 2 + color) {
-			return false;
-		}
-		files.push(file);
-	}
-
-	// Additional check on the king position, depending on the number of file flags.
-	switch(files.length) {
-		case 0: return true;
-
-		// 1 possible castle -> ensure the king is on the initial rank.
-		case 1: return position.king[color] >= 112 * color && position.king[color] <= 7 + 112 * color;
-
-		// 2 possible castles -> ensure the king is between the two rooks.
-		case 2: return position.king[color] > files[0] + 112 * color && position.king[color] < files[1] + 112 * color;
-
-		default: return false;
-	}
-}
-
-
 /**
  * Check whether the current player king is in check after moving from `from` to `to`.
  *
@@ -241,8 +191,94 @@ export function isKingSafeAfterMove(position: PositionImpl, from: number, to: nu
 
 
 /**
+ * Refresh the effective castling flags of the given position if they are set to null
+ * (which means that their states are unknown).
+ */
+export function refreshEffectiveCastling(position: PositionImpl) {
+	if (position.effectiveCastling !== null) {
+		return;
+	}
+
+	// Detect the location of the king and make sure it has royal power.
+	// (no royal power, no castling...)
+	refreshLegalFlagAndKingSquares(position);
+
+	// Actual computation.
+	position.effectiveCastling = position.variant === GameVariantImpl.CHESS960 ?
+		[ computeEffectiveCastlingForChess960(position, 0), computeEffectiveCastlingForChess960(position, 1) ] :
+		[ computeEffectiveCastlingForRegularChess(position, 0), computeEffectiveCastlingForRegularChess(position, 1) ];
+}
+
+
+function computeEffectiveCastlingForRegularChess(position: PositionImpl, color: number) {
+	const rankOffset = 112 * color;
+	if (position.king[color] !== rankOffset + 4 || position.castling[color] === 0) {
+		return 0;
+	}
+	const targetRook = PieceImpl.ROOK * 2 + color;
+	let result = 0;
+	if ((position.castling[color] & 0x01) !== 0 && position.board[rankOffset] === targetRook) { // queen-side castling
+		result |= 0x01;
+	}
+	if ((position.castling[color] & 0x80) !== 0 && position.board[rankOffset + 7] === targetRook) { // king-side castling
+		result |= 0x80;
+	}
+	return result;
+}
+
+
+function computeEffectiveCastlingForChess960(position: PositionImpl, color: number) {
+	const rankOffset = 112 * color;
+	if (position.king[color] <= rankOffset || position.king[color] >= rankOffset + 7 || position.castling[color] === 0) { // The king must not be in the corners.
+		return 0;
+	}
+
+	const targetRook = PieceImpl.ROOK * 2 + color;
+	let result = 0;
+
+	// Queen-side castling.
+	let queenSideRookFile = -1;
+	for (let file = position.king[color] % 16 - 1; file >= 0; --file) {
+		if ((position.castling[color] & 1 << file) === 0 || position.board[rankOffset + file] !== targetRook) {
+			continue;
+		}
+		if (queenSideRookFile < 0) {
+			queenSideRookFile = file;
+		}
+		else {
+			queenSideRookFile = -1;
+			break;
+		}
+	}
+	if (queenSideRookFile >= 0) {
+		result |= 1 << queenSideRookFile;
+	}
+
+	// King-side castling.
+	let kingSideRookFile = -1;
+	for (let file = position.king[color] % 16 + 1; file < 8; ++file) {
+		if ((position.castling[color] & 1 << file) === 0 || position.board[rankOffset + file] !== targetRook) {
+			continue;
+		}
+		if (kingSideRookFile < 0) {
+			kingSideRookFile = file;
+		}
+		else {
+			kingSideRookFile = -1;
+			break;
+		}
+	}
+	if (kingSideRookFile >= 0) {
+		result |= 1 << kingSideRookFile;
+	}
+
+	return result;
+}
+
+
+/**
  * Refresh the effective en-passant flag of the given position if it is set to null
- * (which means that the its state is unknown).
+ * (which means that its state is unknown).
  */
 export function refreshEffectiveEnPassant(position: PositionImpl) {
 	if (position.effectiveEnPassant !== null) {
@@ -299,7 +335,13 @@ export function isEqual(pos1: PositionImpl, pos2: PositionImpl) {
 
 	// No check on `.legal` and `.king` as they are computed attributes.
 
-	if (pos1.castling[0] !== pos2.castling[0] || pos1.castling[1] !== pos2.castling[1]) {
+	// Ignore `.castling`, compare `.effectiveCastling` instead.
+	refreshEffectiveCastling(pos1);
+	refreshEffectiveCastling(pos2);
+	if (
+		pos1.effectiveCastling![ColorImpl.WHITE] !== pos2.effectiveCastling![ColorImpl.WHITE] ||
+		pos1.effectiveCastling![ColorImpl.BLACK] !== pos2.effectiveCastling![ColorImpl.BLACK]
+	) {
 		return false;
 	}
 

@@ -22,7 +22,7 @@
 
 import { ColorImpl, PieceImpl, SpI, GameVariantImpl, colorFromString, colorToString, fileFromString, fileToString, variantToString } from './base_types_impl';
 import { PositionImpl, makeEmpty } from './impl';
-import { refreshEffectiveEnPassant } from './legality';
+import { refreshEffectiveCastling, refreshEffectiveEnPassant } from './legality';
 
 import { InvalidFEN } from '../exception';
 import { i18n } from '../i18n';
@@ -99,6 +99,7 @@ export function getFEN(position: PositionImpl, fiftyMoveClock = 0, fullMoveNumbe
  *                               For the other variants, this flag has no effect, as regulary FEN style is always used.
  */
 function castlingToString(position: PositionImpl, regularFENIfPossible = false) {
+	refreshEffectiveCastling(position);
 	if (position.variant === GameVariantImpl.CHESS960) {
 		if (regularFENIfPossible) {
 			const whiteRegularFlags = regularFENCaslingFlagIfPossible(position, ColorImpl.WHITE);
@@ -110,52 +111,23 @@ function castlingToString(position: PositionImpl, regularFENIfPossible = false) 
 		let whiteFlags = '';
 		let blackFlags = '';
 		for (let file = 0; file < 8; ++file) {
-			if (position.castling[ColorImpl.WHITE] & 1 << file) { whiteFlags += fileToString(file); }
-			if (position.castling[ColorImpl.BLACK] & 1 << file) { blackFlags += fileToString(file); }
+			if (position.effectiveCastling![ColorImpl.WHITE] & 1 << file) { whiteFlags += fileToString(file); }
+			if (position.effectiveCastling![ColorImpl.BLACK] & 1 << file) { blackFlags += fileToString(file); }
 		}
 		return whiteFlags === '' && blackFlags === '' ? '-' : whiteFlags.toUpperCase() + blackFlags;
 	}
 	else {
 		let result = '';
-		if (position.castling[ColorImpl.WHITE] & 1 << 7) { result += 'K'; }
-		if (position.castling[ColorImpl.WHITE] & 1 << 0) { result += 'Q'; }
-		if (position.castling[ColorImpl.BLACK] & 1 << 7) { result += 'k'; }
-		if (position.castling[ColorImpl.BLACK] & 1 << 0) { result += 'q'; }
+		if (position.effectiveCastling![ColorImpl.WHITE] & 0x80) { result += 'K'; }
+		if (position.effectiveCastling![ColorImpl.WHITE] & 0x01) { result += 'Q'; }
+		if (position.effectiveCastling![ColorImpl.BLACK] & 0x80) { result += 'k'; }
+		if (position.effectiveCastling![ColorImpl.BLACK] & 0x01) { result += 'q'; }
 		return result === '' ? '-' : result;
 	}
 }
 
 
 function regularFENCaslingFlagIfPossible(position: PositionImpl, color: number): string | false {
-	const castling = position.castling[color];
-	if (castling === 0) {
-		return '';
-	}
-
-	const firstSquare = 112 * color;
-	const lastSquare = 112 * color + 7;
-	const targetKing = PieceImpl.KING * 2 + color;
-	const targetRook = PieceImpl.ROOK * 2 + color;
-
-	// Search for the king.
-	// WARNING: do not use `position.king` as this computed attribute may not be up-to-date.
-	let kingSquare = -1;
-	for (let sq = firstSquare; sq <= lastSquare; ++sq) {
-		if (position.board[sq] === targetKing) {
-			if (kingSquare < 0) {
-				kingSquare = sq;
-			}
-			else {
-				return false;
-			}
-		}
-	}
-
-	// If there is no king on the first rank, return a regular-FEN-compatible string a representing the castling flags
-	// only if no castling flag is set.
-	if (kingSquare < 0) {
-		return false;
-	}
 
 	// Decompose the castling flags into:
 	//
@@ -165,48 +137,42 @@ function regularFENCaslingFlagIfPossible(position: PositionImpl, color: number):
 	//   ^               ^              ^
 	// File a        King file        File h
 	//
-	const kingFileMask = 1 << (kingSquare % 16);
-	if ((castling & kingFileMask) !== 0) { // Ensure that the bit corresponding to the king file in the castling flags is OK.
-		return false;
-	}
-	const kingSideMask = castling & ~(kingFileMask | (kingFileMask - 1));
-	const queenSideMask = castling & (kingFileMask - 1);
+	const kingFileMask = 1 << (position.king[color] % 16);
+	const kingSideMask = position.effectiveCastling![color] & ~(kingFileMask | (kingFileMask - 1));
+	const queenSideMask = position.effectiveCastling![color] & (kingFileMask - 1);
 	let fenFlag = '';
+	const firstSquare = 112 * color;
+	const lastSquare = 112 * color + 7;
+	const targetRook = PieceImpl.ROOK * 2 + color;
 
 	// Search for the rooks on king-side.
 	if (kingSideMask !== 0) {
-		let rookSquare = -1;
-		for (let sq = kingSquare + 1; sq <= lastSquare; ++sq) {
+		let rookFound = false;
+		for (let sq = position.king[color] + 1; sq <= lastSquare; ++sq) {
 			if (position.board[sq] === targetRook) {
-				if (rookSquare < 0) {
-					rookSquare = sq;
-				}
-				else {
+				if (rookFound) { // Ensure there is only 1 rook on the king side.
 					return false;
 				}
+				else {
+					rookFound = true;
+				}
 			}
-		}
-		if (rookSquare < 0 || kingSideMask !== 1 << (rookSquare % 16)) { // Ensure that the bits corresponding to the king side are OK.
-			return false;
 		}
 		fenFlag += 'k';
 	}
 
 	// Search for the rooks on queen-side.
 	if (queenSideMask !== 0) {
-		let rookSquare = -1;
-		for (let sq = firstSquare; sq < kingSquare; ++sq) {
+		let rookFound = false;
+		for (let sq = position.king[color] - 1; sq >= firstSquare; --sq) {
 			if (position.board[sq] === targetRook) {
-				if (rookSquare < 0) {
-					rookSquare = sq;
-				}
-				else {
+				if (rookFound) { // Ensure there is only 1 rook on the queen side.
 					return false;
 				}
+				else {
+					rookFound = true;
+				}
 			}
-		}
-		if (rookSquare < 0 || queenSideMask !== 1 << (rookSquare % 16)) { // Ensure that the bits corresponding to the queen side are OK.
-			return false;
 		}
 		fenFlag += 'q';
 	}
@@ -238,6 +204,7 @@ export function parseFEN(variant: number, fen: string, strict: boolean): { posit
 	// Initialize the position
 	const position = makeEmpty(variant);
 	position.legal = null;
+	position.effectiveCastling = null;
 	position.effectiveEnPassant = null;
 
 	// Board parsing

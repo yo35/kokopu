@@ -21,6 +21,7 @@
 
 
 const { exception, Position } = require('../dist/lib/index');
+const dumpCastlingFlags = require('./common/dumpcastlingflags');
 const readCSV = require('./common/readcsv');
 const test = require('unit.js');
 
@@ -32,16 +33,17 @@ function itForEach(fun) {
 			return false;
 		}
 		return {
-			label             : fields[0],
-			fenIn             : fields[1],
-			variant           : fields[2],
-			strict            : fields[3]==='true',
-			enPassant         : fields[4],
-			fiftyMoveClock    : parseInt(fields[5]),
-			fullMoveNumber    : parseInt(fields[6]),
-			fenOutDefault     : fields[7],
-			fenOutWithCounters: fields[8],
-			fenOutWithoutXFEN : fields[9],
+			label             : fields[ 0],
+			fenIn             : fields[ 1],
+			variant           : fields[ 2],
+			strict            : fields[ 3]==='true',
+			castling          : fields[ 4],
+			enPassant         : fields[ 5],
+			fiftyMoveClock    : parseInt(fields[6]),
+			fullMoveNumber    : parseInt(fields[7]),
+			fenOutDefault     : fields[ 8],
+			fenOutWithCounters: fields[ 9],
+			fenOutWithoutXFEN : fields[10],
 		};
 	});
 
@@ -74,6 +76,16 @@ describe('FEN parsing (strict)', () => {
 		}
 	});
 });
+
+
+describe('Castling flag parsing', () => {
+	itForEach(elem => {
+		const position = new Position(elem.variant, 'empty');
+		position.fen(elem.fenIn);
+		test.value(dumpCastlingFlags(position, (p, castle) => p.castling(castle))).is(elem.castling);
+	});
+});
+
 
 
 describe('En-passant flag parsing', () => {

@@ -23,7 +23,7 @@
 import { ATTACK_DIRECTIONS, isAttacked } from './attacks';
 import { ColorImpl, PieceImpl, SpI, GameVariantImpl } from './base_types_impl';
 import { PositionImpl } from './impl';
-import { isLegal, isKingSafeAfterMove, refreshEffectiveEnPassant } from './legality';
+import { isLegal, isKingSafeAfterMove, refreshEffectiveEnPassant, refreshEffectiveCastling } from './legality';
 import { MoveDescriptorImpl } from './move_descriptor_impl';
 
 import { MoveDescriptor } from '../move_descriptor';
@@ -189,6 +189,22 @@ function generateMoves(position: PositionImpl, moveDescriptorConsumer: (moveDesc
 	// In some variants, capture may be mandatory (typically in antichess).
 	const nonCaptureIsAllowed = !isCaptureMandatory(position);
 
+	// Generate castling moves
+	refreshEffectiveCastling(position);
+	if (nonCaptureIsAllowed && position.effectiveCastling![position.turn] !== 0) {
+		const rankOffset = 112 * position.turn;
+		for (let file = 0; file < 8; ++file) {
+			if ((position.effectiveCastling![position.turn] & 1 << file) !== 0) {
+				const rookFrom = rankOffset + file;
+				const rookTo = rankOffset + (rookFrom < position.king[position.turn] ? 3 : 5);
+				const to = rankOffset + (rookFrom < position.king[position.turn] ? 2 : 6);
+				if (isCastlingLegal(position, position.king[position.turn], to, rookFrom, rookTo)) {
+					moveDescriptorConsumer(MoveDescriptorImpl.makeCastling(position.king[position.turn], to, rookFrom, rookTo, position.turn));
+				}
+			}
+		}
+	}
+
 	// Generate en-passant captures
 	refreshEffectiveEnPassant(position);
 	if (position.effectiveEnPassant! >= 0) {
@@ -275,28 +291,6 @@ function generateMoves(position: PositionImpl, moveDescriptorConsumer: (moveDesc
 				}
 			}
 		}
-
-		// Generate castling moves
-		if (movingPiece === PieceImpl.KING && nonCaptureIsAllowed && position.castling[position.turn] !== 0) {
-			if (position.variant === GameVariantImpl.CHESS960) {
-				for (let file = 0; file < 8; ++file) {
-					const castlingDescriptor = isCastlingLegal(position, from, file + 112 * position.turn);
-					if (castlingDescriptor) {
-						moveDescriptorConsumer(castlingDescriptor);
-					}
-				}
-			}
-			else {
-				const queenSideCastlingDescriptor = isCastlingLegal(position, from, 2 + 112 * position.turn);
-				if (queenSideCastlingDescriptor) {
-					moveDescriptorConsumer(queenSideCastlingDescriptor);
-				}
-				const kingSideCastlingDescriptor = isCastlingLegal(position, from, 6 + 112 * position.turn);
-				if (kingSideCastlingDescriptor) {
-					moveDescriptorConsumer(kingSideCastlingDescriptor);
-				}
-			}
-		}
 	}
 }
 
@@ -351,8 +345,10 @@ export function isCaptureMandatory(position: PositionImpl) {
 
 /**
  * Delegated method for checking whether a castling move is legal or not. WARNING: in case of Chess960, `to` represents the origin square of the rook (KxR).
+ *
+ * Precondition: {@link refreshEffectiveCastling} must have been invoked beforehand.
  */
-export function isCastlingLegal(position: PositionImpl, from: number, to: number): MoveDescriptorImpl | false {
+export function isCastlingMoveLegal(position: PositionImpl, from: number, to: number): MoveDescriptorImpl | false {
 
 	let rookFrom = -1;
 	let rookTo = -1;
@@ -361,7 +357,7 @@ export function isCastlingLegal(position: PositionImpl, from: number, to: number
 	if (position.variant === GameVariantImpl.CHESS960) {
 		const castleFile = to % 16;
 		const castleRank = Math.trunc(to / 16);
-		if (castleRank !== position.turn * 7 || (position.castling[position.turn] & (1 << castleFile)) === 0) {
+		if (castleRank !== position.turn * 7 || (position.effectiveCastling![position.turn] & (1 << castleFile)) === 0) {
 			return false;
 		}
 		rookFrom = to;
@@ -369,14 +365,14 @@ export function isCastlingLegal(position: PositionImpl, from: number, to: number
 		to = (from > to ? 2 : 6) + 112 * position.turn;
 	}
 	else if (to === 2 + position.turn * 112) { // queen-side castling
-		if ((position.castling[position.turn] & 1) === 0) {
+		if ((position.effectiveCastling![position.turn] & 1) === 0) {
 			return false;
 		}
 		rookFrom = 112 * position.turn;
 		rookTo = 3 + 112 * position.turn;
 	}
-	else if (to === 6 + position.turn*112) { // king-side castling
-		if ((position.castling[position.turn] & (1 << 7)) === 0) {
+	else if (to === 6 + position.turn * 112) { // king-side castling
+		if ((position.effectiveCastling![position.turn] & (1 << 7)) === 0) {
 			return false;
 		}
 		rookFrom = 7 + 112 * position.turn;
@@ -385,6 +381,13 @@ export function isCastlingLegal(position: PositionImpl, from: number, to: number
 	else {
 		return false;
 	}
+
+	// Generate the descriptor if the castling is actually legal.
+	return isCastlingLegal(position, from, to, rookFrom, rookTo) ? MoveDescriptorImpl.makeCastling(from, to, rookFrom, rookTo, position.turn) : false;
+}
+
+
+function isCastlingLegal(position: PositionImpl, from: number, to: number, rookFrom: number, rookTo: number) {
 
 	// Free the king and rook square (mandatory for attack detection).
 	position.board[from] = SpI.EMPTY;
@@ -406,8 +409,8 @@ export function isCastlingLegal(position: PositionImpl, from: number, to: number
 			}
 		}
 
-		// The move is legal -> generate the move descriptor.
-		return MoveDescriptorImpl.makeCastling(from, to, rookFrom, rookTo, position.turn);
+		// OK, the castling is legal.
+		return true;
 	}
 	finally {
 		position.board[from] = PieceImpl.KING * 2 + position.turn;
@@ -459,13 +462,16 @@ export function isMoveLegal(position: PositionImpl, from: number, to: number): R
 	const captureIsMandatory = isCaptureMandatory(position);
 
 	// Step (3) - Castling detection.
-	if (movingPiece === PieceImpl.KING && !captureIsMandatory && position.castling[position.turn] !== 0) {
-		const castlingDescriptor = isCastlingLegal(position, from, to);
-		if (castlingDescriptor) {
-			return {
-				type: 'regular',
-				moveDescriptor: castlingDescriptor,
-			};
+	if (movingPiece === PieceImpl.KING && !captureIsMandatory) {
+		refreshEffectiveCastling(position);
+		if (position.effectiveCastling![position.turn] !== 0) {
+			const castlingDescriptor = isCastlingMoveLegal(position, from, to);
+			if (castlingDescriptor) {
+				return {
+					type: 'regular',
+					moveDescriptor: castlingDescriptor,
+				};
+			}
 		}
 	}
 
@@ -567,6 +573,7 @@ function buildPromotionMoveDescriptor(from: number, to: number, variant: number,
  * Play the move corresponding to the given descriptor.
  */
 export function play(position: PositionImpl, descriptor: MoveDescriptorImpl) {
+	refreshEffectiveCastling(position);
 
 	// Update the board.
 	position.board[descriptor._from] = SpI.EMPTY; // WARNING: update `from` before `to` in case both squares are actually the same!
@@ -583,12 +590,14 @@ export function play(position: PositionImpl, descriptor: MoveDescriptorImpl) {
 
 	// Update the castling flags.
 	if (movingPiece === PieceImpl.KING) {
-		position.castling[position.turn] = 0;
+		position.effectiveCastling![position.turn] = 0;
 	}
-	if (descriptor._from <    8) { position.castling[ColorImpl.WHITE] &= ~(1 <<  descriptor._from    ); }
-	if (descriptor._to   <    8) { position.castling[ColorImpl.WHITE] &= ~(1 <<  descriptor._to      ); }
-	if (descriptor._from >= 112) { position.castling[ColorImpl.BLACK] &= ~(1 << (descriptor._from % 16)); }
-	if (descriptor._to   >= 112) { position.castling[ColorImpl.BLACK] &= ~(1 << (descriptor._to   % 16)); }
+	if (descriptor._from <    8) { position.effectiveCastling![ColorImpl.WHITE] &= ~(1 <<  descriptor._from      ); }
+	if (descriptor._to   <    8) { position.effectiveCastling![ColorImpl.WHITE] &= ~(1 <<  descriptor._to        ); }
+	if (descriptor._from >= 112) { position.effectiveCastling![ColorImpl.BLACK] &= ~(1 << (descriptor._from % 16)); }
+	if (descriptor._to   >= 112) { position.effectiveCastling![ColorImpl.BLACK] &= ~(1 << (descriptor._to   % 16)); }
+	position.castling[ColorImpl.WHITE] = position.effectiveCastling![ColorImpl.WHITE];
+	position.castling[ColorImpl.BLACK] = position.effectiveCastling![ColorImpl.BLACK];
 
 	// Update the en-passant flag.
 	position.enPassant = -1;

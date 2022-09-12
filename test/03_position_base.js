@@ -21,6 +21,7 @@
 
 
 const { exception, Position } = require('../dist/lib/index');
+const dumpCastlingFlags = require('./common/dumpcastlingflags');
 const readCSV = require('./common/readcsv');
 const test = require('unit.js');
 
@@ -30,6 +31,9 @@ const startFENAntichess = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w - - 0 1
 const startFENHorde = 'rnbqkbnr/pppppppp/8/1PP2PP1/PPPPPPPP/PPPPPPPP/PPPPPPPP/PPPPPPPP w kq - 0 1';
 const emptyFEN  = '8/8/8/8/8/8/8/8 w - - 0 1';
 const customFEN = 'r3k2r/pb3pbp/1p4p1/3n4/1PpP4/P4NB1/5PPP/R3KB1R b KQkq d3 0 1';
+const customFENNoCastling = 'r3k2r/pb3pbp/1p4p1/3n4/1PpP4/P4NB1/5PPP/R3KB1R b - d3 0 1';
+const customFENWhiteCastlingOnly = 'r3k2r/pb3pbp/1p4p1/3n4/1PpP4/P4NB1/5PPP/R3KB1R b KQ d3 0 1';
+const customFENBlackCastlingOnly = 'r3k2r/pb3pbp/1p4p1/3n4/1PpP4/P4NB1/5PPP/R3KB1R b kq d3 0 1';
 const customXFEN = 'qrkbrnbn/pppppppp/8/8/8/8/PPPPPPPP/QRKBRNBN w BEbe - 0 1';
 const customXFENAsFEN = 'qrkbrnbn/pppppppp/8/8/8/8/PPPPPPPP/QRKBRNBN w KQkq - 0 1';
 const customFENHorde = '1Q3rk1/2P4p/1P2pp2/2PP4/5P1P/2q1PPPP/2P1PPPP/2PPPPPP b - - 0 1';
@@ -64,18 +68,18 @@ describe('Position constructor', () => {
 	doTest('Constructor X-FEN-based (Chess960)'            , 'chess960', customXFEN, () => new Position('chess960', customXFEN));
 	doTest('Constructor X-FEN-based with prefix (Chess960)', 'chess960', customXFEN, () => new Position('chess960:' + customXFEN));
 
-	doTest('Constructor \'empty\' (no-king)'        , 'no-king'        , emptyFEN , () => new Position('no-king', 'empty'));
-	doTest('Constructor FEN-based (no-king)'        , 'no-king'        , customFEN, () => new Position('no-king', customFEN));
-	doTest('Constructor \'empty\' (white-king-only)', 'white-king-only', emptyFEN , () => new Position('white-king-only', 'empty'));
-	doTest('Constructor FEN-based (white-king-only)', 'white-king-only', customFEN, () => new Position('white-king-only', customFEN));
-	doTest('Constructor \'empty\' (black-king-only)', 'black-king-only', emptyFEN , () => new Position('black-king-only', 'empty'));
-	doTest('Constructor FEN-based (black-king-only)', 'black-king-only', customFEN, () => new Position('black-king-only', customFEN));
+	doTest('Constructor \'empty\' (no-king)'        , 'no-king'        , emptyFEN                  , () => new Position('no-king', 'empty'));
+	doTest('Constructor FEN-based (no-king)'        , 'no-king'        , customFENNoCastling       , () => new Position('no-king', customFEN));
+	doTest('Constructor \'empty\' (white-king-only)', 'white-king-only', emptyFEN                  , () => new Position('white-king-only', 'empty'));
+	doTest('Constructor FEN-based (white-king-only)', 'white-king-only', customFENWhiteCastlingOnly, () => new Position('white-king-only', customFEN));
+	doTest('Constructor \'empty\' (black-king-only)', 'black-king-only', emptyFEN                  , () => new Position('black-king-only', 'empty'));
+	doTest('Constructor FEN-based (black-king-only)', 'black-king-only', customFENBlackCastlingOnly, () => new Position('black-king-only', customFEN));
 
-	doTest('Default constructor (antichess)'              , 'antichess', startFENAntichess, () => new Position('antichess'));
-	doTest('Constructor \'start\' (antichess)'            , 'antichess', startFENAntichess, () => new Position('antichess', 'start'));
-	doTest('Constructor \'empty\' (antichess)'            , 'antichess', emptyFEN         , () => new Position('antichess', 'empty'));
-	doTest('Constructor FEN-based (antichess)'            , 'antichess', customFEN        , () => new Position('antichess', customFEN));
-	doTest('Constructor FEN-based with prefix (antichess)', 'antichess', customFEN        , () => new Position('antichess:' + customFEN));
+	doTest('Default constructor (antichess)'              , 'antichess', startFENAntichess  , () => new Position('antichess'));
+	doTest('Constructor \'start\' (antichess)'            , 'antichess', startFENAntichess  , () => new Position('antichess', 'start'));
+	doTest('Constructor \'empty\' (antichess)'            , 'antichess', emptyFEN           , () => new Position('antichess', 'empty'));
+	doTest('Constructor FEN-based (antichess)'            , 'antichess', customFENNoCastling, () => new Position('antichess', customFEN));
+	doTest('Constructor FEN-based with prefix (antichess)', 'antichess', customFENNoCastling, () => new Position('antichess:' + customFEN));
 
 	doTest('Default constructor (horde)'              , 'horde', startFENHorde , () => new Position('horde'));
 	doTest('Constructor \'start\' (horde)'            , 'horde', startFENHorde , () => new Position('horde', 'start'));
@@ -115,12 +119,12 @@ describe('Position constructor', () => {
 
 
 describe('Position copy constructor', () => {
-	for (const variant of variants) {
+
+	function itCopy(variant, inputCustomFEN, expectedFEN) {
 		it('Copy from ' + variant, () => {
-			const currentCustomFEN = variant === 'chess960' ? customXFEN : customFEN;
 
 			// Initialize the positions.
-			const p1 = new Position(variant, currentCustomFEN);
+			const p1 = new Position(variant, inputCustomFEN);
 			const p2 = new Position(p1);
 			p1.clear(variant);
 
@@ -128,9 +132,17 @@ describe('Position copy constructor', () => {
 			test.value(p1.variant()).is(variant);
 			test.value(p2.variant()).is(variant);
 			test.value(p1.fen()).is(emptyFEN);
-			test.value(p2.fen()).is(currentCustomFEN);
+			test.value(p2.fen()).is(expectedFEN);
 		});
 	}
+
+	itCopy('regular', customFEN, customFEN);
+	itCopy('chess960', customXFEN, customXFEN);
+	itCopy('no-king', customFEN, customFENNoCastling);
+	itCopy('white-king-only', customFEN, customFENWhiteCastlingOnly);
+	itCopy('black-king-only', customFEN, customFENBlackCastlingOnly);
+	itCopy('antichess', customFEN, customFENNoCastling);
+	itCopy('horde', customFENHorde, customFENHorde);
 });
 
 
@@ -285,58 +297,70 @@ describe('Position getters', () => {
 
 describe('Position setters', () => {
 
+	function testCastlingEnPassantFEN(position, expectedCastling, expectedEnPassant, expectedFEN) {
+		test.value(dumpCastlingFlags(position, (p, castle) => p.castling(castle))).is(expectedCastling);
+		test.value(position.enPassant()).is(expectedEnPassant);
+		test.value(position.fen()).is(expectedFEN);
+	}
+
 	it('Scenario 1', () => {
 		const p = new Position('start');
+		testCastlingEnPassantFEN(p, 'KQkq', '-', 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
 		p.square('a8', '-');
-		test.value(p.fen()).is('1nbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
+		testCastlingEnPassantFEN(p, 'KQkq', '-', '1nbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQk - 0 1');
 		p.square('f6', 'wb');
-		test.value(p.fen()).is('1nbqkbnr/pppppppp/5B2/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
+		testCastlingEnPassantFEN(p, 'KQkq', '-', '1nbqkbnr/pppppppp/5B2/8/8/8/PPPPPPPP/RNBQKBNR w KQk - 0 1');
 		p.turn('w');
-		test.value(p.fen()).is('1nbqkbnr/pppppppp/5B2/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
+		testCastlingEnPassantFEN(p, 'KQkq', '-', '1nbqkbnr/pppppppp/5B2/8/8/8/PPPPPPPP/RNBQKBNR w KQk - 0 1');
 		p.castling('wk', false);
-		test.value(p.fen()).is('1nbqkbnr/pppppppp/5B2/8/8/8/PPPPPPPP/RNBQKBNR w Qkq - 0 1');
+		testCastlingEnPassantFEN(p, 'Qkq', '-', '1nbqkbnr/pppppppp/5B2/8/8/8/PPPPPPPP/RNBQKBNR w Qk - 0 1');
 		p.castling('bk', true);
-		test.value(p.fen()).is('1nbqkbnr/pppppppp/5B2/8/8/8/PPPPPPPP/RNBQKBNR w Qkq - 0 1');
+		testCastlingEnPassantFEN(p, 'Qkq', '-', '1nbqkbnr/pppppppp/5B2/8/8/8/PPPPPPPP/RNBQKBNR w Qk - 0 1');
+		p.castling('bq', true);
+		testCastlingEnPassantFEN(p, 'Qkq', '-', '1nbqkbnr/pppppppp/5B2/8/8/8/PPPPPPPP/RNBQKBNR w Qk - 0 1');
 		p.enPassant('e');
-		test.value(p.enPassant()).is('e');
-		test.value(p.fen()).is('1nbqkbnr/pppppppp/5B2/8/8/8/PPPPPPPP/RNBQKBNR w Qkq - 0 1');
+		testCastlingEnPassantFEN(p, 'Qkq', 'e', '1nbqkbnr/pppppppp/5B2/8/8/8/PPPPPPPP/RNBQKBNR w Qk - 0 1');
 		p.enPassant('-');
-		test.value(p.enPassant()).is('-');
-		test.value(p.fen()).is('1nbqkbnr/pppppppp/5B2/8/8/8/PPPPPPPP/RNBQKBNR w Qkq - 0 1');
+		testCastlingEnPassantFEN(p, 'Qkq', '-', '1nbqkbnr/pppppppp/5B2/8/8/8/PPPPPPPP/RNBQKBNR w Qk - 0 1');
 	});
 
 	it('Scenario 2', () => {
 		const p = new Position('empty');
+		testCastlingEnPassantFEN(p, '-', '-', '8/8/8/8/8/8/8/8 w - - 0 1');
 		p.square('c3', 'bk');
-		test.value(p.fen()).is('8/8/8/8/8/2k5/8/8 w - - 0 1');
+		testCastlingEnPassantFEN(p, '-', '-', '8/8/8/8/8/2k5/8/8 w - - 0 1');
 		p.square('g5', 'wk');
-		test.value(p.fen()).is('8/8/8/6K1/8/2k5/8/8 w - - 0 1');
+		testCastlingEnPassantFEN(p, '-', '-', '8/8/8/6K1/8/2k5/8/8 w - - 0 1');
 		p.square('c3', '-');
-		test.value(p.fen()).is('8/8/8/6K1/8/8/8/8 w - - 0 1');
+		testCastlingEnPassantFEN(p, '-', '-', '8/8/8/6K1/8/8/8/8 w - - 0 1');
 		p.turn('b');
-		test.value(p.fen()).is('8/8/8/6K1/8/8/8/8 b - - 0 1');
+		testCastlingEnPassantFEN(p, '-', '-', '8/8/8/6K1/8/8/8/8 b - - 0 1');
 		p.castling('wq', false);
-		test.value(p.fen()).is('8/8/8/6K1/8/8/8/8 b - - 0 1');
+		testCastlingEnPassantFEN(p, '-', '-', '8/8/8/6K1/8/8/8/8 b - - 0 1');
+		p.square('e8', 'bk');
+		p.square('a8', 'br');
+		testCastlingEnPassantFEN(p, '-', '-', 'r3k3/8/8/6K1/8/8/8/8 b - - 0 1');
 		p.castling('bq', true);
-		test.value(p.fen()).is('8/8/8/6K1/8/8/8/8 b q - 0 1');
+		testCastlingEnPassantFEN(p, 'q', '-', 'r3k3/8/8/6K1/8/8/8/8 b q - 0 1');
+		p.castling('bk', true);
+		testCastlingEnPassantFEN(p, 'kq', '-', 'r3k3/8/8/6K1/8/8/8/8 b q - 0 1');
 		p.enPassant('a');
-		test.value(p.enPassant()).is('a');
-		test.value(p.fen()).is('8/8/8/6K1/8/8/8/8 b q - 0 1');
+		testCastlingEnPassantFEN(p, 'kq', 'a', 'r3k3/8/8/6K1/8/8/8/8 b q - 0 1');
 		p.enPassant('h');
-		test.value(p.enPassant()).is('h');
-		test.value(p.fen()).is('8/8/8/6K1/8/8/8/8 b q - 0 1');
+		testCastlingEnPassantFEN(p, 'kq', 'h', 'r3k3/8/8/6K1/8/8/8/8 b q - 0 1');
 	});
 
 	it('Scenario 3 (Chess960)', () => {
 		const p = new Position('chess960', 763);
+		testCastlingEnPassantFEN(p, 'AFaf', '-', 'rknnbrqb/pppppppp/8/8/8/8/PPPPPPPP/RKNNBRQB w AFaf - 0 1');
 		p.castling('wa', false);
-		test.value(p.fen()).is('rknnbrqb/pppppppp/8/8/8/8/PPPPPPPP/RKNNBRQB w Faf - 0 1');
+		testCastlingEnPassantFEN(p, 'Faf', '-', 'rknnbrqb/pppppppp/8/8/8/8/PPPPPPPP/RKNNBRQB w Faf - 0 1');
 		p.castling('wh', true);
-		test.value(p.fen()).is('rknnbrqb/pppppppp/8/8/8/8/PPPPPPPP/RKNNBRQB w FHaf - 0 1');
+		testCastlingEnPassantFEN(p, 'FHaf', '-', 'rknnbrqb/pppppppp/8/8/8/8/PPPPPPPP/RKNNBRQB w Faf - 0 1');
 		p.castling('bd', true);
-		test.value(p.fen()).is('rknnbrqb/pppppppp/8/8/8/8/PPPPPPPP/RKNNBRQB w FHadf - 0 1');
-		p.castling('bf', false);
-		test.value(p.fen()).is('rknnbrqb/pppppppp/8/8/8/8/PPPPPPPP/RKNNBRQB w FHad - 0 1');
+		testCastlingEnPassantFEN(p, 'FHadf', '-', 'rknnbrqb/pppppppp/8/8/8/8/PPPPPPPP/RKNNBRQB w Faf - 0 1');
+		p.castling('wh', false);
+		testCastlingEnPassantFEN(p, 'Fadf', '-', 'rknnbrqb/pppppppp/8/8/8/8/PPPPPPPP/RKNNBRQB w Faf - 0 1');
 	});
 
 	for (const elem of ['p', 'Q', 'kw']) {
@@ -427,6 +451,12 @@ describe('Position equality', () => {
 	}
 	itOnCastlingChange(1, 'wk');
 	itOnCastlingChange(2, 'bq');
+
+	it('With non-equal but equivalent castling flags', () => {
+		const p1 = new Position('r3k3/pppppppp/8/8/8/8/PPPPPPPP/4K2R w KQkq - 0 1');
+		const p2 = new Position('r3k3/pppppppp/8/8/8/8/PPPPPPPP/4K2R w Kq - 0 1');
+		checkIsEqual(p1, p2, true);
+	});
 
 	it('On en-passant changed', () => {
 		const p1 = new Position(customFEN);

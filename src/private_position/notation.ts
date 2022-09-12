@@ -25,9 +25,9 @@ import { ColorImpl, PieceImpl, SpI, GameVariantImpl, figurineFromString, figurin
 	pieceFromString, pieceToString, squareFromString, squareToString } from './base_types_impl';
 import { getFEN } from './fen';
 import { PositionImpl, makeCopy } from './impl';
-import { isLegal, isKingSafeAfterMove, refreshEffectiveEnPassant } from './legality';
+import { isLegal, isKingSafeAfterMove, refreshEffectiveEnPassant, refreshEffectiveCastling } from './legality';
 import { MoveDescriptorImpl } from './move_descriptor_impl';
-import { isCheckmate, isCheck, isCaptureMandatory, isCastlingLegal, play } from './move_generation';
+import { isCheckmate, isCheck, isCaptureMandatory, isCastlingMoveLegal, play } from './move_generation';
 
 import { InvalidNotation } from '../exception';
 import { i18n } from '../i18n';
@@ -269,8 +269,9 @@ function parseCastlingNotation(position: PositionImpl, notation: string, isKingS
 		throw new InvalidNotation(getFEN(position), notation, i18n.ILLEGAL_NO_KING_CASTLING);
 	}
 
+	refreshEffectiveCastling(position);
 	const toFile = getCastlingDestinationFile(position, isKingSideCastling);
-	const descriptor = toFile >= 0 ? isCastlingLegal(position, from, toFile + 112 * position.turn) : false;
+	const descriptor = toFile >= 0 ? isCastlingMoveLegal(position, from, toFile + 112 * position.turn) : false;
 	if (!descriptor) {
 		const message = isKingSideCastling ? i18n.ILLEGAL_KING_SIDE_CASTLING : i18n.ILLEGAL_QUEEN_SIDE_CASTLING;
 		throw new InvalidNotation(getFEN(position), notation, message);
@@ -284,10 +285,10 @@ function parseCastlingNotation(position: PositionImpl, notation: string, isKingS
  */
 function getCastlingDestinationFile(position: PositionImpl, isKingSideCastling: boolean) {
 	if (position.variant === GameVariantImpl.CHESS960) {
-		if (position.castling[position.turn] !== 0) {
+		if (position.effectiveCastling![position.turn] !== 0) {
 			const castlingKing = PieceImpl.KING * 2 + position.turn;
 			for (let file = isKingSideCastling ? 7 : 0; position.board[file + 112 * position.turn] !== castlingKing; file += isKingSideCastling ? -1 : 1) {
-				if ((position.castling[position.turn] & 1 << file) !== 0) {
+				if ((position.effectiveCastling![position.turn] & 1 << file) !== 0) {
 					return file;
 				}
 			}

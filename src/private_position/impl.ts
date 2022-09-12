@@ -74,6 +74,7 @@ export interface PositionImpl {
 	// Computed attributes
 	legal: boolean | null,
 	king: number[],
+	effectiveCastling: number[] | null,
 	effectiveEnPassant: number | null,
 }
 
@@ -133,6 +134,7 @@ export function makeEmpty(variant: number): PositionImpl {
 		variant: variant,
 		legal: variant === GameVariantImpl.NO_KING,
 		king: [ -1, -1 ],
+		effectiveCastling: [ 0, 0 ],
 		effectiveEnPassant: -1,
 	};
 }
@@ -151,6 +153,7 @@ export function makeInitial(variant: number): PositionImpl {
 		variant: variant,
 		legal: true,
 		king: info.king.slice(),
+		effectiveCastling: info.castling.slice(),
 		effectiveEnPassant: -1,
 	};
 }
@@ -182,6 +185,7 @@ export function make960FromScharnagl(scharnaglCode: number): PositionImpl {
 		variant: GameVariantImpl.CHESS960,
 		legal: true,
 		king: [ SquareImpl.A1 + info.kingFile, SquareImpl.A8 + info.kingFile ],
+		effectiveCastling: [ info.castling, info.castling ],
 		effectiveEnPassant: -1,
 	};
 }
@@ -269,6 +273,7 @@ export function makeCopy(position: PositionImpl): PositionImpl {
 		variant            : position.variant,
 		legal              : position.legal,
 		king               : position.king.slice(),
+		effectiveCastling  : position.effectiveCastling === null ? null : position.effectiveCastling.slice(),
 		effectiveEnPassant : position.effectiveEnPassant,
 	};
 }
