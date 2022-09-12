@@ -20,7 +20,7 @@
  * -------------------------------------------------------------------------- */
 
 
-const { Game, Position, pgnRead, pgnWrite } = require('../dist/lib/index');
+const { Game, Position, AbstractNode, Node, Variation, pgnRead, pgnWrite } = require('../dist/lib/index');
 const readText = require('./common/readtext');
 const resourceExists = require('./common/resourceexists');
 const dumpGame = require('./common/dumpgame');
@@ -468,7 +468,8 @@ describe('Check IDs', () => {
 		// Check the current node.
 		const nodeId = node.id();
 		const searchedNode = game.findById(nodeId);
-		test.value(searchedNode).isNotFalse();
+		test.value(searchedNode).isInstanceOf(AbstractNode);
+		test.value(searchedNode).isInstanceOf(Node);
 		test.value(searchedNode.id()).is(nodeId);
 		test.value(searchedNode.positionBefore().fen()).is(node.positionBefore().fen());
 
@@ -483,7 +484,8 @@ describe('Check IDs', () => {
 		// Check the current variation.
 		const variationId = variation.id();
 		const searchedVariation = game.findById(variationId);
-		test.value(searchedVariation).isNotFalse();
+		test.value(searchedVariation).isInstanceOf(AbstractNode);
+		test.value(searchedVariation).isInstanceOf(Variation);
 		test.value(searchedVariation.id()).is(variationId);
 		test.value(searchedVariation.initialPosition().fen()).is(variation.initialPosition().fen());
 

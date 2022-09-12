@@ -23,7 +23,7 @@
 'use strict';
 
 
-const { exception, pgnRead } = require('../dist/lib/index');
+const { exception, Database, pgnRead } = require('../dist/lib/index');
 const dumpGame = require('./common/dumpgame');
 const readCSV = require('./common/readcsv');
 const readText = require('./common/readtext');
@@ -87,7 +87,9 @@ function loadErrorItemDescriptor(pgnName, gameIndex) {
 describe('Read PGN - Game count', () => {
 	for (const elem of testData()) {
 		it('File ' + elem.label, () => {
-			test.value(pgnRead(elem.pgn).gameCount()).is(elem.gameCount);
+			const database = pgnRead(elem.pgn);
+			test.value(database).isInstanceOf(Database);
+			test.value(database.gameCount()).is(elem.gameCount);
 		});
 	}
 });

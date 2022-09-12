@@ -20,7 +20,7 @@
  * -------------------------------------------------------------------------- */
 
 
-const { exception, Position, isMoveDescriptor } = require('../dist/lib/index');
+const { exception, MoveDescriptor, Position, isMoveDescriptor } = require('../dist/lib/index');
 const test = require('unit.js');
 
 
@@ -55,6 +55,12 @@ describe('Illegal move', () => {
 });
 
 
+function testIsMoveDescriptor(descriptor) {
+	test.value(descriptor).isInstanceOf(MoveDescriptor);
+	test.value(isMoveDescriptor(descriptor)).is(true);
+}
+
+
 describe('Normal move', () => {
 
 	function itDescriptor(label, action) {
@@ -66,7 +72,7 @@ describe('Normal move', () => {
 		});
 	}
 
-	itDescriptor('Is descriptor?', descriptor => test.value(isMoveDescriptor(descriptor)).is(true));
+	itDescriptor('Is descriptor?', testIsMoveDescriptor);
 	itDescriptor('Is castling?'  , descriptor => test.value(descriptor.isCastling()).is(false));
 	itDescriptor('Is en-passant?', descriptor => test.value(descriptor.isEnPassant()).is(false));
 	itDescriptor('Is capture?'   , descriptor => test.value(descriptor.isCapture()).is(false));
@@ -99,7 +105,7 @@ describe('Normal move with capture', () => {
 		});
 	}
 
-	itDescriptor('Is descriptor?', descriptor => test.value(isMoveDescriptor(descriptor)).is(true));
+	itDescriptor('Is descriptor?', testIsMoveDescriptor);
 	itDescriptor('Is castling?'  , descriptor => test.value(descriptor.isCastling()).is(false));
 	itDescriptor('Is en-passant?', descriptor => test.value(descriptor.isEnPassant()).is(false));
 	itDescriptor('Is capture?'   , descriptor => test.value(descriptor.isCapture()).is(true));
@@ -132,7 +138,7 @@ describe('Castling move', () => {
 		});
 	}
 
-	itDescriptor('Is descriptor?', descriptor => test.value(isMoveDescriptor(descriptor)).is(true));
+	itDescriptor('Is descriptor?', testIsMoveDescriptor);
 	itDescriptor('Is castling?'  , descriptor => test.value(descriptor.isCastling()).is(true));
 	itDescriptor('Is en-passant?', descriptor => test.value(descriptor.isEnPassant()).is(false));
 	itDescriptor('Is capture?'   , descriptor => test.value(descriptor.isCapture()).is(false));
@@ -165,7 +171,7 @@ describe('En-passant move', () => {
 		});
 	}
 
-	itDescriptor('Is descriptor?', descriptor => test.value(isMoveDescriptor(descriptor)).is(true));
+	itDescriptor('Is descriptor?', testIsMoveDescriptor);
 	itDescriptor('Is castling?'  , descriptor => test.value(descriptor.isCastling()).is(false));
 	itDescriptor('Is en-passant?', descriptor => test.value(descriptor.isEnPassant()).is(true));
 	itDescriptor('Is capture?'   , descriptor => test.value(descriptor.isCapture()).is(true));
@@ -198,7 +204,7 @@ describe('Promotion move', () => {
 		});
 	}
 
-	itDescriptor('Is descriptor?', descriptor => test.value(isMoveDescriptor(descriptor)).is(true));
+	itDescriptor('Is descriptor?', testIsMoveDescriptor);
 	itDescriptor('Is castling?'  , descriptor => test.value(descriptor.isCastling()).is(false));
 	itDescriptor('Is en-passant?', descriptor => test.value(descriptor.isEnPassant()).is(false));
 	itDescriptor('Is capture?'   , descriptor => test.value(descriptor.isCapture()).is(false));
@@ -231,7 +237,7 @@ describe('Promotion move with capture', () => {
 		});
 	}
 
-	itDescriptor('Is descriptor?', descriptor => test.value(isMoveDescriptor(descriptor)).is(true));
+	itDescriptor('Is descriptor?', testIsMoveDescriptor);
 	itDescriptor('Is castling?'  , descriptor => test.value(descriptor.isCastling()).is(false));
 	itDescriptor('Is en-passant?', descriptor => test.value(descriptor.isEnPassant()).is(false));
 	itDescriptor('Is capture?'   , descriptor => test.value(descriptor.isCapture()).is(true));
