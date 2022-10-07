@@ -229,6 +229,9 @@ export function writeGame(game: Game) {
 	result += writeOptionalHeader('Variant', formatVariant(variant));
 	result += writeOptionalIntegerHeader('WhiteElo', game.playerElo('w'));
 	result += writeOptionalHeader('WhiteTitle', game.playerTitle('w'));
+	for (const [tag, value] of Object.entries(game.tags())) {
+		result += writeOptionalHeader(tag, value);
+	}
 
 	// Separator
 	result += '\n';

@@ -48,6 +48,7 @@ export class Game {
 	private _date?: DateValue;
 	private _site?: string;
 	private _annotator?: string;
+	private _tags: Record<string, string>;
 	private _result: number;
 
 	// Moves
@@ -58,6 +59,7 @@ export class Game {
 		this._playerName = [ undefined, undefined ];
 		this._playerElo = [ undefined, undefined ];
 		this._playerTitle = [ undefined, undefined ];
+		this._tags = {};
 		this._result = GameResultImpl.LINE;
 		this._moveTreeRoot = new MoveTreeRoot();
 	}
@@ -86,6 +88,24 @@ export class Game {
 		else {
 			this._playerName[colorCode] = sanitizeStringHeader(value);
 		}
+	}
+
+	/**
+   * Get or Set custom game tag
+   */
+	tag(tagName: string, value?: string): string | undefined {
+		if (value) {
+			this._tags[tagName] = String(value);
+		}
+		return this._tags?.[tagName];
+	}
+
+
+	/**
+   * Get all custom game tags
+   */
+	tags(): Record<string, string> {
+		return this._tags;
 	}
 
 
