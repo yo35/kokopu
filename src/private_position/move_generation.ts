@@ -144,6 +144,31 @@ export function isStalemate(position: PositionImpl) {
 
 
 /**
+ * Whether the given position is level and there is insufficient material on board.
+ */
+export function isInsufficientMaterial(position: PositionImpl) {
+	if (!isLegal(position) || hasMove(position)) {
+		return false;
+	}
+	if (position.variant === GameVariantImpl.ANTICHESS) {
+		return false;
+	}
+	else if (position.variant === GameVariantImpl.HORDE && position.turn === ColorImpl.WHITE) {
+		return false;
+	}
+	else {
+		const FEN_PIECE_SYMBOL = [ ...'KkQqRrBbNnPp' ];
+		const board: string[] = position.board.map((piece) => FEN_PIECE_SYMBOL[piece]);
+		const pieces: string = board.filter((piece) => piece).join(''); // string with all pieces on the board
+		const sides: [string, string] = [pieces.replace(/[a-z]/g, '').toLowerCase(), pieces.replace(/[A-Z]/g, '')]; // split per side
+		const noKings = sides.map((side) => side.replace('k', '')) as [string, string]; // dont look at kings
+		const insufficient = noKings.map((side) => side.length === 0 || side.length === 1 && (side[0][0] === 'n' || side[0][0] === 'b')) as [boolean, boolean]; // no pieces or just knight or just bishop
+		return insufficient[0] && insufficient[1]; // both sides have insufficient material
+	}
+}
+
+
+/**
  * Whether there is at least 1 possible move in the given position.
  *
  * @returns `false` if the position is not legal.
