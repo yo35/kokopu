@@ -146,10 +146,7 @@ export function isStalemate(position: PositionImpl) {
 /**
  * Whether the given position is level and there is insufficient material on board.
  */
-export function isInsufficientMaterial(position: PositionImpl) {
-	if (!isLegal(position) || hasMove(position)) {
-		return false;
-	}
+export function isInsufficientMaterial(position: PositionImpl, forcedMate?: boolean) {
 	if (position.variant === GameVariantImpl.ANTICHESS) {
 		return false;
 	}
@@ -158,12 +155,20 @@ export function isInsufficientMaterial(position: PositionImpl) {
 	}
 	else {
 		const FEN_PIECE_SYMBOL = [ ...'KkQqRrBbNnPp' ];
-		const board: string[] = position.board.map((piece) => FEN_PIECE_SYMBOL[piece]);
-		const pieces: string = board.filter((piece) => piece).join(''); // string with all pieces on the board
-		const sides: [string, string] = [pieces.replace(/[a-z]/g, '').toLowerCase(), pieces.replace(/[A-Z]/g, '')]; // split per side
-		const noKings = sides.map((side) => side.replace('k', '')) as [string, string]; // dont look at kings
-		const insufficient = noKings.map((side) => side.length === 0 || side.length === 1 && (side[0][0] === 'n' || side[0][0] === 'b')) as [boolean, boolean]; // no pieces or just knight or just bishop
-		return insufficient[0] && insufficient[1]; // both sides have insufficient material
+		const DEF_INSUFFICIENT_FIDE = ['kk', 'kkn', 'kbk', 'knkn']; // no possible mate
+		const DEF_INSUFFICIENT_USCF = ['bkbk', 'bkkn']; // no possible forced mate
+		const board: string[] = position.board.map((piece) => FEN_PIECE_SYMBOL[piece]); // board with all pieces
+		const [w, b] = [
+			board.filter((piece) => piece && piece.match('[A-Z]')).sort((s0, s1) => (s0 > s1 ? 1 : -1)).join('').toLowerCase(), // string with all white pieces on the board sorted alphabetically
+			board.filter((piece) => piece && piece.match('[a-z]')).sort((s0, s1) => (s0 > s1 ? 1 : -1)).join(''), // string with all black pieces on the board sorted alphabetically
+		];
+		if (DEF_INSUFFICIENT_FIDE.includes(w + b) || DEF_INSUFFICIENT_FIDE.includes(b + w)) {
+			return true;
+		}
+		if (forcedMate && (DEF_INSUFFICIENT_USCF.includes(w + b) || DEF_INSUFFICIENT_USCF.includes(b + w))) {
+			return true;
+		}
+		return false;
 	}
 }
 

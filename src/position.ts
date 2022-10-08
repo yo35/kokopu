@@ -665,11 +665,14 @@ export class Position {
 	/**
 	 * Whether both players have insufficient material so the game cannot end in checkmate. If the position is not legal (see {@link Position.isLegal}),
 	 * the returned value is always `false`.
+   *
+   * If `forcedMate` is not set or set to `false`, method uses **FIDE** rules where position is evaluated to return no possible checkmates
+   * If `forcedMate` is set to `true`, method uses **USCF** rules where position is evaluated to return no possible *forced* checkmates
 	 *
 	 * For antichess and horde chess, this method always returns `false`
 	 */
-	isInsufficientMaterial(): boolean {
-		return isInsufficientMaterial(this._impl);
+	isInsufficientMaterial(forcedMate?: boolean): boolean {
+		return isInsufficientMaterial(this._impl, forcedMate);
 	}
 
 
