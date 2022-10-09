@@ -218,13 +218,13 @@ export function writeGame(game: Game, options: PGNWriteOptions) {
 	let result = '';
 
 	// Mandatory tags
-	result += '[Event "' + formatNullableHeader(game.event()) + '"]\n';
-	result += '[Site "' + formatNullableHeader(game.site()) + '"]\n';
-	result += '[Date "' + formatDateHeader(game.date()) + '"]\n';
-	result += '[Round "' + formatNullableHeader(game.round()) + '"]\n';
-	result += '[White "' + formatNullableHeader(game.playerName('w')) + '"]\n';
-	result += '[Black "' + formatNullableHeader(game.playerName('b')) + '"]\n';
-	result += '[Result "' + game.result() + '"]\n';
+	result += `[Event "${formatNullableHeader(game.event())}"]\n`;
+	result += `[Site "${formatNullableHeader(game.site())}"]\n`;
+	result += `[Date "${formatDateHeader(game.date())}"]\n`;
+	result += `[Round "${formatNullableHeader(game.round())}"]\n`;
+	result += `[White "${formatNullableHeader(game.playerName('w'))}"]\n`;
+	result += `[Black "${formatNullableHeader(game.playerName('b'))}"]\n`;
+	result += `[Result "${game.result()}"]\n`;
 
 	const variant = game.variant();
 	const initialPosition = game.initialPosition();
@@ -236,7 +236,7 @@ export function writeGame(game: Game, options: PGNWriteOptions) {
 	result += writeOptionalHeader('BlackTitle', game.playerTitle('b'));
 	result += writeOptionalHeader('ECO', game.eco());
 	if (hasFENHeader) {
-		result += '[FEN "' + initialPosition.fen({ fullMoveNumber: game.mainVariation().initialFullMoveNumber(), regularFENIfPossible: true }) + '"]\n';
+		result += `[FEN "${initialPosition.fen({ fullMoveNumber: game.mainVariation().initialFullMoveNumber(), regularFENIfPossible: true })}"]\n`;
 	}
 	result += writeOptionalHeader('Opening', game.opening());
 	if (options.withPlyCount) {

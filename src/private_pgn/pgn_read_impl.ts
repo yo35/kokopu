@@ -57,19 +57,18 @@ function parseDateHeader(value: string): DateValue | undefined {
 		const year = parseInt(y, 10);
 		const month = parseInt(m, 10);
 		const day = parseInt(d, 10);
-		return DateValue.isValid(year, month, day) ? new DateValue(year, month, day) : DateValue.isValid(year, month) ? new DateValue(year, month) :
-			DateValue.isValid(year) ? new DateValue(year) : undefined;
+		return DateValue.isValid(year, month, day) ? new DateValue(year, month, day) : DateValue.isValid(year, month) ? new DateValue(year, month) : new DateValue(year);
 	}
 	else if (/^([0-9]{4})\.([0-9]{2})\.\?\?$/.test(value)) {
 		const y = RegExp.$1;
 		const m = RegExp.$2;
 		const year = parseInt(y, 10);
 		const month = parseInt(m, 10);
-		return DateValue.isValid(year, month) ? new DateValue(year, month) : DateValue.isValid(year) ? new DateValue(year) : undefined;
+		return DateValue.isValid(year, month) ? new DateValue(year, month) : new DateValue(year);
 	}
 	else if (/^([0-9]{4})(?:\.\?\?\.\?\?)?$/.test(value)) {
 		const year = parseInt(RegExp.$1, 10);
-		return DateValue.isValid(year) ? new DateValue(year) : undefined;
+		return new DateValue(year);
 	}
 	else {
 		return undefined;
