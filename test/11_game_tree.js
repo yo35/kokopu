@@ -588,7 +588,8 @@ describe('Game nodes', () => {
 
 	function itGameNodes(filename, withSubVariations, factory) {
 		it(filename + (withSubVariations ? ' (with sub-variations)' : ' (main variation only)'), () => {
-			const expectedText = readText(`games/${filename}/${withSubVariations ? 'all-nodes' : 'main-nodes'}.txt`).trim();
+			const resource = `games/${filename}/${withSubVariations ? 'all-nodes' : 'main-nodes'}.txt`;
+			const expectedText = resourceExists(resource) ? readText(resource).trim() : '';
 			const game = factory();
 			const text = game.nodes(withSubVariations).map(node => `[${node.id()}] ${node.notation()}`).join('\n');
 			test.value(text).is(expectedText);
