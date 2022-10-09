@@ -104,6 +104,23 @@ describe('Result header', () => {
 });
 
 
+describe('ECO header', () => {
+
+	function itInvalidValue(label, value) {
+		it(label, () => {
+			const game = new Game();
+			test.exception(() => game.eco(value)).isInstanceOf(exception.IllegalArgument);
+		});
+	}
+
+	itInvalidValue('Set dummy value', 'dummy');
+	itInvalidValue('Set empty string', '');
+	itInvalidValue('Set out-of-range code', 'F00');
+	itInvalidValue('Set untrimmed code 1', ' A18');
+	itInvalidValue('Set untrimmed code 2', 'A18 ');
+});
+
+
 describe('Color-dependant header', () => {
 
 	function itInvalidColor(label, action) {

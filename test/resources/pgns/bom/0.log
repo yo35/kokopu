@@ -5,6 +5,7 @@ Round = {1}
 Site = {Nice}
 Date = {1974-06-15}
 Annotator = {Hannes Langrock}
+ECO = {B21}
 [start]                 -+<LONG
 [1w]                    (1w) e4
 [1b]                    (1b) c5

@@ -4,6 +4,7 @@ Event = {1<sup>st</sup> American Chess Congress}
 Round = {4.6}
 Site = {New York, NY USA}
 Date = {1857-11-03}
+ECO = {C48}
 [start]                 -+<LONG
 [1w]                    (1w) e4
 [1b]                    (1b) e5

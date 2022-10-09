@@ -25,7 +25,7 @@ import { Database } from '../database';
 import { DateValue } from '../date_value';
 import { InvalidFEN, InvalidNotation, InvalidPGN } from '../exception';
 import { Game } from '../game';
-import { variantWithCanonicalStartPosition } from '../helper';
+import { isValidECO, variantWithCanonicalStartPosition } from '../helper';
 import { i18n } from '../i18n';
 import { Node, Variation } from '../node_variation';
 import { Position } from '../position';
@@ -74,6 +74,11 @@ function parseDateHeader(value: string): DateValue | undefined {
 	else {
 		return undefined;
 	}
+}
+
+
+function parseECOHeader(value: string): string | undefined {
+	return isValidECO(value) ? value : undefined;
 }
 
 
@@ -130,6 +135,7 @@ function processHeader(stream: TokenStream, game: Game, factory: InitialPosition
 		case 'Date': game.date(parseDateHeader(value)); break;
 		case 'Site': game.site(parseNullableHeader(value)); break;
 		case 'Annotator': game.annotator(value); break;
+		case 'ECO': game.eco(parseECOHeader(value)); break;
 
 		// The header 'FEN' has a special meaning, in that it is used to define a custom
 		// initial position, that may be different from the usual one.

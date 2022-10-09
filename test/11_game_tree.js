@@ -60,6 +60,7 @@ const oneGamefactories = {
 		const game = new Game();
 		game.annotator(' The   Annotator ');
 		game.date(2021, 9, 4);
+		game.eco('D42');
 		game.event('An event name\nspanning several lines');
 		game.playerElo('w', 1942);
 		game.playerElo('b', 2421);

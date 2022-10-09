@@ -9,5 +9,6 @@ Round = {1}
 Site = {Somewhere...}
 Date = {2021-09-04}
 Annotator = {The Annotator}
+ECO = {D42}
 [start]                 -+<LONG
 {Black wins}{0 plies}

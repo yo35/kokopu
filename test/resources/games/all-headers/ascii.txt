@@ -4,4 +4,5 @@ Date: September 4, 2021
 White: Light side (CM 1942)
 Black: Dark side (IM 2421)
 Annotator: The Annotator
+ECO: D42
 0-1

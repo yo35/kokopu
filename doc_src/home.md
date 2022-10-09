@@ -139,6 +139,11 @@ References
 - [Chess Programming wiki](https://www.chessprogramming.org/Portable_Game_Notation)
 - [Format specification](https://ia802908.us.archive.org/26/items/pgn-standard-1994-03-12/PGN_standard_1994-03-12.txt)
 
+### Encyclopaedia of Chess Openings codes (ECO)
+
+- [Wikipedia page](https://en.wikipedia.org/wiki/List_of_chess_openings)
+- [Chess Programming wiki](https://www.chessprogramming.org/ECO)
+
 ### Chess variants
 
 - [Chess960](https://en.wikipedia.org/wiki/Chess960)

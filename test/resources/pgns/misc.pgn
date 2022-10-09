@@ -28,6 +28,7 @@
 [White "Paulsen, Louis"]
 [Black "Morphy, Paul"]
 [Result "0-1"]
+[ECO "C48"]
 
 1. e4 e5 2. Nf3 Nc6 3. Nc3 Nf6 4. Bb5 Bc5 5. O-O O-O 6. Nxe5 Re8 7. Nxc6 dxc6
 8. Bc4 b5 9. Be2 Nxe4 10. Nxe4 Rxe4 11. Bf3 Re6 12. c3 Qd3 13. b4 Bb6 14. a4 bxa4

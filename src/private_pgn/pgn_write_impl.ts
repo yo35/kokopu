@@ -234,6 +234,7 @@ export function writeGame(game: Game, options: PGNWriteOptions) {
 	result += writeOptionalHeader('Annotator', game.annotator());
 	result += writeOptionalIntegerHeader('BlackElo', game.playerElo('b'));
 	result += writeOptionalHeader('BlackTitle', game.playerTitle('b'));
+	result += writeOptionalHeader('ECO', game.eco());
 	if (hasFENHeader) {
 		result += '[FEN "' + initialPosition.fen({ fullMoveNumber: game.mainVariation().initialFullMoveNumber(), regularFENIfPossible: true }) + '"]\n';
 	}

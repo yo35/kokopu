@@ -5,6 +5,7 @@ BlackElo = {2878}
 Event = {GM Blitz Battle Chp - Chess960}
 Site = {Chess.com}
 Date = {2016-08-23}
+ECO = {A00}
 Variant = {chess960}
 +---+---+---+---+---+---+---+---+
 | r | n | n | k | r | b | b | q |

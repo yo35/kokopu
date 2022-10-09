@@ -144,6 +144,7 @@ module.exports = function(game) {
 	dumpHeader('Site', game.site());
 	dumpHeader('Date', game.date());
 	dumpHeader('Annotator', game.annotator());
+	dumpHeader('ECO', game.eco());
 	dumpVariant(game.variant());
 	dumpInitialPosition(game.initialPosition());
 	dumpVariation(game.mainVariation(), '', '');

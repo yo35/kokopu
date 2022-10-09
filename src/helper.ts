@@ -150,3 +150,11 @@ export function nagSymbol(nag: number): string {
 	const result = NAG_SYMBOLS.get(nag);
 	return result === undefined ? '$' + nag : result;
 }
+
+
+/**
+ * Whether the given string represents a valid [ECO code](https://en.wikipedia.org/wiki/List_of_chess_openings) or not.
+ */
+export function isValidECO(eco: string): boolean {
+	return /^[A-E][0-9][0-9]$/.test(eco);
+}

@@ -23,7 +23,7 @@
 import { Color, GameResult, GameVariant } from './base_types';
 import { DateValue } from './date_value';
 import { IllegalArgument } from './exception';
-import { nagSymbol, variantWithCanonicalStartPosition } from './helper';
+import { isValidECO, nagSymbol, variantWithCanonicalStartPosition } from './helper';
 import { AbstractNode, Node, Variation } from './node_variation';
 import { Position } from './position';
 
@@ -48,6 +48,7 @@ export class Game {
 	private _date?: DateValue;
 	private _site?: string;
 	private _annotator?: string;
+	private _eco?: string;
 	private _result: number;
 
 	// Moves
@@ -316,6 +317,32 @@ export class Game {
 
 
 	/**
+	 * Get the [ECO code](https://en.wikipedia.org/wiki/List_of_chess_openings).
+	 */
+	eco(): string | undefined;
+
+	/**
+	 * Set the [ECO code](https://en.wikipedia.org/wiki/List_of_chess_openings).
+	 *
+	 * @param value - If `undefined`, the existing value (if any) is erased. Must be a valid ECO code (from `'A00'` to `'E99'`).
+	 */
+	eco(value: string | undefined): void;
+
+	eco(value?: string | undefined) {
+		if (arguments.length === 0) {
+			return this._eco;
+		}
+		else {
+			value = sanitizeStringHeader(value);
+			if (value !== undefined && !isValidECO(value)) {
+				throw new IllegalArgument('Game.eco()');
+			}
+			this._eco = value;
+		}
+	}
+
+
+	/**
 	 * Get the result of the game.
 	 */
 	result(): GameResult;
@@ -449,10 +476,11 @@ export class Game {
 		// Headers
 		pushIfDefined(formatEventAndRound(this._event, this._round));
 		pushIfDefined(formatSimpleHeader('Site', this._site));
-		pushIfDefined(formatDate(this.dateAsString('en-us')));
+		pushIfDefined(formatSimpleHeader('Date', this.dateAsString('en-us')));
 		pushIfDefined(formatPlayer('White', this._playerName[ColorImpl.WHITE], this._playerElo[ColorImpl.WHITE], this._playerTitle[ColorImpl.WHITE]));
 		pushIfDefined(formatPlayer('Black', this._playerName[ColorImpl.BLACK], this._playerElo[ColorImpl.BLACK], this._playerTitle[ColorImpl.BLACK]));
 		pushIfDefined(formatSimpleHeader('Annotator', this._annotator));
+		pushIfDefined(formatSimpleHeader('ECO', this._eco));
 
 		// Variant & initial position
 		const variant = this._moveTreeRoot._position.variant();
@@ -550,11 +578,6 @@ function formatEventAndRound(event: string | undefined, round: string | undefine
 		result += ` (${trimCollapseAndMarkEmpty(round)})`;
 	}
 	return result;
-}
-
-
-function formatDate(dateAsString: string | undefined) {
-	return dateAsString === undefined ? undefined : 'Date: ' + dateAsString;
 }
 
 
