@@ -15,5 +15,9 @@ Site = {Somewhere...}
 Date = {2021-09-04}
 Annotator = { The   Annotator }
 ECO = {D42}
+Opening = {Sicilian Defense}
+OpeningVariation = {Dragon}
+OpeningSubVariation = {Yugoslav Attack}
+Termination = {adjudication}
 [start]                 -+<LONG
 {Black wins}{0 plies}

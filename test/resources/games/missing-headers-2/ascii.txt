@@ -2,4 +2,5 @@ Event: <undefined> (3)
 Date: November 1955
 White: <undefined> (FM 2299)
 Black: Mister No-Name
+Opening: TheOpening (<undefined>, TheSubVariation)
 *

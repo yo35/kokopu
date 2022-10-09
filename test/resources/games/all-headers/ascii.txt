@@ -5,4 +5,6 @@ White: Light side (CM 1942)
 Black: Dark side (IM 2421)
 Annotator: The Annotator
 ECO: D42
+Opening: Sicilian Defense (Dragon, Yugoslav Attack)
+Termination: adjudication
 0-1

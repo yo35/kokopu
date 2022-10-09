@@ -49,6 +49,10 @@ export class Game {
 	private _site?: string;
 	private _annotator?: string;
 	private _eco?: string;
+	private _opening?: string;
+	private _openingVariation?: string;
+	private _openingSubVariation?: string;
+	private _termination?: string;
 	private _result: number;
 
 	// Moves
@@ -343,6 +347,103 @@ export class Game {
 
 
 	/**
+	 * Get the name of the opening.
+	 */
+	opening(): string | undefined;
+
+	/**
+	 * Set the name of the opening.
+	 *
+	 * @param value - If `undefined`, the existing value (if any) is erased.
+	 */
+	opening(value: string | undefined): void;
+
+	opening(value?: string | undefined) {
+		if (arguments.length === 0) {
+			return this._opening;
+		}
+		else {
+			this._opening = sanitizeStringHeader(value);
+		}
+	}
+
+
+	/**
+	 * Get the name of the opening variation.
+	 */
+	openingVariation(): string | undefined;
+
+	/**
+	 * Set the name of the opening variation.
+	 *
+	 * @param value - If `undefined`, the existing value (if any) is erased.
+	 */
+	openingVariation(value: string | undefined): void;
+
+	openingVariation(value?: string | undefined) {
+		if (arguments.length === 0) {
+			return this._openingVariation;
+		}
+		else {
+			this._openingVariation = sanitizeStringHeader(value);
+		}
+	}
+
+
+	/**
+	 * Get the name of the opening sub-variation.
+	 */
+	openingSubVariation(): string | undefined;
+
+	/**
+	 * Set the name of the opening sub-variation.
+	 *
+	 * @param value - If `undefined`, the existing value (if any) is erased.
+	 */
+	openingSubVariation(value: string | undefined): void;
+
+	openingSubVariation(value?: string | undefined) {
+		if (arguments.length === 0) {
+			return this._openingSubVariation;
+		}
+		else {
+			this._openingSubVariation = sanitizeStringHeader(value);
+		}
+	}
+
+
+	/**
+	 * Get the reason of the conclusion of the game. Examples of possible values:
+	 *
+	 * - `'normal'`: game terminated in a normal fashion,
+	 * - `'time forfeit'`: loss due to losing player's failure to meet time control requirements,
+	 * - `'adjudication'`: result due to third party adjudication process,
+	 * - `'death'`: losing player called to greater things, one hopes,
+	 * - `'emergency'`: game concluded due to unforeseen circumstances,
+	 * - etc...
+	 *
+	 * This list is not exhaustive and any string is valid value for this field.
+	 */
+	termination(): string | undefined;
+
+	/**
+	 * Set the name of the opening sub-variation.
+	 *
+	 * @param value - If `undefined`, the existing value (if any) is erased.
+	 */
+	termination(value: string | undefined): void;
+
+	termination(value?: string | undefined) {
+		if (arguments.length === 0) {
+			return this._termination;
+		}
+		else {
+			this._termination = sanitizeStringHeader(value);
+		}
+	}
+
+
+	/**
 	 * Get the result of the game.
 	 */
 	result(): GameResult;
@@ -481,6 +582,8 @@ export class Game {
 		pushIfDefined(formatPlayer('Black', this._playerName[ColorImpl.BLACK], this._playerElo[ColorImpl.BLACK], this._playerTitle[ColorImpl.BLACK]));
 		pushIfDefined(formatSimpleHeader('Annotator', this._annotator));
 		pushIfDefined(formatSimpleHeader('ECO', this._eco));
+		pushIfDefined(formatOpening(this._opening, this._openingVariation, this._openingSubVariation));
+		pushIfDefined(formatSimpleHeader('Termination', this._termination));
 
 		// Variant & initial position
 		const variant = this._moveTreeRoot._position.variant();
@@ -594,6 +697,21 @@ function formatPlayer(key: string, playerName: string | undefined, playerElo: nu
 	}
 	else if (playerTitle !== undefined) {
 		result +=  ` (${trimCollapseAndMarkEmpty(playerTitle)})`;
+	}
+	return result;
+}
+
+
+function formatOpening(opening: string | undefined, openingVariation: string | undefined, openingSubVariation: string | undefined) {
+	if (opening === undefined && openingVariation === undefined && openingSubVariation === undefined) {
+		return undefined;
+	}
+	let result = opening === undefined ? 'Opening: <undefined>' : `Opening: ${trimCollapseAndMarkEmpty(opening)}`;
+	if (openingSubVariation !== undefined) {
+		result += ` (${openingVariation === undefined ? '<undefined>' : trimCollapseAndMarkEmpty(openingVariation)}, ${trimCollapseAndMarkEmpty(openingSubVariation)})`;
+	}
+	else if (openingVariation !== undefined) {
+		result += ` (${trimCollapseAndMarkEmpty(openingVariation)})`;
 	}
 	return result;
 }

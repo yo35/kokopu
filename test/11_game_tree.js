@@ -70,6 +70,10 @@ const oneGamefactories = {
 		game.playerTitle('b', 'IM');
 		game.round(1);
 		game.site('Somewhere...');
+		game.opening('Sicilian Defense');
+		game.openingVariation('Dragon');
+		game.openingSubVariation('Yugoslav Attack');
+		game.termination('adjudication');
 		game.result('0-1');
 		return game;
 	},
@@ -81,6 +85,7 @@ const oneGamefactories = {
 		game.playerName('w', 'John Doe');
 		game.playerTitle('b', 'GM');
 		game.round('3');
+		game.openingVariation('TheVariation');
 		game.result('1/2-1/2');
 		return game;
 	},
@@ -92,7 +97,15 @@ const oneGamefactories = {
 		game.playerElo('w', '2299');
 		game.playerTitle('w', 'FM');
 		game.playerName('b', 'Mister No-Name');
+		game.opening('TheOpening');
+		game.openingSubVariation('TheSubVariation');
 		game.result('*');
+		return game;
+	},
+
+	'missing-headers-3': () => {
+		const game = new Game();
+		game.opening('TheOpening');
 		return game;
 	},
 

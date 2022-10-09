@@ -3,5 +3,7 @@ WhiteTitle = {FM}
 Black = {Mister No-Name}
 Round = {3}
 Date = {1955-11-**}
+Opening = {TheOpening}
+OpeningSubVariation = {TheSubVariation}
 [start]                 -+<LONG
 {Line}{0 plies}

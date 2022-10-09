@@ -145,6 +145,10 @@ module.exports = function(game) {
 	dumpHeader('Date', game.date());
 	dumpHeader('Annotator', game.annotator());
 	dumpHeader('ECO', game.eco());
+	dumpHeader('Opening', game.opening());
+	dumpHeader('OpeningVariation', game.openingVariation());
+	dumpHeader('OpeningSubVariation', game.openingSubVariation());
+	dumpHeader('Termination', game.termination());
 	dumpVariant(game.variant());
 	dumpInitialPosition(game.initialPosition());
 	dumpVariation(game.mainVariation(), '', '');

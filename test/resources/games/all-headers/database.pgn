@@ -9,6 +9,10 @@
 [BlackElo "2421"]
 [BlackTitle "IM"]
 [ECO "D42"]
+[Opening "Sicilian Defense"]
+[SubVariation "Yugoslav Attack"]
+[Termination "adjudication"]
+[Variation "Dragon"]
 [WhiteElo "1942"]
 [WhiteTitle "CM"]
 

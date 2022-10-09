@@ -2,4 +2,5 @@ Event: <undefined> (3)
 Date: 1998
 White: John Doe (2345)
 Black: <undefined> (GM)
+Opening: <undefined> (TheVariation)
 1/2-1/2

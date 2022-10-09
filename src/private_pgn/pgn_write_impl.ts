@@ -238,13 +238,17 @@ export function writeGame(game: Game, options: PGNWriteOptions) {
 	if (hasFENHeader) {
 		result += '[FEN "' + initialPosition.fen({ fullMoveNumber: game.mainVariation().initialFullMoveNumber(), regularFENIfPossible: true }) + '"]\n';
 	}
+	result += writeOptionalHeader('Opening', game.opening());
 	if (options.withPlyCount) {
 		result += `[PlyCount "${game.plyCount()}"]\n`;
 	}
 	if (hasFENHeader) {
 		result += '[SetUp "1"]\n';
 	}
+	result += writeOptionalHeader('SubVariation', game.openingSubVariation());
+	result += writeOptionalHeader('Termination', game.termination());
 	result += writeOptionalHeader('Variant', formatVariant(variant));
+	result += writeOptionalHeader('Variation', game.openingVariation());
 	result += writeOptionalIntegerHeader('WhiteElo', game.playerElo('w'));
 	result += writeOptionalHeader('WhiteTitle', game.playerTitle('w'));
 

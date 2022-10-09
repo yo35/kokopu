@@ -136,6 +136,10 @@ function processHeader(stream: TokenStream, game: Game, factory: InitialPosition
 		case 'Site': game.site(parseNullableHeader(value)); break;
 		case 'Annotator': game.annotator(value); break;
 		case 'ECO': game.eco(parseECOHeader(value)); break;
+		case 'Opening': game.opening(value); break;
+		case 'Variation': game.openingVariation(value); break;
+		case 'SubVariation': game.openingSubVariation(value); break;
+		case 'Termination': game.termination(value); break;
 
 		// The header 'FEN' has a special meaning, in that it is used to define a custom
 		// initial position, that may be different from the usual one.
