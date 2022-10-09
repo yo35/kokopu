@@ -144,6 +144,36 @@ export function isStalemate(position: PositionImpl) {
 
 
 /**
+ * Whether the given position is level and there is insufficient material on board.
+ */
+export function isInsufficientMaterial(position: PositionImpl, forcedMate?: boolean) {
+	if (position.variant === GameVariantImpl.ANTICHESS) {
+		return false;
+	}
+	else if (position.variant === GameVariantImpl.HORDE && position.turn === ColorImpl.WHITE) {
+		return false;
+	}
+	else {
+		const FEN_PIECE_SYMBOL = [ ...'KkQqRrBbNnPp' ];
+		const DEF_INSUFFICIENT_FIDE = ['kk', 'kkn', 'kbk', 'knkn']; // no possible mate
+		const DEF_INSUFFICIENT_USCF = ['bkbk', 'bkkn']; // no possible forced mate
+		const board: string[] = position.board.map((piece) => FEN_PIECE_SYMBOL[piece]); // board with all pieces
+		const [w, b] = [
+			board.filter((piece) => piece && piece.match('[A-Z]')).sort((s0, s1) => (s0 > s1 ? 1 : -1)).join('').toLowerCase(), // string with all white pieces on the board sorted alphabetically
+			board.filter((piece) => piece && piece.match('[a-z]')).sort((s0, s1) => (s0 > s1 ? 1 : -1)).join(''), // string with all black pieces on the board sorted alphabetically
+		];
+		if (DEF_INSUFFICIENT_FIDE.includes(w + b) || DEF_INSUFFICIENT_FIDE.includes(b + w)) {
+			return true;
+		}
+		if (forcedMate && (DEF_INSUFFICIENT_USCF.includes(w + b) || DEF_INSUFFICIENT_USCF.includes(b + w))) {
+			return true;
+		}
+		return false;
+	}
+}
+
+
+/**
  * Whether there is at least 1 possible move in the given position.
  *
  * @returns `false` if the position is not legal.
