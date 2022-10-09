@@ -290,6 +290,11 @@ export abstract class Variation extends AbstractNode {
 	abstract nodes(): Node[];
 
 	/**
+	 * Number of half-moves in the current variation.
+	 */
+	abstract plyCount(): number;
+
+	/**
 	 * Whether the current variation is considered as a "long" variation, i.e. a variation that should be displayed in an isolated block.
 	 */
 	abstract isLongVariation(): boolean;

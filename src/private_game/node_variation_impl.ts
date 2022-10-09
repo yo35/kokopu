@@ -645,6 +645,16 @@ class VariationImpl extends Variation {
 		return result;
 	}
 
+	plyCount() {
+		let result = 0;
+		let currentNodeData = this._data.child;
+		while (currentNodeData !== undefined) {
+			++result;
+			currentNodeData = currentNodeData.child;
+		}
+		return result;
+	}
+
 	isLongVariation() {
 		return isLongVariation(this._data);
 	}

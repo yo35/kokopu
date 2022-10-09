@@ -20,4 +20,4 @@ Variant = {white-king-only}
 b - - (white-king-only)
 [start]                 -+<LONG
 [1b]                    (1b) Ra1#
-{Black wins}
+{Black wins}{1 plies}

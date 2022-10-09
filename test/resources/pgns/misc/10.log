@@ -3,4 +3,4 @@ Event = {Game with linebreaks in comments}
 [1w]                    (1w) e4 [clk = {01:56:25}]
 [1b]                    (1b) e5 {I am comment\ with a degenerated backslash followed by a linebreak}
 [2w]                    (2w) d4 {I am comment with a linebreak}
-{Line}
+{Line}{3 plies}

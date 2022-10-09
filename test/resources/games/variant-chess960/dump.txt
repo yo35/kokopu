@@ -20,4 +20,4 @@ Variant = {chess960}
 w AGag - (chess960)
 [start]                 -+<LONG
 [1w]                    (1w) O-O
-{Line}
+{Line}{1 plies}

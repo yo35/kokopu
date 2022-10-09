@@ -29,4 +29,4 @@ w - -
 [64w]                   (64w) Kc5
 [64b]                   (64b) Kc8
 [65w]                   (65w) Kb6 $18
-{White wins}
+{White wins}{11 plies}

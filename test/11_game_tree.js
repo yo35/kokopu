@@ -648,6 +648,22 @@ describe('Write PGN', () => {
 });
 
 
+describe('Write PGN with options', () => {
+
+	function itCheckOptions(filename, options) {
+		it(filename, () => {
+			const expectedText = readText(`games/${filename}/database-options.pgn`);
+			const factory = oneGamefactories[filename];
+			const game = factory();
+			test.value(pgnWrite(game, options)).is(expectedText);
+		});
+	}
+
+	itCheckOptions('base', { withPlyCount: true });
+	itCheckOptions('custom-initial-position-1', { withPlyCount: true });
+});
+
+
 describe('Read PGN', () => {
 
 	function itReadPgn(filename) {

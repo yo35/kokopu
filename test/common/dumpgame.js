@@ -38,7 +38,7 @@ module.exports = function(game) {
 		}
 	}
 
-	function dumpResult(result) {
+	function dumpResultAndPlyCount(result, plyCount) {
 		res += '{';
 		switch (result) {
 			case '1-0': res += 'White wins'; break;
@@ -47,7 +47,7 @@ module.exports = function(game) {
 			case '*': res += 'Line'; break;
 			default: break;
 		}
-		res += '}\n';
+		res += `}{${plyCount} plies}\n`;
 	}
 
 	function dumpVariant(variant) {
@@ -147,7 +147,7 @@ module.exports = function(game) {
 	dumpVariant(game.variant());
 	dumpInitialPosition(game.initialPosition());
 	dumpVariation(game.mainVariation(), '', '');
-	dumpResult(game.result());
+	dumpResultAndPlyCount(game.result(), game.plyCount());
 
 	return res;
 };

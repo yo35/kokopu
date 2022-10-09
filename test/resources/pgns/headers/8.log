@@ -2,4 +2,4 @@ White = {Player 1}
 Black = {Player 2}
 Event = {Full inline PGN}
 [start]                 -+<LONG
-{Line}
+{Line}{0 plies}

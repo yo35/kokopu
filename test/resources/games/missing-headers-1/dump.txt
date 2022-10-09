@@ -4,4 +4,4 @@ BlackTitle = {GM}
 Round = {3}
 Date = {1998-**-**}
 [start]                 -+<LONG
-{Draw}
+{Draw}{0 plies}

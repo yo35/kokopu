@@ -19,4 +19,4 @@ Variant = {antichess}
 +---+---+---+---+---+---+---+---+
 w - - (antichess)
 [start]                 -+<LONG
-{Line}
+{Line}{0 plies}

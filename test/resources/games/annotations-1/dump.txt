@@ -11,4 +11,4 @@ Event = {Game with annotations 1}
 [3b-v0-3b]               |  (3b) Nf6
                          |
 [4w]                    (4w) Qf3
-{Line}
+{Line}{7 plies}

@@ -1,0 +1,6 @@
+Event = {Invalid PlyCount}
+[start]                 -+<LONG
+[1w]                    (1w) e4
+[1b]                    (1b) e5
+[2w]                    (2w) Nf3
+{Line}{3 plies}

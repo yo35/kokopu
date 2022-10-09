@@ -19,4 +19,4 @@ Variant = {chess960}
 +---+---+---+---+---+---+---+---+
 w ADad - (chess960)
 [start]                 -+<LONG
-{Line}
+{Line}{0 plies}

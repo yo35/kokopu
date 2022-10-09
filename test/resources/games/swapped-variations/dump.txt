@@ -25,4 +25,4 @@ Event = {Game with swapped variations.}
 [1b-v6-1b]               |  (1b) a5
                          |
 [2w]                    (2w) Nf3
-{Line}
+{Line}{3 plies}

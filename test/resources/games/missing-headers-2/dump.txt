@@ -4,4 +4,4 @@ Black = {Mister No-Name}
 Round = {3}
 Date = {1955-11-**}
 [start]                 -+<LONG
-{Line}
+{Line}{0 plies}

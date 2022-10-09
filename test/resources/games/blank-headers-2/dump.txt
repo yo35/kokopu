@@ -2,4 +2,4 @@ Event = { }
 Round = { }
 Annotator = { }
 [start]                 -+<LONG { }
-{Line}
+{Line}{0 plies}

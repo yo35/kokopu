@@ -19,4 +19,4 @@ Variant = {horde}
 +---+---+---+---+---+---+---+---+
 w kq - (horde)
 [start]                 -+<LONG
-{Line}
+{Line}{0 plies}

@@ -13,4 +13,4 @@ Event = {Game with long & short comments and variations 3.}
 [2w-v1-start]            +---+
                          |
 [2b]                    (2b) Nc6
-{Line}
+{Line}{4 plies}

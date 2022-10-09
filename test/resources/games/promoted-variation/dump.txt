@@ -22,4 +22,4 @@ Event = {Game with promoted variation.}
                          |
 [2w]                    (2w) exd5
 [2b]                    (2b) Qxd5 {Used to be the variation at index 1}
-{Line}
+{Line}{4 plies}

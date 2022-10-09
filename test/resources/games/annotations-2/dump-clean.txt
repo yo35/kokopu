@@ -14,4 +14,4 @@ Event = {Game with annotations 2}
 [6b]                    (6b) Bb4+
 [7w]                    (7w) Nc3
 [7b]                    (7b) O-O [TheFirstTag = {abc}]
-{Line}
+{Line}{14 plies}

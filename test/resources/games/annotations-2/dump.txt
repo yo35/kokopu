@@ -23,4 +23,4 @@ Event = {Game with annotations 2}
 [7w-v0-start]            +---+ { }
                          |
 [7b]                    (7b) O-O [TheFirstTag = {a[b]c}] [TheOtherTag = { }]
-{Line}
+{Line}{14 plies}

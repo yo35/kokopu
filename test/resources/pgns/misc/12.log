@@ -19,4 +19,4 @@ Event = {Game with '0' move number}
 w - -
 [start]                 -+<LONG
 [0w]                    (0w) Rha7 $2
-{Black wins}
+{Black wins}{1 plies}

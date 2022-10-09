@@ -22,4 +22,4 @@ Event = {Game with long/short comment descriptors}
 [4w-v0-4b]               |  (4b) b5 {Empty line before comment => LONG.}<LONG
                          |
 [4b]                    (4b) dxc6
-{Draw}
+{Draw}{8 plies}

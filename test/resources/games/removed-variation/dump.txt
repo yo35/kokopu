@@ -13,4 +13,4 @@ Event = {Game with removed variation.}
 [1b-v2-1b]               |  (1b) e6
                          |
 [2w]                    (2w) Nf3
-{Line}
+{Line}{3 plies}

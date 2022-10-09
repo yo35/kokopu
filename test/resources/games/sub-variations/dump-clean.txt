@@ -33,4 +33,4 @@ Event = {Game with variations and sub-variations}
 [3w-v0-4w-v0-4b]         |   |  (4b) dxc6
                          |   |
                          |
-{Line}
+{Line}{5 plies}

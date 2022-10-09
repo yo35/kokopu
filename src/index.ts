@@ -33,4 +33,5 @@ export { AbstractNode, Node, Variation } from './node_variation';
 export { Game } from './game';
 export { Database } from './database';
 
+export { PGNWriteOptions } from './private_pgn/pgn_write_impl';
 export { pgnRead, pgnWrite } from './pgn';

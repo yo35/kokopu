@@ -200,9 +200,21 @@ function writeVariation(variation: Variation, isMainVariation: boolean,
 
 
 /**
+ * Options for the {@link pgnWrite} methods.
+ */
+export interface PGNWriteOptions {
+
+	/**
+	 * If `true`, a PGN tag `[PlyCount "..."]` corresponding to the number of half-moves is added to each game in the generated PGN string. `false` by default.
+	 */
+	withPlyCount?: boolean;
+}
+
+
+/**
  * Generate the PGN string corresponding to the given {@link Game} object.
  */
-export function writeGame(game: Game) {
+export function writeGame(game: Game, options: PGNWriteOptions) {
 	let result = '';
 
 	// Mandatory tags
@@ -224,6 +236,11 @@ export function writeGame(game: Game) {
 	result += writeOptionalHeader('BlackTitle', game.playerTitle('b'));
 	if (hasFENHeader) {
 		result += '[FEN "' + initialPosition.fen({ fullMoveNumber: game.mainVariation().initialFullMoveNumber(), regularFENIfPossible: true }) + '"]\n';
+	}
+	if (options.withPlyCount) {
+		result += `[PlyCount "${game.plyCount()}"]\n`;
+	}
+	if (hasFENHeader) {
 		result += '[SetUp "1"]\n';
 	}
 	result += writeOptionalHeader('Variant', formatVariant(variant));
@@ -271,6 +288,6 @@ export function writeGame(game: Game) {
 /**
  * Generate the PGN string corresponding to the given array of {@link Game} objects.
  */
-export function writeGames(games: Game[]) {
-	return games.map(writeGame).join('\n\n');
+export function writeGames(games: Game[], options: PGNWriteOptions) {
+	return games.map(game => writeGame(game, options)).join('\n\n');
 }

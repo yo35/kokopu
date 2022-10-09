@@ -414,6 +414,16 @@ export class Game {
 
 
 	/**
+	 * Number of half-moves in the main variation.
+	 *
+	 * For instance, after `1.e4 e5 2.Nf3`, the number of half-moves if 3 (2 white moves + 1 black move).
+	 */
+	plyCount(): number {
+		return this._moveTreeRoot.mainVariation().plyCount();
+	}
+
+
+	/**
 	 * Return the node or variation corresponding to the given ID (see {@link Node.id} and {@link Variation.id}
 	 * to retrieve the ID of a node or variation).
 	 *

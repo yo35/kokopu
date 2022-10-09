@@ -10,4 +10,4 @@ Site = {Somewhere...}
 Date = {2021-09-04}
 Annotator = {The Annotator}
 [start]                 -+<LONG
-{Black wins}
+{Black wins}{0 plies}

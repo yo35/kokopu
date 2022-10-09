@@ -19,4 +19,4 @@ Event = {Custom initial position (Black to play)}
 b kq -
 [start]                 -+<LONG
 [4b]                    (4b) O-O
-{Line}
+{Line}{1 plies}

@@ -25,7 +25,7 @@ import { IllegalArgument } from './exception';
 import { Game } from './game';
 
 import { readDatabase, readOneGame } from './private_pgn/pgn_read_impl';
-import { writeGame, writeGames } from './private_pgn/pgn_write_impl';
+import { writeGame, writeGames, PGNWriteOptions } from './private_pgn/pgn_write_impl';
 
 
 /**
@@ -64,21 +64,24 @@ export function pgnRead(pgnString: string, gameIndex?: number) {
 /**
  * PGN writing function.
  */
-export function pgnWrite(game: Game): string;
+export function pgnWrite(game: Game, options?: PGNWriteOptions): string;
 
 /**
  * PGN writing function.
  *
  * @param games - Games to write.
  */
-export function pgnWrite(games: Game[]): string;
+export function pgnWrite(games: Game[], options?: PGNWriteOptions): string;
 
-export function pgnWrite(gameOrGames: Game | Game[]) {
+export function pgnWrite(gameOrGames: Game | Game[], options?: PGNWriteOptions) {
+	if (options === undefined || options === null) {
+		options = {};
+	}
 	if (gameOrGames instanceof Game) {
-		return writeGame(gameOrGames);
+		return writeGame(gameOrGames, options);
 	}
 	else if (Array.isArray(gameOrGames) && gameOrGames.every(game => game instanceof Game)) {
-		return writeGames(gameOrGames);
+		return writeGames(gameOrGames, options);
 	}
 	else {
 		throw new IllegalArgument('pgnWrite()');

@@ -134,3 +134,9 @@ with a linebreak}
 [FEN "8/7R/R3B3/4r1pP/p4k2/8/6PK/r7 w - - 0 0"]
 
 0. Rha7 $2 0-1
+
+
+[Event "Invalid PlyCount"]
+[PlyCount "42"]
+
+1. e4 e5 2. Nf3 *
