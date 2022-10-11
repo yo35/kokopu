@@ -147,7 +147,7 @@ export function isStalemate(position: PositionImpl) {
  * Whether the given position is level and there is insufficient material on board.
  */
 export function isDead(position: PositionImpl, forcedMate?: boolean) {
-	if (!isLegal(position) || hasMove(position)) {
+	if (!isLegal(position) || !hasMove(position)) {
 		return false;
 	}
 	if (position.variant === GameVariantImpl.ANTICHESS) {
