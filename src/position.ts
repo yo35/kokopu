@@ -32,7 +32,7 @@ import { ascii, getFEN, parseFEN } from './private_position/fen';
 import { PositionImpl, makeCopy, makeEmpty, makeInitial, make960FromScharnagl, hasCanonicalStartPosition } from './private_position/impl';
 import { isLegal, refreshLegalFlagAndKingSquares, refreshEffectiveEnPassant, isEqual, refreshEffectiveCastling } from './private_position/legality';
 import { MoveDescriptorImpl } from './private_position/move_descriptor_impl';
-import { isCheck, isCheckmate, isStalemate, isInsufficientMaterial, hasMove, moves, isMoveLegal, play, isNullMoveLegal, playNullMove } from './private_position/move_generation';
+import { isCheck, isCheckmate, isStalemate, isDead, hasMove, moves, isMoveLegal, play, isNullMoveLegal, playNullMove } from './private_position/move_generation';
 import { getNotation, parseNotation } from './private_position/notation';
 import { getUCINotation, parseUCINotation } from './private_position/uci';
 
@@ -672,8 +672,8 @@ export class Position {
 	 *
 	 * For antichess and horde chess, this method always returns `false`
 	 */
-	isInsufficientMaterial(forcedMate?: boolean): boolean {
-		return isInsufficientMaterial(this._impl, forcedMate);
+	isDead(forcedMate?: boolean): boolean {
+		return isDead(this._impl, forcedMate);
 	}
 
 

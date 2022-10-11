@@ -146,16 +146,19 @@ export function isStalemate(position: PositionImpl) {
 /**
  * Whether the given position is level and there is insufficient material on board.
  */
-export function isInsufficientMaterial(position: PositionImpl, forcedMate?: boolean) {
+export function isDead(position: PositionImpl, forcedMate?: boolean) {
+	if (!isLegal(position) || hasMove(position)) {
+		return false;
+	}
 	if (position.variant === GameVariantImpl.ANTICHESS) {
 		return false;
 	}
-	else if (position.variant === GameVariantImpl.HORDE && position.turn === ColorImpl.WHITE) {
+	else if (position.variant === GameVariantImpl.HORDE) {
 		return false;
 	}
 	else {
 		const FEN_PIECE_SYMBOL = [ ...'KkQqRrBbNnPp' ];
-		const DEF_INSUFFICIENT_FIDE = ['kk', 'kkn', 'kbk', 'knkn']; // no possible mate
+		const DEF_INSUFFICIENT_FIDE = ['kk', 'kkn', 'kbk']; // no possible mate
 		const DEF_INSUFFICIENT_USCF = ['bkbk', 'bkkn']; // no possible forced mate
 		const board: string[] = position.board.map((piece) => FEN_PIECE_SYMBOL[piece]); // board with all pieces
 		const [w, b] = [
