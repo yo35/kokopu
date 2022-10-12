@@ -117,13 +117,26 @@ describe('Effective en-passant', () => {
 });
 
 
-describe('Check / checkmate / stalemate', () => {
+describe('Is check?', () => {
 	itForEach(elem => {
 		const pos = createPosition(elem);
 		test.value(pos.isCheck()).is(elem.isCheck);
+	});
+});
+
+
+describe('Is checkmate?', () => {
+	itForEach(elem => {
+		const pos = createPosition(elem);
 		test.value(pos.isCheckmate()).is(elem.isCheckmate);
+	});
+});
+
+
+describe('Is stalemate?', () => {
+	itForEach(elem => {
+		const pos = createPosition(elem);
 		test.value(pos.isStalemate()).is(elem.isStalemate);
-		test.value(pos.hasMove()).is(elem.hasMove);
 	});
 });
 
@@ -140,6 +153,14 @@ describe('Is dead? (USCF rules)', () => {
 	itForEach(elem => {
 		const pos = createPosition(elem);
 		test.value(pos.isDead(true)).is(elem.isDeadUSCF);
+	});
+});
+
+
+describe('Has move?', () => {
+	itForEach(elem => {
+		const pos = createPosition(elem);
+		test.value(pos.hasMove()).is(elem.hasMove);
 	});
 });
 
