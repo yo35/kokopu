@@ -32,7 +32,7 @@ import { ascii, getFEN, parseFEN } from './private_position/fen';
 import { PositionImpl, makeCopy, makeEmpty, makeInitial, make960FromScharnagl, hasCanonicalStartPosition } from './private_position/impl';
 import { isLegal, refreshLegalFlagAndKingSquares, refreshEffectiveEnPassant, isEqual, refreshEffectiveCastling } from './private_position/legality';
 import { MoveDescriptorImpl } from './private_position/move_descriptor_impl';
-import { isCheck, isCheckmate, isStalemate, hasMove, moves, isMoveLegal, play, isNullMoveLegal, playNullMove } from './private_position/move_generation';
+import { isCheck, isCheckmate, isStalemate, isDead, hasMove, moves, isMoveLegal, play, isNullMoveLegal, playNullMove } from './private_position/move_generation';
 import { getNotation, parseNotation } from './private_position/notation';
 import { getUCINotation, parseUCINotation } from './private_position/uci';
 
@@ -660,6 +660,20 @@ export class Position {
 	 */
 	isStalemate(): boolean {
 		return isStalemate(this._impl);
+	}
+
+
+	/**
+	 * Whether both players have insufficient material so the game cannot end in checkmate. If the position is not legal (see {@link Position.isLegal}),
+	 * the returned value is always `false`.
+   *
+   * If `forcedMate` is not set or set to `false`, method uses **FIDE** rules where position is evaluated to return no possible checkmates
+   * If `forcedMate` is set to `true`, method uses **USCF** rules where position is evaluated to return no possible *forced* checkmates
+	 *
+	 * For antichess and horde chess, this method always returns `false`
+	 */
+	isDead(forcedMate?: boolean): boolean {
+		return isDead(this._impl, forcedMate);
 	}
 
 
