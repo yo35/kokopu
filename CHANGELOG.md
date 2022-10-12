@@ -1,6 +1,11 @@
 ChangeLog
 =========
 
+3.3.0 (October 12, 2022)
+------------------------
+* Introduce `Position.isDead()` to detect positions in which the remaining material is not sufficient for any player to checkmate its opponent
+(aka. [dead positions](https://en.wikipedia.org/wiki/Rules_of_chess#Dead_position)).
+
 3.2.0 (October 9, 2022)
 -----------------------
 * Add support for PGN tag `ECO` (opening code in the [Encyclopaedia of Chess Openings](https://en.wikipedia.org/wiki/List_of_chess_openings) classification).
