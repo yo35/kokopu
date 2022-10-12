@@ -15,7 +15,8 @@
 	"author": "Yoann Le Montagner <yo35@melix.net>",
 	"contributors": [
 		"Atin Malaviya <atinm.dev@gmail.com>",
-		"Maksym Butsykin <mbutsykin@gmail.com>"
+		"Maksym Butsykin <mbutsykin@gmail.com>",
+		"Vladimir Mandic <mandic00@live.com>"
 	],
 	"funding": "https://www.paypal.com/donate?hosted_button_id=MP795VF4FXUDW",
 	"main": "dist/lib/index.js",
