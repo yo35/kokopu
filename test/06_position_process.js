@@ -46,11 +46,13 @@ function itForEach(fun) {
 			isCheck            : fields[10]==='true',
 			isCheckmate        : fields[11]==='true',
 			isStalemate        : fields[12]==='true',
-			hasMove            : fields[13]==='true',
-			moves              : fields[14],
-			uciMoves           : fields[15],
-			notations          : fields[16],
-			successors         : fields[17],
+			isDead             : fields[13]==='true',
+			isDeadUSCF         : fields[14]==='true',
+			hasMove            : fields[15]==='true',
+			moves              : fields[16],
+			uciMoves           : fields[17],
+			notations          : fields[18],
+			successors         : fields[19],
 		};
 	});
 
@@ -122,6 +124,22 @@ describe('Check / checkmate / stalemate', () => {
 		test.value(pos.isCheckmate()).is(elem.isCheckmate);
 		test.value(pos.isStalemate()).is(elem.isStalemate);
 		test.value(pos.hasMove()).is(elem.hasMove);
+	});
+});
+
+
+describe('Is dead?', () => {
+	itForEach(elem => {
+		const pos = createPosition(elem);
+		test.value(pos.isDead()).is(elem.isDead);
+	});
+});
+
+
+describe('Is dead? (USCF rules)', () => {
+	itForEach(elem => {
+		const pos = createPosition(elem);
+		test.value(pos.isDead(true)).is(elem.isDeadUSCF);
 	});
 });
 
