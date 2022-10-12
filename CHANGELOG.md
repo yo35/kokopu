@@ -37,7 +37,7 @@ look at the [migration guide](https://kokopu.yo35.org/docs/current/pages/migrate
 
 2.9.0 (June 21, 2022)
 ---------------------
-* Introduce `Node#isVariation()` and `Variation#isVariation()` to discriminate between `Node` and `Variation` instances.
+* Introduce `Node.isVariation()` and `Variation.isVariation()` to discriminate between `Node` and `Variation` instances.
 * Add support for NAGs `RR` and `N` in `pgnRead(..)`.
 * Fix behavior of `pgnRead(..)` when invoked with no game index: now, the function is guaranteed to not throw `InvalidPGN`
 (thus it always returns a `Database` object).
@@ -48,7 +48,7 @@ from now on, a variation comment is considered as "long" if and only if it is *f
 
 2.8.1 (June 16, 2022)
 ---------------------
-* Fix update procedure for en-passant flag in `Position#play(..)` (see [#27](https://github.com/yo35/kokopu/issues/27)).
+* Fix update procedure for en-passant flag in `Position.play(..)` (see [#27](https://github.com/yo35/kokopu/issues/27)).
 
 2.8.0 (May 18, 2022)
 --------------------
@@ -57,18 +57,18 @@ from now on, a variation comment is considered as "long" if and only if it is *f
 
 2.7.0 (April 21, 2022)
 ----------------------
-* Introduce `Game#nodes(..)` to retrieve all the moves of a game (optionally with those coming from the sub-variations).
-* Introduce `Position#isEqual(..)` to check whether two instances of `Position` are identical or not.
+* Introduce `Game.nodes(..)` to retrieve all the moves of a game (optionally with those coming from the sub-variations).
+* Introduce `Position.isEqual(..)` to check whether two instances of `Position` are identical or not.
 
 2.6.0 (April 6, 2022)
 ---------------------
-* Add methods to move backward in the move tree: `Node#previous()`, `Node#parentVariation()` and `Variation#parentNode()`.
+* Add methods to move backward in the move tree: `Node.previous()`, `Node.parentVariation()` and `Variation.parentNode()`.
 * Introduce `nagSymbol(..)` to retrieve the human-readable symbols associated to each
 [NAG](https://en.wikipedia.org/wiki/Numeric_Annotation_Glyphs).
 
 2.5.0 (March 31, 2022)
 ----------------------
-* Introduce `Node#id()`, `Variation#id()` and `Game#findById(..)`.
+* Introduce `Node.id()`, `Variation.id()` and `Game.findById(..)`.
 
 2.4.1 (March 27, 2022)
 ----------------------
@@ -80,8 +80,8 @@ from now on, a variation comment is considered as "long" if and only if it is *f
 
 2.3.0 (February 22, 2022)
 -------------------------
-* Enrich variation-management methods on `Game` and related objects: `Node#promoteVariation()`,
-`Node#removeVariation()`, `Node#removeFollowingMoves()`... (see [#22](https://github.com/yo35/kokopu/issues/22)).
+* Enrich variation-management methods on `Game` and related objects: `Node.promoteVariation()`,
+`Node.removeVariation()`, `Node.removeFollowingMoves()`... (see [#22](https://github.com/yo35/kokopu/issues/22)).
 
 2.2.1 (January 1, 2022)
 -----------------------
@@ -93,16 +93,16 @@ from now on, a variation comment is considered as "long" if and only if it is *f
 
 2.1.0 (September 19, 2021)
 --------------------------
-* Introduce `Game#dateAsString()`.
+* Introduce `Game.dateAsString()`.
 
 2.0.0 (September 12, 2021)
 --------------------------
 * Introduce `pgnWrite()`.
-* Introduce `Game#ascii()`.
-* Change the way castling moves are handled at Chess960 in `Position#isMoveLegal()`: from now one,
+* Introduce `Game.ascii()`.
+* Change the way castling moves are handled at Chess960 in `Position.isMoveLegal()`: from now one,
 castling moves will be recognized as legal if and only if argument `to` corresponds to the origin square
 of the castling rook. As a consequence, no confusion is possible anymore between castling and regular king moves,
-and status `castle960` do not exist anymore among the objects that can be returned by `Position#isMoveLegal()`.
+and status `castle960` do not exist anymore among the objects that can be returned by `Position.isMoveLegal()`.
 This change affects only Chess960; regular chess and other variants are not impacted.
 
 1.10.2 (August 15, 2021)
@@ -116,7 +116,7 @@ This change affects only Chess960; regular chess and other variants are not impa
 1.10.0 (July 25, 2021)
 ----------------------
 * Add support for [Antichess](https://en.wikipedia.org/wiki/Losing_chess).
-* Clarify the expected behavior of `Position#kingSquare()` in non-standard variants, especially variants
+* Clarify the expected behavior of `Position.kingSquare()` in non-standard variants, especially variants
 in which king has no "royal power".
 
 1.9.1 (May 30, 2021)
@@ -174,8 +174,8 @@ in which king has no "royal power".
 1.3.0 (December 20, 2019)
 -------------------------
 * Improve PGN parsing robustness to linebreak issues (see [#11](https://github.com/yo35/kokopu/issues/11)).
-* Introduce `Variations#nodes()` (see [#9](https://github.com/yo35/kokopu/issues/9)).
-WARNING! This impacts the lifecycle of the `Node` objects returned by `Node#next()` and `Node#play(..)`:
+* Introduce `Variations.nodes()` (see [#9](https://github.com/yo35/kokopu/issues/9)).
+WARNING! This impacts the lifecycle of the `Node` objects returned by `Node.next()` and `Node.play(..)`:
 now, these functions always return a new instance of `Node`, instead of reusing the current one.
 
 1.2.6 (December 15, 2019)
