@@ -144,3 +144,8 @@ export function coloredPieceFromString(cp: any) {
 	const piece = PIECE_SYMBOL.indexOf(cp[1]);
 	return piece * 2 + color;
 }
+
+
+export function squareColorImpl(square: number) {
+	return (~square ^ (square >> 4)) & 0x1;
+}

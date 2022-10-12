@@ -23,7 +23,7 @@
 import { Color, Square, Coordinates, GameVariant } from './base_types';
 import { IllegalArgument } from './exception';
 
-import { colorFromString, colorToString, squareFromString, squareToString, fileToString, rankToString, variantFromString } from './private_position/base_types_impl';
+import { colorFromString, colorToString, squareFromString, squareToString, fileToString, rankToString, variantFromString, squareColorImpl } from './private_position/base_types_impl';
 import { hasCanonicalStartPosition } from './private_position/impl';
 
 
@@ -47,7 +47,7 @@ export function squareColor(square: Square): Color {
 	if (squareCode < 0) {
 		throw new IllegalArgument('squareColor()');
 	}
-	return Math.trunc(squareCode / 16) % 2 === squareCode % 2 ? 'b' : 'w';
+	return colorToString(squareColorImpl(squareCode));
 }
 
 

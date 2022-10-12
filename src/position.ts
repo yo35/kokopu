@@ -664,16 +664,21 @@ export class Position {
 
 
 	/**
-	 * Whether both players have insufficient material so the game cannot end in checkmate. If the position is not legal (see {@link Position.isLegal}),
-	 * the returned value is always `false`.
-   *
-   * If `forcedMate` is not set or set to `false`, method uses **FIDE** rules where position is evaluated to return no possible checkmates
-   * If `forcedMate` is set to `true`, method uses **USCF** rules where position is evaluated to return no possible *forced* checkmates
+	 * Whether both players have insufficient material so the game cannot end in checkmate ([dead position rule](https://en.wikipedia.org/wiki/Rules_of_chess#Dead_position)).
+	 * If the position is not legal (see {@link Position.isLegal}), the returned value is always `false`.
 	 *
-	 * For antichess and horde chess, this method always returns `false`
+	 * By default, the method uses the FIDE rules, i.e. the position is considered as dead if there is no possible checkmate, even if both players
+	 * cooperate for that. This is different from the USCF rules, for which the position is considered as dead if no player can force the other into
+	 * a checkmate. For instance, king + two knights vs king is NOT considered as dead according to the FIDE rules, whereas it is according to the
+	 * USCF rules.
+	 *
+	 * For antichess and horde chess, this method always returns `false` since it is always possible to end in a checkmate-like situation
+	 * (by capturing all the pieces of one player).
+	 *
+	 * @param uscfRules - `true` to use the USCF rules (forced checkmate), `false` to use the FIDE rules (possible checkmate).
 	 */
-	isDead(forcedMate?: boolean): boolean {
-		return isDead(this._impl, forcedMate);
+	isDead(uscfRules = false): boolean {
+		return isDead(this._impl, uscfRules);
 	}
 
 

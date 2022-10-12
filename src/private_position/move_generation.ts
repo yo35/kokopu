@@ -21,7 +21,7 @@
 
 
 import { ATTACK_DIRECTIONS, isAttacked } from './attacks';
-import { ColorImpl, PieceImpl, SpI, GameVariantImpl } from './base_types_impl';
+import { ColorImpl, PieceImpl, SpI, GameVariantImpl, squareColorImpl } from './base_types_impl';
 import { PositionImpl } from './impl';
 import { isLegal, isKingSafeAfterMove, refreshEffectiveEnPassant, refreshEffectiveCastling } from './legality';
 import { MoveDescriptorImpl } from './move_descriptor_impl';
@@ -144,35 +144,91 @@ export function isStalemate(position: PositionImpl) {
 
 
 /**
- * Whether the given position is level and there is insufficient material on board.
+ * Whether the given position is legal and there is insufficient material on board for checkmate.
  */
-export function isDead(position: PositionImpl, forcedMate?: boolean) {
-	if (!isLegal(position) || !hasMove(position)) {
+export function isDead(position: PositionImpl, uscfRules: boolean) {
+	if (!isLegal(position)) {
 		return false;
 	}
-	if (position.variant === GameVariantImpl.ANTICHESS) {
-		return false;
-	}
-	else if (position.variant === GameVariantImpl.HORDE) {
-		return false;
+	if (position.variant === GameVariantImpl.REGULAR_CHESS || position.variant === GameVariantImpl.CHESS960) {
+		return uscfRules ? isDeadWithUSCFRules(position) : isDeadWithFIDERules(position);
 	}
 	else {
-		const FEN_PIECE_SYMBOL = [ ...'KkQqRrBbNnPp' ];
-		const DEF_INSUFFICIENT_FIDE = ['kk', 'kkn', 'kbk']; // no possible mate
-		const DEF_INSUFFICIENT_USCF = ['bkbk', 'bkkn']; // no possible forced mate
-		const board: string[] = position.board.map((piece) => FEN_PIECE_SYMBOL[piece]); // board with all pieces
-		const [w, b] = [
-			board.filter((piece) => piece && piece.match('[A-Z]')).sort((s0, s1) => (s0 > s1 ? 1 : -1)).join('').toLowerCase(), // string with all white pieces on the board sorted alphabetically
-			board.filter((piece) => piece && piece.match('[a-z]')).sort((s0, s1) => (s0 > s1 ? 1 : -1)).join(''), // string with all black pieces on the board sorted alphabetically
-		];
-		if (DEF_INSUFFICIENT_FIDE.includes(w + b) || DEF_INSUFFICIENT_FIDE.includes(b + w)) {
-			return true;
-		}
-		if (forcedMate && (DEF_INSUFFICIENT_USCF.includes(w + b) || DEF_INSUFFICIENT_USCF.includes(b + w))) {
-			return true;
-		}
 		return false;
 	}
+}
+
+
+function isDeadWithFIDERules(position: PositionImpl) {
+	let bishopOrKnightAlreadyFound = false;
+	let bishopSquareColor = -1;
+	for (let sq = 0; sq < 120; sq += (sq & 0x7) === 7 ? 9 : 1) {
+		const cp = position.board[sq];
+		if (cp === SpI.EMPTY) {
+			continue;
+		}
+		const piece = Math.trunc(cp / 2);
+
+		// Ignore any bishop if another bishop has already been found on a square of the same color.
+		if (piece === PieceImpl.BISHOP) {
+			const currentSquareColor = squareColorImpl(sq);
+			if (bishopSquareColor === currentSquareColor) {
+				continue;
+			}
+			bishopSquareColor = currentSquareColor;
+		}
+
+		// Ensure that at most 1 bishop or knight is encountered, whatever its color.
+		if (piece === PieceImpl.BISHOP || piece === PieceImpl.KNIGHT) {
+			if (bishopOrKnightAlreadyFound) {
+				return false;
+			}
+			bishopOrKnightAlreadyFound = true;
+		}
+
+		// Not a dead position if a pawn, a rook or a queen is encountered.
+		else if (piece !== PieceImpl.KING) {
+			return false;
+		}
+	}
+	return true;
+}
+
+
+function isDeadWithUSCFRules(position: PositionImpl) {
+	const materialScore = [ 0, 0 ];
+	const bishopSquareColor = [ -1, -1 ];
+	for (let sq = 0; sq < 120; sq += (sq & 0x7) === 7 ? 9 : 1) {
+		const cp = position.board[sq];
+		if (cp === SpI.EMPTY) {
+			continue;
+		}
+		const color = cp % 2;
+		const piece = Math.trunc(cp / 2);
+
+		// Ignore any bishop if another bishop of the same color has already been found on a square of the same color.
+		if (piece === PieceImpl.BISHOP) {
+			const currentSquareColor = squareColorImpl(sq);
+			if (bishopSquareColor[color] === currentSquareColor) {
+				continue;
+			}
+			bishopSquareColor[color] = currentSquareColor;
+		}
+
+		// Increase score by 1 for a knight, and by 2 for a bishop. A score of 3 (or more) for any player means that the position is not dead.
+		if (piece === PieceImpl.BISHOP || piece === PieceImpl.KNIGHT) {
+			materialScore[color] += piece === PieceImpl.BISHOP ? 2 : 1;
+			if (materialScore[color] >= 3) {
+				return false;
+			}
+		}
+
+		// Not a dead position if a pawn, a rook or a queen is encountered.
+		else if (piece !== PieceImpl.KING) {
+			return false;
+		}
+	}
+	return true;
 }
 
 
