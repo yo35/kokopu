@@ -1,14 +1,14 @@
 env:
   node: true
 
+plugins:
+  - '@typescript-eslint'
+
 extends:
   - 'eslint:recommended'
   - 'plugin:@typescript-eslint/recommended'
 
 parser: '@typescript-eslint/parser'
-
-plugins:
-  - '@typescript-eslint'
 
 parserOptions:
   ecmaVersion: 11
@@ -67,7 +67,7 @@ rules:
   '@typescript-eslint/no-shadow': [ error, { builtinGlobals: true }]
 
   # Relaxed rules
-  no-constant-condition:  [ error, { checkLoops: false }]
+  no-constant-condition: [ error, { checkLoops: false }]
 
   # Relaxed rules (typescript)
   '@typescript-eslint/no-explicit-any':       [ off ]
