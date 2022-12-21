@@ -1,0 +1,46 @@
+{
+	"event": "Game with annotations 2",
+	"mainVariation": {
+		"nags": [ 10 ],
+		"nodes": [
+			{ "notation": "e4", "nags": [ 5, 13 ] },
+			"e5",
+			{ "notation": "Nf3", "tags": { "cal": "Rf3e5" } },
+			{ "notation": "Nc6", "tags": { "emptytag": "" } },
+			{ "notation": "Bc4", "comment": "" },
+			{ "notation": "Bc5", "tags": { "blanktag": " " } },
+			{ "notation": "c3", "comment": " " },
+			"Nf6",
+			{ "notation": "d4", "comment": " ", "tags": { "cal": "Rd4c5,Rd4e5" } },
+			"exd4",
+			{
+				"notation": "cxd4",
+				"variations": [
+					{
+						"comment": "You should not see in PGN this since there is no move in the variation...",
+						"nodes": []
+					}
+				]
+			},
+			{
+				"notation": "Bb4+",
+				"variations": [
+					{
+						"comment": "",
+						"nodes": []
+					}
+				]
+			},
+			{
+				"notation": "Nc3",
+				"variations": [
+					{
+						"comment": " ",
+						"nodes": []
+					}
+				]
+			},
+			{ "notation": "O-O", "tags": { "TheFirstTag": "a[b]c", "TheOtherTag": " " } }
+		]
+	}
+}

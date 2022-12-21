@@ -20,19 +20,71 @@
  * -------------------------------------------------------------------------- */
 
 
-export { i18n } from './i18n';
-export * as exception from './exception';
+import { GameResult, GameVariant } from './base_types';
 
-export { Color, Piece, ColoredPiece, Castle, Castle960, File, Rank, Square, Coordinates, GameResult, GameVariant } from './base_types';
-export { forEachSquare, squareColor, squareToCoordinates, coordinatesToSquare, oppositeColor, variantWithCanonicalStartPosition, nagSymbol, isValidECO } from './helper';
-export { DateValue } from './date_value';
 
-export { MoveDescriptor, isMoveDescriptor } from './move_descriptor';
-export { Position, RegularMoveFactory, PromotionMoveFactory } from './position';
-export { AbstractNode, Node, Variation } from './node_variation';
-export { GamePOJO, PlayerPOJO, AbstractNodePOJO, NodePOJO, VariationPOJO } from './game_pojo';
-export { Game } from './game';
-export { Database } from './database';
+/**
+ * Represent the player-related headers in a {@link GamePOJO}.
+ */
+export type PlayerPOJO = {
+	name?: string;
+	elo?: number;
+	title?: string;
+};
 
-export { PGNWriteOptions } from './private_pgn/pgn_write_impl';
-export { pgnRead, pgnWrite } from './pgn';
+
+/**
+ * Represent a {@link Game} as a [POJO](https://en.wikipedia.org/wiki/Plain_old_Java_object),
+ * thus allowing JSON serialization, deep cloning, etc...
+ */
+export type GamePOJO = {
+
+	// Headers
+	white?: PlayerPOJO;
+	black?: PlayerPOJO;
+	event?: string;
+	round?: string;
+	date?: string;
+	site?: string;
+	annotator?: string;
+	eco?: string;
+	opening?: string;
+	openingVariation?: string;
+	openingSubVariation?: string;
+	termination?: string;
+	result?: GameResult;
+
+	// Moves
+	variant?: GameVariant;
+	initialPosition?: string;
+	mainVariation?: VariationPOJO;
+};
+
+
+/**
+ * Represent a {@link AbstractNode} in a {@link GamePOJO}.
+ */
+export type AbstractNodePOJO = {
+	comment?: string;
+	isLongComment?: boolean;
+	nags?: number[];
+	tags?: Record<string, string>;
+};
+
+
+/**
+ * Represent a {@link Node} in a {@link GamePOJO}.
+ */
+export type NodePOJO = string | AbstractNodePOJO & {
+	notation: string;
+	variations?: VariationPOJO[];
+};
+
+
+/**
+ * Represent a {@link Variation} in a {@link GamePOJO}.
+ */
+export type VariationPOJO = NodePOJO[] | AbstractNodePOJO & {
+	nodes: NodePOJO[];
+	isLongVariation?: boolean;
+};

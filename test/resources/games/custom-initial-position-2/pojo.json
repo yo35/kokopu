@@ -1,0 +1,7 @@
+{
+	"event": "Custom initial position (Black to play)",
+	"initialPosition": "rnbqk2r/pppp1ppp/5n2/2b1p3/2B1P3/5N2/PPPP1PPP/RNBQ1RK1 b kq - 0 4",
+	"mainVariation": [
+		"O-O"
+	]
+}

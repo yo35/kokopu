@@ -1,0 +1,27 @@
+{
+	"event": "Game with annotations 1",
+	"mainVariation": [
+		"e4",
+		"e5",
+		"Bc4",
+		"Nc6",
+		{
+			"notation": "Qh5",
+			"comment": "Threatening checkmate", 
+			"tags": { "cal": "Gc4f7,Gh5f7", "csl": "Rf7" }
+		},
+		{
+			"notation": "g6",
+			"comment": "Avoid the checkmate",
+			"nags": [ 1 ],
+			"tags": { "cal": "Rg6h5" },
+			"variations": [
+				{
+					"comment": "Other defenses are possible, for instance:",
+					"nodes": [ "Nf6" ]
+				}
+			]
+		},
+		"Qf3"
+	]
+}

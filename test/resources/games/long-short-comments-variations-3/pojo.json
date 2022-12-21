@@ -1,0 +1,26 @@
+{
+	"event": "Game with long & short comments and variations 3.",
+	"mainVariation": [
+		{
+			"notation": "e4",
+			"comment": "I'm a long comment with an empty sub-variation sibling.",
+			"isLongComment": true,
+			"variations": [
+				[]
+			]
+		},
+		"e5",
+		{
+			"notation": "Nf3",
+			"variations": [
+				{
+					"isLongVariation": true,
+					"comment": "I'm a long variation followed by an empty variation.",
+					"nodes": [ "Nc3" ]
+				},
+				[]
+			]
+		},
+		"Nc6"
+	]
+}

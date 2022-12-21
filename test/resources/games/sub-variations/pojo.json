@@ -1,0 +1,51 @@
+{
+	"event": "Game with variations and sub-variations",
+	"mainVariation": {
+		"comment": "I'm the main variation header comment.",
+		"nodes": [
+			"e4",
+			{
+				"notation": "e5",
+				"variations": [
+					[ "c6" ],
+					[
+						"c5",
+						{
+							"notation": "Nc3",
+							"variations": [
+								[ "Nf3", "d6" ]
+							]
+						}
+					]
+				]
+			},
+			{
+				"notation": "Nf3",
+				"variations": [
+					[]
+				]
+			},
+			"Nc6",
+			{
+				"notation": "Bc4",
+				"variations": [
+					[
+						"Bb5",
+						{
+							"notation": "a6",
+							"variations": [
+								[ "Nf6" ]
+							]
+						},
+						{
+							"notation": "Ba4",
+							"variations": [
+								[ "Bxc6", "dxc6" ]
+							]
+						}
+					]
+				]
+			}
+		]
+	}
+}

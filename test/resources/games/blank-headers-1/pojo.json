@@ -1,0 +1,17 @@
+{
+	"event": "",
+	"round": "",
+	"white": {
+		"name": "",
+		"title": ""
+	},
+	"black": {
+		"name": " ",
+		"title": " "
+	},
+	"annotator": "",
+	"mainVariation": {
+		"comment": "",
+		"nodes": []
+	}
+}

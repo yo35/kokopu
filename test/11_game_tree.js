@@ -709,3 +709,19 @@ describe('Read PGN', () => {
 		itReadPgn(f);
 	}
 });
+
+
+describe('Game to POJO', () => {
+
+	function itConvertToPOJO(filename, factory) {
+		it(filename, () => {
+			const expectedPOJO = JSON.parse(readText(`games/${filename}/pojo.json`).trim());
+			const game = factory();
+			test.value(game.pojo()).is(expectedPOJO);
+		});
+	}
+
+	for (const f in oneGamefactories) {
+		itConvertToPOJO(f, oneGamefactories[f]);
+	}
+});

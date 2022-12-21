@@ -1,0 +1,24 @@
+{
+	"event": "Game with promoted variation.",
+	"mainVariation": [
+		"e4",
+		{
+			"notation": "d5",
+			"variations": [
+				[ "c5" ],
+				[
+					"e5",
+					{ "notation": "Nf3", "comment": "Used to be the main line" }
+				],
+				[ "c6" ],
+				[ "g6" ],
+				[
+					"d6",
+					{ "notation": "d4", "comment": "Used to be a nested variation" }
+				]
+			]
+		},
+		"exd5",
+		{ "notation": "Qxd5", "comment": "Used to be the variation at index 1" }
+	]
+}

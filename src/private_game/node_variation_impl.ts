@@ -22,6 +22,7 @@
 
 import { Color } from '../base_types';
 import { IllegalArgument, InvalidNotation } from '../exception';
+import { AbstractNodePOJO, NodePOJO, VariationPOJO } from '../game_pojo';
 import { i18n } from '../i18n';
 import { MoveDescriptor } from '../move_descriptor';
 import { Node, Variation } from '../node_variation';
@@ -87,6 +88,10 @@ export class MoveTreeRoot {
 			return nodeData === undefined ? undefined : new NodeImpl(nodeData, position);
 		}
 	}
+
+	pojo() {
+		return variationPOJO(new Position(this._position), this._mainVariationData, true);
+	}
 }
 
 
@@ -100,6 +105,73 @@ function findNode(variationData: VariationData, nodeIdToken: string, position: P
 		nodeData = nodeData.child;
 	}
 	return undefined;
+}
+
+
+function variationPOJO(position: Position, variationData: VariationData, isLongVariationByDefault: boolean): VariationPOJO {
+
+	const nodePOJOs: NodePOJO[] = [];
+	let nodeData = variationData.child;
+	while (nodeData !== undefined) {
+		nodePOJOs.push(nodePOJO(position, nodeData));
+		applyMoveDescriptor(position, nodeData);
+		nodeData = nodeData.child;
+	}
+
+	const pojo: VariationPOJO = {
+		nodes: nodePOJOs,
+	};
+	let pojoIsTrivial = true;
+
+	if (variationData.isLongVariation !== isLongVariationByDefault) {
+		pojo.isLongVariation = variationData.isLongVariation;
+		pojoIsTrivial = false;
+	}
+
+	if (appendAbstractNodePOJOFields(pojo, variationData)) {
+		pojoIsTrivial = false;
+	}
+	return pojoIsTrivial ? pojo.nodes : pojo;
+}
+
+
+function nodePOJO(position: Position, nodeData: NodeData): NodePOJO {
+
+	const pojo: NodePOJO = {
+		notation: nodeData.moveDescriptor === null ? '--' : position.notation(nodeData.moveDescriptor),
+	};
+	let pojoIsTrivial = true;
+
+	if (nodeData.variations.length > 0) {
+		pojo.variations = nodeData.variations.map(variation => variationPOJO(new Position(position), variation, false));
+		pojoIsTrivial = false;
+	}
+
+	if (appendAbstractNodePOJOFields(pojo, nodeData)) {
+		pojoIsTrivial = false;
+	}
+	return pojoIsTrivial ? pojo.notation : pojo;
+}
+
+
+function appendAbstractNodePOJOFields(pojo: AbstractNodePOJO, nodeData: AbstractNodeData) {
+	let atLeastOneAnnotation = false;
+	if (nodeData.comment !== undefined) {
+		pojo.comment = nodeData.comment;
+		if (nodeData.isLongComment) {
+			pojo.isLongComment = true;
+		}
+		atLeastOneAnnotation = true;
+	}
+	if (nodeData.nags.size > 0) {
+		pojo.nags = getNags(nodeData);
+		atLeastOneAnnotation = true;
+	}
+	if (nodeData.tags.size > 0) {
+		pojo.tags = getTagRecords(nodeData);
+		atLeastOneAnnotation = true;
+	}
+	return atLeastOneAnnotation;
 }
 
 
@@ -281,10 +353,46 @@ function isValidNag(nag: number) {
 
 
 /**
+ * Return all the NAGs of the given abstract node.
+ */
+function getNags(data: AbstractNodeData) {
+	const result: number[] = [];
+	for (const nag of data.nags) {
+		result.push(nag);
+	}
+	return result.sort((a, b) => a - b);
+}
+
+
+/**
  * Whether the given valid is a valid tag key or not.
  */
 function isValidTagKey(tagKey: string) {
 	return typeof tagKey === 'string' && /^\w+$/.test(tagKey);
+}
+
+
+/**
+ * Return all the tag keys of the given abstract node.
+ */
+function getTagKeys(data: AbstractNodeData) {
+	const result: string[] = [];
+	for (const tag of data.tags.keys()) {
+		result.push(tag);
+	}
+	return result.sort();
+}
+
+
+/**
+ * Return all the pairs tag key + tag value of the given abstract node.
+ */
+function getTagRecords(data: AbstractNodeData) {
+	const result: Record<string, string> = {};
+	for (const [tagKey, tagValue] of data.tags.entries()) {
+		result[tagKey] = tagValue;
+	}
+	return result;
 }
 
 
@@ -307,11 +415,7 @@ class NodeImpl extends Node {
 	}
 
 	nags() {
-		const result: number[] = [];
-		for (const nag of this._data.nags) {
-			result.push(nag);
-		}
-		return result.sort((a, b) => a - b);
+		return getNags(this._data);
 	}
 
 	hasNag(nag: number) {
@@ -336,11 +440,7 @@ class NodeImpl extends Node {
 	}
 
 	tags() {
-		const result: string[] = [];
-		for (const tag of this._data.tags.keys()) {
-			result.push(tag);
-		}
-		return result.sort();
+		return getTagKeys(this._data);
 	}
 
 	tag(tagKey: string, value?: string | undefined) {
@@ -540,11 +640,7 @@ class VariationImpl extends Variation {
 	}
 
 	nags() {
-		const result: number[] = [];
-		for (const nag of this._data.nags) {
-			result.push(nag);
-		}
-		return result.sort((a, b) => a - b);
+		return getNags(this._data);
 	}
 
 	hasNag(nag: number) {
@@ -569,11 +665,7 @@ class VariationImpl extends Variation {
 	}
 
 	tags() {
-		const result: string[] = [];
-		for (const tag of this._data.tags.keys()) {
-			result.push(tag);
-		}
-		return result.sort();
+		return getTagKeys(this._data);
 	}
 
 	tag(tagKey: string, value?: string | undefined) {

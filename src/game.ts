@@ -23,6 +23,7 @@
 import { Color, GameResult, GameVariant } from './base_types';
 import { DateValue } from './date_value';
 import { IllegalArgument } from './exception';
+import { GamePOJO, PlayerPOJO } from './game_pojo';
 import { isValidECO, nagSymbol, variantWithCanonicalStartPosition } from './helper';
 import { AbstractNode, Node, Variation } from './node_variation';
 import { Position } from './position';
@@ -591,6 +592,59 @@ export class Game {
 	 */
 	findById(id: string): Node | Variation | undefined {
 		return this._moveTreeRoot.findById(id);
+	}
+
+
+	/**
+	 * Return the [POJO](https://en.wikipedia.org/wiki/Plain_old_Java_object) representation of the current {@link Game}.
+	 * To be used for JSON serialization, deep cloning, etc...
+	 */
+	pojo(): GamePOJO {
+
+		const pojo: GamePOJO = {};
+
+		function isPlayerPOJOEmpty(game: Game, color: ColorImpl) {
+			return game._playerName[color] === undefined && game._playerElo[color] === undefined && game._playerTitle[color] === undefined;
+		}
+
+		function getPlayerPOJO(game: Game, color: ColorImpl) {
+			const playerPOJO: PlayerPOJO = {};
+			if (game._playerName[color] !== undefined) { playerPOJO.name = game._playerName[color]; }
+			if (game._playerElo[color] !== undefined) { playerPOJO.elo = game._playerElo[color]; }
+			if (game._playerTitle[color] !== undefined) { playerPOJO.title = game._playerTitle[color]; }
+			return playerPOJO;
+		}
+
+		// Headers
+		if (!isPlayerPOJOEmpty(this, ColorImpl.WHITE)) { pojo.white = getPlayerPOJO(this, ColorImpl.WHITE); }
+		if (!isPlayerPOJOEmpty(this, ColorImpl.BLACK)) { pojo.black = getPlayerPOJO(this, ColorImpl.BLACK); }
+		if (this._event !== undefined) { pojo.event = this._event; }
+		if (this._round !== undefined) { pojo.round = this._round; }
+		if (this._date !== undefined) { pojo.date = this._date.toString(); }
+		if (this._site !== undefined) { pojo.site = this._site; }
+		if (this._annotator !== undefined) { pojo.annotator = this._annotator; }
+		if (this._eco !== undefined) { pojo.eco = this._eco; }
+		if (this._opening !== undefined) { pojo.opening = this._opening; }
+		if (this._openingVariation !== undefined) { pojo.openingVariation = this._openingVariation; }
+		if (this._openingSubVariation !== undefined) { pojo.openingSubVariation = this._openingSubVariation; }
+		if (this._termination !== undefined) { pojo.termination = this._termination; }
+		if (this._result !== GameResultImpl.LINE) { pojo.result = this.result(); }
+
+		// Moves
+		const variant = this.variant();
+		if (variant !== 'regular') {
+			pojo.variant = variant;
+		}
+		const isCanonicalStartPosition = variantWithCanonicalStartPosition(variant) && Position.isEqual(this._moveTreeRoot._position, new Position(variant));
+		if (!isCanonicalStartPosition) {
+			pojo.initialPosition = this._moveTreeRoot._position.fen({ fullMoveNumber: this._moveTreeRoot._fullMoveNumber });
+		}
+		const mainVariationPOJO = this._moveTreeRoot.pojo();
+		if (!Array.isArray(mainVariationPOJO) || mainVariationPOJO.length > 0) {
+			pojo.mainVariation = mainVariationPOJO;
+		}
+
+		return pojo;
 	}
 
 
