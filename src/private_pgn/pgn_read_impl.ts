@@ -49,33 +49,6 @@ function parsePositiveIntegerHeader(value: string): number | undefined {
 }
 
 
-function parseDateHeader(value: string): DateValue | undefined {
-	if (/^([0-9]{4})\.([0-9]{2})\.([0-9]{2})$/.test(value)) {
-		const y = RegExp.$1;
-		const m = RegExp.$2;
-		const d = RegExp.$3;
-		const year = parseInt(y, 10);
-		const month = parseInt(m, 10);
-		const day = parseInt(d, 10);
-		return DateValue.isValid(year, month, day) ? new DateValue(year, month, day) : DateValue.isValid(year, month) ? new DateValue(year, month) : new DateValue(year);
-	}
-	else if (/^([0-9]{4})\.([0-9]{2})\.\?\?$/.test(value)) {
-		const y = RegExp.$1;
-		const m = RegExp.$2;
-		const year = parseInt(y, 10);
-		const month = parseInt(m, 10);
-		return DateValue.isValid(year, month) ? new DateValue(year, month) : new DateValue(year);
-	}
-	else if (/^([0-9]{4})(?:\.\?\?\.\?\?)?$/.test(value)) {
-		const year = parseInt(RegExp.$1, 10);
-		return new DateValue(year);
-	}
-	else {
-		return undefined;
-	}
-}
-
-
 function parseECOHeader(value: string): string | undefined {
 	return isValidECO(value) ? value : undefined;
 }
@@ -131,7 +104,7 @@ function processHeader(stream: TokenStream, game: Game, factory: InitialPosition
 		case 'BlackTitle': game.playerTitle('b', value); break;
 		case 'Event': game.event(parseNullableHeader(value)); break;
 		case 'Round': game.round(parseNullableHeader(value)); break;
-		case 'Date': game.date(parseDateHeader(value)); break;
+		case 'Date': game.date(DateValue.fromPGNString(value)); break;
 		case 'Site': game.site(parseNullableHeader(value)); break;
 		case 'Annotator': game.annotator(value); break;
 		case 'ECO': game.eco(parseECOHeader(value)); break;

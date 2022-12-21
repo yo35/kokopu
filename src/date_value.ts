@@ -139,10 +139,36 @@ export class DateValue {
 
 
 	/**
+	 * Parse the given value as a date in compact format (e.g. `'2022-07-19'`, `'2022-07-**'` or `'2022-**-**'`).
+	 *
+	 * @returns `undefined` if the value does not represent a valid date.
+	 */
+	static fromString(value: string): DateValue | undefined {
+		if (typeof value !== 'string') {
+			throw new IllegalArgument('DateValue.fromString()');
+		}
+		return fromStringImpl(value, /^([0-9]{4})-([0-9]{2})-([0-9]{2})$/, /^([0-9]{4})-([0-9]{2})-\*\*$/, /^([0-9]{4})-\*\*-\*\*$/, false);
+	}
+
+
+	/**
 	 * Get the date in a PGN format (e.g. `'2022.07.19'`, `'2022.07.??'` or `'2022.??.??'` depending on the type of the current object).
 	 */
 	toPGNString(): string {
 		return toStringImpl(this.#year, this.#month, this.#day, '.', '??');
+	}
+
+
+	/**
+	 * Parse the given value as a date in PGN format (e.g. `'2022.07.19'`, `'2022.07.??'` or `'2022.??.??'`).
+	 *
+	 * @returns `undefined` if the value does not represent a valid date.
+	 */
+	static fromPGNString(value: string): DateValue | undefined {
+		if (typeof value !== 'string') {
+			throw new IllegalArgument('DateValue.fromPGNString()');
+		}
+		return fromStringImpl(value, /^([0-9]{4})\.([0-9]{2})\.([0-9]{2})$/, /^([0-9]{4})\.([0-9]{2})\.\?\?$/, /^([0-9]{4})(?:\.\?\?\.\?\?)?$/, true);
 	}
 
 
@@ -183,6 +209,49 @@ function toStringImpl(year: number, month: number | undefined, day: number | und
 	const m = month === undefined ? undefinedToken : String(month).padStart(2, '0');
 	const d = day === undefined ? undefinedToken : String(day).padStart(2, '0');
 	return y + separator + m + separator + d;
+}
+
+
+function fromStringImpl(value: string, ymdRe: RegExp, ymRe: RegExp, yRe: RegExp, tolerant: boolean) {
+	if (ymdRe.test(value)) {
+		const y = RegExp.$1;
+		const m = RegExp.$2;
+		const d = RegExp.$3;
+		const year = parseInt(y, 10);
+		const month = parseInt(m, 10);
+		const day = parseInt(d, 10);
+		if (DateValue.isValid(year, month, day)) {
+			return new DateValue(year, month, day);
+		}
+		else if (tolerant) {
+			return DateValue.isValid(year, month) ? new DateValue(year, month) : new DateValue(year);
+		}
+		else {
+			return undefined;
+		}
+	}
+	else if (ymRe.test(value)) {
+		const y = RegExp.$1;
+		const m = RegExp.$2;
+		const year = parseInt(y, 10);
+		const month = parseInt(m, 10);
+		if (DateValue.isValid(year, month)) {
+			return new DateValue(year, month);
+		}
+		else if (tolerant) {
+			return new DateValue(year);
+		}
+		else {
+			return undefined;
+		}
+	}
+	else if (yRe.test(value)) {
+		const year = parseInt(RegExp.$1, 10);
+		return new DateValue(year);
+	}
+	else {
+		return undefined;
+	}
 }
 
 

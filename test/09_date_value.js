@@ -24,6 +24,24 @@ const { exception, DateValue } = require('../dist/lib/index');
 const test = require('unit.js');
 
 
+function validateDateValue(dv, expectedType, expectedYear, expectedMonth, expectedDay) {
+	test.value(dv.type()).is(expectedType);
+	test.value(dv.year()).is(expectedYear);
+	if (expectedMonth === null) {
+		test.exception(() => dv.month()).isInstanceOf(exception.IllegalArgument);
+	}
+	else {
+		test.value(dv.month()).is(expectedMonth);
+	}
+	if (expectedDay === null) {
+		test.exception(() => dv.day()).isInstanceOf(exception.IllegalArgument);
+	}
+	else {
+		test.value(dv.day()).is(expectedDay);
+	}
+}
+
+
 describe('Date value attributes', () => {
 
 	function itDateValue(label, expectedType, expectedYear, expectedMonth, expectedDay, expectedDate, expectedString, expectedPGNString,
@@ -31,20 +49,7 @@ describe('Date value attributes', () => {
 
 		it(label + ' - Base attributes', () => {
 			const dv = builder();
-			test.value(dv.type()).is(expectedType);
-			test.value(dv.year()).is(expectedYear);
-			if (expectedMonth === null) {
-				test.exception(() => dv.month()).isInstanceOf(exception.IllegalArgument);
-			}
-			else {
-				test.value(dv.month()).is(expectedMonth);
-			}
-			if (expectedDay === null) {
-				test.exception(() => dv.day()).isInstanceOf(exception.IllegalArgument);
-			}
-			else {
-				test.value(dv.day()).is(expectedDay);
-			}
+			validateDateValue(dv, expectedType, expectedYear, expectedMonth, expectedDay);
 		});
 
 		it(label + ' - Conversion to date', () => {
@@ -60,6 +65,16 @@ describe('Date value attributes', () => {
 		it(label + ' - Conversion to PGN string', () => {
 			const dv = builder();
 			test.value(dv.toPGNString()).is(expectedPGNString);
+		});
+
+		it(label + ' - Conversion from string', () => {
+			const dv = DateValue.fromString(expectedString);
+			validateDateValue(dv, expectedType, expectedYear, expectedMonth, expectedDay);
+		});
+
+		it(label + ' - Conversion from PGN string', () => {
+			const dv = DateValue.fromPGNString(expectedPGNString);
+			validateDateValue(dv, expectedType, expectedYear, expectedMonth, expectedDay);
 		});
 
 		it(label + ' - Conversion to human readable string', () => {
@@ -96,4 +111,51 @@ describe('Invalid date values', () => {
 
 	itInvalid('From string', () => new DateValue('1990'));
 	itInvalid('Negative year', () => new DateValue(-1));
+});
+
+
+describe('Invalid date value parsing', () => {
+
+	function itValidValue(label, expectedType, expectedYear, expectedMonth, expectedDay, builder) {
+		it(label, () => {
+			const dv = builder();
+			validateDateValue(dv, expectedType, expectedYear, expectedMonth, expectedDay);
+		});
+	}
+
+	function itInvalidValue(label, builder) {
+		it(label, () => {
+			test.value(builder()).is(undefined);
+		});
+	}
+
+	itInvalidValue('Invalid month 1', () => DateValue.fromString('1990-00-**'));
+	itInvalidValue('Invalid month 2', () => DateValue.fromString('1990-13-**'));
+	itInvalidValue('Invalid day of month 1', () => DateValue.fromString('1990-01-00'));
+	itInvalidValue('Invalid day of month 2', () => DateValue.fromString('1990-04-31'));
+	itInvalidValue('Invalid day of month 3', () => DateValue.fromString('1991-02-29'));
+	itInvalidValue('Invalid day of month 4', () => DateValue.fromString('1900-02-29'));
+
+	itValidValue('Invalid month 1 (PGN)', 'y', 1990, null, null, () => DateValue.fromPGNString('1990.00.??'));
+	itValidValue('Invalid month 2 (PGN)', 'y', 1990, null, null, () => DateValue.fromPGNString('1990.13.??'));
+	itValidValue('Invalid day of month 1 (PGN)', 'ym', 1990, 1, null, () => DateValue.fromPGNString('1990.01.00'));
+	itValidValue('Invalid day of month 2 (PGN)', 'ym', 1990, 4, null, () => DateValue.fromPGNString('1990.04.31'));
+	itValidValue('Invalid day of month 3 (PGN)', 'ym', 1991, 2, null, () => DateValue.fromPGNString('1991.02.29'));
+	itValidValue('Invalid day of month 4 (PGN)', 'ym', 1900, 2, null, () => DateValue.fromPGNString('1900.02.29'));
+
+	itInvalidValue('Reading year', () => DateValue.fromString('1951'));
+	itValidValue('Reading year (PGN)', 'y', 1951, null, null, () => DateValue.fromPGNString('1951'));
+
+	itInvalidValue('Invalid separator', () => DateValue.fromString('1900.01.01'));
+	itInvalidValue('Invalid PGN separator', () => DateValue.fromPGNString('1900-01-01'));
+
+	function itInvalidArgument(label, value) {
+		it(label, () => {
+			test.exception(() => DateValue.fromString(value)).isInstanceOf(exception.IllegalArgument);
+			test.exception(() => DateValue.fromPGNString(value)).isInstanceOf(exception.IllegalArgument);
+		});
+	}
+
+	itInvalidArgument('From null', null);
+	itInvalidArgument('From number', 1993);
 });
