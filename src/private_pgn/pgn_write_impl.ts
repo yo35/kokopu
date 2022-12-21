@@ -236,7 +236,7 @@ export function writeGame(game: Game, options: PGNWriteOptions) {
 	result += writeOptionalHeader('BlackTitle', game.playerTitle('b'));
 	result += writeOptionalHeader('ECO', game.eco());
 	if (hasFENHeader) {
-		result += `[FEN "${initialPosition.fen({ fullMoveNumber: game.mainVariation().initialFullMoveNumber(), regularFENIfPossible: true })}"]\n`;
+		result += `[FEN "${initialPosition.fen({ fullMoveNumber: game.initialFullMoveNumber(), regularFENIfPossible: true })}"]\n`;
 	}
 	result += writeOptionalHeader('Opening', game.opening());
 	if (options.withPlyCount) {

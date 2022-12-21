@@ -510,6 +510,14 @@ export class Game {
 
 
 	/**
+	 * Full-move number at which the game starts.
+	 */
+	initialFullMoveNumber(): number {
+		return this._moveTreeRoot._fullMoveNumber;
+	}
+
+
+	/**
 	 * The main variation of the game.
 	 */
 	mainVariation(): Variation {
