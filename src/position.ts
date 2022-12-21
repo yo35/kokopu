@@ -126,7 +126,7 @@ export class Position {
 			//  - 'start'
 			//  - 'empty'
 			//  - Position
-			//  - GameVariant (valid only for variants with a cannonical starting position)
+			//  - GameVariant (valid only for variants with a canonical starting position)
 			//  - FEN
 			//  - GameVariant:FEN
 			case 1: {
@@ -169,7 +169,7 @@ export class Position {
 			}
 
 			// Possible overloads with 2 arguments:
-			//  - (GameVariant, 'start') (valid only for variants with a cannonical starting position)
+			//  - (GameVariant, 'start') (valid only for variants with a canonical starting position)
 			//  - (GameVariant, 'empty')
 			//  - (GameVariant, scharnaglCode) (valid only for Chess960)
 			//  - (GameVariant, FEN)
