@@ -88,4 +88,17 @@ export let INVALID_GAME_INDEX            = 'Game index {0} is invalid (only {1} 
 export let UNKNOWN_VARIANT               = 'Unknown chess game variant ({0}).';
 export let VARIANT_WITHOUT_FEN           = 'For game variant {0}, the FEN header is mandatory.';
 
+// POJO deserializing error messages
+export let POJO_MUST_BE_AN_OBJECT           = 'Unexpected non-object value passed as POJO.';
+export let INVALID_POJO_STRING_FIELD        = 'POJO field {0} must be a string.';
+export let INVALID_POJO_NUMBER_FIELD        = 'POJO field {0} must be a number.';
+export let INVALID_POJO_PLAYER_FIELD        = 'POJO field {0} must be an object.';
+export let INVALID_ELO_IN_POJO              = 'Invalid ELO field.';
+export let INVALID_DATE_IN_POJO             = 'Invalid date field.';
+export let INVALID_ECO_CODE_IN_POJO         = 'Invalid ECO field.';
+export let INVALID_RESULT_IN_POJO           = 'Invalid result field.';
+export let INVALID_VARIANT_IN_POJO          = 'Invalid variant field.';
+export let INVALID_FEN_IN_POJO              = 'Invalid FEN in the initial position field. {0}';
+export let MISSING_INITIAL_POSITION_IN_POJO = 'For game variant {0}, the initial position field is mandatory.';
+
 }

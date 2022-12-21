@@ -22,16 +22,17 @@
 
 import { Color, GameResult, GameVariant } from './base_types';
 import { DateValue } from './date_value';
-import { IllegalArgument } from './exception';
+import { IllegalArgument, InvalidFEN, InvalidPOJO } from './exception';
 import { GamePOJO, PlayerPOJO } from './game_pojo';
 import { isValidECO, nagSymbol, variantWithCanonicalStartPosition } from './helper';
+import { i18n } from './i18n';
 import { AbstractNode, Node, Variation } from './node_variation';
 import { Position } from './position';
 
 import { trimAndCollapseSpaces } from './private_game/common';
 import { MoveTreeRoot } from './private_game/node_variation_impl';
 
-import { ColorImpl, GameResultImpl, colorFromString, resultFromString, resultToString } from './private_position/base_types_impl';
+import { ColorImpl, GameResultImpl, colorFromString, resultFromString, resultToString, variantFromString } from './private_position/base_types_impl';
 
 
 /**
@@ -646,6 +647,126 @@ export class Game {
 		}
 
 		return pojo;
+	}
+
+
+	/**
+	 * Decode the [POJO](https://en.wikipedia.org/wiki/Plain_old_Java_object) passed in argument, assuming it follows the schema defined by {@link GamePOJO}.
+	 *
+	 * @throws {@link exception.InvalidPOJO} if the given object cannot be decoded, either because it does not follow the schema defined by {@link GamePOJO},
+	 *         or because it would result in an inconsistent game (e.g. if it contains some invalid moves).
+	 */
+	static fromPOJO(pojo: any): Game {
+		if (typeof pojo !== 'object') {
+			throw new InvalidPOJO(pojo, '', i18n.POJO_MUST_BE_AN_OBJECT);
+		}
+
+		const game = new Game();
+
+		function decodeStringField(value: any, fieldName: string, setter: (value: string) => void) {
+			if (value === undefined) {
+				return;
+			}
+			if (typeof value !== 'string') {
+				throw new InvalidPOJO(pojo, fieldName, i18n.INVALID_POJO_STRING_FIELD, fieldName);
+			}
+			setter(value);
+		}
+
+		function decodeNumberField(value: any, fieldName: string, setter: (value: number) => void) {
+			if (value === undefined) {
+				return;
+			}
+			if (typeof value !== 'number') {
+				throw new InvalidPOJO(pojo, fieldName, i18n.INVALID_POJO_NUMBER_FIELD, fieldName);
+			}
+			setter(value);
+		}
+
+		function decodePlayerPOJO(playerPOJO: any, playerFieldName: string, color: ColorImpl) {
+			if (playerPOJO === undefined) {
+				return;
+			}
+			if (typeof playerPOJO !== 'object') {
+				throw new InvalidPOJO(pojo, playerFieldName, i18n.INVALID_POJO_PLAYER_FIELD, playerFieldName);
+			}
+			decodeStringField(playerPOJO.name, playerFieldName + '.name', value => { game._playerName[color] = value; });
+			decodeNumberField(playerPOJO.elo, playerFieldName + '.elo', value => {
+				if (!Number.isInteger(value) || value < 0) {
+					throw new InvalidPOJO(pojo, playerFieldName + '.elo', i18n.INVALID_ELO_IN_POJO);
+				}
+				game._playerElo[color] = value;
+			});
+			decodeStringField(playerPOJO.title, playerFieldName + '.title', value => { game._playerTitle[color] = value; });
+		}
+
+		// Headers
+		decodePlayerPOJO(pojo.white, 'white', ColorImpl.WHITE);
+		decodePlayerPOJO(pojo.black, 'black', ColorImpl.BLACK);
+		decodeStringField(pojo.event, 'event', value => { game._event = value; });
+		decodeStringField(pojo.round, 'round', value => { game._round = value; });
+		decodeStringField(pojo.date, 'date', value => {
+			const date = DateValue.fromString(value);
+			if (value === undefined) {
+				throw new InvalidPOJO(pojo, 'date', i18n.INVALID_DATE_IN_POJO);
+			}
+			game._date = date;
+		});
+		decodeStringField(pojo.site, 'site', value => { game._site = value; });
+		decodeStringField(pojo.annotator, 'annotator', value => { game._annotator = value; });
+		decodeStringField(pojo.eco, 'eco', value => {
+			if (!isValidECO(value)) {
+				throw new InvalidPOJO(pojo, 'eco', i18n.INVALID_ECO_CODE_IN_POJO);
+			}
+			game._eco = value;
+		});
+		decodeStringField(pojo.opening, 'opening', value => { game._opening = value; });
+		decodeStringField(pojo.openingVariation, 'openingVariation', value => { game._openingVariation = value; });
+		decodeStringField(pojo.openingSubVariation, 'openingSubVariation', value => { game._openingSubVariation = value; });
+		decodeStringField(pojo.termination, 'termination', value => { game._termination = value; });
+		decodeStringField(pojo.result, 'result', value => {
+			const resultCode = resultFromString(value);
+			if (resultCode < 0) {
+				throw new InvalidPOJO(pojo, 'result', i18n.INVALID_RESULT_IN_POJO);
+			}
+			game._result = resultCode;
+		});
+
+		// Moves
+		let variant: GameVariant = 'regular';
+		let initialPositionDefined = false;
+		decodeStringField(pojo.variant, 'variant', value => {
+			if (variantFromString(value) < 0) {
+				throw new InvalidPOJO(pojo, 'variant', i18n.INVALID_VARIANT_IN_POJO);
+			}
+			variant = value as GameVariant;
+		});
+		decodeStringField(pojo.initialPosition, 'initialPosition', value => {
+			const position = new Position(variant, 'empty');
+			try {
+				const { fullMoveNumber } = position.fen(value);
+				game.initialPosition(position, fullMoveNumber);
+				initialPositionDefined = true;
+			}
+			catch (error) {
+				// istanbul ignore else
+				if (error instanceof InvalidFEN) {
+					throw new InvalidPOJO(pojo, 'initialPosition', i18n.INVALID_FEN_IN_POJO, error.message);
+				}
+				else {
+					throw error;
+				}
+			}
+		});
+		if (variant !== 'regular' && !initialPositionDefined) {
+			if (!variantWithCanonicalStartPosition(variant)) {
+				throw new InvalidPOJO(pojo, 'initialPosition', i18n.MISSING_INITIAL_POSITION_IN_POJO, variant);
+			}
+			game.initialPosition(new Position(variant));
+		}
+		// TODO
+
+		return game;
 	}
 
 
