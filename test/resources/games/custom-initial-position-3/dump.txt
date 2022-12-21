@@ -1,0 +1,5 @@
+Event = {Custom initial position (canonical start position but non-canonical move number)}
+Initial move number = {3}
+[start]                 -+<LONG
+[3w]                    (3w) e4
+{Line}{1 plies}

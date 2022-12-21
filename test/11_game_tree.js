@@ -161,6 +161,14 @@ const oneGamefactories = {
 		return game;
 	},
 
+	'custom-initial-position-3': () => {
+		const game = new Game();
+		game.event('Custom initial position (canonical start position but non-canonical move number)');
+		game.initialPosition(new Position('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 3'), 3);
+		game.mainVariation().play('e4');
+		return game;
+	},
+
 	'variant-chess960': () => {
 		const game = new Game();
 		game.event('Chess game variant - Chess960');

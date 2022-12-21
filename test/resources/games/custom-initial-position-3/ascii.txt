@@ -1,0 +1,3 @@
+Event: Custom initial position (canonical start position but non-canonical move number)
+3.e4
+*

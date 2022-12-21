@@ -17,6 +17,7 @@ Event = {Custom initial position}
 |   |   |   |   |   |   |   |   |
 +---+---+---+---+---+---+---+---+
 w - -
+Initial move number = {60}
 [start]                 -+<LONG
 [60w]                   (60w) Kd5
 [60b]                   (60b) Kc8

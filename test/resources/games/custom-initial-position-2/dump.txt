@@ -17,6 +17,7 @@ Event = {Custom initial position (Black to play)}
 | R | N | B | Q |   | R | K |   |
 +---+---+---+---+---+---+---+---+
 b kq -
+Initial move number = {4}
 [start]                 -+<LONG
 [4b]                    (4b) O-O
 {Line}{1 plies}

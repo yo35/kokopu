@@ -635,7 +635,8 @@ export class Game {
 		if (variant !== 'regular') {
 			pojo.variant = variant;
 		}
-		const isCanonicalStartPosition = variantWithCanonicalStartPosition(variant) && Position.isEqual(this._moveTreeRoot._position, new Position(variant));
+		const isCanonicalStartPosition = variantWithCanonicalStartPosition(variant) && Position.isEqual(this._moveTreeRoot._position, new Position(variant))
+			&& this._moveTreeRoot._fullMoveNumber === 1;
 		if (!isCanonicalStartPosition) {
 			pojo.initialPosition = this._moveTreeRoot._position.fen({ fullMoveNumber: this._moveTreeRoot._fullMoveNumber });
 		}

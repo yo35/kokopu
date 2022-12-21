@@ -228,7 +228,8 @@ export function writeGame(game: Game, options: PGNWriteOptions) {
 
 	const variant = game.variant();
 	const initialPosition = game.initialPosition();
-	const hasFENHeader = !variantWithCanonicalStartPosition(variant) || !Position.isEqual(initialPosition, new Position(variant));
+	const hasFENHeader = !variantWithCanonicalStartPosition(variant) || !Position.isEqual(initialPosition, new Position(variant))
+		|| game.initialFullMoveNumber() !== 1;
 
 	// Additional tags (ASCII order by tag name)
 	result += writeOptionalHeader('Annotator', game.annotator());

@@ -62,6 +62,12 @@ module.exports = function(game) {
 		}
 	}
 
+	function dumpInitialMoveNumber(moveNumber) {
+		if (moveNumber !== 1) {
+			res += `Initial move number = {${moveNumber}}\n`;
+		}
+	}
+
 	function dumpNags(node) {
 		for (const nag of node.nags()) {
 			res += ' $' + nag;
@@ -151,6 +157,7 @@ module.exports = function(game) {
 	dumpHeader('Termination', game.termination());
 	dumpVariant(game.variant());
 	dumpInitialPosition(game.initialPosition());
+	dumpInitialMoveNumber(game.initialFullMoveNumber());
 	dumpVariation(game.mainVariation(), '', '');
 	dumpResultAndPlyCount(game.result(), game.plyCount());
 
