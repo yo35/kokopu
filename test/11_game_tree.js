@@ -26,6 +26,31 @@ const resourceExists = require('./common/resourceexists');
 const dumpGame = require('./common/dumpgame');
 const test = require('unit.js');
 
+/**
+ * WARNING: this factory must return a game with all the headers set to a non-default value. Do not forget to update when adding new headers.
+ */
+function allHeaderFactory() {
+	const game = new Game();
+	game.annotator(' The   Annotator ');
+	game.date(2021, 9, 4);
+	game.eco('D42');
+	game.event('An event name\nspanning several lines');
+	game.playerElo('w', 1942);
+	game.playerElo('b', 2421);
+	game.playerName('w', '  Light side\n\n');
+	game.playerName('b', 'Dark\n \n\rside');
+	game.playerTitle('w', 'CM');
+	game.playerTitle('b', 'IM');
+	game.round(1);
+	game.site('Somewhere...');
+	game.opening('Sicilian Defense');
+	game.openingVariation('Dragon');
+	game.openingSubVariation('Yugoslav Attack');
+	game.termination('adjudication');
+	game.result('0-1');
+	return game;
+}
+
 const oneGamefactories = {
 
 	'base': () => {
@@ -56,25 +81,11 @@ const oneGamefactories = {
 
 	'empty': () => new Game(),
 
-	'all-headers': () => {
-		const game = new Game();
-		game.annotator(' The   Annotator ');
-		game.date(2021, 9, 4);
-		game.eco('D42');
-		game.event('An event name\nspanning several lines');
-		game.playerElo('w', 1942);
-		game.playerElo('b', 2421);
-		game.playerName('w', '  Light side\n\n');
-		game.playerName('b', 'Dark\n \n\rside');
-		game.playerTitle('w', 'CM');
-		game.playerTitle('b', 'IM');
-		game.round(1);
-		game.site('Somewhere...');
-		game.opening('Sicilian Defense');
-		game.openingVariation('Dragon');
-		game.openingSubVariation('Yugoslav Attack');
-		game.termination('adjudication');
-		game.result('0-1');
+	'all-headers': allHeaderFactory,
+
+	'all-headers-cleared': () => {
+		const game = allHeaderFactory();
+		game.clearHeaders();
 		return game;
 	},
 

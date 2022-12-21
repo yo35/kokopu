@@ -69,6 +69,30 @@ export class Game {
 
 
 	/**
+	 * Clear all the headers (player names, elos, titles, event name, date, etc...).
+	 *
+	 * The {@link Game.result} header is reseted to its default value.
+	 * The initial position and moves are not modified.
+	 */
+	clearHeaders(): void {
+		this._playerName = [ undefined, undefined ];
+		this._playerElo = [ undefined, undefined ];
+		this._playerTitle = [ undefined, undefined ];
+		this._event = undefined;
+		this._round = undefined;
+		this._date = undefined;
+		this._site = undefined;
+		this._annotator = undefined;
+		this._eco = undefined;
+		this._opening = undefined;
+		this._openingVariation = undefined;
+		this._openingSubVariation = undefined;
+		this._termination = undefined;
+		this._result = GameResultImpl.LINE;
+	}
+
+
+	/**
 	 * Get the name of the player corresponding to the given color.
 	 */
 	playerName(color: Color): string | undefined;
