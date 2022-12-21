@@ -599,7 +599,7 @@ describe('Game nodes', () => {
 
 	function itGameNodes(filename, withSubVariations, factory) {
 		it(filename + (withSubVariations ? ' (with sub-variations)' : ' (main variation only)'), () => {
-			const resource = `games/${filename}/${withSubVariations ? 'all-nodes' : 'main-nodes'}.txt`;
+			const resource = `games/${filename}/${withSubVariations ? 'nodes-all' : 'nodes-main'}.txt`;
 			const expectedText = resourceExists(resource) ? readText(resource).trim() : '';
 			const game = factory();
 			const text = game.nodes(withSubVariations).map(node => `[${node.id()}] ${node.notation()}`).join('\n');
@@ -694,10 +694,12 @@ describe('Read PGN', () => {
 
 	function itReadPgn(filename) {
 		it(filename, () => {
+			let resource = `games/${filename}/dump-clean.txt`;
+			if (!resourceExists(resource)) {
+				resource = `games/${filename}/dump.txt`;
+			}
+			const expectedText = readText(resource).trim();
 			const inputText = readText(`games/${filename}/database.pgn`);
-			const cleanedResource = `games/${filename}/dump-clean.txt`;
-			const actualResource = resourceExists(cleanedResource) ? cleanedResource : `games/${filename}/dump.txt`;
-			const expectedText = readText(actualResource).trim();
 			const game = pgnRead(inputText, 0);
 			test.value(dumpGame(game).trim()).is(expectedText);
 		});
