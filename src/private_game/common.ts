@@ -82,7 +82,6 @@ export function decodeStringField(pojo: Partial<Record<string, unknown>>, fieldN
 		setter(value);
 	}
 	else if (value !== undefined) {
-		exceptionBuilder.push(fieldName);
 		throw exceptionBuilder.build(i18n.INVALID_POJO_STRING_FIELD);
 	}
 	exceptionBuilder.pop();

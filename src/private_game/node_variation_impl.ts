@@ -129,6 +129,7 @@ export class MoveTreeRoot {
 			if (!variantWithCanonicalStartPosition(variant)) {
 				exceptionBuilder.push('initialPosition');
 				throw exceptionBuilder.build(i18n.MISSING_INITIAL_POSITION_IN_POJO, variant);
+				// exceptionBuilder.pop()
 			}
 			this._position = new Position(variant);
 			this._fullMoveNumber = 1;
@@ -138,6 +139,7 @@ export class MoveTreeRoot {
 		if ('mainVariation' in pojo && pojo.mainVariation !== undefined) {
 			exceptionBuilder.push('mainVariation');
 			this._mainVariationData = setVariationPOJO(pojo.mainVariation, this, this._position, this._fullMoveNumber, true, exceptionBuilder);
+			exceptionBuilder.pop();
 		}
 		else {
 			this.clearTree();
@@ -273,6 +275,10 @@ function setVariationPOJO(variationPOJO: unknown, parent: NodeData | MoveTreeRoo
 		}
 	}
 
+	// Un-push the "nodes" path component if necessary.
+	if (typeof variationPOJO === 'object') {
+		exceptionBuilder.pop();
+	}
 	return result;
 }
 
