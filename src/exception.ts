@@ -134,6 +134,35 @@ export class InvalidPGN {
 }
 
 
+/**
+ * Exception thrown by the POJO deserializing functions.
+ */
+export class InvalidPOJO {
+
+	/** POJO that causes the error. */
+	pojo: unknown;
+
+	/** Name of the field that causes the error (or an empty string if the error is not related to any particular field). */
+	fieldName: string;
+
+	/** Human-readable message describing the error. */
+	message: string;
+
+	constructor(pojo: unknown, fieldName: string, message: string, ...tokens: any[]) {
+		this.pojo = pojo;
+		this.fieldName = fieldName;
+		this.message = buildMessage(message, tokens);
+	}
+
+	/**
+	 * @ignore
+	 */
+	toString(): string {
+		return toStringImpl('InvalidPOJO', this.message);
+	}
+}
+
+
 function buildMessage(message: string, tokens: any[]) {
 	return message.replace(/{(\d+)}/g, (match, placeholder) => {
 		const placeholderIndex = Number(placeholder);

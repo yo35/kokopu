@@ -733,3 +733,21 @@ describe('Game to POJO', () => {
 		itConvertToPOJO(f, oneGamefactories[f]);
 	}
 });
+
+
+describe('POJO to Game', () => {
+
+	function itConvertFromPOJO(filename) {
+		it(filename, () => {
+			const resource = `games/${filename}/dump.txt`;
+			const expectedText = readText(resource).trim();
+			const pojo = JSON.parse(readText(`games/${filename}/pojo.json`).trim());
+			const game = Game.fromPOJO(pojo);
+			test.value(dumpGame(game).trim()).is(expectedText);
+		});
+	}
+
+	for (const f in oneGamefactories) {
+		itConvertFromPOJO(f, oneGamefactories[f]);
+	}
+});

@@ -22,13 +22,14 @@
 
 import { Color, GameResult, GameVariant } from './base_types';
 import { DateValue } from './date_value';
-import { IllegalArgument } from './exception';
+import { IllegalArgument, InvalidPOJO } from './exception';
 import { GamePOJO, PlayerPOJO } from './game_pojo';
 import { isValidECO, nagSymbol, variantWithCanonicalStartPosition } from './helper';
+import { i18n } from './i18n';
 import { AbstractNode, Node, Variation } from './node_variation';
 import { Position } from './position';
 
-import { trimAndCollapseSpaces } from './private_game/common';
+import { trimAndCollapseSpaces, POJOExceptionBuilder, decodeStringField, decodeNumberField, decodeObjectField } from './private_game/common';
 import { MoveTreeRoot } from './private_game/node_variation_impl';
 
 import { ColorImpl, GameResultImpl, colorFromString, resultFromString, resultToString } from './private_position/base_types_impl';
@@ -640,12 +641,76 @@ export class Game {
 		if (!isCanonicalStartPosition) {
 			pojo.initialPosition = this._moveTreeRoot._position.fen({ fullMoveNumber: this._moveTreeRoot._fullMoveNumber });
 		}
-		const mainVariationPOJO = this._moveTreeRoot.pojo();
+		const mainVariationPOJO = this._moveTreeRoot.getPojo();
 		if (!Array.isArray(mainVariationPOJO) || mainVariationPOJO.length > 0) {
 			pojo.mainVariation = mainVariationPOJO;
 		}
 
 		return pojo;
+	}
+
+
+	/**
+	 * Decode the [POJO](https://en.wikipedia.org/wiki/Plain_old_Java_object) passed in argument, assuming it follows the schema defined by {@link GamePOJO}.
+	 *
+	 * @throws {@link exception.InvalidPOJO} if the given object cannot be decoded, either because it does not follow the schema defined by {@link GamePOJO},
+	 *         or because it would result in an inconsistent game (e.g. if it contains some invalid moves).
+	 */
+	static fromPOJO(pojo: unknown): Game {
+		if (typeof pojo !== 'object' || pojo === null) {
+			throw new InvalidPOJO(pojo, '', i18n.POJO_MUST_BE_AN_OBJECT);
+		}
+
+		const game = new Game();
+		const exceptionBuilder = new POJOExceptionBuilder(pojo);
+
+		function processPlayerPOJO(playerPOJO: Partial<Record<string, unknown>>, color: ColorImpl) {
+			decodeStringField(playerPOJO, 'name', exceptionBuilder, value => { game._playerName[color] = value; });
+			decodeNumberField(playerPOJO, 'elo', exceptionBuilder, value => {
+				if (!Number.isInteger(value) || value < 0) {
+					throw exceptionBuilder.build(i18n.INVALID_ELO_IN_POJO);
+				}
+				game._playerElo[color] = value;
+			});
+			decodeStringField(playerPOJO, 'title', exceptionBuilder, value => { game._playerTitle[color] = value; });
+		}
+
+		// Headers
+		decodeObjectField(pojo, 'white', exceptionBuilder, value => { processPlayerPOJO(value, ColorImpl.WHITE); });
+		decodeObjectField(pojo, 'black', exceptionBuilder, value => { processPlayerPOJO(value, ColorImpl.BLACK); });
+		decodeStringField(pojo, 'event', exceptionBuilder, value => { game._event = value; });
+		decodeStringField(pojo, 'round', exceptionBuilder, value => { game._round = value; });
+		decodeStringField(pojo, 'date', exceptionBuilder, value => {
+			const date = DateValue.fromString(value);
+			if (value === undefined) {
+				throw exceptionBuilder.build(i18n.INVALID_DATE_IN_POJO);
+			}
+			game._date = date;
+		});
+		decodeStringField(pojo, 'site', exceptionBuilder, value => { game._site = value; });
+		decodeStringField(pojo, 'annotator', exceptionBuilder, value => { game._annotator = value; });
+		decodeStringField(pojo, 'eco', exceptionBuilder, value => {
+			if (!isValidECO(value)) {
+				throw exceptionBuilder.build(i18n.INVALID_ECO_CODE_IN_POJO);
+			}
+			game._eco = value;
+		});
+		decodeStringField(pojo, 'opening', exceptionBuilder, value => { game._opening = value; });
+		decodeStringField(pojo, 'openingVariation', exceptionBuilder, value => { game._openingVariation = value; });
+		decodeStringField(pojo, 'openingSubVariation', exceptionBuilder, value => { game._openingSubVariation = value; });
+		decodeStringField(pojo, 'termination', exceptionBuilder, value => { game._termination = value; });
+		decodeStringField(pojo, 'result', exceptionBuilder, value => {
+			const resultCode = resultFromString(value);
+			if (resultCode < 0) {
+				throw exceptionBuilder.build(i18n.INVALID_RESULT_IN_POJO);
+			}
+			game._result = resultCode;
+		});
+
+		// Moves
+		game._moveTreeRoot.setPojo(pojo, exceptionBuilder);
+
+		return game;
 	}
 
 
