@@ -20,13 +20,17 @@
  * -------------------------------------------------------------------------- */
 
 
-import { Color } from '../base_types';
-import { IllegalArgument, InvalidNotation } from '../exception';
+import { Color, GameVariant } from '../base_types';
+import { IllegalArgument, InvalidFEN, InvalidNotation } from '../exception';
 import { AbstractNodePOJO, NodePOJO, VariationPOJO } from '../game_pojo';
+import { variantWithCanonicalStartPosition } from '../helper';
 import { i18n } from '../i18n';
 import { MoveDescriptor } from '../move_descriptor';
 import { Node, Variation } from '../node_variation';
 import { Position } from '../position';
+
+import { POJOExceptionBuilder, decodeStringField, decodeBooleanField, decodeArrayField, decodeObjectField } from './common';
+import { variantFromString } from '../private_position/base_types_impl';
 
 
 /**
@@ -89,9 +93,57 @@ export class MoveTreeRoot {
 		}
 	}
 
-	pojo() {
-		return variationPOJO(new Position(this._position), this._mainVariationData, true);
+	getPojo() {
+		return getVariationPOJO(new Position(this._position), this._mainVariationData, true);
 	}
+
+	setPojo(pojo: Partial<Record<string, unknown>>, exceptionBuilder: POJOExceptionBuilder) {
+
+		// Decode the game variant and initial position, if any.
+		let variant: GameVariant = 'regular';
+		let initialPositionDefined = false;
+		decodeStringField(pojo, 'variant', exceptionBuilder, value => {
+			if (variantFromString(value) < 0) {
+				throw exceptionBuilder.build(i18n.INVALID_VARIANT_IN_POJO);
+			}
+			variant = value as GameVariant;
+		});
+		decodeStringField(pojo, 'initialPosition', exceptionBuilder, value => {
+			this._position = new Position(variant, 'empty');
+			try {
+				const { fullMoveNumber } = this._position.fen(value);
+				this._fullMoveNumber = fullMoveNumber;
+				initialPositionDefined = true;
+			}
+			catch (error) {
+				// istanbul ignore else
+				if (error instanceof InvalidFEN) {
+					throw exceptionBuilder.build(i18n.INVALID_FEN_IN_POJO, error.message);
+				}
+				else {
+					throw error;
+				}
+			}
+		});
+		if (variant !== 'regular' && !initialPositionDefined) {
+			if (!variantWithCanonicalStartPosition(variant)) {
+				exceptionBuilder.push('initialPosition');
+				throw exceptionBuilder.build(i18n.MISSING_INITIAL_POSITION_IN_POJO, variant);
+			}
+			this._position = new Position(variant);
+			this._fullMoveNumber = 1;
+		}
+
+		// Decode the moves and variations.
+		if ('mainVariation' in pojo && pojo.mainVariation !== undefined) {
+			exceptionBuilder.push('mainVariation');
+			this._mainVariationData = setVariationPOJO(pojo.mainVariation, this, this._position, this._fullMoveNumber, true, exceptionBuilder);
+		}
+		else {
+			this.clearTree();
+		}
+	}
+
 }
 
 
@@ -108,12 +160,12 @@ function findNode(variationData: VariationData, nodeIdToken: string, position: P
 }
 
 
-function variationPOJO(position: Position, variationData: VariationData, isLongVariationByDefault: boolean): VariationPOJO {
+function getVariationPOJO(position: Position, variationData: VariationData, isLongVariationByDefault: boolean): VariationPOJO {
 
 	const nodePOJOs: NodePOJO[] = [];
 	let nodeData = variationData.child;
 	while (nodeData !== undefined) {
-		nodePOJOs.push(nodePOJO(position, nodeData));
+		nodePOJOs.push(getNodePOJO(position, nodeData));
 		applyMoveDescriptor(position, nodeData);
 		nodeData = nodeData.child;
 	}
@@ -128,14 +180,14 @@ function variationPOJO(position: Position, variationData: VariationData, isLongV
 		pojoIsTrivial = false;
 	}
 
-	if (appendAbstractNodePOJOFields(pojo, variationData)) {
+	if (appendAnnotationFields(pojo, variationData)) {
 		pojoIsTrivial = false;
 	}
 	return pojoIsTrivial ? pojo.nodes : pojo;
 }
 
 
-function nodePOJO(position: Position, nodeData: NodeData): NodePOJO {
+function getNodePOJO(position: Position, nodeData: NodeData): NodePOJO {
 
 	const pojo: NodePOJO = {
 		notation: nodeData.moveDescriptor === null ? '--' : position.notation(nodeData.moveDescriptor),
@@ -143,35 +195,171 @@ function nodePOJO(position: Position, nodeData: NodeData): NodePOJO {
 	let pojoIsTrivial = true;
 
 	if (nodeData.variations.length > 0) {
-		pojo.variations = nodeData.variations.map(variation => variationPOJO(new Position(position), variation, false));
+		pojo.variations = nodeData.variations.map(variation => getVariationPOJO(new Position(position), variation, false));
 		pojoIsTrivial = false;
 	}
 
-	if (appendAbstractNodePOJOFields(pojo, nodeData)) {
+	if (appendAnnotationFields(pojo, nodeData)) {
 		pojoIsTrivial = false;
 	}
 	return pojoIsTrivial ? pojo.notation : pojo;
 }
 
 
-function appendAbstractNodePOJOFields(pojo: AbstractNodePOJO, nodeData: AbstractNodeData) {
+function appendAnnotationFields(pojo: AbstractNodePOJO, data: AbstractNodeData) {
 	let atLeastOneAnnotation = false;
-	if (nodeData.comment !== undefined) {
-		pojo.comment = nodeData.comment;
-		if (nodeData.isLongComment) {
+	if (data.comment !== undefined) {
+		pojo.comment = data.comment;
+		if (data.isLongComment) {
 			pojo.isLongComment = true;
 		}
 		atLeastOneAnnotation = true;
 	}
-	if (nodeData.nags.size > 0) {
-		pojo.nags = getNags(nodeData);
+	if (data.nags.size > 0) {
+		pojo.nags = getNags(data);
 		atLeastOneAnnotation = true;
 	}
-	if (nodeData.tags.size > 0) {
-		pojo.tags = getTagRecords(nodeData);
+	if (data.tags.size > 0) {
+		pojo.tags = getTagRecords(data);
 		atLeastOneAnnotation = true;
 	}
 	return atLeastOneAnnotation;
+}
+
+
+function setVariationPOJO(variationPOJO: unknown, parent: NodeData | MoveTreeRoot, position: Position, fullMoveNumber: number, isLongVariationByDefault: boolean,
+	exceptionBuilder: POJOExceptionBuilder): VariationData {
+
+	let result: VariationData;
+	let nodes: unknown[];
+
+	// Initialize the VariationData object.
+	if (Array.isArray(variationPOJO)) {
+		result = createVariationData(parent, isLongVariationByDefault);
+		nodes = variationPOJO;
+	}
+	else if (typeof variationPOJO === 'object' && variationPOJO !== null) {
+
+		// Decode everything but the nodes.
+		let longVariation = isLongVariationByDefault;
+		decodeBooleanField(variationPOJO, 'isLongVariation', exceptionBuilder, value => { longVariation = value; });
+		result = createVariationData(parent, longVariation);
+		decodeAnnotationFields(variationPOJO, result, exceptionBuilder);
+
+		// Decode the node array.
+		exceptionBuilder.push('nodes');
+		if (!('nodes' in variationPOJO) || !Array.isArray(variationPOJO.nodes)) {
+			throw exceptionBuilder.build(i18n.INVALID_OR_MISSING_NODE_ARRAY);
+		}
+		nodes = variationPOJO.nodes;
+	}
+	else {
+		throw exceptionBuilder.build(i18n.NOT_A_VARIATION_POJO);
+	}
+
+	// Decode the nodes.
+	let insertionPoint: VariationData | NodeData = result;
+	position = new Position(position);
+	for (let i = 0; i < nodes.length; ++i) {
+
+		exceptionBuilder.push(i);
+		insertionPoint.child = setNodePOJO(nodes[i], result, position, fullMoveNumber, exceptionBuilder);
+		exceptionBuilder.pop();
+
+		insertionPoint = insertionPoint.child;
+		applyMoveDescriptor(position, insertionPoint);
+		if (position.turn() === 'w') {
+			++fullMoveNumber;
+		}
+	}
+
+	return result;
+}
+
+
+function setNodePOJO(nodePOJO: unknown, parentVariation: VariationData, position: Position, fullMoveNumber: number,
+	exceptionBuilder: POJOExceptionBuilder): NodeData {
+
+	// Decode the notation.
+	let moveDescriptor: MoveDescriptor | null;
+	if (typeof nodePOJO === 'string') {
+		moveDescriptor = decodeMoveDescriptorField(position, nodePOJO, exceptionBuilder);
+	}
+	else if (typeof nodePOJO === 'object' && nodePOJO !== null) {
+		exceptionBuilder.push('notation');
+		if (!('notation' in nodePOJO) || typeof nodePOJO.notation !== 'string') {
+			throw exceptionBuilder.build(i18n.INVALID_OR_MISSING_NOTATION_FIELD);
+		}
+		moveDescriptor = decodeMoveDescriptorField(position, nodePOJO.notation, exceptionBuilder);
+		exceptionBuilder.pop();
+	}
+	else {
+		throw exceptionBuilder.build(i18n.NOT_A_NODE_POJO);
+	}
+
+	const result = createNodeData(parentVariation, position.turn(), fullMoveNumber, moveDescriptor);
+	if (typeof nodePOJO === 'object' && nodePOJO !== null) {
+
+		// Decode the annotations.
+		decodeAnnotationFields(nodePOJO, result, exceptionBuilder);
+
+		// Decode the variations.
+		decodeArrayField(nodePOJO, 'variations', exceptionBuilder, value => {
+			for (let i = 0; i < value.length; ++i) {
+				exceptionBuilder.push(i);
+				result.variations.push(setVariationPOJO(value[i], result, position, fullMoveNumber, false, exceptionBuilder));
+				exceptionBuilder.pop();
+			}
+		});
+	}
+	return result;
+}
+
+
+function decodeMoveDescriptorField(position: Position, move: string, exceptionBuilder: POJOExceptionBuilder): MoveDescriptor | null {
+	try {
+		return computeMoveDescriptor(position, move);
+	}
+	catch (error) {
+		// istanbul ignore else
+		if (error instanceof InvalidNotation) {
+			throw exceptionBuilder.build(i18n.INVALID_MOVE_IN_POJO, move, error.message);
+		}
+		else {
+			throw error;
+		}
+	}
+}
+
+
+function decodeAnnotationFields(abstractNodePOJO: Partial<Record<string, unknown>>, data: AbstractNodeData, exceptionBuilder: POJOExceptionBuilder) {
+
+	decodeStringField(abstractNodePOJO, 'comment', exceptionBuilder, value => { data.comment = value; });
+	decodeBooleanField(abstractNodePOJO, 'isLongComment', exceptionBuilder, value => { data.isLongComment = value; });
+
+	decodeArrayField(abstractNodePOJO, 'nags', exceptionBuilder, value => {
+		for (let i = 0; i < value.length; ++i) {
+			exceptionBuilder.push(i);
+			const nag = value[i];
+			if (!Number.isInteger(nag) || (nag as number) < 0) {
+				throw exceptionBuilder.build(i18n.INVALID_NAG_IN_POJO, nag);
+			}
+			data.nags.add(nag as number);
+			exceptionBuilder.pop();
+		}
+	});
+
+	decodeObjectField(abstractNodePOJO, 'tags', exceptionBuilder, value => {
+		for (const tagKey in value) {
+			const tagValue = value[tagKey];
+			if (!isValidTagKey(tagKey) || !(typeof tagValue === 'string' || tagValue === undefined)) {
+				throw exceptionBuilder.build(i18n.INVALID_TAG_IN_POJO, tagKey);
+			}
+			if (tagValue !== undefined) {
+				data.tags.set(tagKey, tagValue);
+			}
+		}
+	});
 }
 
 

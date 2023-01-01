@@ -140,7 +140,7 @@ export class InvalidPGN {
 export class InvalidPOJO {
 
 	/** POJO that causes the error. */
-	pojo: any;
+	pojo: unknown;
 
 	/** Name of the field that causes the error (or an empty string if the error is not related to any particular field). */
 	fieldName: string;
@@ -148,7 +148,7 @@ export class InvalidPOJO {
 	/** Human-readable message describing the error. */
 	message: string;
 
-	constructor(pojo: any, fieldName: string, message: string, ...tokens: any[]) {
+	constructor(pojo: unknown, fieldName: string, message: string, ...tokens: any[]) {
 		this.pojo = pojo;
 		this.fieldName = fieldName;
 		this.message = buildMessage(message, tokens);
