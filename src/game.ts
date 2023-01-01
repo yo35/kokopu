@@ -29,8 +29,9 @@ import { i18n } from './i18n';
 import { AbstractNode, Node, Variation } from './node_variation';
 import { Position } from './position';
 
-import { trimAndCollapseSpaces, POJOExceptionBuilder, decodeStringField, decodeNumberField, decodeObjectField } from './private_game/common';
+import { trimAndCollapseSpaces, isValidElo } from './private_game/common';
 import { MoveTreeRoot } from './private_game/node_variation_impl';
+import { POJOExceptionBuilder, decodeStringField, decodeNumberField, decodeObjectField } from './private_game/pojo_util';
 
 import { ColorImpl, GameResultImpl, colorFromString, resultFromString, resultToString } from './private_position/base_types_impl';
 
@@ -144,7 +145,7 @@ export class Game {
 		}
 		else {
 			value = sanitizeNumberHeader(value);
-			if (value === undefined || (Number.isInteger(value) && value >= 0)) {
+			if (value === undefined || isValidElo(value)) {
 				this._playerElo[colorCode] = value;
 			}
 			else {
@@ -632,19 +633,7 @@ export class Game {
 		if (this._result !== GameResultImpl.LINE) { pojo.result = this.result(); }
 
 		// Moves
-		const variant = this.variant();
-		if (variant !== 'regular') {
-			pojo.variant = variant;
-		}
-		const isCanonicalStartPosition = variantWithCanonicalStartPosition(variant) && Position.isEqual(this._moveTreeRoot._position, new Position(variant))
-			&& this._moveTreeRoot._fullMoveNumber === 1;
-		if (!isCanonicalStartPosition) {
-			pojo.initialPosition = this._moveTreeRoot._position.fen({ fullMoveNumber: this._moveTreeRoot._fullMoveNumber });
-		}
-		const mainVariationPOJO = this._moveTreeRoot.getPojo();
-		if (!Array.isArray(mainVariationPOJO) || mainVariationPOJO.length > 0) {
-			pojo.mainVariation = mainVariationPOJO;
-		}
+		this._moveTreeRoot.getPojo(pojo);
 
 		return pojo;
 	}
@@ -667,7 +656,7 @@ export class Game {
 		function processPlayerPOJO(playerPOJO: Partial<Record<string, unknown>>, color: ColorImpl) {
 			decodeStringField(playerPOJO, 'name', exceptionBuilder, value => { game._playerName[color] = value; });
 			decodeNumberField(playerPOJO, 'elo', exceptionBuilder, value => {
-				if (!Number.isInteger(value) || value < 0) {
+				if (!isValidElo(value)) {
 					throw exceptionBuilder.build(i18n.INVALID_ELO_IN_POJO);
 				}
 				game._playerElo[color] = value;

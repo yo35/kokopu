@@ -22,14 +22,15 @@
 
 import { Color, GameVariant } from '../base_types';
 import { IllegalArgument, InvalidFEN, InvalidNotation } from '../exception';
-import { AbstractNodePOJO, NodePOJO, VariationPOJO } from '../game_pojo';
+import { AbstractNodePOJO, GamePOJO, NodePOJO, VariationPOJO } from '../game_pojo';
 import { variantWithCanonicalStartPosition } from '../helper';
 import { i18n } from '../i18n';
 import { MoveDescriptor } from '../move_descriptor';
 import { Node, Variation } from '../node_variation';
 import { Position } from '../position';
 
-import { POJOExceptionBuilder, decodeStringField, decodeBooleanField, decodeArrayField, decodeObjectField } from './common';
+import { isValidNag } from './common';
+import { POJOExceptionBuilder, decodeStringField, decodeBooleanField, decodeArrayField, decodeObjectField } from './pojo_util';
 import { variantFromString } from '../private_position/base_types_impl';
 
 
@@ -93,8 +94,23 @@ export class MoveTreeRoot {
 		}
 	}
 
-	getPojo() {
-		return getVariationPOJO(new Position(this._position), this._mainVariationData, true);
+	getPojo(pojo: GamePOJO) {
+
+		// Encode the game variant and initial position, if necessary.
+		const variant = this._position.variant();
+		if (variant !== 'regular') {
+			pojo.variant = variant;
+		}
+		const isCanonicalStartPosition = variantWithCanonicalStartPosition(variant) && Position.isEqual(this._position, new Position(variant)) && this._fullMoveNumber === 1;
+		if (!isCanonicalStartPosition) {
+			pojo.initialPosition = this._position.fen({ fullMoveNumber: this._fullMoveNumber });
+		}
+
+		// Encode the moves.
+		const mainVariationPOJO = getVariationPOJO(new Position(this._position), this._mainVariationData, true);
+		if (!Array.isArray(mainVariationPOJO) || mainVariationPOJO.length > 0) {
+			pojo.mainVariation = mainVariationPOJO;
+		}
 	}
 
 	setPojo(pojo: Partial<Record<string, unknown>>, exceptionBuilder: POJOExceptionBuilder) {
@@ -135,7 +151,7 @@ export class MoveTreeRoot {
 			this._fullMoveNumber = 1;
 		}
 
-		// Decode the moves and variations.
+		// Decode the moves.
 		if ('mainVariation' in pojo && pojo.mainVariation !== undefined) {
 			exceptionBuilder.push('mainVariation');
 			this._mainVariationData = setVariationPOJO(pojo.mainVariation, this, this._position, this._fullMoveNumber, true, exceptionBuilder);
@@ -347,7 +363,7 @@ function decodeAnnotationFields(abstractNodePOJO: Partial<Record<string, unknown
 		for (let i = 0; i < value.length; ++i) {
 			exceptionBuilder.push(i);
 			const nag = value[i];
-			if (!Number.isInteger(nag) || (nag as number) < 0) {
+			if (!isValidNag(nag)) {
 				throw exceptionBuilder.build(i18n.INVALID_NAG_IN_POJO, nag);
 			}
 			data.nags.add(nag as number);
@@ -535,14 +551,6 @@ function isLongVariation(variationData: VariationData) {
  */
 function isValidVariationIndex(variationIndex: number, nodeData: NodeData) {
 	return Number.isInteger(variationIndex) && variationIndex >= 0 && variationIndex < nodeData.variations.length;
-}
-
-
-/**
- * Whether the given value is a valid NAG or not.
- */
-function isValidNag(nag: number) {
-	return Number.isInteger(nag) && nag >= 0;
 }
 
 
