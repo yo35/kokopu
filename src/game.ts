@@ -43,9 +43,9 @@ import { ColorImpl, GameResultImpl, colorFromString, resultFromString, resultToS
 export class Game {
 
 	// Headers
-	private _playerName: (string | undefined)[];
-	private _playerElo: (number | undefined)[];
-	private _playerTitle: (string | undefined)[];
+	private _playerName: [ string | undefined, string | undefined ];
+	private _playerElo: [ number | undefined, number | undefined ];
+	private _playerTitle: [ string | undefined, string | undefined ];
 	private _event?: string;
 	private _round?: string;
 	private _date?: DateValue;
@@ -56,7 +56,7 @@ export class Game {
 	private _openingVariation?: string;
 	private _openingSubVariation?: string;
 	private _termination?: string;
-	private _result: number;
+	private _result: GameResultImpl;
 
 	// Moves
 	private _moveTreeRoot: MoveTreeRoot;
