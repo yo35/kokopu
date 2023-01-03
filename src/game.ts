@@ -671,7 +671,7 @@ export class Game {
 		decodeStringField(pojo, 'round', exceptionBuilder, value => { game._round = value; });
 		decodeStringField(pojo, 'date', exceptionBuilder, value => {
 			const date = DateValue.fromString(value);
-			if (value === undefined) {
+			if (date === undefined) {
 				throw exceptionBuilder.build(i18n.INVALID_DATE_IN_POJO);
 			}
 			game._date = date;

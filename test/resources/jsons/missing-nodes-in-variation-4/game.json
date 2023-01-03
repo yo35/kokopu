@@ -1,0 +1,18 @@
+{
+	"event": "Missing nodes in variation",
+	"mainVariation": [
+		"e4",
+		"e5",
+		{
+			"notation": "Nf3",
+			"variations": [
+				{
+					"comment": "I'm a comment...",
+					"nodes": null
+				},
+				[ "Nc3" ],
+				[ "f4" ]
+			]
+		}
+	]
+}

@@ -1,0 +1,9 @@
+{
+	"event": "Illegal null-move",
+	"mainVariation": [
+		"e4",
+		"d5",
+		"Bb5+",
+		"--"
+	]
+}

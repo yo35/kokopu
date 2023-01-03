@@ -1,0 +1,2 @@
+initialPosition
+Invalid initial position FEN. A FEN string must contain exactly 6 space-separated fields.

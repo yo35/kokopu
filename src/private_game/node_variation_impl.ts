@@ -143,9 +143,8 @@ export class MoveTreeRoot {
 		});
 		if (variant !== 'regular' && !initialPositionDefined) {
 			if (!variantWithCanonicalStartPosition(variant)) {
-				exceptionBuilder.push('initialPosition');
+				exceptionBuilder.push('initialPosition'); // no-pop
 				throw exceptionBuilder.build(i18n.MISSING_INITIAL_POSITION_IN_POJO, variant);
-				// exceptionBuilder.pop()
 			}
 			this._position = new Position(variant);
 			this._fullMoveNumber = 1;
@@ -292,7 +291,7 @@ function setVariationPOJO(variationPOJO: unknown, parent: NodeData | MoveTreeRoo
 	}
 
 	// Un-push the "nodes" path component if necessary.
-	if (typeof variationPOJO === 'object') {
+	if (!Array.isArray(variationPOJO)) {
 		exceptionBuilder.pop();
 	}
 	return result;
@@ -361,25 +360,33 @@ function decodeAnnotationFields(abstractNodePOJO: Partial<Record<string, unknown
 
 	decodeArrayField(abstractNodePOJO, 'nags', exceptionBuilder, value => {
 		for (let i = 0; i < value.length; ++i) {
-			exceptionBuilder.push(i);
 			const nag = value[i];
-			if (!isValidNag(nag)) {
+			if (nag === undefined) {
+				continue;
+			}
+			else if (!isValidNag(nag)) {
+				exceptionBuilder.push(i); // no-pop
 				throw exceptionBuilder.build(i18n.INVALID_NAG_IN_POJO, nag);
 			}
 			data.nags.add(nag as number);
-			exceptionBuilder.pop();
 		}
 	});
 
 	decodeObjectField(abstractNodePOJO, 'tags', exceptionBuilder, value => {
 		for (const tagKey in value) {
-			const tagValue = value[tagKey];
-			if (!isValidTagKey(tagKey) || !(typeof tagValue === 'string' || tagValue === undefined)) {
+			if (!isValidTagKey(tagKey)) {
+				exceptionBuilder.push(`[${tagKey}]`); // no-pop
 				throw exceptionBuilder.build(i18n.INVALID_TAG_IN_POJO, tagKey);
 			}
-			if (tagValue !== undefined) {
-				data.tags.set(tagKey, tagValue);
+			const tagValue = value[tagKey];
+			if (tagValue === undefined) {
+				continue;
 			}
+			else if (typeof tagValue !== 'string') {
+				exceptionBuilder.push(tagKey); // no-pop
+				throw exceptionBuilder.build(i18n.INVALID_TAG_IN_POJO, tagKey);
+			}
+			data.tags.set(tagKey, tagValue);
 		}
 	});
 }

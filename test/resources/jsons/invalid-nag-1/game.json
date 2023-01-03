@@ -1,0 +1,6 @@
+{
+	"event": "Invalid NAG",
+	"mainVariation": [
+		{ "notation": "d4", "nags": [ 1, "not-a-number" ] }
+	]
+}

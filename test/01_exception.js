@@ -111,3 +111,27 @@ describe('Invalid PGN exception', () => {
 		testInvalidPGN(e, 'whatever', 0, 1, '[character=0 line=1]', 'arg0={1} arg1={0}');
 	});
 });
+
+
+describe('Invalid POJO exception', () => {
+
+	function testInvalidPOJO(e, expectedPOJO, expectedFieldName, expectedMessage) {
+		test.value(e.pojo).is(expectedPOJO);
+		test.value(e.fieldName).is(expectedFieldName);
+		test.value(e.message).is(expectedMessage);
+		test.value(e.toString()).is('InvalidPOJO -> ' + expectedMessage);
+	}
+
+	it('No-argument message', () => {
+		const e = new exception.InvalidPOJO({}, 'white.name', i18n.INVALID_POJO_STRING_FIELD);
+		testInvalidPOJO(e, {}, 'white.name', 'Invalid value (must be a string).');
+	});
+	it('1-argument message', () => {
+		const e = new exception.InvalidPOJO({ a: 42 }, 'initialPosition[0]', i18n.INVALID_FEN_IN_POJO, '<the ill-formed FEN>');
+		testInvalidPOJO(e, { a: 42 }, 'initialPosition[0]', 'Invalid initial position FEN. <the ill-formed FEN>');
+	});
+	it('Ill-formed message', () => {
+		const e = new exception.InvalidPOJO('whatever', '', 'arg1={1} arg0={0} arg0={0} arg2={2} arg1={1}', 'zero', 'one');
+		testInvalidPOJO(e, 'whatever', '', 'arg1=one arg0=zero arg0=zero arg2={2} arg1=one');
+	});
+});

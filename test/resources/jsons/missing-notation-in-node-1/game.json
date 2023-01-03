@@ -1,0 +1,10 @@
+{
+	"event": "Missing notation in node",
+	"mainVariation": [
+		"e4",
+		"e5",
+		{
+			"comment": "I'm a comment..."
+		}
+	]
+}

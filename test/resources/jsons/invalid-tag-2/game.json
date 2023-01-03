@@ -1,0 +1,7 @@
+{
+	"event": "Invalid tag",
+	"mainVariation": [
+		"e4",
+		{ "notation": "Nf6", "tags": { "csl": "Re4", "ill formed tag key": "some tag value" } }
+	]
+}

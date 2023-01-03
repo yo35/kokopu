@@ -1,0 +1,10 @@
+{
+	"event": "Invalid tag",
+	"mainVariation": {
+		"tags": { "cal": 42 },
+		"nodes": [
+			"e4",
+			"e5"
+		]
+	}
+}

@@ -1,0 +1,8 @@
+{
+	"event": "Invalid NAG",
+	"mainVariation": [
+		"d4",
+		"d5",
+		{ "notation": "c4", "nags": [ -42 ] }
+	]
+}

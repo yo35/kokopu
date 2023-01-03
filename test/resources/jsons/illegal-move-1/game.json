@@ -1,0 +1,8 @@
+{
+	"event": "Illegal move",
+	"mainVariation": [
+		"e4",
+		"e5",
+		"Ne3"
+	]
+}

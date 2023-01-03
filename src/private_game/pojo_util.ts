@@ -47,7 +47,7 @@ export class POJOExceptionBuilder {
 	build(message: string, ...tokens: any[]) {
 		let fieldName = '';
 		let isFirstPathComponent = true;
-		for (const pathComponent in this.#path) {
+		for (const pathComponent of this.#path) {
 			if (typeof pathComponent === 'number') {
 				fieldName += `[${pathComponent}]`;
 			}
@@ -56,7 +56,7 @@ export class POJOExceptionBuilder {
 			}
 			isFirstPathComponent = false;
 		}
-		return new InvalidPOJO(this.#pojo, fieldName, message, tokens);
+		return new InvalidPOJO(this.#pojo, fieldName, message, ...tokens);
 	}
 }
 
