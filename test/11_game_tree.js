@@ -613,11 +613,11 @@ describe('Backward iterators', () => {
 describe('Game nodes', () => {
 
 	function itGameNodes(filename, withSubVariations, factory) {
-		it(filename + (withSubVariations ? ' (with sub-variations)' : ' (main variation only)'), () => {
-			const resource = `games/${filename}/${withSubVariations ? 'nodes-all' : 'nodes-main'}.txt`;
+		it(`${filename} (${withSubVariations === 'default' ? 'default' : withSubVariations ? 'with sub-variations' : 'main variation only'})`, () => {
+			const resource = `games/${filename}/${withSubVariations === true ? 'nodes-all' : 'nodes-main'}.txt`;
 			const expectedText = resourceExists(resource) ? readText(resource).trim() : '';
 			const game = factory();
-			const text = game.nodes(withSubVariations).map(node => `[${node.id()}] ${node.notation()}`).join('\n');
+			const text = (withSubVariations === 'default' ? game.nodes() : game.nodes(withSubVariations)).map(node => `[${node.id()}] ${node.notation()}`).join('\n');
 			test.value(text).is(expectedText);
 		});
 	}
@@ -625,6 +625,7 @@ describe('Game nodes', () => {
 	for (const f in oneGamefactories) {
 		itGameNodes(f, false, oneGamefactories[f]);
 		itGameNodes(f, true, oneGamefactories[f]);
+		itGameNodes(f, 'default', oneGamefactories[f]);
 	}
 });
 

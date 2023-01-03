@@ -884,16 +884,13 @@ class VariationImpl extends Variation {
 		if (arguments.length === 1) {
 			return this._data.tags.get(tagKey);
 		}
-		else if (arguments.length >= 2) {
+		else {
 			if (value === undefined || value === null) {
 				this._data.tags.delete(tagKey);
 			}
 			else {
 				this._data.tags.set(tagKey, String(value));
 			}
-		}
-		else {
-			throw new IllegalArgument('Variation.tag()');
 		}
 	}
 

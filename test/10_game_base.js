@@ -20,7 +20,7 @@
  * -------------------------------------------------------------------------- */
 
 
-const { exception, Game } = require('../dist/lib/index');
+const { exception, Game, Position } = require('../dist/lib/index');
 const test = require('unit.js');
 
 
@@ -137,15 +137,49 @@ describe('Color-dependant header', () => {
 });
 
 
+describe('Elo header', () => {
+
+	it('Set number 1', () => {
+		const game = new Game();
+		game.playerElo('w', 899);
+		test.value(game.playerElo('w')).is(899);
+	});
+
+	it('Set number 2', () => {
+		const game = new Game();
+		game.playerElo('w', 0);
+		test.value(game.playerElo('w')).is(0);
+	});
+
+	it('Set number as string', () => {
+		const game = new Game();
+		game.playerElo('b', '2000');
+		test.value(game.playerElo('b')).is(2000);
+	});
+
+	function itInvalidElo(label, action) {
+		it(label, () => {
+			const game = new Game();
+			test.exception(() => action(game)).isInstanceOf(exception.IllegalArgument);
+		});
+	}
+
+	itInvalidElo('Non-convertible string', game => game.playerElo('w', 'two thousand'));
+	itInvalidElo('Invalid elo value', game => game.playerElo('b', -42));
+});
+
+
 describe('Date header', () => {
 
 	function testDateIsUndefined(game) {
 		test.value(game.date()).is(undefined);
+		test.value(game.dateAsDate()).is(undefined);
 	}
 
-	function testDateIs(game, value) {
+	function testDateIs(game, value, dateValue) {
 		test.value(game.date()).isNotFalse();
 		test.value(game.date().toString()).is(value);
+		test.value(game.dateAsDate()).is(dateValue);
 	}
 
 	it('Initial state', () => {
@@ -156,55 +190,55 @@ describe('Date header', () => {
 	it('Set JS Date & get', () => {
 		const game = new Game();
 		game.date(new Date(2021, 8, 12));
-		testDateIs(game, '2021-09-12');
+		testDateIs(game, '2021-09-12', new Date(2021, 8, 12));
 	});
 
 	it('Set full date & get', () => {
 		const game = new Game();
 		game.date(2021, 9, 12);
-		testDateIs(game, '2021-09-12');
+		testDateIs(game, '2021-09-12', new Date(2021, 8, 12));
 	});
 
 	it('Set month+year date 1 & get', () => {
 		const game = new Game();
 		game.date(2021, 12);
-		testDateIs(game, '2021-12-**');
+		testDateIs(game, '2021-12-**', new Date(2021, 11, 1));
 	});
 
 	it('Set month+year date 2 & get', () => {
 		const game = new Game();
 		game.date(2021, 2, undefined);
-		testDateIs(game, '2021-02-**');
+		testDateIs(game, '2021-02-**', new Date(2021, 1, 1));
 	});
 
 	it('Set month+year date 3 & get', () => {
 		const game = new Game();
 		game.date(2021, 2, null);
-		testDateIs(game, '2021-02-**');
+		testDateIs(game, '2021-02-**', new Date(2021, 1, 1));
 	});
 
 	it('Set year-only date 1 & get', () => {
 		const game = new Game();
 		game.date(2021);
-		testDateIs(game, '2021-**-**');
+		testDateIs(game, '2021-**-**', new Date(2021, 0, 1));
 	});
 
 	it('Set year-only date 2 & get', () => {
 		const game = new Game();
 		game.date(1, undefined);
-		testDateIs(game, '0001-**-**');
+		testDateIs(game, '0001-**-**', new Date(1, 0, 1));
 	});
 
 	it('Set year-only date 3 & get', () => {
 		const game = new Game();
 		game.date(99, null);
-		testDateIs(game, '0099-**-**');
+		testDateIs(game, '0099-**-**', new Date(99, 0, 1));
 	});
 
 	it('Set year-only date 4 & get', () => {
 		const game = new Game();
 		game.date(1921, undefined, undefined);
-		testDateIs(game, '1921-**-**');
+		testDateIs(game, '1921-**-**', new Date(1921, 0, 1));
 	});
 
 	it('Erase with undefined', () => {
@@ -410,6 +444,7 @@ describe('Tags', () => {
 	itInvalidKey('Dummy key 2', node => node.tag('-', undefined));
 	itInvalidKey('Empty key', node => node.tag('', 'Whatever'));
 	itInvalidKey('Blank key', node => node.tag(' ', 'The value'));
+	itInvalidKey('Undefined key', node => node.tag(undefined, 'Another value'));
 });
 
 
@@ -447,4 +482,19 @@ describe('Invalid findById', () => {
 	itInvalidId('Out of bound node 1', '5w');
 	itInvalidId('Out of bound node 2', '1b-v0-2b');
 	itInvalidId('Out of bound node 3', '5w-v0-start');
+});
+
+
+describe('Invalid initial position', () => {
+
+	function itInvalidInitialPosition(label, action) {
+		it(label, () => {
+			const game = new Game();
+			test.exception(() => action(game)).isInstanceOf(exception.IllegalArgument);
+		});
+	}
+
+	itInvalidInitialPosition('Not a position 1', game => game.initialPosition(42));
+	itInvalidInitialPosition('Not a position 2', game => game.initialPosition('whatever'));
+	itInvalidInitialPosition('Invalid full-move number', game => game.initialPosition(new Position(), 'not-a-number'));
 });
