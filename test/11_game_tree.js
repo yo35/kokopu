@@ -677,7 +677,7 @@ describe('Write PGN', () => {
 
 	function itFullPgn(filename, factory) {
 		it('Full PGN - ' + filename, () => {
-			const expectedText = readText(`pgns/${filename}.pgn`);
+			const expectedText = readText(`pgns/${filename}/database.pgn`);
 			const games = factory();
 			test.value(pgnWrite(games)).is(expectedText);
 		});

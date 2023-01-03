@@ -20,9 +20,6 @@
  * -------------------------------------------------------------------------- */
 
 
-'use strict';
-
-
 const { exception, Database, pgnRead } = require('../dist/lib/index');
 const dumpGame = require('./common/dumpgame');
 const readCSV = require('./common/readcsv');
@@ -36,7 +33,7 @@ function testData() {
 		return {
 			label: fields[0],
 			gameCount: parseInt(fields[1]),
-			pgn: readText('pgns/' + fields[0] + '.pgn')
+			pgn: readText(`pgns/${fields[0]}/database.pgn`),
 		};
 	});
 }
@@ -48,19 +45,19 @@ function testData() {
  */
 function getItemType(pgnName, gameIndex) {
 	const fileBasename = `pgns/${pgnName}/${gameIndex}`;
-	const logExist = resourceExists(fileBasename + '.log');
+	const txtExist = resourceExists(fileBasename + '.txt');
 	const errExist = resourceExists(fileBasename + '.err');
-	if (logExist && errExist) {
-		throw 'Both .log not .err defined for ' + fileBasename; // eslint-disable-line no-throw-literal
+	if (txtExist && errExist) {
+		throw 'Both .txt not .err defined for ' + fileBasename; // eslint-disable-line no-throw-literal
 	}
-	else if (logExist) {
-		return 'log';
+	else if (txtExist) {
+		return 'txt';
 	}
 	else if (errExist) {
 		return 'err';
 	}
 	else {
-		throw 'Neither .log not .err defined for ' + fileBasename; // eslint-disable-line no-throw-literal
+		throw 'Neither .txt nor .err defined for ' + fileBasename; // eslint-disable-line no-throw-literal
 	}
 }
 
@@ -69,7 +66,7 @@ function getItemType(pgnName, gameIndex) {
  * Load the descriptor corresponding to a valid PGN item.
  */
 function loadValidItemDescriptor(pgnName, gameIndex) {
-	const filename = `pgns/${pgnName}/${gameIndex}.log`;
+	const filename = `pgns/${pgnName}/${gameIndex}.txt`;
 	return readText(filename).trim();
 }
 
@@ -98,8 +95,8 @@ describe('Read PGN - Game count', () => {
 function itCheckPgnItem(label, pgnName, gameIndex, loader) {
 	it(label, () => {
 
-		// LOG type => ensure that the item is valid, and compare its dump result to the descriptor.
-		if (getItemType(pgnName, gameIndex) === 'log') {
+		// TXT type => ensure that the item is valid, and compare its dump result to the descriptor.
+		if (getItemType(pgnName, gameIndex) === 'txt') {
 			const expectedDescriptor = loadValidItemDescriptor(pgnName, gameIndex);
 			test.value(dumpGame(loader(gameIndex)).trim()).is(expectedDescriptor);
 		}
@@ -168,7 +165,7 @@ describe('Read PGN - Wrong game index', () => {
 	function itInvalidGameIndex(label, gameIndex, invalidPGNExpected) {
 
 		it('Database - ' + label, () => {
-			const pgn = readText('pgns/mini2.pgn');
+			const pgn = readText('pgns/mini2/database.pgn');
 			const database = pgnRead(pgn);
 			if (invalidPGNExpected) {
 				test.exception(() => database.game(gameIndex))
@@ -182,7 +179,7 @@ describe('Read PGN - Wrong game index', () => {
 		});
 
 		it('Direct access - ' + label, () => {
-			const pgn = readText('pgns/mini2.pgn');
+			const pgn = readText('pgns/mini2/database.pgn');
 			if (invalidPGNExpected) {
 				test.exception(() => pgnRead(pgn, gameIndex))
 					.isInstanceOf(exception.InvalidPGN)
