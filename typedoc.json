@@ -20,7 +20,8 @@
 				{ "title": "Set-up a position", "source": "02_set_up_position.md" },
 				{ "title": "Load a PGN file", "source": "03_load_pgn.md" },
 				{ "title": "Set-up a game from scratch", "source": "04_set_up_game.md" },
-				{ "title": "Chess960", "source": "05_chess960.md" }
+				{ "title": "Game/JSON conversion", "source": "05_json.md" },
+				{ "title": "Chess960", "source": "06_chess960.md" }
 			]}
 		]
 	}
