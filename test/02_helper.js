@@ -20,7 +20,7 @@
  * -------------------------------------------------------------------------- */
 
 
-const { exception, squareColor, squareToCoordinates, coordinatesToSquare, oppositeColor, variantWithCanonicalStartPosition, nagSymbol } = require('../dist/lib/index');
+const { exception, squareColor, squareToCoordinates, coordinatesToSquare, oppositeColor, variantWithCanonicalStartPosition, nagSymbol, isValidECO } = require('../dist/lib/index');
 const readText = require('./common/readtext');
 const test = require('unit.js');
 
@@ -55,11 +55,19 @@ describe('Square to coordinates', () => {
 
 
 describe('Coordinates to square', () => {
-	it('a1', () => { test.value(coordinatesToSquare(0, 0)).is('a1'); });
-	it('h1', () => { test.value(coordinatesToSquare(7, 0)).is('h1'); });
-	it('a8', () => { test.value(coordinatesToSquare(0, 7)).is('a8'); });
-	it('h8', () => { test.value(coordinatesToSquare(7, 7)).is('h8'); });
-	it('e3', () => { test.value(coordinatesToSquare(4, 2)).is('e3'); });
+
+	function itCoordinatesToSquare(square, file, rank) {
+		it(square, () => {
+			test.value(coordinatesToSquare(file, rank)).is(square);
+			test.value(coordinatesToSquare({ file: file, rank: rank })).is(square);
+		});
+	}
+
+	itCoordinatesToSquare('a1', 0, 0);
+	itCoordinatesToSquare('h1', 7, 0);
+	itCoordinatesToSquare('a8', 0, 7);
+	itCoordinatesToSquare('h8', 7, 7);
+	itCoordinatesToSquare('e3', 4, 2);
 
 	it('Error with (-1,4)', () => { test.exception(() => coordinatesToSquare(-1, 4)).isInstanceOf(exception.IllegalArgument); });
 	it('Error with (8,3)', () => { test.exception(() => coordinatesToSquare(8, 3)).isInstanceOf(exception.IllegalArgument); });
@@ -105,4 +113,15 @@ describe('NAG symbols', () => {
 	it('Error with null', () => { test.exception(() => nagSymbol(null)).isInstanceOf(exception.IllegalArgument); });
 	it('Error with non-integer', () => { test.exception(() => nagSymbol(3.2)).isInstanceOf(exception.IllegalArgument); });
 	it('Error with negative integer', () => { test.exception(() => nagSymbol(-1)).isInstanceOf(exception.IllegalArgument); });
+});
+
+
+describe('Is valid ECO', () => {
+
+	it('Valid ECO 1', () => { test.value(isValidECO('A00')).is(true); });
+	it('Valid ECO 2', () => { test.value(isValidECO('E99')).is(true); });
+
+	it('Invalid ECO 1', () => { test.value(isValidECO('F00')).is(false); });
+	it('Invalid ECO 2', () => { test.value(isValidECO('A00b')).is(false); });
+	it('Invalid ECO (number)', () => { test.value(isValidECO(42)).is(false); });
 });
