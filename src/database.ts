@@ -24,8 +24,8 @@ import { IllegalArgument } from './exception';
 import { Game } from './game';
 
 
-export function isValidGameIndex(gameIndex: any) {
-	return Number.isInteger(gameIndex) && gameIndex >= 0;
+export function isValidGameIndex(gameIndex: unknown) {
+	return Number.isInteger(gameIndex) && (gameIndex as number) >= 0;
 }
 
 

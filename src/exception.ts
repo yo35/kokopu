@@ -58,7 +58,7 @@ export class InvalidFEN {
 	/** Human-readable message describing the error. */
 	message: string;
 
-	constructor(fen: string, message: string, ...tokens: any[]) {
+	constructor(fen: string, message: string, ...tokens: unknown[]) {
 		this.fen = fen;
 		this.message = buildMessage(message, tokens);
 	}
@@ -86,7 +86,7 @@ export class InvalidNotation {
 	/** Human-readable message describing the error. */
 	message: string;
 
-	constructor(fen: string, notation: string, message: string, ...tokens: any[]) {
+	constructor(fen: string, notation: string, message: string, ...tokens: unknown[]) {
 		this.fen = fen;
 		this.notation = notation;
 		this.message = buildMessage(message, tokens);
@@ -118,7 +118,7 @@ export class InvalidPGN {
 	/** Human-readable message describing the error. */
 	message: string;
 
-	constructor(pgn: string, index: number, lineNumber: number, message: string, ...tokens: any[]) {
+	constructor(pgn: string, index: number, lineNumber: number, message: string, ...tokens: unknown[]) {
 		this.pgn = pgn;
 		this.index = index;
 		this.lineNumber = lineNumber;
@@ -148,7 +148,7 @@ export class InvalidPOJO {
 	/** Human-readable message describing the error. */
 	message: string;
 
-	constructor(pojo: unknown, fieldName: string, message: string, ...tokens: any[]) {
+	constructor(pojo: unknown, fieldName: string, message: string, ...tokens: unknown[]) {
 		this.pojo = pojo;
 		this.fieldName = fieldName;
 		this.message = buildMessage(message, tokens);
@@ -163,10 +163,10 @@ export class InvalidPOJO {
 }
 
 
-function buildMessage(message: string, tokens: any[]) {
+function buildMessage(message: string, tokens: unknown[]) {
 	return message.replace(/{(\d+)}/g, (match, placeholder) => {
 		const placeholderIndex = Number(placeholder);
-		return placeholderIndex < tokens.length ? tokens[placeholderIndex] : match;
+		return placeholderIndex < tokens.length ? String(tokens[placeholderIndex]) : match;
 	});
 }
 

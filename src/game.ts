@@ -792,12 +792,12 @@ export class Game {
 }
 
 
-function sanitizeStringHeader(value: any) {
+function sanitizeStringHeader(value: unknown) {
 	return value === undefined || value === null ? undefined : String(value);
 }
 
 
-function sanitizeNumberHeader(value: any) {
+function sanitizeNumberHeader(value: unknown) {
 	return value === undefined || value === null ? undefined : Number(value);
 }
 

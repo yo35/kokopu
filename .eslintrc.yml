@@ -70,7 +70,6 @@ rules:
   no-constant-condition: [ error, { checkLoops: false }]
 
   # Relaxed rules (typescript)
-  '@typescript-eslint/no-explicit-any':       [ off ]
   '@typescript-eslint/no-non-null-assertion': [ off ]
   '@typescript-eslint/no-namespace':          [ off ]
   '@typescript-eslint/no-empty-function':     [ error, { allow: [ private-constructors, protected-constructors ] }]

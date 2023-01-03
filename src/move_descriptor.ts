@@ -146,6 +146,6 @@ export abstract class MoveDescriptor {
 /**
  * @deprecated Use `obj instanceof MoveDescriptor` instead.
  */
-export function isMoveDescriptor(obj: any): boolean {
+export function isMoveDescriptor(obj: unknown): boolean {
 	return obj instanceof MoveDescriptor;
 }

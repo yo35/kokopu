@@ -115,7 +115,7 @@ export class TokenStream {
 	private _token = TokenType.INVALID;
 
 	/** Current token value (if any). */
-	private _tokenValue: any = null;
+	private _tokenValue: unknown = null;
 
 	/** Position of the current token in the string. */
 	private _tokenCharacterIndex = -1;
@@ -213,7 +213,7 @@ export class TokenStream {
 	 * Value associated to the current token, if any. WARNING: valid only after a call to `consumeToken()`.
 	 */
 	tokenValue<T>(): T {
-		return this._tokenValue;
+		return this._tokenValue as T;
 	}
 
 

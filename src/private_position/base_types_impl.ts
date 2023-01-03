@@ -107,13 +107,13 @@ export function resultToString  (result  : number) { return RESULT_SYMBOL  [resu
 export function variantToString (variant : number) { return VARIANT_SYMBOL [variant] as GameVariant; }
 
 
-export function colorFromString   (color   : any) { return COLOR_SYMBOL   .indexOf(color  ); }
-export function pieceFromString   (piece   : any) { return PIECE_SYMBOL   .indexOf(piece  ); }
-export function figurineFromString(cp      : any) { return FIGURINE_SYMBOL.indexOf(cp     ); }
-export function rankFromString    (rank    : any) { return RANK_SYMBOL    .indexOf(rank   ); }
-export function fileFromString    (file    : any) { return FILE_SYMBOL    .indexOf(file   ); }
-export function resultFromString  (result  : any) { return RESULT_SYMBOL  .indexOf(result ); }
-export function variantFromString (variant : any) { return VARIANT_SYMBOL .indexOf(variant); }
+export function colorFromString   (color   : unknown) { return COLOR_SYMBOL   .indexOf(String(color  )); }
+export function pieceFromString   (piece   : unknown) { return PIECE_SYMBOL   .indexOf(String(piece  )); }
+export function figurineFromString(cp      : unknown) { return FIGURINE_SYMBOL.indexOf(String(cp     )); }
+export function rankFromString    (rank    : unknown) { return RANK_SYMBOL    .indexOf(String(rank   )); }
+export function fileFromString    (file    : unknown) { return FILE_SYMBOL    .indexOf(String(file   )); }
+export function resultFromString  (result  : unknown) { return RESULT_SYMBOL  .indexOf(String(result )); }
+export function variantFromString (variant : unknown) { return VARIANT_SYMBOL .indexOf(String(variant)); }
 
 
 export function squareToString(square: number) {
@@ -121,7 +121,7 @@ export function squareToString(square: number) {
 }
 
 
-export function squareFromString(square: any) {
+export function squareFromString(square: unknown) {
 	if (typeof square !== 'string' || !/^[a-h][1-8]$/.test(square)) {
 		return -1;
 	}
@@ -136,7 +136,7 @@ export function coloredPieceToString(cp: number) {
 }
 
 
-export function coloredPieceFromString(cp: any) {
+export function coloredPieceFromString(cp: unknown) {
 	if (typeof cp !== 'string' || !/^[wb][kqrbnp]$/.test(cp)) {
 		return -1;
 	}

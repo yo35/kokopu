@@ -259,7 +259,7 @@ export class Position {
 	 * Check whether both given objects represent the same chess position (i.e. the same chess variant, same board,
 	 * and same turn/castling/en-passant flags).
 	 */
-	static isEqual(pos1: any, pos2: any): boolean {
+	static isEqual(pos1: unknown, pos2: unknown): boolean {
 		return pos1 instanceof Position && pos2 instanceof Position && isEqual(pos1._impl, pos2._impl);
 	}
 
@@ -987,8 +987,8 @@ function isValidScharnaglCode(scharnaglCode: number) {
 }
 
 
-function buildValidator(options: any, functionName: string) {
-	return function <T>(key: string, defaultValue: T, validator: (val: any) => boolean): T {
+function buildValidator(options: Record<string, unknown>, functionName: string) {
+	return function <T>(key: string, defaultValue: T, validator: (val: unknown) => boolean): T {
 		if (options[key] === undefined) {
 			return defaultValue;
 		}

@@ -44,7 +44,7 @@ export class POJOExceptionBuilder {
 		this.#path.pop();
 	}
 
-	build(message: string, ...tokens: any[]) {
+	build(message: string, ...tokens: unknown[]) {
 		let fieldName = '';
 		let isFirstPathComponent = true;
 		for (const pathComponent of this.#path) {
