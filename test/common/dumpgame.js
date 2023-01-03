@@ -147,6 +147,8 @@ module.exports = function(game) {
 	dumpHeader('BlackTitle', game.playerTitle('b'));
 	dumpHeader('Event', game.event());
 	dumpHeader('Round', game.round());
+	dumpHeader('SubRound', game.subRound());
+	dumpHeader('SubSubRound', game.subSubRound());
 	dumpHeader('Site', game.site());
 	dumpHeader('Date', game.date());
 	dumpHeader('Annotator', game.annotator());

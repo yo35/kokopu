@@ -1,7 +1,8 @@
 WhiteElo = {2299}
 WhiteTitle = {FM}
 Black = {Mister No-Name}
-Round = {3}
+Round = {0}
+SubSubRound = {77}
 Date = {1955-11-**}
 Opening = {TheOpening}
 OpeningSubVariation = {TheSubVariation}

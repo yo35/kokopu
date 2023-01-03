@@ -12,7 +12,7 @@
 [Event " ?"]
 [Site "? "]
 [Date "?"]
-[Round " ? "]
+[Round "ill-formed round field"]
 [White "  ? "]
 [Black " ?"]
 [Result "1-0"]
@@ -59,6 +59,7 @@
 [Black "Player 2"]
 [BlackElo "2530"]
 [BlackTitle "GM"]
+[Round "1.2.3.4.5.6.7.8"]
 [Annotator "Kibitz"]
 [Result "*"]
 
@@ -78,7 +79,7 @@
 *
 
 
-[Event "Full inline PGN"][White "Player 1"][Black "Player 2"][Result "*"] *
+[Event "Full inline PGN"][White "Player 1"][Black "Player 2"][Round "?.6"][Result "*"] *
 
 
 [Event "Invalid month in date 1"]

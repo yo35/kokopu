@@ -169,6 +169,45 @@ describe('Elo header', () => {
 });
 
 
+describe('Round / sub-round / sub-sub-round headers', () => {
+
+	it('Set number 1', () => {
+		const game = new Game();
+		game.round(3);
+		test.value(game.round()).is(3);
+	});
+
+	it('Set number 2', () => {
+		const game = new Game();
+		game.subRound(0);
+		test.value(game.subRound()).is(0);
+	});
+
+	it('Set number 3', () => {
+		const game = new Game();
+		game.subSubRound(9999);
+		test.value(game.subSubRound()).is(9999);
+	});
+
+	it('Set number as string', () => {
+		const game = new Game();
+		game.playerElo('b', '2000');
+		test.value(game.playerElo('b')).is(2000);
+	});
+
+	function itInvalidRound(label, action) {
+		it(label, () => {
+			const game = new Game();
+			test.exception(() => action(game)).isInstanceOf(exception.IllegalArgument);
+		});
+	}
+
+	itInvalidRound('Non-convertible string', game => game.round('two'));
+	itInvalidRound('Negative value', game => game.subRound(-42));
+	itInvalidRound('Non-integer value', game => game.subSubRound(1.2));
+});
+
+
 describe('Date header', () => {
 
 	function testDateIsUndefined(game) {

@@ -1,7 +1,8 @@
 White = {Special characters [] (square brackets)}
 Black = {Special character \ (backslash)}
 Event = {Special character " (double quote)}
-Round = {1.2}
+Round = {1}
+SubRound = {2}
 Site = {Special character ' (quote)}
 Date = {2018-**-**}
 [start]                 -+<LONG

@@ -1,4 +1,4 @@
-Event: <undefined> (3)
+Event: <undefined> (0.*.77)
 Date: November 1955
 White: <undefined> (FM 2299)
 Black: Mister No-Name

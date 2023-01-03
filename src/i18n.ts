@@ -96,6 +96,7 @@ export let INVALID_POJO_BOOLEAN_FIELD        = 'Invalid value (must be a boolean
 export let INVALID_POJO_OBJECT_FIELD         = 'Invalid value (must be an object).';
 export let INVALID_POJO_ARRAY_FIELD          = 'Invalid value (must be an array).';
 export let INVALID_ELO_IN_POJO               = 'Ill-formed elo.';
+export let INVALID_ROUND_IN_POJO             = 'Ill-formed round, sub-round or sub-sub-round.';
 export let INVALID_DATE_IN_POJO              = 'Ill-formed date.';
 export let INVALID_ECO_CODE_IN_POJO          = 'Ill-formed ECO code.';
 export let INVALID_RESULT_IN_POJO            = 'Ill-formed result.';

@@ -1,4 +1,4 @@
-Event: <empty> (<empty>)
+Event: <empty>
 White: <empty> (<empty>)
 Black: <empty> (<empty>)
 Annotator: <empty>

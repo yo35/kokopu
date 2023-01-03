@@ -1,5 +1,6 @@
 White = {Player 1}
 Black = {Player 2}
 Event = {Full inline PGN}
+SubRound = {6}
 [start]                 -+<LONG
 {Line}{0 plies}

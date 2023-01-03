@@ -1,6 +1,7 @@
 {
 	"date": "1955-11-**",
-	"round": "3",
+	"round": 0,
+	"subSubRound": 77,
 	"white": {
 		"elo": 2299,
 		"title": "FM"

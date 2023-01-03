@@ -42,6 +42,8 @@ function allHeaderFactory() {
 	game.playerTitle('w', 'CM');
 	game.playerTitle('b', 'IM');
 	game.round(1);
+	game.subRound(12);
+	game.subSubRound(7);
 	game.site('Somewhere...');
 	game.opening('Sicilian Defense');
 	game.openingVariation('Dragon');
@@ -95,7 +97,7 @@ const oneGamefactories = {
 		game.playerElo('w', 2345);
 		game.playerName('w', 'John Doe');
 		game.playerTitle('b', 'GM');
-		game.round('3');
+		game.round(3);
 		game.openingVariation('TheVariation');
 		game.result('1/2-1/2');
 		return game;
@@ -104,7 +106,8 @@ const oneGamefactories = {
 	'missing-headers-2': () => {
 		const game = new Game();
 		game.date(1955, 11);
-		game.round(3);
+		game.round(0);
+		game.subSubRound(77);
 		game.playerElo('w', '2299');
 		game.playerTitle('w', 'FM');
 		game.playerName('b', 'Mister No-Name');
@@ -117,13 +120,13 @@ const oneGamefactories = {
 	'missing-headers-3': () => {
 		const game = new Game();
 		game.opening('TheOpening');
+		game.subRound(5);
 		return game;
 	},
 
 	'blank-headers-1': () => {
 		const game = new Game();
 		game.event('');
-		game.round('');
 		game.playerName('w', '');
 		game.playerTitle('w', '');
 		game.playerName('b', ' ');
@@ -137,7 +140,6 @@ const oneGamefactories = {
 	'blank-headers-2': () => {
 		const game = new Game();
 		game.event(' ');
-		game.round(' ');
 		game.annotator(' ');
 		game.mainVariation().comment(' ');
 		game.result('*');

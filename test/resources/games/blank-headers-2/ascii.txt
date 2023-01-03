@@ -1,4 +1,4 @@
-Event: <empty> (<empty>)
+Event: <empty>
 Annotator: <empty>
 <empty>
 *

@@ -29,11 +29,18 @@ import { i18n } from './i18n';
 import { AbstractNode, Node, Variation } from './node_variation';
 import { Position } from './position';
 
-import { trimAndCollapseSpaces, isValidElo } from './private_game/common';
+import { trimAndCollapseSpaces, isValidElo, isValidRound } from './private_game/common';
 import { MoveTreeRoot } from './private_game/node_variation_impl';
 import { POJOExceptionBuilder, decodeStringField, decodeNumberField, decodeObjectField } from './private_game/pojo_util';
 
 import { ColorImpl, GameResultImpl, colorFromString, resultFromString, resultToString } from './private_position/base_types_impl';
+
+
+const enum RoundPart {
+	ROUND,
+	SUB_ROUND,
+	SUB_SUB_ROUND,
+}
 
 
 /**
@@ -47,7 +54,7 @@ export class Game {
 	private _playerElo: [ number | undefined, number | undefined ];
 	private _playerTitle: [ string | undefined, string | undefined ];
 	private _event?: string;
-	private _round?: string;
+	private _round: [ number | undefined, number | undefined, number | undefined ];
 	private _date?: DateValue;
 	private _site?: string;
 	private _annotator?: string;
@@ -66,6 +73,7 @@ export class Game {
 		this._playerName = [ undefined, undefined ];
 		this._playerElo = [ undefined, undefined ];
 		this._playerTitle = [ undefined, undefined ];
+		this._round = [ undefined, undefined, undefined ];
 		this._result = GameResultImpl.LINE;
 		this._moveTreeRoot = new MoveTreeRoot();
 	}
@@ -82,7 +90,7 @@ export class Game {
 		this._playerElo = [ undefined, undefined ];
 		this._playerTitle = [ undefined, undefined ];
 		this._event = undefined;
-		this._round = undefined;
+		this._round = [ undefined, undefined, undefined ];
 		this._date = undefined;
 		this._site = undefined;
 		this._annotator = undefined;
@@ -206,21 +214,76 @@ export class Game {
 	/**
 	 * Get the round.
 	 */
-	round(): string | undefined;
+	round(): number | undefined;
 
 	/**
 	 * Set the round.
 	 *
-	 * @param value - If `undefined`, the existing value (if any) is erased.
+	 * @param value - If `undefined`, the existing value (if any) is erased. Must be an integer >= 0.
 	 */
-	round(value: string | undefined): void;
+	round(value: number | undefined): void;
 
-	round(value?: string | undefined) {
+	round(value?: number | undefined) {
 		if (arguments.length === 0) {
-			return this._round;
+			return this._round[RoundPart.ROUND];
 		}
 		else {
-			this._round = sanitizeStringHeader(value);
+			this._setRoundPart(RoundPart.ROUND, value, 'Game.round()');
+		}
+	}
+
+
+	/**
+	 * Get the sub-round.
+	 */
+	subRound(): number | undefined;
+
+	/**
+	 * Set the sub-round.
+	 *
+	 * @param value - If `undefined`, the existing value (if any) is erased. Must be an integer >= 0.
+	 */
+	subRound(value: number | undefined): void;
+
+	subRound(value?: number | undefined) {
+		if (arguments.length === 0) {
+			return this._round[RoundPart.SUB_ROUND];
+		}
+		else {
+			this._setRoundPart(RoundPart.SUB_ROUND, value, 'Game.subRound()');
+		}
+	}
+
+
+	/**
+	 * Get the sub-sub-round.
+	 */
+	subSubRound(): number | undefined;
+
+	/**
+	 * Set the sub-sub-round.
+	 *
+	 * @param value - If `undefined`, the existing value (if any) is erased. Must be an integer >= 0.
+	 */
+	subSubRound(value: number | undefined): void;
+
+	subSubRound(value?: number | undefined) {
+		if (arguments.length === 0) {
+			return this._round[RoundPart.SUB_SUB_ROUND];
+		}
+		else {
+			this._setRoundPart(RoundPart.SUB_SUB_ROUND, value, 'Game.subSubRound()');
+		}
+	}
+
+
+	private _setRoundPart(roundPart: RoundPart, value: number | undefined, methodName: string) {
+		value = sanitizeNumberHeader(value);
+		if (value === undefined || isValidRound(value)) {
+			this._round[roundPart] = value;
+		}
+		else {
+			throw new IllegalArgument(methodName);
 		}
 	}
 
@@ -621,7 +684,9 @@ export class Game {
 		if (!isPlayerPOJOEmpty(this, ColorImpl.WHITE)) { pojo.white = getPlayerPOJO(this, ColorImpl.WHITE); }
 		if (!isPlayerPOJOEmpty(this, ColorImpl.BLACK)) { pojo.black = getPlayerPOJO(this, ColorImpl.BLACK); }
 		if (this._event !== undefined) { pojo.event = this._event; }
-		if (this._round !== undefined) { pojo.round = this._round; }
+		if (this._round[RoundPart.ROUND] !== undefined) { pojo.round = this._round[RoundPart.ROUND]; }
+		if (this._round[RoundPart.SUB_ROUND] !== undefined) { pojo.subRound = this._round[RoundPart.SUB_ROUND]; }
+		if (this._round[RoundPart.SUB_SUB_ROUND] !== undefined) { pojo.subSubRound = this._round[RoundPart.SUB_SUB_ROUND]; }
 		if (this._date !== undefined) { pojo.date = this._date.toString(); }
 		if (this._site !== undefined) { pojo.site = this._site; }
 		if (this._annotator !== undefined) { pojo.annotator = this._annotator; }
@@ -664,11 +729,20 @@ export class Game {
 			decodeStringField(playerPOJO, 'title', exceptionBuilder, value => { game._playerTitle[color] = value; });
 		}
 
+		function processRoundPart(value: number, roundPart: RoundPart) {
+			if (!isValidRound(value)) {
+				throw exceptionBuilder.build(i18n.INVALID_ROUND_IN_POJO);
+			}
+			game._round[roundPart] = value;
+		}
+
 		// Headers
 		decodeObjectField(pojo, 'white', exceptionBuilder, value => { processPlayerPOJO(value, ColorImpl.WHITE); });
 		decodeObjectField(pojo, 'black', exceptionBuilder, value => { processPlayerPOJO(value, ColorImpl.BLACK); });
 		decodeStringField(pojo, 'event', exceptionBuilder, value => { game._event = value; });
-		decodeStringField(pojo, 'round', exceptionBuilder, value => { game._round = value; });
+		decodeNumberField(pojo, 'round', exceptionBuilder, value => { processRoundPart(value, RoundPart.ROUND); });
+		decodeNumberField(pojo, 'subRound', exceptionBuilder, value => { processRoundPart(value, RoundPart.SUB_ROUND); });
+		decodeNumberField(pojo, 'subSubRound', exceptionBuilder, value => { processRoundPart(value, RoundPart.SUB_SUB_ROUND); });
 		decodeStringField(pojo, 'date', exceptionBuilder, value => {
 			const date = DateValue.fromString(value);
 			if (date === undefined) {
@@ -716,7 +790,7 @@ export class Game {
 		}
 
 		// Headers
-		pushIfDefined(formatEventAndRound(this._event, this._round));
+		pushIfDefined(formatEventAndRound(this._event, this._round[RoundPart.ROUND], this._round[RoundPart.SUB_ROUND], this._round[RoundPart.SUB_SUB_ROUND]));
 		pushIfDefined(formatSimpleHeader('Site', this._site));
 		pushIfDefined(formatSimpleHeader('Date', this.dateAsString('en-us')));
 		pushIfDefined(formatPlayer('White', this._playerName[ColorImpl.WHITE], this._playerElo[ColorImpl.WHITE], this._playerTitle[ColorImpl.WHITE]));
@@ -813,13 +887,20 @@ function formatSimpleHeader(key: string, header: string | undefined) {
 }
 
 
-function formatEventAndRound(event: string | undefined, round: string | undefined) {
-	if (event === undefined && round === undefined) {
+function formatEventAndRound(event: string | undefined, round: number | undefined, subRound: number | undefined, subSubRound: number | undefined) {
+	if (event === undefined && round === undefined && subRound === undefined && subSubRound === undefined) {
 		return undefined;
 	}
 	let result = event === undefined ? 'Event: <undefined>' : `Event: ${trimCollapseAndMarkEmpty(event)}`;
-	if (round !== undefined) {
-		result += ` (${trimCollapseAndMarkEmpty(round)})`;
+	if (round !== undefined || subRound !== undefined || subSubRound !== undefined) {
+		result += ' (' + (round === undefined ? '*' : round);
+		if (subRound !== undefined || subSubRound !== undefined) {
+			result += '.' + (subRound === undefined ? '*' : subRound);
+		}
+		if (subSubRound !== undefined) {
+			result += '.' + subSubRound;
+		}
+		result += ')';
 	}
 	return result;
 }

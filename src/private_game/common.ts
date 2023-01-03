@@ -42,3 +42,11 @@ export function isValidNag(nag: unknown) {
 export function isValidElo(elo: unknown) {
 	return Number.isInteger(elo) && (elo as number) >= 0;
 }
+
+
+/**
+ * Whether the given value is a valid round (or sub-round, or sub-sub-round...) or not.
+ */
+export function isValidRound(round: unknown) {
+	return Number.isInteger(round) && (round as number) >= 0;
+}

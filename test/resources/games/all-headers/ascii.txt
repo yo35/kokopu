@@ -1,4 +1,4 @@
-Event: An event name spanning several lines (1)
+Event: An event name spanning several lines (1.12.7)
 Site: Somewhere...
 Date: September 4, 2021
 White: Light side (CM 1942)

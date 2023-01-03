@@ -4,6 +4,9 @@ WhiteTitle = {IM}
 Black = {Player 2}
 BlackElo = {2530}
 BlackTitle = {GM}
+Round = {1}
+SubRound = {2}
+SubSubRound = {3}
 Annotator = {Kibitz}
 [start]                 -+<LONG
 {Line}{0 plies}

@@ -49,6 +49,21 @@ function parsePositiveIntegerHeader(value: string): number | undefined {
 }
 
 
+function parseRoundHeader(value: string) {
+	if (/^(\?|\d+)(?:\.(\?|\d+)(?:\.(\?|\d+)(?:\.(?:\?|\d+))*)?)?$/.test(value)) {
+		const round = Number(RegExp.$1);
+		const subRound = RegExp.$2 ? Number(RegExp.$2) : undefined;
+		const subSubRound = RegExp.$3 ? Number(RegExp.$3) : undefined;
+		return {
+			round: Number.isInteger(round) ? round : undefined,
+			subRound: Number.isInteger(subRound) ? subRound : undefined,
+			subSubRound: Number.isInteger(subSubRound) ? subSubRound : undefined,
+		};
+	}
+	return { round: undefined, subRound: undefined, subSubRound: undefined };
+}
+
+
 function parseECOHeader(value: string): string | undefined {
 	return isValidECO(value) ? value : undefined;
 }
@@ -103,7 +118,13 @@ function processHeader(stream: TokenStream, game: Game, factory: InitialPosition
 		case 'WhiteTitle': game.playerTitle('w', value); break;
 		case 'BlackTitle': game.playerTitle('b', value); break;
 		case 'Event': game.event(parseNullableHeader(value)); break;
-		case 'Round': game.round(parseNullableHeader(value)); break;
+		case 'Round': {
+			const { round, subRound, subSubRound } = parseRoundHeader(value);
+			game.round(round);
+			game.subRound(subRound);
+			game.subSubRound(subSubRound);
+			break;
+		}
 		case 'Date': game.date(DateValue.fromPGNString(value)); break;
 		case 'Site': game.site(parseNullableHeader(value)); break;
 		case 'Annotator': game.annotator(value); break;

@@ -48,6 +48,18 @@ function formatNullableHeader(value: string | undefined) {
 }
 
 
+function formatRoundHeader(round: number | undefined, subRound: number | undefined, subSubRound: number | undefined) {
+	let result = round === undefined ? '?' : String(round);
+	if (subRound !== undefined || subSubRound !== undefined) {
+		result += '.' + (subRound === undefined ? '?' : subRound);
+	}
+	if (subSubRound !== undefined) {
+		result += '.' + subSubRound;
+	}
+	return result;
+}
+
+
 function formatDateHeader(date: DateValue | undefined) {
 	return date === undefined ? '????.??.??' : date.toPGNString();
 }
@@ -221,7 +233,7 @@ export function writeGame(game: Game, options: PGNWriteOptions) {
 	result += `[Event "${formatNullableHeader(game.event())}"]\n`;
 	result += `[Site "${formatNullableHeader(game.site())}"]\n`;
 	result += `[Date "${formatDateHeader(game.date())}"]\n`;
-	result += `[Round "${formatNullableHeader(game.round())}"]\n`;
+	result += `[Round "${formatRoundHeader(game.round(), game.subRound(), game.subSubRound())}"]\n`;
 	result += `[White "${formatNullableHeader(game.playerName('w'))}"]\n`;
 	result += `[Black "${formatNullableHeader(game.playerName('b'))}"]\n`;
 	result += `[Result "${game.result()}"]\n`;

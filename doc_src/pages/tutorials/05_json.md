@@ -105,6 +105,6 @@ const game = /* initialized as above */;
 console.log(JSON.stringify(game.pojo()));
 
 // {"white":{"name":"Paulsen, Louis"},"black":{"name":"Morphy, Paul"},"event":"1st American Chess Congress",
-// "round":"4.6","date":"1857-11-03","site":"New York, NY USA","result":"0-1","mainVariation":["e4","e5",
-// "Nf3","Nc6","Nc3","Nf6","Bb5","Bc5","O-O","O-O","Nxe5", etc...
+// "round":4,"subRound":6,"date":"1857-11-03","site":"New York, NY USA","result":"0-1","mainVariation":["e4",
+// "e5","Nf3","Nc6","Nc3","Nf6","Bb5","Bc5","O-O","O-O","Nxe5" etc...
 ```

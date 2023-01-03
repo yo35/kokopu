@@ -43,7 +43,9 @@ export type GamePOJO = {
 	white?: PlayerPOJO;
 	black?: PlayerPOJO;
 	event?: string;
-	round?: string;
+	round?: number;
+	subRound?: number;
+	subSubRound?: number;
 	date?: string;
 	site?: string;
 	annotator?: string;

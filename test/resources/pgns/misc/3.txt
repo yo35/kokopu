@@ -1,7 +1,8 @@
 White = {Paulsen, Louis}
 Black = {Morphy, Paul}
 Event = {1<sup>st</sup> American Chess Congress}
-Round = {4.6}
+Round = {4}
+SubRound = {6}
 Site = {New York, NY USA}
 Date = {1857-11-03}
 ECO = {C48}

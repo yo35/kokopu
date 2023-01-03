@@ -7,7 +7,7 @@
 	"black": {
 		"title": "GM"
 	},
-	"round": "3",
+	"round": 3,
 	"openingVariation": "TheVariation",
 	"result": "1/2-1/2"
 }
