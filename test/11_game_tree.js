@@ -300,6 +300,13 @@ const oneGamefactories = {
 		return game;
 	},
 
+	'null-moves': () => {
+		const game = new Game();
+		game.event('Game with null moves');
+		game.mainVariation().play('e4').play('--').play('d4').play('Nf6').play('--').play('Nc6');
+		return game;
+	},
+
 	'escaped-text': () => {
 		const game = new Game();
 		game.event('Event with a \\ backslash');

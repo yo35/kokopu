@@ -1,0 +1,8 @@
+Event: Game with null moves
+1.e4
+1...--
+2.d4
+2...Nf6
+3.--
+3...Nc6
+*
