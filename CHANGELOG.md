@@ -1,6 +1,10 @@
 ChangeLog
 =========
 
+4.0.1 (January 4, 2023)
+-----------------------
+* Introduce `Game.fullRound()` to get a human-readable string representation of the round, sub-round and sub-sub-round all together.
+
 4.0.0 (January 4, 2023)
 -----------------------
 * Introduce `Game.initialFullMoveNumber()` and `Game.clearHeaders()`.
