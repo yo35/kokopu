@@ -16,3 +16,7 @@ To support multipart rounds, Kokopu 4.0.0 introduces {@link Game.subRound | Game
 Hence, when for instance a PGN file contains a `Round` header such as `[Round "4.1.2"]`, the header is parsed such that
 {@link Game.round | Game.round()} returns `4`, {@link Game.subRound | Game.subRound()} returns `1`, and
 {@link Game.subSubRound | Game.subSubRound()} returns `2`.
+
+Method {@link Game.fullRound | Game.fullRound()} can be considered as a replacement of the former {@link Game.round | Game.round()} getter:
+this method concatenates the round, sub-round and sub-sub-round in a single string using dot characters as separators,
+i.e. returns string similar to the value of the underlying `Round` header if the {@link Game} is loaded from a PGN file.

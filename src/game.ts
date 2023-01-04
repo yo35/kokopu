@@ -289,6 +289,14 @@ export class Game {
 
 
 	/**
+	 * Get the round, sub-round and sub-sub-round as a human-readable string, the 3 components being separated by dot characters.
+	 */
+	fullRound(): string | undefined {
+		return formatFullRound(this._round[RoundPart.ROUND], this._round[RoundPart.SUB_ROUND], this._round[RoundPart.SUB_SUB_ROUND], '?');
+	}
+
+
+	/**
 	 * Get the date of the game.
 	 */
 	date(): DateValue | undefined;
@@ -892,15 +900,24 @@ function formatEventAndRound(event: string | undefined, round: number | undefine
 		return undefined;
 	}
 	let result = event === undefined ? 'Event: <undefined>' : `Event: ${trimCollapseAndMarkEmpty(event)}`;
-	if (round !== undefined || subRound !== undefined || subSubRound !== undefined) {
-		result += ' (' + (round === undefined ? '*' : round);
-		if (subRound !== undefined || subSubRound !== undefined) {
-			result += '.' + (subRound === undefined ? '*' : subRound);
-		}
-		if (subSubRound !== undefined) {
-			result += '.' + subSubRound;
-		}
-		result += ')';
+	const fullRound = formatFullRound(round, subRound, subSubRound, '*');
+	if (fullRound !== undefined) {
+		result += ` (${fullRound})`;
+	}
+	return result;
+}
+
+
+function formatFullRound(round: number | undefined, subRound: number | undefined, subSubRound: number | undefined, undefinedToken: string) {
+	if (round === undefined && subRound === undefined && subSubRound === undefined) {
+		return undefined;
+	}
+	let result = round === undefined ? undefinedToken : String(round);
+	if (subRound !== undefined || subSubRound !== undefined) {
+		result += '.' + (subRound === undefined ? undefinedToken : subRound);
+	}
+	if (subSubRound !== undefined) {
+		result += '.' + subSubRound;
 	}
 	return result;
 }
