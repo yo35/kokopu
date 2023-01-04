@@ -191,8 +191,8 @@ describe('Round / sub-round / sub-sub-round headers', () => {
 
 	it('Set number as string', () => {
 		const game = new Game();
-		game.playerElo('b', '2000');
-		test.value(game.playerElo('b')).is(2000);
+		game.round('2000');
+		test.value(game.round()).is(2000);
 	});
 
 	function itInvalidRound(label, action) {
