@@ -25,13 +25,14 @@ npm install kokopu
 
 
 
-Migrate to 3.x
---------------
+Migrate to 3.x and 4.x
+----------------------
 
-Version 3.0.0 introduces some breaking changes with regard to the previous versions.
-Please look at the {@page migrate_to_3_x.md migration guide}
-to determine whether your codebase needs to be adapted or not when upgrading Kokopu
-from 1.x or 2.x to 3.0.0 (or any subsequent version).
+Versions 3.0.0 and 4.0.0 introduce some breaking changes with regard to the previous versions.
+To determine whether your codebase needs to be adapted or not when upgrading Kokopu,
+please look at:
+- {@page migrate_to_4.md} to upgrade from 3.x to 4.0.0 (or any subsequent version).
+- {@page migrate_to_3.md} and {@page migrate_to_4.md} to upgrade from 1.x or 2.x to 4.0.0 (or any subsequent version).
 
 
 

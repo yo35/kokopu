@@ -31,13 +31,15 @@ https://kokopu.yo35.org/
 
 
 
-Migrate to 3.x
---------------
+Migrate to 3.x and 4.x
+----------------------
 
-Version 3.0.0 introduces some breaking changes with regard to the previous versions.
-Please look at the [migration guide](https://kokopu.yo35.org/docs/current/pages/migrate_to_3_x.html)
-to determine whether your codebase needs to be adapted or not when upgrading Kokopu
-from 1.x or 2.x to 3.0.0 (or any subsequent version).
+Versions 3.0.0 and 4.0.0 introduce some breaking changes with regard to the previous versions.
+To determine whether your codebase needs to be adapted or not when upgrading Kokopu,
+please look at:
+- [Migrate to 4.x](https://kokopu.yo35.org/docs/current/pages/migrate_to_4.html) to upgrade from 3.x to 4.0.0 (or any subsequent version).
+- [Migrate to 3.x](https://kokopu.yo35.org/docs/current/pages/migrate_to_3.html) and
+[Migrate to 4.x](https://kokopu.yo35.org/docs/current/pages/migrate_to_4.html) to upgrade from 1.x or 2.x to 4.0.0 (or any subsequent version).
 
 
 
