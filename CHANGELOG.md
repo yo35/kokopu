@@ -1,6 +1,15 @@
 ChangeLog
 =========
 
+4.0.0 (January 4, 2023)
+-----------------------
+* Introduce `Game.initialFullMoveNumber()` and `Game.clearHeaders()`.
+* Introduce `Game.pojo()` and `Game.fromPOJO()` to convert back and forth between a `Game` instance
+and its corresponding [POJO](https://en.wikipedia.org/wiki/Plain_old_Java_object) representation,
+hence allowing JSON serialization/de-serialization of a `Game` instance, deep cloning, etc...
+* Breaking changes affecting `Game.round()`: look at the [migration guide](https://kokopu.yo35.org/docs/current/pages/migrate_to_4.html)
+for more details.
+
 3.3.0 (October 12, 2022)
 ------------------------
 * Introduce `Position.isDead()` to detect positions in which the remaining material is not sufficient for any player to checkmate its opponent
