@@ -347,6 +347,9 @@ describe('Date header', () => {
 });
 
 
+
+
+
 describe('NAGs', () => {
 
 	it('Set & test', () => {
@@ -389,13 +392,25 @@ describe('NAGs', () => {
 	});
 
 	function itInvalidNag(label, value) {
-		it(label, () => {
-			const gameAdd = new Game();
-			const gameRemove = new Game();
-			const gameHas = new Game();
-			test.exception(() => gameAdd.mainVariation().addNag(value)).isInstanceOf(exception.IllegalArgument);
-			test.exception(() => gameRemove.mainVariation().removeNag(value)).isInstanceOf(exception.IllegalArgument);
-			test.exception(() => gameHas.mainVariation().hasNag(value)).isInstanceOf(exception.IllegalArgument);
+
+		function doIt(nodeFactory) {
+			test.exception(() => nodeFactory().addNag(value)).isInstanceOf(exception.IllegalArgument);
+			test.exception(() => nodeFactory().removeNag(value)).isInstanceOf(exception.IllegalArgument);
+			test.exception(() => nodeFactory().hasNag(value)).isInstanceOf(exception.IllegalArgument);
+		}
+
+		it(label + ' (node)', () => {
+			doIt(() => {
+				const game = new Game();
+				return game.mainVariation().play('e4');
+			});
+		});
+
+		it(label + ' (variation)', () => {
+			doIt(() => {
+				const game = new Game();
+				return game.mainVariation();
+			});
 		});
 	}
 
@@ -408,72 +423,97 @@ describe('NAGs', () => {
 
 describe('Tags', () => {
 
-	it('Set & get', () => {
-		const game = new Game();
-		game.mainVariation().tag('TheKey', 'TheValue');
-		test.value(game.mainVariation().tags()).is([ 'TheKey' ]);
-		test.value(game.mainVariation().tag('TheKey')).is('TheValue');
-		test.value(game.mainVariation().tag('AnotherKey')).is(undefined);
+	function applyOnNodeAndVariation(label, action) {
+
+		const gameNode = new Game();
+		gameNode.mainVariation().play('e4');
+		action(label + ' (node)', () => gameNode.mainVariation().first());
+
+		const gameVariation = new Game();
+		action(label + ' (variation)', () => gameVariation.mainVariation());
+	}
+
+	applyOnNodeAndVariation('Set & get', (label, nodeGetter) => {
+		it(label, () => {
+			nodeGetter().tag('TheKey', 'TheValue');
+			test.value(nodeGetter().tags()).is([ 'TheKey' ]);
+			test.value(nodeGetter().tag('TheKey')).is('TheValue');
+			test.value(nodeGetter().tag('AnotherKey')).is(undefined);
+		});
 	});
 
-	it('Set empty string', () => {
-		const game = new Game();
-		game.mainVariation().tag('TheKey1', '');
-		test.value(game.mainVariation().tags()).is([ 'TheKey1' ]);
-		test.value(game.mainVariation().tag('TheKey1')).is('');
+	applyOnNodeAndVariation('Set empty string', (label, nodeGetter) => {
+		it(label, () => {
+			nodeGetter().tag('TheKey1', '');
+			test.value(nodeGetter().tags()).is([ 'TheKey1' ]);
+			test.value(nodeGetter().tag('TheKey1')).is('');
+		});
 	});
 
-	it('Set blank string', () => {
-		const game = new Game();
-		game.mainVariation().tag('__TheKey__', '  ');
-		test.value(game.mainVariation().tags()).is([ '__TheKey__' ]);
-		test.value(game.mainVariation().tag('__TheKey__')).is('  ');
+	applyOnNodeAndVariation('Set blank string', (label, nodeGetter) => {
+		it(label, () => {
+			nodeGetter().tag('__TheKey__', '  ');
+			test.value(nodeGetter().tags()).is([ '__TheKey__' ]);
+			test.value(nodeGetter().tag('__TheKey__')).is('  ');
+		});
 	});
 
-	it('Set non-string (number)', () => {
-		const game = new Game();
-		game.mainVariation().tag('_', 42);
-		test.value(game.mainVariation().tags()).is([ '_' ]);
-		test.value(game.mainVariation().tag('_')).is('42');
+	applyOnNodeAndVariation('Set non-string (number)', (label, nodeGetter) => {
+		it(label, () => {
+			nodeGetter().tag('_', 42);
+			test.value(nodeGetter().tags()).is([ '_' ]);
+			test.value(nodeGetter().tag('_')).is('42');
+		});
 	});
 
-	it('Set non-string (boolean)', () => {
-		const game = new Game();
-		game.mainVariation().tag('123', false);
-		test.value(game.mainVariation().tags()).is([ '123' ]);
-		test.value(game.mainVariation().tag('123')).is('false');
+	applyOnNodeAndVariation('Set non-string (boolean)', (label, nodeGetter) => {
+		it(label, () => {
+			nodeGetter().tag('123', false);
+			test.value(nodeGetter().tags()).is([ '123' ]);
+			test.value(nodeGetter().tag('123')).is('false');
+		});
 	});
 
-	it('Erase with undefined', () => {
-		const game = new Game();
-		game.mainVariation().tag('TheKey', 'TheValue');
-		game.mainVariation().tag('TheKey', undefined);
-		test.value(game.mainVariation().tags()).is([]);
-		test.value(game.mainVariation().tag('TheKey')).is(undefined);
+	applyOnNodeAndVariation('Erase with undefined', (label, nodeGetter) => {
+		it(label, () => {
+			nodeGetter().tag('TheKey', 'TheValue');
+			nodeGetter().tag('TheKey', undefined);
+			test.value(nodeGetter().tags()).is([]);
+			test.value(nodeGetter().tag('TheKey')).is(undefined);
+		});
 	});
 
-	it('Erase with null', () => {
-		const game = new Game();
-		game.mainVariation().tag('TheKey', 'TheValue');
-		game.mainVariation().tag('TheKey', null);
-		test.value(game.mainVariation().tags()).is([]);
-		test.value(game.mainVariation().tag('TheKey')).is(undefined);
+	applyOnNodeAndVariation('Erase with null', (label, nodeGetter) => {
+		it(label, () => {
+			nodeGetter().tag('TheKey', 'TheValue');
+			nodeGetter().tag('TheKey', null);
+			test.value(nodeGetter().tags()).is([]);
+			test.value(nodeGetter().tag('TheKey')).is(undefined);
+		});
 	});
 
-	it('Sorted keys', () => {
-		const game = new Game();
-		game.mainVariation().tag('TheKey', 'TheValue');
-		game.mainVariation().tag('ABCD', 'Another value');
-		game.mainVariation().tag('1234', 'Some number');
-		game.mainVariation().tag('_a', '');
-		game.mainVariation().tag('32', 'blah');
-		game.mainVariation().tag('xyz', 0);
-		game.mainVariation().tag('Blah', 33);
-		test.value(game.mainVariation().tags()).is([ '1234', '32', 'ABCD', 'Blah', 'TheKey', '_a', 'xyz' ]);
+	applyOnNodeAndVariation('Sorted keys', (label, nodeGetter) => {
+		it(label, () => {
+			nodeGetter().tag('TheKey', 'TheValue');
+			nodeGetter().tag('ABCD', 'Another value');
+			nodeGetter().tag('1234', 'Some number');
+			nodeGetter().tag('_a', '');
+			nodeGetter().tag('32', 'blah');
+			nodeGetter().tag('xyz', 0);
+			nodeGetter().tag('Blah', 33);
+			test.value(nodeGetter().tags()).is([ '1234', '32', 'ABCD', 'Blah', 'TheKey', '_a', 'xyz' ]);
+		});
 	});
 
 	function itInvalidKey(label, action) {
-		it(label, () => {
+
+		it(label + ' (node)', () => {
+			const game = new Game();
+			game.mainVariation().play('e4');
+			test.exception(() => action(game.mainVariation().first())).isInstanceOf(exception.IllegalArgument);
+		});
+
+		it(label + ' (variation)', () => {
 			const game = new Game();
 			test.exception(() => action(game.mainVariation())).isInstanceOf(exception.IllegalArgument);
 		});
@@ -484,6 +524,28 @@ describe('Tags', () => {
 	itInvalidKey('Empty key', node => node.tag('', 'Whatever'));
 	itInvalidKey('Blank key', node => node.tag(' ', 'The value'));
 	itInvalidKey('Undefined key', node => node.tag(undefined, 'Another value'));
+});
+
+
+describe('ToString', () => {
+
+	it('Node', () => {
+		const game = new Game();
+		const node = game.mainVariation().play('e4').play('e5').play('Nf3').play('Nc6');
+		test.value(node.toString()).is('2b[Nc6]');
+	});
+
+	it('Main variation', () => {
+		const game = new Game();
+		const variation = game.mainVariation();
+		test.value(variation.toString()).is('start');
+	});
+
+	it('Sub-variation', () => {
+		const game = new Game();
+		const variation = game.mainVariation().play('e4').addVariation();
+		test.value(variation.toString()).is('1w-v0-start');
+	});
 });
 
 
