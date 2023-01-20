@@ -1,6 +1,10 @@
 ChangeLog
 =========
 
+4.1.0 (January 20, 2023)
+------------------------
+* Introduce `Node.removePrecedingMoves()` to erase the beginning of a game up to a given move.
+
 4.0.1 (January 4, 2023)
 -----------------------
 * Introduce `Game.fullRound()` to get a human-readable string representation of the round, sub-round and sub-sub-round all together.
