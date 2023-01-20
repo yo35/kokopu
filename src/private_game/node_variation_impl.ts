@@ -753,6 +753,19 @@ class NodeImpl extends Node {
 		return new NodeImpl(this._data.child, nextPositionBefore);
 	}
 
+	removePrecedingMoves() {
+		const moveTreeRoot = findRoot(this._data);
+
+		// Reset the initial position and full-move number, and rebuild a new main variation (so that the annotations get cleared).
+		moveTreeRoot._position = this._positionBefore;
+		moveTreeRoot._fullMoveNumber = this._data.fullMoveNumber;
+		moveTreeRoot._mainVariationData = createVariationData(moveTreeRoot, true);
+
+		// Replug the nodes.
+		moveTreeRoot._mainVariationData.child = this._data;
+		resetParentVariationRecursively(this._data, moveTreeRoot._mainVariationData);
+	}
+
 	removeFollowingMoves() {
 		this._data.child = undefined;
 	}
@@ -806,6 +819,15 @@ class NodeImpl extends Node {
 			variation.parent = newMainLine;
 		}
 	}
+}
+
+
+function findRoot(node: NodeData) {
+	let candidate: NodeData | MoveTreeRoot = node;
+	while (!(candidate instanceof MoveTreeRoot)) {
+		candidate = candidate.parentVariation.parent;
+	}
+	return candidate;
 }
 
 

@@ -1,0 +1,9 @@
+{
+	"event": "Game with variation shortened from the beginning.",
+	"initialPosition": "rnbqkbnr/pppp1ppp/8/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 0 2",
+	"mainVariation": [
+		"Nc6",
+		"Bc4",
+		"Bc5"
+	]
+}

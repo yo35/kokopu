@@ -378,9 +378,31 @@ const oneGamefactories = {
 		return game;
 	},
 
-	'shortened-variation': () => {
+	'shortened-variation-from-beginning-1': () => {
 		const game = new Game();
-		game.event('Game with shortened variation.');
+		game.event('Game with variation shortened from the beginning.');
+		game.mainVariation().comment('I will be removed in the shortening process...');
+		const node = game.mainVariation().play('e4').play('e5').play('Nf3').play('Nc6');
+		node.play('Bc4').play('Bc5');
+		node.removePrecedingMoves();
+		return game;
+	},
+
+	'shortened-variation-from-beginning-2': () => {
+		const game = new Game();
+		game.event('Game with variation shortened from the beginning (in a sub-variation).');
+		game.mainVariation().comment('I will be removed in the shortening process...');
+		const subVariation = game.mainVariation().play('e4').play('e5').play('Nc3').addVariation();
+		subVariation.comment('I will be removed too...');
+		const node = subVariation.play('Nf3').play('Nc6').play('Bb5');
+		node.play('a6').play('Ba4');
+		node.removePrecedingMoves();
+		return game;
+	},
+
+	'shortened-variation-at-end': () => {
+		const game = new Game();
+		game.event('Game with shortened variation at the end.');
 		const node = game.mainVariation().play('e4');
 		node.play('e5').play('Nf3');
 		node.removeFollowingMoves();

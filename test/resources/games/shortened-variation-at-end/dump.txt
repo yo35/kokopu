@@ -1,4 +1,4 @@
-Event = {Game with shortened variation.}
+Event = {Game with shortened variation at the end.}
 [start]                 -+<LONG
 [1w]                    (1w) e4
 {Line}{1 plies}

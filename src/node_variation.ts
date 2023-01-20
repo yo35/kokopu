@@ -202,6 +202,15 @@ export abstract class Node extends AbstractNode {
 	abstract variations(): Variation[];
 
 	/**
+	 * Erase all the moves before the one on the current {@link Node}: after that, {@link Node.parentVariation} returns the
+	 * {@link Game.mainVariation | main variation} of the parent {@link Game}, and the current node is the first node of this variation.
+	 *
+	 * This method modifies the {@link Game.initialPosition | initial position} and {@link Game.initialFullMoveNumber | initial full-move number}
+	 * of the parent {@link Game}.
+	 */
+	abstract removePrecedingMoves(): void;
+
+	/**
 	 * Erase all the moves after the one on the current {@link Node}: after that, {@link Node.next} returns `undefined`.
 	 *
 	 * If the current {@link Node} is already the last one in its variation (i.e. if {@link Node.next} returns `undefined` already),
