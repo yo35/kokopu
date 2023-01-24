@@ -658,7 +658,7 @@ export class Game {
 
 
 	/**
-	 * Return the node or variation corresponding to the given ID (see {@link Node.id} and {@link Variation.id}
+	 * Return the node or variation corresponding to the given ID (see {@link Node.id | Node.id} and {@link Variation.id | Variation.id}
 	 * to retrieve the ID of a node or variation).
 	 *
 	 * @returns `undefined` if the given ID does not correspond to an existing {@link Node} and {@link Variation}.
