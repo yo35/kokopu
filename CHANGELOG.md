@@ -1,6 +1,10 @@
 ChangeLog
 =========
 
+4.2.0 (January 24, 2023)
+------------------------
+* Introduce `Game.finalPosition()` and `Variation.finalPosition()` to retrieve the position at the end of a game or sub-variation.
+
 4.1.0 (January 20, 2023)
 ------------------------
 * Introduce `Node.removePrecedingMoves()` to erase the beginning of a game up to a given move.
