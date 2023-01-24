@@ -599,3 +599,51 @@ describe('Invalid initial position', () => {
 	itInvalidInitialPosition('Not a position 2', game => game.initialPosition('whatever'));
 	itInvalidInitialPosition('Invalid full-move number', game => game.initialPosition(new Position(), 'not-a-number'));
 });
+
+
+describe('Invalid variation index', () => {
+
+	function itInvalidVariationIndex(label, action) {
+		it(label, () => {
+			const game = new Game();
+			const node = game.mainVariation().play('e4').play('e5');
+			node.addVariation().play('c5').play('Nf3');
+			node.addVariation().play('d5').play('exd5').play('Qxd5');
+			node.addVariation().play('c6').play('d4');
+			node.addVariation().play('e6').play('d4').play('d5');
+			node.play('Nf3').play('Nc6').play('Bc4');
+			test.exception(() => action(node)).isInstanceOf(exception.IllegalArgument);
+		});
+	}
+
+	itInvalidVariationIndex('Not a number (remove)', node => node.removeVariation('1'));
+	itInvalidVariationIndex('Not a number (promote)', node => node.promoteVariation('2'));
+	itInvalidVariationIndex('Not a number (swap 1)', node => node.swapVariations('0', 1));
+	itInvalidVariationIndex('Not a number (swap 2)', node => node.swapVariations(2, '3'));
+	itInvalidVariationIndex('Out of range (remove)', node => node.removeVariation(4));
+	itInvalidVariationIndex('Out of range (promote)', node => node.promoteVariation(4));
+	itInvalidVariationIndex('Out of range (swap 1)', node => node.swapVariations(4, 1));
+	itInvalidVariationIndex('Out of range (swap 2)', node => node.swapVariations(2, 4));
+});
+
+
+describe('Figurine notation', () => {
+
+	it('White piece', () => {
+		const game = new Game();
+		const node = game.mainVariation().play('Nf3');
+		test.value(node.figurineNotation()).is('\u2658f3');
+	});
+
+	it('Black piece', () => {
+		const game = new Game();
+		const node = game.mainVariation().play('e4').play('e5').play('Nc3').play('Bc5');
+		test.value(node.figurineNotation()).is('\u265dc5');
+	});
+
+	it('Null move', () => {
+		const game = new Game();
+		const node = game.mainVariation().play('e4').play('--');
+		test.value(node.figurineNotation()).is('--');
+	});
+});
