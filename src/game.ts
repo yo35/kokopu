@@ -616,6 +616,14 @@ export class Game {
 
 
 	/**
+	 * Chess position at the end of the game.
+	 */
+	finalPosition(): Position {
+		return this._moveTreeRoot.mainVariation().finalPosition();
+	}
+
+
+	/**
 	 * The main variation of the game.
 	 */
 	mainVariation(): Variation {

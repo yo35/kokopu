@@ -654,6 +654,41 @@ describe('Game nodes', () => {
 });
 
 
+describe('Final positions', () => {
+
+	function finalPositionGetter(variation) {
+		return variation.finalPosition();
+	}
+
+	function nodeIteration(variation) {
+		let node = variation.first();
+		if (!node) {
+			return variation.initialPosition();
+		}
+		while (node.next()) {
+			node = node.next();
+		}
+		return node.position();
+	}
+
+	function itFinalPositions(filename, withFinalPositionGetter, factory) {
+		it(`${filename} (${withFinalPositionGetter ? 'with finalPosition()' : 'with node iteration'})`, () => {
+			const resource = `games/${filename}/end-of-variations.txt`;
+			const expectedText = resourceExists(resource) ? readText(resource).trim() : '';
+			const getter = withFinalPositionGetter ? finalPositionGetter : nodeIteration;
+			const game = factory();
+			const text = game.nodes(true).flatMap(node => node.variations()).map(variation => `[${variation.id()}] ${getter(variation).fen()}`).join('\n');
+			test.value(text).is(expectedText);
+		});
+	}
+
+	for (const f in oneGamefactories) {
+		itFinalPositions(f, true, oneGamefactories[f]);
+		itFinalPositions(f, false, oneGamefactories[f]);
+	}
+});
+
+
 describe('Write ASCII', () => {
 
 	function itAscii(filename, factory) {

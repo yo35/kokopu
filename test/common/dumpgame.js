@@ -161,6 +161,7 @@ module.exports = function(game) {
 	dumpInitialPosition(game.initialPosition());
 	dumpInitialMoveNumber(game.initialFullMoveNumber());
 	dumpVariation(game.mainVariation(), '', '');
+	res += game.finalPosition().ascii() + '\n';
 	dumpResultAndPlyCount(game.result(), game.plyCount());
 
 	return res;

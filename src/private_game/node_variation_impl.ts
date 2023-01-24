@@ -984,6 +984,14 @@ class VariationImpl extends Variation {
 		return this._data.parent instanceof MoveTreeRoot ? this._data.parent._fullMoveNumber : this._data.parent.fullMoveNumber;
 	}
 
+	finalPosition() {
+		const result = new Position(this._initialPosition);
+		for (let nodeData = this._data.child; nodeData !== undefined; nodeData = nodeData.child) {
+			applyMoveDescriptor(result, nodeData);
+		}
+		return result;
+	}
+
 	play(move: string) {
 		const moveColor = this._initialPosition.turn();
 		const fullMoveNumber = this.initialFullMoveNumber();

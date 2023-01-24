@@ -319,6 +319,11 @@ export abstract class Variation extends AbstractNode {
 	abstract initialFullMoveNumber(): number;
 
 	/**
+	 * Chess position at the end of the variation.
+	 */
+	abstract finalPosition(): Position;
+
+	/**
 	 * Erase all the moves in the current {@link Variation}: after that, {@link Variation.first} returns `undefined`.
 	 *
 	 * If the current {@link Variation} is already empty (i.e. if {@link Variation.first} returns `undefined` already),
