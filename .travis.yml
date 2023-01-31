@@ -1,9 +1,0 @@
-arch: arm64
-os: linux
-dist: focal
-
-language: node_js
-node_js:
-  - node
-
-after_success: npm run publish_coverage
