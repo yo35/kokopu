@@ -1,6 +1,10 @@
 ChangeLog
 =========
 
+4.2.1 (January 31, 2023)
+------------------------
+* Continuous integration with GitHub Actions instead of Travis-CI.
+
 4.2.0 (January 24, 2023)
 ------------------------
 * Introduce `Game.finalPosition()` and `Variation.finalPosition()` to retrieve the position at the end of a game or sub-variation.
