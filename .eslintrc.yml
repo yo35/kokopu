@@ -59,6 +59,7 @@ rules:
   no-var:                       [ error ]
   no-warning-comments:          [ warn, { location: anywhere, terms: [ TODO ] }]
   prefer-arrow-callback:        [ error ]
+  prefer-const:                 [ error ]
   prefer-regex-literals:        [ error ]
   prefer-rest-params:           [ error ]
   rest-spread-spacing:          [ error ]
