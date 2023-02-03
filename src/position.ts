@@ -22,6 +22,7 @@
 
 import { Color, Piece, ColoredPiece, File, Square, Castle, Castle960, GameVariant } from './base_types';
 import { IllegalArgument, InvalidFEN, InvalidNotation } from './exception';
+import { isCastle, isCastle960 } from './helper';
 import { i18n } from './i18n';
 import { MoveDescriptor } from './move_descriptor';
 
@@ -457,7 +458,7 @@ export class Position {
 	castling(castle: Castle | Castle960, value: boolean): void;
 
 	castling(castle: Castle | Castle960, value?: boolean) {
-		if (typeof castle !== 'string' || !(this._impl.variant === GameVariantImpl.CHESS960 ? /^[wb][a-h]$/ : /^[wb][kq]$/).test(castle)) {
+		if (!(this._impl.variant === GameVariantImpl.CHESS960 ? isCastle960(castle) : isCastle(castle))) {
 			throw new IllegalArgument('Position.castling()');
 		}
 		const color = colorFromString(castle[0]);
@@ -490,7 +491,7 @@ export class Position {
 	 * @param castle - Must be {@link Castle960} if the {@link Position} is configured for Chess960, or {@link Castle} otherwise.
 	 */
 	effectiveCastling(castle: Castle | Castle960): boolean {
-		if (typeof castle !== 'string' || !(this._impl.variant === GameVariantImpl.CHESS960 ? /^[wb][a-h]$/ : /^[wb][kq]$/).test(castle)) {
+		if (!(this._impl.variant === GameVariantImpl.CHESS960 ? isCastle960(castle) : isCastle(castle))) {
 			throw new IllegalArgument('Position.effectiveCastling()');
 		}
 		const color = colorFromString(castle[0]);

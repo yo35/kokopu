@@ -20,9 +20,71 @@
  * -------------------------------------------------------------------------- */
 
 
-const { exception, squareColor, squareToCoordinates, coordinatesToSquare, oppositeColor, variantWithCanonicalStartPosition, nagSymbol, isValidECO } = require('../dist/lib/index');
+const { exception, isColor, isPiece, isColoredPiece, isFile, isRank, isSquare, isCastle, isCastle960, isGameResult, isGameVariant, squareColor,
+	squareToCoordinates, coordinatesToSquare, oppositeColor, variantWithCanonicalStartPosition, nagSymbol, isValidECO } = require('../dist/lib/index');
 const readText = require('./common/readtext');
 const test = require('unit.js');
+
+
+function itIsType(func, validCases, invalidCases) {
+	for (const validCase of validCases) {
+		it(validCase, () => { test.value(func(validCase)).is(true); });
+	}
+	for (const invalidCase of invalidCases) {
+		const label = `Not ${invalidCase === '' ? '<empty string>' : typeof invalidCase === 'number' ? '<number>' : String(invalidCase)}`;
+		it(label, () => { test.value(func(invalidCase)).is(false); });
+	}
+}
+
+
+describe('Is color', () => {
+	itIsType(isColor, [ 'w', 'b' ], [ '', 42, 'x', 'W' ]);
+});
+
+
+describe('Is piece', () => {
+	itIsType(isPiece, [ 'k', 'r', 'p' ], [ '', 42, 'a', 'R' ]);
+});
+
+
+describe('Is colored piece', () => {
+	itIsType(isColoredPiece, [ 'wk', 'bn', 'wb', 'bp' ], [ '', 42, 'w', 'r', 'BP' ]);
+});
+
+
+describe('Is file', () => {
+	itIsType(isFile, [ 'a', 'b', 'd', 'h' ], [ '', 2, 'i', 'r', 'D', '1' ]);
+});
+
+
+describe('Is rank', () => {
+	itIsType(isRank, [ '1', '2', '8' ], [ '', 2, '0', '9', 'a' ]);
+});
+
+
+describe('Is square', () => {
+	itIsType(isSquare, [ 'a1', 'b7', 'e6', 'f3', 'h8' ], [ '', 42, 'a', '3', 'E6' ]);
+});
+
+
+describe('Is castle', () => {
+	itIsType(isCastle, [ 'wk', 'wq', 'bk', 'bq' ], [ '', 42, 'w', 'q', 'BK', 'wa' ]);
+});
+
+
+describe('Is castle 960', () => {
+	itIsType(isCastle960, [ 'wa', 'wc', 'bg', 'bh' ], [ '', 42, 'w', 'b', 'BG', 'wk', 'bi' ]);
+});
+
+
+describe('Is game result', () => {
+	itIsType(isGameResult, [ '1-0', '1/2-1/2', '0-1', '*' ], [ '', 42, '1--0', '0-1 ', ' *', '1-O' ]);
+});
+
+
+describe('Is game variant', () => {
+	itIsType(isGameVariant, [ 'regular', 'chess960', 'antichess', 'horde' ], [ '', 42, 'Regular', 'fischerandom' ]);
+});
 
 
 describe('Square color', () => {

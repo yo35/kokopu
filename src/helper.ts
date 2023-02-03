@@ -20,12 +20,93 @@
  * -------------------------------------------------------------------------- */
 
 
-import { Color, Square, Coordinates, GameVariant } from './base_types';
+import { Color, Piece, ColoredPiece, File, Rank, Square, Castle, Castle960, Coordinates, GameResult, GameVariant } from './base_types';
 import { IllegalArgument } from './exception';
 
-import { colorFromString, colorToString, squareFromString, squareToString, fileToString, rankToString, variantFromString, squareColorImpl } from './private_position/base_types_impl';
+import { colorFromString, pieceFromString, coloredPieceFromString, fileFromString, rankFromString, squareFromString, resultFromString, variantFromString,
+	colorToString, fileToString, rankToString, squareToString, squareColorImpl } from './private_position/base_types_impl';
 import { hasCanonicalStartPosition } from './private_position/impl';
 import { isValidNag } from './private_game/common';
+
+
+/**
+ * Whether the given value represents a valid {@link Color} or not.
+ */
+export function isColor(value: unknown): value is Color {
+	return colorFromString(value) >= 0;
+}
+
+
+/**
+ * Whether the given value represents a valid {@link Piece} or not.
+ */
+export function isPiece(value: unknown): value is Piece {
+	return pieceFromString(value) >= 0;
+}
+
+
+/**
+ * Whether the given value represents a valid {@link ColoredPiece} or not.
+ */
+export function isColoredPiece(value: unknown): value is ColoredPiece {
+	return coloredPieceFromString(value) >= 0;
+}
+
+
+/**
+ * Whether the given value represents a valid {@link File} or not.
+ */
+export function isFile(value: unknown): value is File {
+	return fileFromString(value) >= 0;
+}
+
+
+/**
+ * Whether the given value represents a valid {@link Rank} or not.
+ */
+export function isRank(value: unknown): value is Rank {
+	return rankFromString(value) >= 0;
+}
+
+
+/**
+ * Whether the given value represents a valid {@link Square} or not.
+ */
+export function isSquare(value: unknown): value is Square {
+	return squareFromString(value) >= 0;
+}
+
+
+/**
+ * Whether the given value represents a valid {@link Castle} or not.
+ */
+export function isCastle(value: unknown): value is Castle {
+	return typeof value === 'string' && /^[wb][kq]$/.test(value);
+}
+
+
+/**
+ * Whether the given value represents a valid {@link Castle960} or not.
+ */
+export function isCastle960(value: unknown): value is Castle960 {
+	return typeof value === 'string' && /^[wb][a-h]$/.test(value);
+}
+
+
+/**
+ * Whether the given value represents a valid {@link GameResult} or not.
+ */
+export function isGameResult(value: unknown): value is GameResult {
+	return resultFromString(value) >= 0;
+}
+
+
+/**
+ * Whether the given value represents a valid {@link GameVariant} or not.
+ */
+export function isGameVariant(value: unknown): value is GameVariant {
+	return variantFromString(value) >= 0;
+}
 
 
 /**

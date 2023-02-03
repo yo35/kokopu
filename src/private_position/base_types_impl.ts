@@ -91,29 +91,27 @@ export const enum GameVariantImpl {
 
 const COLOR_SYMBOL    = [ ...'wb' ];
 const PIECE_SYMBOL    = [ ...'kqrbnp' ];
-const FIGURINE_SYMBOL = [ ...'\u2654\u265a\u2655\u265b\u2656\u265c\u2657\u265d\u2658\u265e\u2659\u265f' ];
-const RANK_SYMBOL     = [ ...'12345678' ];
 const FILE_SYMBOL     = [ ...'abcdefgh' ];
+const RANK_SYMBOL     = [ ...'12345678' ];
 const RESULT_SYMBOL   = [ '1-0', '0-1', '1/2-1/2', '*' ];
 const VARIANT_SYMBOL  = [ 'regular', 'chess960', 'no-king', 'white-king-only', 'black-king-only', 'antichess', 'horde' ];
+const FIGURINE_SYMBOL = [ ...'\u2654\u265a\u2655\u265b\u2656\u265c\u2657\u265d\u2658\u265e\u2659\u265f' ];
 
 
-export function colorToString   (color   : number) { return COLOR_SYMBOL   [color  ] as Color      ; }
-export function pieceToString   (piece   : number) { return PIECE_SYMBOL   [piece  ] as Piece      ; }
-export function figurineToString(cp      : number) { return FIGURINE_SYMBOL[cp     ] as string     ; }
-export function rankToString    (rank    : number) { return RANK_SYMBOL    [rank   ] as Rank       ; }
-export function fileToString    (file    : number) { return FILE_SYMBOL    [file   ] as File       ; }
-export function resultToString  (result  : number) { return RESULT_SYMBOL  [result ] as GameResult ; }
-export function variantToString (variant : number) { return VARIANT_SYMBOL [variant] as GameVariant; }
+export function colorToString  (color   : number) { return COLOR_SYMBOL  [color  ] as Color      ; }
+export function pieceToString  (piece   : number) { return PIECE_SYMBOL  [piece  ] as Piece      ; }
+export function fileToString   (file    : number) { return FILE_SYMBOL   [file   ] as File       ; }
+export function rankToString   (rank    : number) { return RANK_SYMBOL   [rank   ] as Rank       ; }
+export function resultToString (result  : number) { return RESULT_SYMBOL [result ] as GameResult ; }
+export function variantToString(variant : number) { return VARIANT_SYMBOL[variant] as GameVariant; }
 
 
-export function colorFromString   (color   : unknown) { return COLOR_SYMBOL   .indexOf(String(color  )); }
-export function pieceFromString   (piece   : unknown) { return PIECE_SYMBOL   .indexOf(String(piece  )); }
-export function figurineFromString(cp      : unknown) { return FIGURINE_SYMBOL.indexOf(String(cp     )); }
-export function rankFromString    (rank    : unknown) { return RANK_SYMBOL    .indexOf(String(rank   )); }
-export function fileFromString    (file    : unknown) { return FILE_SYMBOL    .indexOf(String(file   )); }
-export function resultFromString  (result  : unknown) { return RESULT_SYMBOL  .indexOf(String(result )); }
-export function variantFromString (variant : unknown) { return VARIANT_SYMBOL .indexOf(String(variant)); }
+export function colorFromString  (color   : unknown) { return typeof color   === 'string' ? COLOR_SYMBOL  .indexOf(color  ) : -1; }
+export function pieceFromString  (piece   : unknown) { return typeof piece   === 'string' ? PIECE_SYMBOL  .indexOf(piece  ) : -1; }
+export function fileFromString   (file    : unknown) { return typeof file    === 'string' ? FILE_SYMBOL   .indexOf(file   ) : -1; }
+export function rankFromString   (rank    : unknown) { return typeof rank    === 'string' ? RANK_SYMBOL   .indexOf(rank   ) : -1; }
+export function resultFromString (result  : unknown) { return typeof result  === 'string' ? RESULT_SYMBOL .indexOf(result ) : -1; }
+export function variantFromString(variant : unknown) { return typeof variant === 'string' ? VARIANT_SYMBOL.indexOf(variant) : -1; }
 
 
 export function squareToString(square: number) {
@@ -143,6 +141,16 @@ export function coloredPieceFromString(cp: unknown) {
 	const color = COLOR_SYMBOL.indexOf(cp[0]);
 	const piece = PIECE_SYMBOL.indexOf(cp[1]);
 	return piece * 2 + color;
+}
+
+
+export function figurineToString(cp: number) {
+	return FIGURINE_SYMBOL[cp];
+}
+
+
+export function figurineFromString(cp: unknown) {
+	return FIGURINE_SYMBOL.indexOf(String(cp));
 }
 
 
