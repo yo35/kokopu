@@ -20,7 +20,7 @@
  * -------------------------------------------------------------------------- */
 
 
-const { exception, isColor, isPiece, isColoredPiece, isFile, isRank, isSquare, isCastle, isCastle960, isGameResult, isGameVariant, squareColor,
+const { exception, isColor, isPiece, isColoredPiece, isFile, isRank, isSquare, isSquareCouple, isCastle, isCastle960, isGameResult, isGameVariant, squareColor,
 	squareToCoordinates, coordinatesToSquare, oppositeColor, variantWithCanonicalStartPosition, nagSymbol, isValidECO } = require('../dist/lib/index');
 const readText = require('./common/readtext');
 const test = require('unit.js');
@@ -64,6 +64,11 @@ describe('Is rank', () => {
 
 describe('Is square', () => {
 	itIsType(isSquare, [ 'a1', 'b7', 'e6', 'f3', 'h8' ], [ '', 42, 'a', '3', 'E6' ]);
+});
+
+
+describe('Is square couple', () => {
+	itIsType(isSquareCouple, [ 'a1b2', 'g6d3', 'd7d7', 'g8h7' ], [ '', 42, 'b2', 'G6D3' ]);
 });
 
 

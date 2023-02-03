@@ -20,7 +20,7 @@
  * -------------------------------------------------------------------------- */
 
 
-import { Color, Piece, ColoredPiece, File, Rank, Square, Castle, Castle960, Coordinates, GameResult, GameVariant } from './base_types';
+import { Color, Piece, ColoredPiece, File, Rank, Square, SquareCouple, Castle, Castle960, Coordinates, GameResult, GameVariant } from './base_types';
 import { IllegalArgument } from './exception';
 
 import { colorFromString, pieceFromString, coloredPieceFromString, fileFromString, rankFromString, squareFromString, resultFromString, variantFromString,
@@ -74,6 +74,14 @@ export function isRank(value: unknown): value is Rank {
  */
 export function isSquare(value: unknown): value is Square {
 	return squareFromString(value) >= 0;
+}
+
+
+/**
+ * Whether the given value represents a valid {@link SquareCouple} or not.
+ */
+export function isSquareCouple(value: unknown): value is SquareCouple {
+	return typeof value === 'string' && /^[a-h][1-8][a-h][1-8]$/.test(value);
 }
 
 

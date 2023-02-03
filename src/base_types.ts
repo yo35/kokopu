@@ -64,6 +64,12 @@ export type Square = `${File}${Rank}`;
 
 
 /**
+ * Ordered pair of chessboard squares: `'a1b2'`, `'g6d3'`, `'d7d7'`, etc...
+ */
+export type SquareCouple = `${Square}${Square}`;
+
+
+/**
  * Castle type at chess:
  * - `'wk'` (white king-side castle)
  * - `'wq'` (white queen-side castle)
