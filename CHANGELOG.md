@@ -1,6 +1,11 @@
 ChangeLog
 =========
 
+4.3.0 (February 3, 2023)
+------------------------
+* Introduce predicates `isColor(..)`, `isSquare(..)`, `isColoredPiece(..)`, etc...
+* Introduce type `SquareCouple` to represent an ordered pair of squares, or a displacement on a chessboard.
+
 4.2.1 (January 31, 2023)
 ------------------------
 * Continuous integration with GitHub Actions instead of Travis-CI.
