@@ -30,8 +30,12 @@ const test = require('unit.js');
 
 function testData() {
 	return readCSV('jsons.csv', fields => {
+		const label = fields[0].trim();
+		if (label.length === 0 || label.charAt(0) === '#') {
+			return false;
+		}
 		return {
-			label: fields[0],
+			label: label,
 			json: readText(`jsons/${fields[0]}/game.json`),
 		};
 	});

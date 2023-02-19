@@ -30,8 +30,12 @@ const test = require('unit.js');
 
 function testData() {
 	return readCSV('pgns.csv', fields => {
+		const label = fields[0].trim();
+		if (label.length === 0 || label.charAt(0) === '#') {
+			return false;
+		}
 		return {
-			label: fields[0],
+			label: label,
 			gameCount: parseInt(fields[1]),
 			pgn: readText(`pgns/${fields[0]}/database.pgn`),
 		};
