@@ -20,7 +20,7 @@
  * -------------------------------------------------------------------------- */
 
 
-import { IllegalArgument } from './exception';
+import { IllegalArgument, InvalidPGN } from './exception';
 import { Game } from './game';
 
 
@@ -60,6 +60,31 @@ export abstract class Database {
 	}
 
 	/**
+	 * Return an [Iterable](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols) object allowing to iterate over
+	 * all the (valid) games within the database.
+	 *
+	 * Example, to print the ASCII representation of all the games within a database:
+	 * ```
+	 * const database = ... ;
+	 * for (const game of database.games()) {
+	 *   console.log(game.ascii());
+	 * }
+	 * ```
+	 *
+	 * If the database contains some games that cannot be parsed (i.e. games for which the method {@link Database.game} would throw a {@link exception.InvalidPGN} exception),
+	 * those games are ignored during the iteration. WARNING: for this reason, the number of games returned by the iterator may be lower than {@link Database.gameCount}.
+	 */
+	games(): Iterable<Game> {
+		const gameCount = this.doGameCount();
+		const gameLoader = (gameIndex: number) => this.doGame(gameIndex);
+		return {
+			[Symbol.iterator]() {
+				return new GameIteratorImpl(gameCount, gameLoader);
+			}
+		};
+	}
+
+	/**
 	 * @ignore
 	 */
 	protected abstract doGameCount(): number;
@@ -68,4 +93,37 @@ export abstract class Database {
 	 * @ignore
 	 */
 	protected abstract doGame(gameIndex: number): Game;
+}
+
+
+/**
+ * Iterator that iterates over all the games of a {@link Database}.
+ */
+class GameIteratorImpl {
+
+	private gameIndex = 0;
+	private gameCount: number;
+	private gameLoader: (gameIndex: number) => Game;
+
+	constructor(gameCount: number, gameLoader: (gameIndex: number) => Game) {
+		this.gameCount = gameCount;
+		this.gameLoader = gameLoader;
+	}
+
+	next(): IteratorResult<Game, void> {
+		while (this.gameIndex < this.gameCount) {
+			try {
+				const game = this.gameLoader(this.gameIndex++);
+				return { done: false, value: game };
+			}
+			catch (error) {
+				// istanbul ignore if
+				if (!(error instanceof InvalidPGN)) {
+					throw error;
+				}
+			}
+		}
+		return { done: true, value: undefined };
+	}
+
 }

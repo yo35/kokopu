@@ -202,3 +202,36 @@ describe('Read PGN - Wrong game index', () => {
 	itInvalidGameIndex('NaN index', NaN, false);
 	itInvalidGameIndex('Non number index', 'xyz', false);
 });
+
+
+describe('Read PGN - Database iterator', () => {
+
+	function itCheckIterator(pgnName, pgnText, expectedGameCount) {
+		it(`File ${pgnName}`, () => {
+
+			const database = pgnRead(pgnText);
+			let gameIndex = 0;
+			for (const game of database.games()) {
+
+				// Find the index of the next parsable item.
+				while (getItemType(pgnName, gameIndex) !== 'txt') {
+					gameIndex++;
+				}
+
+				const expectedDescriptor = loadValidItemDescriptor(pgnName, gameIndex++);
+				test.value(dumpGame(game).trim()).is(expectedDescriptor);
+			}
+
+			// Skip the remaining unparsable items.
+			while (gameIndex < expectedGameCount && getItemType(pgnName, gameIndex) !== 'txt') {
+				gameIndex++;
+			}
+
+			test.value(gameIndex).is(expectedGameCount);
+		});
+	}
+
+	for (const elem of testData()) {
+		itCheckIterator(elem.label, elem.pgn, elem.gameCount);
+	}
+});
