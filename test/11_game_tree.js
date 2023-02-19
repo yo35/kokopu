@@ -20,7 +20,7 @@
  * -------------------------------------------------------------------------- */
 
 
-const { Game, Position, AbstractNode, Node, Variation, pgnRead, pgnWrite } = require('../dist/lib/index');
+const { exception, Game, Position, AbstractNode, Node, Variation, pgnRead, pgnWrite } = require('../dist/lib/index');
 const readText = require('./common/readtext');
 const resourceExists = require('./common/resourceexists');
 const dumpGame = require('./common/dumpgame');
@@ -765,6 +765,20 @@ describe('Write PGN with options', () => {
 });
 
 
+describe('Write PGN (invalid arguments)', () => {
+
+	function itInvalidArgument(label, value) {
+		it(label, () => {
+			test.exception(() => pgnWrite(value)).isInstanceOf(exception.IllegalArgument);
+		});
+	}
+
+	itInvalidArgument('undefined', undefined);
+	itInvalidArgument('null', null);
+	itInvalidArgument('number', 42);
+});
+
+
 describe('Read PGN', () => {
 
 	function itReadPgn(filename) {
@@ -783,6 +797,20 @@ describe('Read PGN', () => {
 	for (const f in oneGamefactories) {
 		itReadPgn(f);
 	}
+});
+
+
+describe('Read PGN (invalid arguments)', () => {
+
+	function itInvalidArgument(label, value) {
+		it(label, () => {
+			test.exception(() => pgnRead(value)).isInstanceOf(exception.IllegalArgument);
+		});
+	}
+
+	itInvalidArgument('undefined', undefined);
+	itInvalidArgument('null', null);
+	itInvalidArgument('number', 42);
 });
 
 
