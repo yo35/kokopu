@@ -72,7 +72,7 @@
 			"notation": "Bg2+",
 			"variations": [
 				{
-					"isLongVariation":true,
+					"isLongVariation": true,
 					"nodes": [
 						{ "notation": "Rg2", "comment": "would have won more quickly. For instance:", "nags": [ 1 ] },
 						"Qd3",
@@ -89,7 +89,7 @@
 		"Bh3+",
 		"Kh1",
 		"Bxf2",
-		{ "notation":"Qf1", "comment":"Absolutely forced." },
+		{ "notation": "Qf1", "comment": "Absolutely forced." },
 		"Bxf1",
 		"Rxf1",
 		"Re2",
