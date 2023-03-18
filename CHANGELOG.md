@@ -1,6 +1,10 @@
 ChangeLog
 =========
 
+4.5.0 (March 18, 2023)
+----------------------
+* Add support for NAG $9 (see [#38](https://github.com/yo35/kokopu/issues/38)).
+
 4.4.0 (February 19, 2023)
 -------------------------
 * Add support for the `for...of` syntax to iterate over all the games of a `Database` with method `Database.games()`
