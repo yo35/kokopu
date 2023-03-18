@@ -207,6 +207,7 @@ NAG_SYMBOLS.set(  5, '!?',    ); // interesting move
 NAG_SYMBOLS.set(  6, '?!',    ); // questionable move
 NAG_SYMBOLS.set(  7, '\u25a1' ); // Only move
 NAG_SYMBOLS.set(  8, '\u25a1' ); // Only move (ChessBase)
+NAG_SYMBOLS.set(  9, '\u2612' ); // Worst move (Chess.com)
 NAG_SYMBOLS.set( 10, '=',     ); // equal position
 NAG_SYMBOLS.set( 11, '=',     ); // equal position (ChessBase)
 NAG_SYMBOLS.set( 13, '\u221e' ); // unclear position
