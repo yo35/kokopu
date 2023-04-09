@@ -14,15 +14,15 @@
 	"pluginPages": {
 		"source": "./doc_src/pages",
 		"pages": [
-			{ "title": "Migrate to 3.x", "source": "migrate_to_3.md" },
-			{ "title": "Migrate to 4.x", "source": "migrate_to_4.md" },
-			{ "title": "Tutorials & examples", "childrenDir": "tutorials", "children": [
-				{ "title": "Getting started", "source": "01_getting_started.md" },
-				{ "title": "Set-up a position", "source": "02_set_up_position.md" },
-				{ "title": "Load a PGN file", "source": "03_load_pgn.md" },
-				{ "title": "Set-up a game from scratch", "source": "04_set_up_game.md" },
-				{ "title": "Game/JSON conversion", "source": "05_json.md" },
-				{ "title": "Chess960", "source": "06_chess960.md" }
+			{ "name": "Migrate to 3.x", "source": "migrate_to_3.md" },
+			{ "name": "Migrate to 4.x", "source": "migrate_to_4.md" },
+			{ "name": "Tutorials & examples", "childrenDir": "tutorials", "children": [
+				{ "name": "Getting started", "source": "01_getting_started.md" },
+				{ "name": "Set-up a position", "source": "02_set_up_position.md" },
+				{ "name": "Load a PGN file", "source": "03_load_pgn.md" },
+				{ "name": "Set-up a game from scratch", "source": "04_set_up_game.md" },
+				{ "name": "Game/JSON conversion", "source": "05_json.md" },
+				{ "name": "Chess960", "source": "06_chess960.md" }
 			]}
 		]
 	}
