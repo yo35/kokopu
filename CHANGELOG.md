@@ -1,6 +1,10 @@
 ChangeLog
 =========
 
+4.6.0 (April 9, 2023)
+---------------------
+* Add support for NAG $44.
+
 4.5.0 (March 18, 2023)
 ----------------------
 * Add support for NAG $9 (see [#38](https://github.com/yo35/kokopu/issues/38)).
