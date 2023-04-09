@@ -23,11 +23,16 @@
 	"files": [
 		"demo",
 		"dist/lib",
+		"doc_src",
 		"src",
 		"test",
 		".eslintrc.yml",
 		".nycrc.yml",
-		"tsconfig.json"
+		"CHANGELOG.md",
+		"LICENSE",
+		"README.md",
+		"tsconfig.json",
+		"typedoc.json"
 	],
 	"devDependencies": {
 		"@knodes/typedoc-plugin-pages": "^0.23.4",
