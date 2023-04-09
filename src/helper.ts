@@ -221,6 +221,7 @@ NAG_SYMBOLS.set( 22, '\u2a00' ); // Zugzwang
 NAG_SYMBOLS.set( 32, '\u27f3' ); // Development advantage
 NAG_SYMBOLS.set( 36, '\u2191' ); // Initiative
 NAG_SYMBOLS.set( 40, '\u2192' ); // Attack
+NAG_SYMBOLS.set( 44, '\u2bf9' ); // Compensation
 NAG_SYMBOLS.set(132, '\u21c6' ); // Counterplay
 NAG_SYMBOLS.set(138, '\u2a01' ); // Zeitnot
 NAG_SYMBOLS.set(140, '\u2206' ); // With idea...
