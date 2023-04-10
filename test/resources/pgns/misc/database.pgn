@@ -141,3 +141,13 @@ with a linebreak}
 [PlyCount "42"]
 
 1. e4 e5 2. Nf3 *
+
+
+[Event "Multi-part comment"]
+
+1. e4 e6
+
+{I thought he would play Caro-Kann} (1... c6) {but French is OK either}
+2. d4 d5 {and now...}
+
+{advance variation} 3. e5 *

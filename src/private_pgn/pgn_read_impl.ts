@@ -268,13 +268,19 @@ function doParseGame(stream: TokenStream) {
 
 			// Comment
 			case TokenType.COMMENT: {
-				const tokenValue = stream.tokenValue<TokenCommentData>();
-				for (const [ key, value ] of tokenValue.tags) {
+				const { comment, tags } = stream.tokenValue<TokenCommentData>();
+				for (const [ key, value ] of tags) {
 					node!.tag(key, value);
 				}
-				if (tokenValue.comment !== undefined) {
-					const isLongComment = node instanceof Variation ? stream.emptyLineAfterToken() : stream.emptyLineBeforeToken();
-					node!.comment(tokenValue.comment, isLongComment);
+				if (comment !== undefined) {
+					if (node!.comment() === undefined) {
+						const isLongComment = node instanceof Variation ? stream.emptyLineAfterToken() : stream.emptyLineBeforeToken();
+						node!.comment(comment, isLongComment);
+					}
+					else { // Concatenate the current comment to the previous one, if any.
+						const isLongComment = node!.isLongComment();
+						node!.comment(node!.comment() + ' ' + comment, isLongComment);
+					}
 				}
 				break;
 			}
