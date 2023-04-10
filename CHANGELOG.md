@@ -12,7 +12,7 @@ ChangeLog
 4.4.0 (February 19, 2023)
 -------------------------
 * Add support for the `for...of` syntax to iterate over all the games of a `Database` with method `Database.games()`
-(see [#36](https://github.com/yo35/kokopu/issues/36).
+(see [#36](https://github.com/yo35/kokopu/issues/36)).
 
 4.3.0 (February 3, 2023)
 ------------------------
