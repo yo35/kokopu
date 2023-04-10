@@ -1,6 +1,10 @@
 ChangeLog
 =========
 
+4.6.1 (April 10, 2023)
+----------------------
+* Fix parsing of multi-part text comments (see [#40](https://github.com/yo35/kokopu/issues/40)).
+
 4.6.0 (April 9, 2023)
 ---------------------
 * Add support for NAG $44.
