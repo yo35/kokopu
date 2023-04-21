@@ -55,7 +55,7 @@
 	"scripts": {
 		"lint": "eslint demo src test",
 		"preunit": "npm run build:lib",
-		"unit": "nyc mocha --bail --sort",
+		"unit": "nyc mocha --bail --sort --enable-source-maps",
 		"test": "npm run lint && npm run unit",
 		"build": "npm run build:lib && npm run build:doc && node scripts/build-archive.js",
 		"build:doc": "typedoc",
