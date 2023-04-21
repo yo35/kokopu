@@ -120,10 +120,7 @@ function writeAnnotations(node: AbstractNode, skipLineAfterCommentIfLong: boolea
 		for (const tagKey of tags) {
 			const tagValue = tagValues.get(tagKey);
 			if (tagValue) {
-				pushToken('[%' + tagKey, false, false);
-				for (const token of escapeCommentValue(tagValue + ']').split(' ')) {
-					pushToken(token, false, false);
-				}
+				pushToken(`[%${tagKey} ${escapeCommentValue(tagValue)}]`, true, false);
 			}
 		}
 		if (comment) {
