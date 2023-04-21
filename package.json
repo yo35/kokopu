@@ -24,6 +24,7 @@
 		"demo",
 		"dist/lib",
 		"doc_src",
+		"scripts/build-archive.js",
 		"src",
 		"test",
 		".eslintrc.yml",
