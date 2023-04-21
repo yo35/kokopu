@@ -1,6 +1,10 @@
 ChangeLog
 =========
 
+4.6.2 (April 21, 2023)
+----------------------
+* Fix tag formatting in comments written by `pgnWrite(..)`.
+
 4.6.1 (April 10, 2023)
 ----------------------
 * Fix parsing of multi-part text comments (see [#40](https://github.com/yo35/kokopu/issues/40)).
