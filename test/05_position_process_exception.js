@@ -242,6 +242,24 @@ describe('Parse degenerated figurine notation', () => {
 });
 
 
+describe('Invalid notation parsing overloads', () => {
+
+	function itInvalidOverload(label, action) {
+		it(label, () => {
+			const position = new Position();
+			test.exception(() => action(position)).isInstanceOf(exception.IllegalArgument);
+		});
+	}
+
+	itInvalidOverload('No argument on notation()', pos => pos.notation());
+	itInvalidOverload('Non-string argument on notation()', pos => pos.notation(42));
+	itInvalidOverload('No argument on figurineNotation()', pos => pos.figurineNotation());
+	itInvalidOverload('Non-string argument on figurineNotation()', pos => pos.figurineNotation(null));
+	itInvalidOverload('No argument on uci()', pos => pos.uci());
+	itInvalidOverload('Non-string argument on uci()', pos => pos.uci({}));
+});
+
+
 describe('Parse and play move', () => {
 
 	it('Legal move (notation)', () => {
