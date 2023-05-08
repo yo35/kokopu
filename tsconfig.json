@@ -1,14 +1,15 @@
 {
 	"include": [ "./src/**/*" ],
 	"compilerOptions": {
-		"outDir": "./dist/lib",
+		"sourceMap": true,
+		"declaration": true,
 		"module": "CommonJS",
 		"target": "es2015",
 		"lib": [ "es2020" ],
-		"sourceMap": true,
-		"declaration": true,
+		"types": [],
 		"allowJs": false,
 		"strict": true,
-		"forceConsistentCasingInFileNames": true
+		"forceConsistentCasingInFileNames": true,
+		"moduleResolution": "node"
 	}
 }
