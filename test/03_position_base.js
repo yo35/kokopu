@@ -290,6 +290,15 @@ describe('Position getters', () => {
 		it('Error for castling with ' + elem, () => {
 			const p = new Position();
 			test.exception(() => p.castling(elem)).isInstanceOf(exception.IllegalArgument);
+			test.exception(() => p.effectiveCastling(elem)).isInstanceOf(exception.IllegalArgument);
+		});
+	}
+
+	for (const elem of ['wA', 'bq']) {
+		it('Error for castling (chess960) with ' + elem, () => {
+			const p = new Position('chess960', 123);
+			test.exception(() => p.castling(elem)).isInstanceOf(exception.IllegalArgument);
+			test.exception(() => p.effectiveCastling(elem)).isInstanceOf(exception.IllegalArgument);
 		});
 	}
 });
