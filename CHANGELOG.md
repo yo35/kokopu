@@ -1,6 +1,11 @@
 ChangeLog
 =========
 
+4.7.0 (May 25, 2023)
+--------------------
+* Add methods `AbstractNode.clearNags()` and `AbstractNode.filterNags(..)` to remove all the NAGs from a node or variation, or to keep only a subset of them.
+* Add methods `AbstractNode.clearTags()` and `AbstractNode.filterTags(..)` to achieve similar operations on the key-value tag pairs of a node or variation.
+
 4.6.2 (April 21, 2023)
 ----------------------
 * Fix tag formatting in comments written by `pgnWrite(..)`.
