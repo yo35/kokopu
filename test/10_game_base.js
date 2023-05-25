@@ -347,48 +347,54 @@ describe('Date header', () => {
 });
 
 
-
-
-
 describe('NAGs', () => {
 
-	it('Set & test', () => {
-		const game = new Game();
-		const node = game.mainVariation().play('e4');
-		game.mainVariation().addNag(34);
-		node.addNag(28);
-		test.value(game.mainVariation().nags()).is([ 34 ]);
-		test.value(game.mainVariation().hasNag(34)).is(true);
-		test.value(game.mainVariation().hasNag(42)).is(false);
-		test.value(node.nags()).is([ 28 ]);
-		test.value(node.hasNag(28)).is(true);
-		test.value(node.hasNag(75)).is(false);
+	function itOnNodeAndVariation(label, action) {
+
+		it(label + ' (node)', () => {
+			const game = new Game();
+			game.mainVariation().play('e4');
+			action(() => game.mainVariation().first());
+		});
+
+		it(label + ' (variation)', () => {
+			const game = new Game();
+			action(() => game.mainVariation());
+		});
+	}
+
+	itOnNodeAndVariation('Set & test', nodeGetter => {
+		nodeGetter().addNag(34);
+		test.value(nodeGetter().nags()).is([ 34 ]);
+		test.value(nodeGetter().hasNag(34)).is(true);
+		test.value(nodeGetter().hasNag(42)).is(false);
 	});
 
-	it('Erase', () => {
-		const game = new Game();
-		const node = game.mainVariation().play('d4');
-		game.mainVariation().addNag(18);
-		game.mainVariation().removeNag(18);
-		node.addNag(62);
-		node.addNag(13);
-		node.removeNag(62);
-		test.value(game.mainVariation().nags()).is([]);
-		test.value(game.mainVariation().hasNag(18)).is(false);
-		test.value(node.nags()).is([ 13 ]);
-		test.value(node.hasNag(13)).is(true);
-		test.value(node.hasNag(62)).is(false);
+	itOnNodeAndVariation('Erase', nodeGetter => {
+		nodeGetter().addNag(18);
+		nodeGetter().addNag(21);
+		nodeGetter().addNag(5);
+		test.value(nodeGetter().nags()).is([ 5, 18, 21 ]);
+		nodeGetter().removeNag(18);
+		test.value(nodeGetter().nags()).is([ 5, 21 ]);
+		test.value(nodeGetter().hasNag(18)).is(false);
+		test.value(nodeGetter().hasNag(21)).is(true);
+		nodeGetter().removeNag(5);
+		test.value(nodeGetter().nags()).is([ 21 ]);
+		nodeGetter().removeNag(16);
+		test.value(nodeGetter().nags()).is([ 21 ]);
+		nodeGetter().removeNag(21);
+		test.value(nodeGetter().nags()).is([]);
 	});
 
-	it('Sorted NAGs', () => {
-		const game = new Game();
-		game.mainVariation().addNag(18);
-		game.mainVariation().addNag(11);
-		game.mainVariation().addNag(34);
-		game.mainVariation().addNag(1234);
-		game.mainVariation().addNag(2);
-		game.mainVariation().addNag(1);
-		test.value(game.mainVariation().nags()).is([ 1, 2, 11, 18, 34, 1234 ]);
+	itOnNodeAndVariation('Sorted NAGs', nodeGetter => {
+		nodeGetter().addNag(18);
+		nodeGetter().addNag(11);
+		nodeGetter().addNag(34);
+		nodeGetter().addNag(1234);
+		nodeGetter().addNag(2);
+		nodeGetter().addNag(1);
+		test.value(nodeGetter().nags()).is([ 1, 2, 11, 18, 34, 1234 ]);
 	});
 
 	function itInvalidNag(label, value) {
@@ -423,86 +429,74 @@ describe('NAGs', () => {
 
 describe('Tags', () => {
 
-	function applyOnNodeAndVariation(label, action) {
+	function itOnNodeAndVariation(label, action) {
 
-		const gameNode = new Game();
-		gameNode.mainVariation().play('e4');
-		action(label + ' (node)', () => gameNode.mainVariation().first());
+		it(label + ' (node)', () => {
+			const game = new Game();
+			game.mainVariation().play('e4');
+			action(() => game.mainVariation().first());
+		});
 
-		const gameVariation = new Game();
-		action(label + ' (variation)', () => gameVariation.mainVariation());
+		it(label + ' (variation)', () => {
+			const game = new Game();
+			action(() => game.mainVariation());
+		});
 	}
 
-	applyOnNodeAndVariation('Set & get', (label, nodeGetter) => {
-		it(label, () => {
-			nodeGetter().tag('TheKey', 'TheValue');
-			test.value(nodeGetter().tags()).is([ 'TheKey' ]);
-			test.value(nodeGetter().tag('TheKey')).is('TheValue');
-			test.value(nodeGetter().tag('AnotherKey')).is(undefined);
-		});
+	itOnNodeAndVariation('Set & get', nodeGetter => {
+		nodeGetter().tag('TheKey', 'TheValue');
+		test.value(nodeGetter().tags()).is([ 'TheKey' ]);
+		test.value(nodeGetter().tag('TheKey')).is('TheValue');
+		test.value(nodeGetter().tag('AnotherKey')).is(undefined);
 	});
 
-	applyOnNodeAndVariation('Set empty string', (label, nodeGetter) => {
-		it(label, () => {
-			nodeGetter().tag('TheKey1', '');
-			test.value(nodeGetter().tags()).is([ 'TheKey1' ]);
-			test.value(nodeGetter().tag('TheKey1')).is('');
-		});
+	itOnNodeAndVariation('Set empty string', nodeGetter => {
+		nodeGetter().tag('TheKey1', '');
+		test.value(nodeGetter().tags()).is([ 'TheKey1' ]);
+		test.value(nodeGetter().tag('TheKey1')).is('');
 	});
 
-	applyOnNodeAndVariation('Set blank string', (label, nodeGetter) => {
-		it(label, () => {
-			nodeGetter().tag('__TheKey__', '  ');
-			test.value(nodeGetter().tags()).is([ '__TheKey__' ]);
-			test.value(nodeGetter().tag('__TheKey__')).is('  ');
-		});
+	itOnNodeAndVariation('Set blank string', nodeGetter => {
+		nodeGetter().tag('__TheKey__', '  ');
+		test.value(nodeGetter().tags()).is([ '__TheKey__' ]);
+		test.value(nodeGetter().tag('__TheKey__')).is('  ');
 	});
 
-	applyOnNodeAndVariation('Set non-string (number)', (label, nodeGetter) => {
-		it(label, () => {
-			nodeGetter().tag('_', 42);
-			test.value(nodeGetter().tags()).is([ '_' ]);
-			test.value(nodeGetter().tag('_')).is('42');
-		});
+	itOnNodeAndVariation('Set non-string (number)', nodeGetter => {
+		nodeGetter().tag('_', 42);
+		test.value(nodeGetter().tags()).is([ '_' ]);
+		test.value(nodeGetter().tag('_')).is('42');
 	});
 
-	applyOnNodeAndVariation('Set non-string (boolean)', (label, nodeGetter) => {
-		it(label, () => {
-			nodeGetter().tag('123', false);
-			test.value(nodeGetter().tags()).is([ '123' ]);
-			test.value(nodeGetter().tag('123')).is('false');
-		});
+	itOnNodeAndVariation('Set non-string (boolean)', nodeGetter => {
+		nodeGetter().tag('123', false);
+		test.value(nodeGetter().tags()).is([ '123' ]);
+		test.value(nodeGetter().tag('123')).is('false');
 	});
 
-	applyOnNodeAndVariation('Erase with undefined', (label, nodeGetter) => {
-		it(label, () => {
-			nodeGetter().tag('TheKey', 'TheValue');
-			nodeGetter().tag('TheKey', undefined);
-			test.value(nodeGetter().tags()).is([]);
-			test.value(nodeGetter().tag('TheKey')).is(undefined);
-		});
+	itOnNodeAndVariation('Erase with undefined', nodeGetter => {
+		nodeGetter().tag('TheKey', 'TheValue');
+		nodeGetter().tag('TheKey', undefined);
+		test.value(nodeGetter().tags()).is([]);
+		test.value(nodeGetter().tag('TheKey')).is(undefined);
 	});
 
-	applyOnNodeAndVariation('Erase with null', (label, nodeGetter) => {
-		it(label, () => {
-			nodeGetter().tag('TheKey', 'TheValue');
-			nodeGetter().tag('TheKey', null);
-			test.value(nodeGetter().tags()).is([]);
-			test.value(nodeGetter().tag('TheKey')).is(undefined);
-		});
+	itOnNodeAndVariation('Erase with null', nodeGetter => {
+		nodeGetter().tag('TheKey', 'TheValue');
+		nodeGetter().tag('TheKey', null);
+		test.value(nodeGetter().tags()).is([]);
+		test.value(nodeGetter().tag('TheKey')).is(undefined);
 	});
 
-	applyOnNodeAndVariation('Sorted keys', (label, nodeGetter) => {
-		it(label, () => {
-			nodeGetter().tag('TheKey', 'TheValue');
-			nodeGetter().tag('ABCD', 'Another value');
-			nodeGetter().tag('1234', 'Some number');
-			nodeGetter().tag('_a', '');
-			nodeGetter().tag('32', 'blah');
-			nodeGetter().tag('xyz', 0);
-			nodeGetter().tag('Blah', 33);
-			test.value(nodeGetter().tags()).is([ '1234', '32', 'ABCD', 'Blah', 'TheKey', '_a', 'xyz' ]);
-		});
+	itOnNodeAndVariation('Sorted keys', nodeGetter => {
+		nodeGetter().tag('TheKey', 'TheValue');
+		nodeGetter().tag('ABCD', 'Another value');
+		nodeGetter().tag('1234', 'Some number');
+		nodeGetter().tag('_a', '');
+		nodeGetter().tag('32', 'blah');
+		nodeGetter().tag('xyz', 0);
+		nodeGetter().tag('Blah', 33);
+		test.value(nodeGetter().tags()).is([ '1234', '32', 'ABCD', 'Blah', 'TheKey', '_a', 'xyz' ]);
 	});
 
 	function itInvalidKey(label, action) {
