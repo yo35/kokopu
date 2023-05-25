@@ -70,6 +70,17 @@ export abstract class AbstractNode {
 	abstract removeNag(nag: number): void;
 
 	/**
+	 * Remove all the [NAG](https://en.wikipedia.org/wiki/Numeric_Annotation_Glyphs)s from the current node or variation.
+	 */
+	abstract clearNags(): void;
+
+	/**
+	 * Remove from the the current node or variation the [NAG](https://en.wikipedia.org/wiki/Numeric_Annotation_Glyphs)s
+	 * for which the given filter evaluates to `false` (and keep those for which it evaluates to `true`).
+	 */
+	abstract filterNags(filter: (nag: number) => boolean): void;
+
+	/**
 	 * Return the keys of the tags associated to the current node or variation.
 	 *
 	 * The tag mechanism is a key-value associative container allowing to store some arbitrary data
@@ -97,6 +108,21 @@ export abstract class AbstractNode {
 	 * @param value - If `undefined`, the existing value (if any) is erased.
 	 */
 	abstract tag(tagKey: string, value: string | undefined): void;
+
+	/**
+	 * Remove all the key-value tag pairs from the the current node or variation.
+	 *
+	 * @see {@link AbstractNode.tags} for more details on tags.
+	 */
+	abstract clearTags(): void;
+
+	/**
+	 * Remove from the the current node or variation the key-value tag pairs for which the given filter evaluates to `false`
+	 * (and keep those for which it evaluates to `true`).
+	 *
+	 * @see {@link AbstractNode.tags} for more details on tags.
+	 */
+	abstract filterTags(filter: (tagKey: string, tagValue: string) => boolean): void;
 
 	/**
 	 * Get the text comment (if any) associated to the current node or variation.

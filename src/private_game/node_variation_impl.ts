@@ -574,6 +574,20 @@ function getNags(data: AbstractNodeData) {
 
 
 /**
+ * Keep only the NAGs that are asserted by the given filter.
+ */
+function filterNags(data: AbstractNodeData, filter: (nag: number) => boolean) {
+	const result = new Set<number>();
+	for (const nag of data.nags) {
+		if (filter(nag)) {
+			result.add(nag);
+		}
+	}
+	data.nags = result;
+}
+
+
+/**
  * Whether the given valid is a valid tag key or not.
  */
 function isValidTagKey(tagKey: string) {
@@ -590,6 +604,20 @@ function getTagKeys(data: AbstractNodeData) {
 		result.push(tag);
 	}
 	return result.sort();
+}
+
+
+/**
+ * Keep only the tags that are asserted by the given filter.
+ */
+function filterTags(data: AbstractNodeData, filter: (tagKey: string, tagValue: string) => boolean) {
+	const result = new Map<string, string>();
+	for (const [tagKey, tagValue] of data.tags.entries()) {
+		if (filter(tagKey, tagValue)) {
+			result.set(tagKey, tagValue);
+		}
+	}
+	data.tags = result;
 }
 
 
@@ -648,6 +676,14 @@ class NodeImpl extends Node {
 		return this._data.nags.delete(nag);
 	}
 
+	clearNags() {
+		this._data.nags.clear();
+	}
+
+	filterNags(filter: (nag: number) => boolean) {
+		filterNags(this._data, filter);
+	}
+
 	tags() {
 		return getTagKeys(this._data);
 	}
@@ -667,6 +703,14 @@ class NodeImpl extends Node {
 				this._data.tags.set(tagKey, String(value));
 			}
 		}
+	}
+
+	clearTags() {
+		this._data.tags.clear();
+	}
+
+	filterTags(filter: (tagKey: string, tagValue: string) => boolean) {
+		filterTags(this._data, filter);
 	}
 
 	comment(value?: string | undefined, isLongComment?: boolean) {
@@ -892,6 +936,14 @@ class VariationImpl extends Variation {
 		return this._data.nags.delete(nag);
 	}
 
+	clearNags() {
+		this._data.nags.clear();
+	}
+
+	filterNags(filter: (nag: number) => boolean) {
+		filterNags(this._data, filter);
+	}
+
 	tags() {
 		return getTagKeys(this._data);
 	}
@@ -911,6 +963,14 @@ class VariationImpl extends Variation {
 				this._data.tags.set(tagKey, String(value));
 			}
 		}
+	}
+
+	clearTags() {
+		this._data.tags.clear();
+	}
+
+	filterTags(filter: (tagKey: string, tagValue: string) => boolean) {
+		filterTags(this._data, filter);
 	}
 
 	comment(value?: string | undefined, isLongComment?: boolean) {

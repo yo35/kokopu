@@ -397,6 +397,26 @@ describe('NAGs', () => {
 		test.value(nodeGetter().nags()).is([ 1, 2, 11, 18, 34, 1234 ]);
 	});
 
+	itOnNodeAndVariation('Clear NAGs', nodeGetter => {
+		nodeGetter().addNag(52);
+		nodeGetter().addNag(3);
+		nodeGetter().addNag(14);
+		test.value(nodeGetter().nags()).is([ 3, 14, 52 ]);
+		nodeGetter().clearNags();
+		test.value(nodeGetter().nags()).is([]);
+	});
+
+	itOnNodeAndVariation('Filter NAGs', nodeGetter => {
+		nodeGetter().addNag(18);
+		nodeGetter().addNag(1);
+		nodeGetter().addNag(14);
+		nodeGetter().addNag(24);
+		nodeGetter().addNag(31);
+		test.value(nodeGetter().nags()).is([ 1, 14, 18, 24, 31 ]);
+		nodeGetter().filterNags(nag => nag % 2 === 1);
+		test.value(nodeGetter().nags()).is([ 1, 31 ]);
+	});
+
 	function itInvalidNag(label, value) {
 
 		function doIt(nodeFactory) {
@@ -497,6 +517,24 @@ describe('Tags', () => {
 		nodeGetter().tag('xyz', 0);
 		nodeGetter().tag('Blah', 33);
 		test.value(nodeGetter().tags()).is([ '1234', '32', 'ABCD', 'Blah', 'TheKey', '_a', 'xyz' ]);
+	});
+
+	itOnNodeAndVariation('Clear tags', nodeGetter => {
+		nodeGetter().tag('TheKey1', 'TheValue');
+		nodeGetter().tag('TheKey2', 'TheOtherValue');
+		test.value(nodeGetter().tags()).is([ 'TheKey1', 'TheKey2' ]);
+		nodeGetter().clearTags();
+		test.value(nodeGetter().tags()).is([]);
+	});
+
+	itOnNodeAndVariation('Filter tags', nodeGetter => {
+		nodeGetter().tag('ab', 'a');
+		nodeGetter().tag('cd', 'b');
+		nodeGetter().tag('ef', 'c');
+		nodeGetter().tag('gh', 'd');
+		test.value(nodeGetter().tags()).is([ 'ab', 'cd', 'ef', 'gh' ]);
+		nodeGetter().filterTags((tagKey, tagValue) => tagKey.includes('b') || tagValue.includes('d'));
+		test.value(nodeGetter().tags()).is([ 'ab', 'gh' ]);
 	});
 
 	function itInvalidKey(label, action) {
