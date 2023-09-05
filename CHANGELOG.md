@@ -1,6 +1,13 @@
 ChangeLog
 =========
 
+4.8.0 (September 5, 2023)
+-------------------------
+* Add method `Node.fiftyMoveClock()` to retrieve the number of half-moves since the last pawn move or capture.
+* Add method `Node.fen()` to retrieve the FEN representation of the position on a game node, with the FEN counters (fifty-move clock and full-move number)
+set according to the move history of the game (see [#43](https://github.com/yo35/kokopu/issues/43)). Add similarly methods `Game.initialFEN()`
+and `Game.finalFEN()` to retrieve the FEN representations of the initial and final position of a game.
+
 4.7.0 (May 25, 2023)
 --------------------
 * Add methods `AbstractNode.clearNags()` and `AbstractNode.filterNags(..)` to remove all the NAGs from a node or variation, or to keep only a subset of them.
