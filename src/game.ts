@@ -608,6 +608,19 @@ export class Game {
 
 
 	/**
+	 * [FEN](https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation) representation of the chess position at the beginning of the game.
+	 *
+	 * The fifty-move clock and full-move number are set according to the move history in the string returned by this method.
+	 */
+	initialFEN(): string {
+		return this._moveTreeRoot._position.fen({
+			fiftyMoveClock: 0,
+			fullMoveNumber: this._moveTreeRoot._fullMoveNumber,
+		});
+	}
+
+
+	/**
 	 * Full-move number at which the game starts.
 	 */
 	initialFullMoveNumber(): number {
@@ -620,6 +633,16 @@ export class Game {
 	 */
 	finalPosition(): Position {
 		return this._moveTreeRoot.mainVariation().finalPosition();
+	}
+
+
+	/**
+	 * [FEN](https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation) representation of the chess position at the end of the game.
+	 *
+	 * The fifty-move clock and full-move number are set according to the move history in the string returned by this method.
+	 */
+	finalFEN(): string {
+		return this._moveTreeRoot.mainVariation().finalFEN();
 	}
 
 

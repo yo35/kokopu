@@ -659,28 +659,29 @@ describe('Game nodes', () => {
 describe('Final positions', () => {
 
 	function finalPositionGetter(variation) {
-		return variation.finalPosition();
+		return variation.finalFEN();
 	}
 
 	function nodeIteration(variation) {
 		let node = variation.first();
 		if (!node) {
-			return variation.initialPosition();
+			return variation.initialFEN();
 		}
 		while (node.next()) {
 			node = node.next();
 		}
-		return node.position();
+		return node.fen();
 	}
 
 	function itFinalPositions(filename, withFinalPositionGetter, factory) {
 		it(`${filename} (${withFinalPositionGetter ? 'with finalPosition()' : 'with node iteration'})`, () => {
-			const resource = `games/${filename}/end-of-variations.txt`;
-			const expectedText = resourceExists(resource) ? readText(resource).trim() : '';
+			const expectedText = readText(`games/${filename}/end-of-variations.txt`).trim();
 			const getter = withFinalPositionGetter ? finalPositionGetter : nodeIteration;
 			const game = factory();
-			const text = game.nodes(true).flatMap(node => node.variations()).map(variation => `[${variation.id()}] ${getter(variation).fen()}`).join('\n');
-			test.value(text).is(expectedText);
+			const lines = game.nodes(true).flatMap(node => node.variations()).map(variation => `[${variation.id()}] ${getter(variation)}`);
+			lines.unshift(`{initial} ${game.initialFEN()}`);
+			lines.push(`[${game.mainVariation().id()}] ${game.finalFEN()}`);
+			test.value(lines.join('\n')).is(expectedText);
 		});
 	}
 

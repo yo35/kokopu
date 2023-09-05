@@ -1,0 +1,2 @@
+{initial} rnbqnkrb/pppppppp/8/8/8/8/PPPPPPPP/RNBQNKRB w AGag - 0 1
+[start] rnbqnkrb/pppppppp/8/8/8/8/PPPPPPPP/RNBQNRKB b ag - 1 1

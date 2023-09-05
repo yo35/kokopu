@@ -213,6 +213,13 @@ export abstract class Node extends AbstractNode {
 	abstract position(): Position;
 
 	/**
+	 * [FEN](https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation) representation of the chess position after the current move.
+	 *
+	 * The fifty-move clock and full-move number are set according to the underlying game in the string returned by this method.
+	 */
+	abstract fen(): string;
+
+	/**
 	 * Number of half-moves since the last pawn move or capture, after the current move.
 	 */
 	abstract fiftyMoveClock(): number;
@@ -345,6 +352,13 @@ export abstract class Variation extends AbstractNode {
 	abstract initialPosition(): Position;
 
 	/**
+	 * [FEN](https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation) representation of the chess position at the beginning of the variation.
+	 *
+	 * The fifty-move clock and full-move number are set according to the underlying game in the string returned by this method.
+	 */
+	abstract initialFEN(): string;
+
+	/**
 	 * Number of half-moves since the last pawn move or capture at the beginning of the variation (see {@link Node.fiftyMoveClock}).
 	 */
 	abstract initialFiftyMoveClock(): number;
@@ -358,6 +372,13 @@ export abstract class Variation extends AbstractNode {
 	 * Chess position at the end of the variation.
 	 */
 	abstract finalPosition(): Position;
+
+	/**
+	 * [FEN](https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation) representation of the chess position at the end of the variation.
+	 *
+	 * The fifty-move clock and full-move number are set according to the underlying game in the string returned by this method.
+	 */
+	abstract finalFEN(): string;
 
 	/**
 	 * Erase all the moves in the current {@link Variation}: after that, {@link Variation.first} returns `undefined`.

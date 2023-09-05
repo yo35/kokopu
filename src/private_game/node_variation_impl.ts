@@ -514,6 +514,14 @@ function computeNextFiftyMoveClock(nodeData: NodeData) {
 
 
 /**
+ * Compute the new value of the full-move number after the move described by the given node data structure.
+ */
+function computeNextFullMoveNumber(nodeData: NodeData) {
+	return nodeData.moveColor === 'w' ? nodeData.fullMoveNumber : nodeData.fullMoveNumber + 1;
+}
+
+
+/**
  * Return the initial position of the given variation.
  */
 function rebuildVariationPosition(variationData: VariationData): Position {
@@ -795,6 +803,13 @@ class NodeImpl extends Node {
 		return position;
 	}
 
+	fen() {
+		return this.position().fen({
+			fiftyMoveClock: computeNextFiftyMoveClock(this._data),
+			fullMoveNumber: computeNextFullMoveNumber(this._data),
+		});
+	}
+
 	fiftyMoveClock() {
 		return computeNextFiftyMoveClock(this._data);
 	}
@@ -816,7 +831,7 @@ class NodeImpl extends Node {
 		applyMoveDescriptor(nextPositionBefore, this._data);
 		const nextMoveColor = nextPositionBefore.turn();
 		const nextFiftyMoveClock = computeNextFiftyMoveClock(this._data);
-		const nextFullMoveNumber = nextMoveColor === 'w' ? this._data.fullMoveNumber + 1 : this._data.fullMoveNumber;
+		const nextFullMoveNumber = computeNextFullMoveNumber(this._data);
 		this._data.child = createNodeData(this._data.parentVariation, nextMoveColor, nextFiftyMoveClock, nextFullMoveNumber,
 			computeMoveDescriptor(nextPositionBefore, move));
 		return new NodeImpl(this._data.child, nextPositionBefore);
@@ -1084,6 +1099,13 @@ class VariationImpl extends Variation {
 		return new Position(this._initialPosition);
 	}
 
+	initialFEN() {
+		return this._initialPosition.fen({
+			fiftyMoveClock: this.initialFiftyMoveClock(),
+			fullMoveNumber: this.initialFullMoveNumber(),
+		});
+	}
+
 	initialFiftyMoveClock() {
 		return this._data.parent instanceof MoveTreeRoot ? 0 : this._data.parent.fiftyMoveClock;
 	}
@@ -1098,6 +1120,25 @@ class VariationImpl extends Variation {
 			applyMoveDescriptor(result, nodeData);
 		}
 		return result;
+	}
+
+	finalFEN() {
+		if (this._data.child === undefined) {
+			return this.initialFEN();
+		}
+		const position = new Position(this._initialPosition);
+		let nodeData = this._data.child;
+		while (true) {
+			applyMoveDescriptor(position, nodeData);
+			if (nodeData.child === undefined) {
+				break;
+			}
+			nodeData = nodeData.child;
+		}
+		return position.fen({
+			fiftyMoveClock: computeNextFiftyMoveClock(nodeData),
+			fullMoveNumber: computeNextFullMoveNumber(nodeData),
+		});
 	}
 
 	play(move: string) {
