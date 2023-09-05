@@ -19,8 +19,8 @@ Annotator = {gokhan007}
 w KQ -
 Initial move number = {14}
 [start]                 -+<LONG
-[14w]                   (14w) O-O+
-[14b]                   (14b) Ke8
+[14w]                   (14w) O-O+ (#hm=1)
+[14b]                   (14b) Ke8 (#hm=2)
 +---+---+---+---+---+---+---+---+
 | r |   |   | q | k | b |   | r |
 +---+---+---+---+---+---+---+---+

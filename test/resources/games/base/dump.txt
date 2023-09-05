@@ -2,22 +2,22 @@ White = {Alice}
 Black = {Bob}
 Event = {1st International Open of Whatever}
 [start]                 -+<LONG
-[1w]                    (1w) e4
-[1b]                    (1b) e5
+[1w]                    (1w) e4 (#hm=0)
+[1b]                    (1b) e5 (#hm=0)
                          |
 [1b-v0-start]            +---+
-[1b-v0-1b]               |  (1b) c5
-[1b-v0-2w]               |  (2w) Nf3
+[1b-v0-1b]               |  (1b) c5 (#hm=0)
+[1b-v0-2w]               |  (2w) Nf3 (#hm=1)
                          |
 [1b-v1-start]            +---+
-[1b-v1-1b]               |  (1b) e6
-[1b-v1-2w]               |  (2w) d4
+[1b-v1-1b]               |  (1b) e6 (#hm=0)
+[1b-v1-2w]               |  (2w) d4 (#hm=0)
                          |
-[2w]                    (2w) Bc4
-[2b]                    (2b) Nc6
-[3w]                    (3w) Qh5
-[3b]                    (3b) Nf6
-[4w]                    (4w) Qxf7# {That is the Scholar's Mate}
+[2w]                    (2w) Bc4 (#hm=1)
+[2b]                    (2b) Nc6 (#hm=2)
+[3w]                    (3w) Qh5 (#hm=3)
+[3b]                    (3b) Nf6 (#hm=4)
+[4w]                    (4w) Qxf7# (#hm=0) {That is the Scholar's Mate}
 +---+---+---+---+---+---+---+---+
 | r |   | b | q | k | b |   | r |
 +---+---+---+---+---+---+---+---+

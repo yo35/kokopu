@@ -19,5 +19,10 @@ Event: Game with variation shortened from the beginning.
 b KQkq -
 2...Nc6
 3.Bc4
+ |
+ +- 3.Nc3
+ |  3...Nf6
+ |  4.d4
+ |
 3...Bc5
 *

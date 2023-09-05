@@ -153,7 +153,7 @@ export class MoveTreeRoot {
 		// Decode the moves.
 		if ('mainVariation' in pojo && pojo.mainVariation !== undefined) {
 			exceptionBuilder.push('mainVariation');
-			this._mainVariationData = setVariationPOJO(pojo.mainVariation, this, this._position, this._fullMoveNumber, true, exceptionBuilder);
+			this._mainVariationData = setVariationPOJO(pojo.mainVariation, this, this._position, 0, this._fullMoveNumber, true, exceptionBuilder);
 			exceptionBuilder.pop();
 		}
 		else {
@@ -244,8 +244,8 @@ function appendAnnotationFields(pojo: AbstractNodePOJO, data: AbstractNodeData) 
 }
 
 
-function setVariationPOJO(variationPOJO: unknown, parent: NodeData | MoveTreeRoot, position: Position, fullMoveNumber: number, isLongVariationByDefault: boolean,
-	exceptionBuilder: POJOExceptionBuilder): VariationData {
+function setVariationPOJO(variationPOJO: unknown, parent: NodeData | MoveTreeRoot, position: Position, fiftyMoveClock: number, fullMoveNumber: number,
+	isLongVariationByDefault: boolean, exceptionBuilder: POJOExceptionBuilder): VariationData {
 
 	let result: VariationData;
 	let nodes: unknown[];
@@ -280,11 +280,12 @@ function setVariationPOJO(variationPOJO: unknown, parent: NodeData | MoveTreeRoo
 	for (let i = 0; i < nodes.length; ++i) {
 
 		exceptionBuilder.push(i);
-		insertionPoint.child = setNodePOJO(nodes[i], result, position, fullMoveNumber, exceptionBuilder);
+		insertionPoint.child = setNodePOJO(nodes[i], result, position, fiftyMoveClock, fullMoveNumber, exceptionBuilder);
 		exceptionBuilder.pop();
 
 		insertionPoint = insertionPoint.child;
 		applyMoveDescriptor(position, insertionPoint);
+		fiftyMoveClock = computeNextFiftyMoveClock(insertionPoint);
 		if (position.turn() === 'w') {
 			++fullMoveNumber;
 		}
@@ -298,7 +299,7 @@ function setVariationPOJO(variationPOJO: unknown, parent: NodeData | MoveTreeRoo
 }
 
 
-function setNodePOJO(nodePOJO: unknown, parentVariation: VariationData, position: Position, fullMoveNumber: number,
+function setNodePOJO(nodePOJO: unknown, parentVariation: VariationData, position: Position, fiftyMoveClock: number, fullMoveNumber: number,
 	exceptionBuilder: POJOExceptionBuilder): NodeData {
 
 	// Decode the notation.
@@ -318,7 +319,7 @@ function setNodePOJO(nodePOJO: unknown, parentVariation: VariationData, position
 		throw exceptionBuilder.build(i18n.NOT_A_NODE_POJO);
 	}
 
-	const result = createNodeData(parentVariation, position.turn(), fullMoveNumber, moveDescriptor);
+	const result = createNodeData(parentVariation, position.turn(), fiftyMoveClock, fullMoveNumber, moveDescriptor);
 	if (typeof nodePOJO === 'object' && nodePOJO !== null) {
 
 		// Decode the annotations.
@@ -328,7 +329,7 @@ function setNodePOJO(nodePOJO: unknown, parentVariation: VariationData, position
 		decodeArrayField(nodePOJO, 'variations', exceptionBuilder, value => {
 			for (let i = 0; i < value.length; ++i) {
 				exceptionBuilder.push(i);
-				result.variations.push(setVariationPOJO(value[i], result, position, fullMoveNumber, false, exceptionBuilder));
+				result.variations.push(setVariationPOJO(value[i], result, position, fiftyMoveClock, fullMoveNumber, false, exceptionBuilder));
 				exceptionBuilder.pop();
 			}
 		});
@@ -417,17 +418,19 @@ interface NodeData extends AbstractNodeData {
 
 	// Attributes of the current move.
 	moveColor: Color,
+	fiftyMoveClock: number, // Number of half-moves since the last pawn move or capture BEFORE the current move.
 	fullMoveNumber: number,
 	moveDescriptor: MoveDescriptor | null, // `null` represents a null-move
 }
 
 
-function createNodeData(parentVariation: VariationData, moveColor: Color, fullMoveNumber: number, moveDescriptor: MoveDescriptor | null): NodeData {
+function createNodeData(parentVariation: VariationData, moveColor: Color, fiftyMoveClock: number, fullMoveNumber: number, moveDescriptor: MoveDescriptor | null): NodeData {
 	return {
 		parentVariation: parentVariation,
 		child: undefined,
 		variations: [],
 		moveColor: moveColor,
+		fiftyMoveClock: fiftyMoveClock,
 		fullMoveNumber: fullMoveNumber,
 		moveDescriptor: moveDescriptor,
 		nags: new Set(),
@@ -490,6 +493,22 @@ function applyMoveDescriptor(position: Position, nodeData: NodeData) {
 	}
 	else {
 		position.play(nodeData.moveDescriptor);
+	}
+}
+
+
+/**
+ * Compute the new value of the fifty-move clock after the move described by the given node data structure.
+ */
+function computeNextFiftyMoveClock(nodeData: NodeData) {
+	if (nodeData.moveDescriptor === null) {
+		return nodeData.fiftyMoveClock;
+	}
+	else if (nodeData.moveDescriptor.isCapture() || nodeData.moveDescriptor.movingPiece() === 'p') {
+		return 0;
+	}
+	else {
+		return nodeData.fiftyMoveClock + 1;
 	}
 }
 
@@ -776,6 +795,10 @@ class NodeImpl extends Node {
 		return position;
 	}
 
+	fiftyMoveClock() {
+		return computeNextFiftyMoveClock(this._data);
+	}
+
 	fullMoveNumber() {
 		return this._data.fullMoveNumber;
 	}
@@ -792,8 +815,10 @@ class NodeImpl extends Node {
 		const nextPositionBefore = new Position(this._positionBefore);
 		applyMoveDescriptor(nextPositionBefore, this._data);
 		const nextMoveColor = nextPositionBefore.turn();
-		const nextFullMoveNumber = nextMoveColor === 'w' ? this._data.fullMoveNumber + 1: this._data.fullMoveNumber;
-		this._data.child = createNodeData(this._data.parentVariation, nextMoveColor, nextFullMoveNumber, computeMoveDescriptor(nextPositionBefore, move));
+		const nextFiftyMoveClock = computeNextFiftyMoveClock(this._data);
+		const nextFullMoveNumber = nextMoveColor === 'w' ? this._data.fullMoveNumber + 1 : this._data.fullMoveNumber;
+		this._data.child = createNodeData(this._data.parentVariation, nextMoveColor, nextFiftyMoveClock, nextFullMoveNumber,
+			computeMoveDescriptor(nextPositionBefore, move));
 		return new NodeImpl(this._data.child, nextPositionBefore);
 	}
 
@@ -808,6 +833,7 @@ class NodeImpl extends Node {
 		// Replug the nodes.
 		moveTreeRoot._mainVariationData.child = this._data;
 		resetParentVariationRecursively(this._data, moveTreeRoot._mainVariationData);
+		resetFiftyMoveClockRecursively(this._data, 0);
 	}
 
 	removeFollowingMoves() {
@@ -888,6 +914,24 @@ function resetParentVariationRecursively(root: NodeData, newParentVariation: Var
 	let current: NodeData | undefined = root;
 	while (current !== undefined) {
 		current.parentVariation = newParentVariation;
+		current = current.child;
+	}
+}
+
+
+function resetFiftyMoveClockRecursively(root: NodeData | undefined, fiftyMoveClock: number) {
+	let current = root;
+	while (current !== undefined) {
+
+		// Update the current node.
+		current.fiftyMoveClock = fiftyMoveClock;
+
+		// Update its variations.
+		for (const variation of current.variations) {
+			resetFiftyMoveClockRecursively(variation.child, fiftyMoveClock);
+		}
+
+		fiftyMoveClock = computeNextFiftyMoveClock(current);
 		current = current.child;
 	}
 }
@@ -1040,6 +1084,10 @@ class VariationImpl extends Variation {
 		return new Position(this._initialPosition);
 	}
 
+	initialFiftyMoveClock() {
+		return this._data.parent instanceof MoveTreeRoot ? 0 : this._data.parent.fiftyMoveClock;
+	}
+
 	initialFullMoveNumber() {
 		return this._data.parent instanceof MoveTreeRoot ? this._data.parent._fullMoveNumber : this._data.parent.fullMoveNumber;
 	}
@@ -1054,8 +1102,9 @@ class VariationImpl extends Variation {
 
 	play(move: string) {
 		const moveColor = this._initialPosition.turn();
+		const fiftyMoveClock = this.initialFiftyMoveClock();
 		const fullMoveNumber = this.initialFullMoveNumber();
-		this._data.child = createNodeData(this._data, moveColor, fullMoveNumber, computeMoveDescriptor(this._initialPosition, move));
+		this._data.child = createNodeData(this._data, moveColor, fiftyMoveClock, fullMoveNumber, computeMoveDescriptor(this._initialPosition, move));
 		return new NodeImpl(this._data.child, this._initialPosition);
 	}
 

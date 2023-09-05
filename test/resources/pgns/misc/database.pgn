@@ -86,7 +86,7 @@ the combination was sound and that he had a forced win in every variation.}
 
 [Event "Game with null-moves"]
 
-1.e4 -- 2.d4 d5 3.-- e5 *
+1.e4 -- 2.d4 d5 3.-- e5 4.Nf3 Ne7 5.Nxe5 -- 6.Nd7 -- 7.Bb5 -- 8.Nf6# 1-0
 
 
 [Event "Game with tags"]

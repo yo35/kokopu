@@ -25,47 +25,47 @@ Variant = {antichess}
 +---+---+---+---+---+---+---+---+
 w - - (antichess)
 [start]                 -+<LONG
-[1w]                    (1w) g3
-[1b]                    (1b) e6
-[2w]                    (2w) b4
-[2b]                    (2b) Bxb4
-[3w]                    (3w) g4
-[3b]                    (3b) Bxd2
-[4w]                    (4w) Kxd2
-[4b]                    (4b) Qh4
-[5w]                    (5w) g5
-[5b]                    (5b) Qxh2
-[6w]                    (6w) Rxh2
-[6b]                    (6b) Nh6
-[7w]                    (7w) gxh6
-[7b]                    (7b) gxh6
-[8w]                    (8w) Rxh6
-[8b]                    (8b) Rf8
-[9w]                    (9w) Rxe6
-[9b]                    (9b) dxe6
-[10w]                   (10w) e3
-[10b]                   (10b) b5
-[11w]                   (11w) Bxb5
-[11b]                   (11b) Nc6
-[12w]                   (12w) Bxc6
-[12b]                   (12b) Kd8
-[13w]                   (13w) Bxa8
-[13b]                   (13b) Bb7
-[14w]                   (14w) Bxb7
-[14b]                   (14b) c6
-[15w]                   (15w) Bxc6
-[15b]                   (15b) Kd7
-[16w]                   (16w) Bxd7
-[16b]                   (16b) f5
-[17w]                   (17w) Bxe6
-[17b]                   (17b) Rc8
-[18w]                   (18w) Bxf5
-[18b]                   (18b) Rxc2
-[19w]                   (19w) Bxh7
-[19b]                   (19b) Rxd2
-[20w]                   (20w) Qxd2
-[20b]                   (20b) a5
-[21w]                   (21w) Qxa5#
+[1w]                    (1w) g3 (#hm=0)
+[1b]                    (1b) e6 (#hm=0)
+[2w]                    (2w) b4 (#hm=0)
+[2b]                    (2b) Bxb4 (#hm=0)
+[3w]                    (3w) g4 (#hm=0)
+[3b]                    (3b) Bxd2 (#hm=0)
+[4w]                    (4w) Kxd2 (#hm=0)
+[4b]                    (4b) Qh4 (#hm=1)
+[5w]                    (5w) g5 (#hm=0)
+[5b]                    (5b) Qxh2 (#hm=0)
+[6w]                    (6w) Rxh2 (#hm=0)
+[6b]                    (6b) Nh6 (#hm=1)
+[7w]                    (7w) gxh6 (#hm=0)
+[7b]                    (7b) gxh6 (#hm=0)
+[8w]                    (8w) Rxh6 (#hm=0)
+[8b]                    (8b) Rf8 (#hm=1)
+[9w]                    (9w) Rxe6 (#hm=0)
+[9b]                    (9b) dxe6 (#hm=0)
+[10w]                   (10w) e3 (#hm=0)
+[10b]                   (10b) b5 (#hm=0)
+[11w]                   (11w) Bxb5 (#hm=0)
+[11b]                   (11b) Nc6 (#hm=1)
+[12w]                   (12w) Bxc6 (#hm=0)
+[12b]                   (12b) Kd8 (#hm=1)
+[13w]                   (13w) Bxa8 (#hm=0)
+[13b]                   (13b) Bb7 (#hm=1)
+[14w]                   (14w) Bxb7 (#hm=0)
+[14b]                   (14b) c6 (#hm=0)
+[15w]                   (15w) Bxc6 (#hm=0)
+[15b]                   (15b) Kd7 (#hm=1)
+[16w]                   (16w) Bxd7 (#hm=0)
+[16b]                   (16b) f5 (#hm=0)
+[17w]                   (17w) Bxe6 (#hm=0)
+[17b]                   (17b) Rc8 (#hm=1)
+[18w]                   (18w) Bxf5 (#hm=0)
+[18b]                   (18b) Rxc2 (#hm=0)
+[19w]                   (19w) Bxh7 (#hm=0)
+[19b]                   (19b) Rxd2 (#hm=0)
+[20w]                   (20w) Qxd2 (#hm=0)
+[20b]                   (20b) a5 (#hm=0)
+[21w]                   (21w) Qxa5# (#hm=0)
 +---+---+---+---+---+---+---+---+
 |   |   |   |   |   |   |   |   |
 +---+---+---+---+---+---+---+---+

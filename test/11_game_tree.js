@@ -383,7 +383,9 @@ const oneGamefactories = {
 		game.event('Game with variation shortened from the beginning.');
 		game.mainVariation().comment('I will be removed in the shortening process...');
 		const node = game.mainVariation().play('e4').play('e5').play('Nf3').play('Nc6');
-		node.play('Bc4').play('Bc5');
+		const nodeInMainLine = node.play('Bc4');
+		nodeInMainLine.play('Bc5');
+		nodeInMainLine.addVariation().play('Nc3').play('Nf6').play('d4');
 		node.removePrecedingMoves();
 		return game;
 	},

@@ -19,9 +19,15 @@ Event = {Game with variation shortened from the beginning.}
 b KQkq -
 Initial move number = {2}
 [start]                 -+<LONG
-[2b]                    (2b) Nc6
-[3w]                    (3w) Bc4
-[3b]                    (3b) Bc5
+[2b]                    (2b) Nc6 (#hm=1)
+[3w]                    (3w) Bc4 (#hm=2)
+                         |
+[3w-v0-start]            +---+
+[3w-v0-3w]               |  (3w) Nc3 (#hm=2)
+[3w-v0-3b]               |  (3b) Nf6 (#hm=3)
+[3w-v0-4w]               |  (4w) d4 (#hm=0)
+                         |
+[3b]                    (3b) Bc5 (#hm=3)
 +---+---+---+---+---+---+---+---+
 | r |   | b | q | k |   | n | r |
 +---+---+---+---+---+---+---+---+

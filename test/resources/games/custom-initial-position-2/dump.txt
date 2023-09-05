@@ -19,7 +19,7 @@ Event = {Custom initial position (Black to play)}
 b kq -
 Initial move number = {4}
 [start]                 -+<LONG
-[4b]                    (4b) O-O
+[4b]                    (4b) O-O (#hm=1)
 +---+---+---+---+---+---+---+---+
 | r | n | b | q |   | r | k |   |
 +---+---+---+---+---+---+---+---+

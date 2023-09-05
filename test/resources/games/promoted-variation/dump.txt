@@ -1,27 +1,27 @@
 Event = {Game with promoted variation.}
 [start]                 -+<LONG
-[1w]                    (1w) e4
-[1b]                    (1b) d5
+[1w]                    (1w) e4 (#hm=0)
+[1b]                    (1b) d5 (#hm=0)
                          |
 [1b-v0-start]            +---+
-[1b-v0-1b]               |  (1b) c5
+[1b-v0-1b]               |  (1b) c5 (#hm=0)
                          |
 [1b-v1-start]            +---+
-[1b-v1-1b]               |  (1b) e5
-[1b-v1-2w]               |  (2w) Nf3 {Used to be the main line}
+[1b-v1-1b]               |  (1b) e5 (#hm=0)
+[1b-v1-2w]               |  (2w) Nf3 (#hm=1) {Used to be the main line}
                          |
 [1b-v2-start]            +---+
-[1b-v2-1b]               |  (1b) c6
+[1b-v2-1b]               |  (1b) c6 (#hm=0)
                          |
 [1b-v3-start]            +---+
-[1b-v3-1b]               |  (1b) g6
+[1b-v3-1b]               |  (1b) g6 (#hm=0)
                          |
 [1b-v4-start]            +---+
-[1b-v4-1b]               |  (1b) d6
-[1b-v4-2w]               |  (2w) d4 {Used to be a nested variation}
+[1b-v4-1b]               |  (1b) d6 (#hm=0)
+[1b-v4-2w]               |  (2w) d4 (#hm=0) {Used to be a nested variation}
                          |
-[2w]                    (2w) exd5
-[2b]                    (2b) Qxd5 {Used to be the variation at index 1}
+[2w]                    (2w) exd5 (#hm=0)
+[2b]                    (2b) Qxd5 (#hm=0) {Used to be the variation at index 1}
 +---+---+---+---+---+---+---+---+
 | r | n | b |   | k | b | n | r |
 +---+---+---+---+---+---+---+---+

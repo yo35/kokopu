@@ -1,33 +1,33 @@
 Event = {Game with variations}
 [start]                 -+<LONG
-[1w]                    (1w) e4
-[1b]                    (1b) e5
+[1w]                    (1w) e4 (#hm=0)
+[1b]                    (1b) e5 (#hm=0)
                          |
 [1b-v0-start]            +---+
-[1b-v0-1b]               |  (1b) e6 $18
+[1b-v0-1b]               |  (1b) e6 (#hm=0) $18
                          |
-[2w]                    (2w) Nf3
-[2b]                    (2b) Nc6
-[3w]                    (3w) Bb5
+[2w]                    (2w) Nf3 (#hm=1)
+[2b]                    (2b) Nc6 (#hm=2)
+[3w]                    (3w) Bb5 (#hm=3)
                          |
 [3w-v0-start]            +---+ {Italian game:}
-[3w-v0-3w]               |  (3w) Bc4
-[3w-v0-3b]               |  (3b) Bc5
+[3w-v0-3w]               |  (3w) Bc4 (#hm=3)
+[3w-v0-3b]               |  (3b) Bc5 (#hm=4)
                          |
 [3w-v1-start]            +---+
-[3w-v1-3w]               |  (3w) d4
-[3w-v1-3b]               |  (3b) exd4
-[3w-v1-4w]               |  (4w) Nxd4
+[3w-v1-3w]               |  (3w) d4 (#hm=0)
+[3w-v1-3b]               |  (3b) exd4 (#hm=0)
+[3w-v1-4w]               |  (4w) Nxd4 (#hm=0)
                          |   |
 [3w-v1-4w-v0-start]      |   +---+ $42
-[3w-v1-4w-v0-4w]         |   |  (4w) Bc4 $5
-[3w-v1-4w-v0-4b]         |   |  (4b) Nf6 $13
+[3w-v1-4w-v0-4w]         |   |  (4w) Bc4 (#hm=1) $5
+[3w-v1-4w-v0-4b]         |   |  (4b) Nf6 (#hm=2) $13
                          |   |
-[3w-v1-4b]               |  (4b) Bc5
+[3w-v1-4b]               |  (4b) Bc5 (#hm=1)
                          |
-[3b]                    (3b) a6
-[4w]                    (4w) Bxc6
-[4b]                    (4b) dxc6
+[3b]                    (3b) a6 (#hm=0)
+[4w]                    (4w) Bxc6 (#hm=0)
+[4b]                    (4b) dxc6 (#hm=0)
 +---+---+---+---+---+---+---+---+
 | r |   | b | q | k | b | n | r |
 +---+---+---+---+---+---+---+---+

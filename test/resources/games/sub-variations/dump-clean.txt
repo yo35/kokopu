@@ -1,36 +1,36 @@
 Event = {Game with variations and sub-variations}
 [start]                 -+<LONG {I'm the main variation header comment.}
-[1w]                    (1w) e4
-[1b]                    (1b) e5
+[1w]                    (1w) e4 (#hm=0)
+[1b]                    (1b) e5 (#hm=0)
                          |
 [1b-v0-start]            +---+
-[1b-v0-1b]               |  (1b) c6
+[1b-v0-1b]               |  (1b) c6 (#hm=0)
                          |
 [1b-v1-start]            +---+
-[1b-v1-1b]               |  (1b) c5
-[1b-v1-2w]               |  (2w) Nc3
+[1b-v1-1b]               |  (1b) c5 (#hm=0)
+[1b-v1-2w]               |  (2w) Nc3 (#hm=1)
                          |   |
 [1b-v1-2w-v0-start]      |   +---+
-[1b-v1-2w-v0-2w]         |   |  (2w) Nf3
-[1b-v1-2w-v0-2b]         |   |  (2b) d6
+[1b-v1-2w-v0-2w]         |   |  (2w) Nf3 (#hm=1)
+[1b-v1-2w-v0-2b]         |   |  (2b) d6 (#hm=0)
                          |   |
                          |
-[2w]                    (2w) Nf3
-[2b]                    (2b) Nc6
-[3w]                    (3w) Bc4
+[2w]                    (2w) Nf3 (#hm=1)
+[2b]                    (2b) Nc6 (#hm=2)
+[3w]                    (3w) Bc4 (#hm=3)
                          |
 [3w-v0-start]            +---+
-[3w-v0-3w]               |  (3w) Bb5
-[3w-v0-3b]               |  (3b) a6
+[3w-v0-3w]               |  (3w) Bb5 (#hm=3)
+[3w-v0-3b]               |  (3b) a6 (#hm=0)
                          |   |
 [3w-v0-3b-v0-start]      |   +---+
-[3w-v0-3b-v0-3b]         |   |  (3b) Nf6
+[3w-v0-3b-v0-3b]         |   |  (3b) Nf6 (#hm=4)
                          |   |
-[3w-v0-4w]               |  (4w) Ba4
+[3w-v0-4w]               |  (4w) Ba4 (#hm=1)
                          |   |
 [3w-v0-4w-v0-start]      |   +---+
-[3w-v0-4w-v0-4w]         |   |  (4w) Bxc6
-[3w-v0-4w-v0-4b]         |   |  (4b) dxc6
+[3w-v0-4w-v0-4w]         |   |  (4w) Bxc6 (#hm=0)
+[3w-v0-4w-v0-4b]         |   |  (4b) dxc6 (#hm=0)
                          |   |
                          |
 +---+---+---+---+---+---+---+---+

@@ -19,7 +19,7 @@ Event = {Custom startup position}
 b KQkq -
 Initial move number = {4}
 [start]                 -+<LONG
-[4b]                    (4b) Qxf2#
+[4b]                    (4b) Qxf2# (#hm=0)
 +---+---+---+---+---+---+---+---+
 | r | n | b |   | k |   | n | r |
 +---+---+---+---+---+---+---+---+

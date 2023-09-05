@@ -213,6 +213,11 @@ export abstract class Node extends AbstractNode {
 	abstract position(): Position;
 
 	/**
+	 * Number of half-moves since the last pawn move or capture, after the current move.
+	 */
+	abstract fiftyMoveClock(): number;
+
+	/**
 	 * Full-move number. It starts at 1 (by default), and is incremented after each black move.
 	 */
 	abstract fullMoveNumber(): number;
@@ -338,6 +343,11 @@ export abstract class Variation extends AbstractNode {
 	 * Chess position at the beginning of the variation.
 	 */
 	abstract initialPosition(): Position;
+
+	/**
+	 * Number of half-moves since the last pawn move or capture at the beginning of the variation (see {@link Node.fiftyMoveClock}).
+	 */
+	abstract initialFiftyMoveClock(): number;
 
 	/**
 	 * Full-move number at the beginning of the variation (see {@link Node.fullMoveNumber}).

@@ -7,79 +7,79 @@ Site = {New York, NY USA}
 Date = {1857-11-03}
 ECO = {C48}
 [start]                 -+<LONG
-[1w]                    (1w) e4
-[1b]                    (1b) e5
-[2w]                    (2w) Nf3
-[2b]                    (2b) Nc6
-[3w]                    (3w) Nc3
-[3b]                    (3b) Nf6
-[4w]                    (4w) Bb5
-[4b]                    (4b) Bc5
-[5w]                    (5w) O-O
-[5b]                    (5b) O-O
-[6w]                    (6w) Nxe5
-[6b]                    (6b) Re8
-[7w]                    (7w) Nxc6
-[7b]                    (7b) dxc6
-[8w]                    (8w) Bc4
-[8b]                    (8b) b5
-[9w]                    (9w) Be2
-[9b]                    (9b) Nxe4
-[10w]                   (10w) Nxe4
-[10b]                   (10b) Rxe4
-[11w]                   (11w) Bf3
-[11b]                   (11b) Re6
-[12w]                   (12w) c3
-[12b]                   (12b) Qd3
-[13w]                   (13w) b4
-[13b]                   (13b) Bb6
-[14w]                   (14w) a4
-[14b]                   (14b) bxa4
-[15w]                   (15w) Qxa4
-[15b]                   (15b) Bd7
-[16w]                   (16w) Ra2
-[16b]                   (16b) Rae8
-[17w]                   (17w) Qa6 {Morphy took twelve minutes over his next move, probably to assure himself that the combination was sound and that he had a forced win in every variation.}<LONG
-[17b]                   (17b) Qxf3 $3
-[18w]                   (18w) gxf3
-[18b]                   (18b) Rg6+
-[19w]                   (19w) Kh1
-[19b]                   (19b) Bh3
-[20w]                   (20w) Rd1
+[1w]                    (1w) e4 (#hm=0)
+[1b]                    (1b) e5 (#hm=0)
+[2w]                    (2w) Nf3 (#hm=1)
+[2b]                    (2b) Nc6 (#hm=2)
+[3w]                    (3w) Nc3 (#hm=3)
+[3b]                    (3b) Nf6 (#hm=4)
+[4w]                    (4w) Bb5 (#hm=5)
+[4b]                    (4b) Bc5 (#hm=6)
+[5w]                    (5w) O-O (#hm=7)
+[5b]                    (5b) O-O (#hm=8)
+[6w]                    (6w) Nxe5 (#hm=0)
+[6b]                    (6b) Re8 (#hm=1)
+[7w]                    (7w) Nxc6 (#hm=0)
+[7b]                    (7b) dxc6 (#hm=0)
+[8w]                    (8w) Bc4 (#hm=1)
+[8b]                    (8b) b5 (#hm=0)
+[9w]                    (9w) Be2 (#hm=1)
+[9b]                    (9b) Nxe4 (#hm=0)
+[10w]                   (10w) Nxe4 (#hm=0)
+[10b]                   (10b) Rxe4 (#hm=0)
+[11w]                   (11w) Bf3 (#hm=1)
+[11b]                   (11b) Re6 (#hm=2)
+[12w]                   (12w) c3 (#hm=0)
+[12b]                   (12b) Qd3 (#hm=1)
+[13w]                   (13w) b4 (#hm=0)
+[13b]                   (13b) Bb6 (#hm=1)
+[14w]                   (14w) a4 (#hm=0)
+[14b]                   (14b) bxa4 (#hm=0)
+[15w]                   (15w) Qxa4 (#hm=0)
+[15b]                   (15b) Bd7 (#hm=1)
+[16w]                   (16w) Ra2 (#hm=2)
+[16b]                   (16b) Rae8 (#hm=3)
+[17w]                   (17w) Qa6 (#hm=4) {Morphy took twelve minutes over his next move, probably to assure himself that the combination was sound and that he had a forced win in every variation.}<LONG
+[17b]                   (17b) Qxf3 (#hm=0) $3
+[18w]                   (18w) gxf3 (#hm=0)
+[18b]                   (18b) Rg6+ (#hm=1)
+[19w]                   (19w) Kh1 (#hm=2)
+[19b]                   (19b) Bh3 (#hm=3)
+[20w]                   (20w) Rd1 (#hm=4)
                          |
 [20w-v0-start]           +---+ {Not}
-[20w-v0-20w]             |  (20w) Rg1
-[20w-v0-20b]             |  (20b) Rxg1+
-[20w-v0-21w]             |  (21w) Kxg1
-[20w-v0-21b]             |  (21b) Re1+ $19
+[20w-v0-20w]             |  (20w) Rg1 (#hm=4)
+[20w-v0-20b]             |  (20b) Rxg1+ (#hm=0)
+[20w-v0-21w]             |  (21w) Kxg1 (#hm=0)
+[20w-v0-21b]             |  (21b) Re1+ (#hm=1) $19
                          |
-[20b]                   (20b) Bg2+
-[21w]                   (21w) Kg1
-[21b]                   (21b) Bxf3+
-[22w]                   (22w) Kf1
-[22b]                   (22b) Bg2+
+[20b]                   (20b) Bg2+ (#hm=5)
+[21w]                   (21w) Kg1 (#hm=6)
+[21b]                   (21b) Bxf3+ (#hm=0)
+[22w]                   (22w) Kf1 (#hm=1)
+[22b]                   (22b) Bg2+ (#hm=2)
                          |
 [22b-v0-start]           +---+<LONG
-[22b-v0-22b]             |  (22b) Rg2 $1 {would have won more quickly. For instance:}
-[22b-v0-23w]             |  (23w) Qd3
-[22b-v0-23b]             |  (23b) Rxf2+
-[22b-v0-24w]             |  (24w) Kg1
-[22b-v0-24b]             |  (24b) Rg2+
-[22b-v0-25w]             |  (25w) Kh1
-[22b-v0-25b]             |  (25b) Rg1#
+[22b-v0-22b]             |  (22b) Rg2 (#hm=2) $1 {would have won more quickly. For instance:}
+[22b-v0-23w]             |  (23w) Qd3 (#hm=3)
+[22b-v0-23b]             |  (23b) Rxf2+ (#hm=0)
+[22b-v0-24w]             |  (24w) Kg1 (#hm=1)
+[22b-v0-24b]             |  (24b) Rg2+ (#hm=2)
+[22b-v0-25w]             |  (25w) Kh1 (#hm=3)
+[22b-v0-25b]             |  (25b) Rg1# (#hm=4)
                          |
-[23w]                   (23w) Kg1
-[23b]                   (23b) Bh3+
-[24w]                   (24w) Kh1
-[24b]                   (24b) Bxf2
-[25w]                   (25w) Qf1 {Absolutely forced.}
-[25b]                   (25b) Bxf1
-[26w]                   (26w) Rxf1
-[26b]                   (26b) Re2
-[27w]                   (27w) Ra1
-[27b]                   (27b) Rh6
-[28w]                   (28w) d4
-[28b]                   (28b) Be3
+[23w]                   (23w) Kg1 (#hm=3)
+[23b]                   (23b) Bh3+ (#hm=4)
+[24w]                   (24w) Kh1 (#hm=5)
+[24b]                   (24b) Bxf2 (#hm=0)
+[25w]                   (25w) Qf1 (#hm=1) {Absolutely forced.}
+[25b]                   (25b) Bxf1 (#hm=0)
+[26w]                   (26w) Rxf1 (#hm=0)
+[26b]                   (26b) Re2 (#hm=1)
+[27w]                   (27w) Ra1 (#hm=2)
+[27b]                   (27b) Rh6 (#hm=3)
+[28w]                   (28w) d4 (#hm=0)
+[28b]                   (28b) Be3 (#hm=1)
 +---+---+---+---+---+---+---+---+
 |   |   |   |   |   |   | k |   |
 +---+---+---+---+---+---+---+---+

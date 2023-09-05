@@ -1,17 +1,17 @@
 Event = {Game with tags}
 [start]                 -+<LONG
-[1w]                    (1w) e4 [cal = {Ge2e4}]
-[1b]                    (1b) h5 [cal = {Gh7h5}] [csl = {Rh5}] {Odd move: the pawn in h5 is weak.}
+[1w]                    (1w) e4 (#hm=0) [cal = {Ge2e4}]
+[1b]                    (1b) h5 (#hm=0) [cal = {Gh7h5}] [csl = {Rh5}] {Odd move: the pawn in h5 is weak.}
                          |
 [1b-v0-start]            +---+ [key = {value}] {More usual is}
-[1b-v0-1b]               |  (1b) c5
+[1b-v0-1b]               |  (1b) c5 (#hm=0)
                          |
-[2w]                    (2w) d4 [key = {value2}] {Cannot have several tags with the same key here!}
-[2b]                    (2b) a5 {No tag here.}
-[3w]                    (3w) c4 [key = {value}] {This is a comment.}
-[3b]                    (3b) g5 [key1 = {value1}] [key2 = {value2}] {This is another comment.}
-[4w]                    (4w) f4
-[4b]                    (4b) b5 [LineSplittedTag = {The value}]
+[2w]                    (2w) d4 (#hm=0) [key = {value2}] {Cannot have several tags with the same key here!}
+[2b]                    (2b) a5 (#hm=0) {No tag here.}
+[3w]                    (3w) c4 (#hm=0) [key = {value}] {This is a comment.}
+[3b]                    (3b) g5 (#hm=0) [key1 = {value1}] [key2 = {value2}] {This is another comment.}
+[4w]                    (4w) f4 (#hm=0)
+[4b]                    (4b) b5 (#hm=0) [LineSplittedTag = {The value}]
 +---+---+---+---+---+---+---+---+
 | r | n | b | q | k | b | n | r |
 +---+---+---+---+---+---+---+---+

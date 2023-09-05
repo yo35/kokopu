@@ -1,6 +1,6 @@
 Event = {Game with shortened variation at the end.}
 [start]                 -+<LONG
-[1w]                    (1w) e4
+[1w]                    (1w) e4 (#hm=0)
 +---+---+---+---+---+---+---+---+
 | r | n | b | q | k | b | n | r |
 +---+---+---+---+---+---+---+---+

@@ -1,30 +1,30 @@
 Event = {Game with swapped variations.}
 [start]                 -+<LONG
-[1w]                    (1w) e4
-[1b]                    (1b) e5
+[1w]                    (1w) e4 (#hm=0)
+[1b]                    (1b) e5 (#hm=0)
                          |
 [1b-v0-start]            +---+
-[1b-v0-1b]               |  (1b) c5
+[1b-v0-1b]               |  (1b) c5 (#hm=0)
                          |
 [1b-v1-start]            +---+
-[1b-v1-1b]               |  (1b) g6 {Used to be at index 4}
+[1b-v1-1b]               |  (1b) g6 (#hm=0) {Used to be at index 4}
                          |
 [1b-v2-start]            +---+
-[1b-v2-1b]               |  (1b) d5
+[1b-v2-1b]               |  (1b) d5 (#hm=0)
                          |
 [1b-v3-start]            +---+
-[1b-v3-1b]               |  (1b) f5
+[1b-v3-1b]               |  (1b) f5 (#hm=0)
                          |
 [1b-v4-start]            +---+
-[1b-v4-1b]               |  (1b) c6 {Used to be at index 1}
+[1b-v4-1b]               |  (1b) c6 (#hm=0) {Used to be at index 1}
                          |
 [1b-v5-start]            +---+
-[1b-v5-1b]               |  (1b) b5
+[1b-v5-1b]               |  (1b) b5 (#hm=0)
                          |
 [1b-v6-start]            +---+
-[1b-v6-1b]               |  (1b) a5
+[1b-v6-1b]               |  (1b) a5 (#hm=0)
                          |
-[2w]                    (2w) Nf3
+[2w]                    (2w) Nf3 (#hm=1)
 +---+---+---+---+---+---+---+---+
 | r | n | b | q | k | b | n | r |
 +---+---+---+---+---+---+---+---+

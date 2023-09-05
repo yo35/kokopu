@@ -101,7 +101,7 @@ module.exports = function(game) {
 	function dumpNode(node, indent) {
 
 		// Describe the move
-		res += formatNodeOrVariationId(node.id()) + indent + '(' + node.fullMoveNumber() + node.moveColor() + ') ' + node.notation();
+		res += `${formatNodeOrVariationId(node.id())}${indent}(${node.fullMoveNumber()}${node.moveColor()}) ${node.notation()} (#hm=${node.fiftyMoveClock()})`;
 		dumpNags(node);
 		dumpTags(node);
 		dumpComment(node);

@@ -19,9 +19,9 @@ Event = {Game with variation shortened from the beginning (in a sub-variation).}
 w KQkq -
 Initial move number = {3}
 [start]                 -+<LONG
-[3w]                    (3w) Bb5
-[3b]                    (3b) a6
-[4w]                    (4w) Ba4
+[3w]                    (3w) Bb5 (#hm=1)
+[3b]                    (3b) a6 (#hm=0)
+[4w]                    (4w) Ba4 (#hm=1)
 +---+---+---+---+---+---+---+---+
 | r |   | b | q | k | b | n | r |
 +---+---+---+---+---+---+---+---+

@@ -1,3 +1,6 @@
 [2b] Nc6
+[3w-v0-3w] Nc3
+[3w-v0-3b] Nf6
+[3w-v0-4w] d4
 [3w] Bc4
 [3b] Bc5

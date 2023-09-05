@@ -1,12 +1,12 @@
 Event = {Castling with character 0 instead of character O}
 [start]                 -+<LONG
-[1w]                    (1w) e4
-[1b]                    (1b) e5
-[2w]                    (2w) Nf3
-[2b]                    (2b) Nf6
-[3w]                    (3w) Bc4
-[3b]                    (3b) Bc5
-[4w]                    (4w) O-O
+[1w]                    (1w) e4 (#hm=0)
+[1b]                    (1b) e5 (#hm=0)
+[2w]                    (2w) Nf3 (#hm=1)
+[2b]                    (2b) Nf6 (#hm=2)
+[3w]                    (3w) Bc4 (#hm=3)
+[3b]                    (3b) Bc5 (#hm=4)
+[4w]                    (4w) O-O (#hm=5)
 +---+---+---+---+---+---+---+---+
 | r | n | b | q | k |   |   | r |
 +---+---+---+---+---+---+---+---+

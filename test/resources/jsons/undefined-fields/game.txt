@@ -1,11 +1,11 @@
 Event = {Game with undefined fields}
 [start]                 -+<LONG
-[1w]                    (1w) e4
-[1b]                    (1b) e5
-[2w]                    (2w) Nf3
-[2b]                    (2b) Nc6
-[3w]                    (3w) d4 {I'm a comment...}
-[3b]                    (3b) exd4 $1 $10 [csl = {Gd4}]
+[1w]                    (1w) e4 (#hm=0)
+[1b]                    (1b) e5 (#hm=0)
+[2w]                    (2w) Nf3 (#hm=1)
+[2b]                    (2b) Nc6 (#hm=2)
+[3w]                    (3w) d4 (#hm=0) {I'm a comment...}
+[3b]                    (3b) exd4 (#hm=0) $1 $10 [csl = {Gd4}]
 +---+---+---+---+---+---+---+---+
 | r |   | b | q | k | b | n | r |
 +---+---+---+---+---+---+---+---+

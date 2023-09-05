@@ -1,14 +1,14 @@
 Event = {Multi-part comment}
 [start]                 -+<LONG
-[1w]                    (1w) e4
-[1b]                    (1b) e6 {I thought he would play Caro-Kann but French is OK either}<LONG
+[1w]                    (1w) e4 (#hm=0)
+[1b]                    (1b) e6 (#hm=0) {I thought he would play Caro-Kann but French is OK either}<LONG
                          |
 [1b-v0-start]            +---+
-[1b-v0-1b]               |  (1b) c6
+[1b-v0-1b]               |  (1b) c6 (#hm=0)
                          |
-[2w]                    (2w) d4
-[2b]                    (2b) d5 {and now... advance variation}
-[3w]                    (3w) e5
+[2w]                    (2w) d4 (#hm=0)
+[2b]                    (2b) d5 (#hm=0) {and now... advance variation}
+[3w]                    (3w) e5 (#hm=0)
 +---+---+---+---+---+---+---+---+
 | r | n | b | q | k | b | n | r |
 +---+---+---+---+---+---+---+---+

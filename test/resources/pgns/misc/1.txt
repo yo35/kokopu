@@ -1,9 +1,9 @@
 Event = {Game with comments and NAGs}
 [start]                 -+<LONG {A comment with braces: ab{cd}ef\ghij 3 backslashes: \\\}
-[1w]                    (1w) e4 $1
-[1b]                    (1b) e6 $6 $145 {This opening is called the French.}
-[2w]                    (2w) d4 $14 {A comment with a degenerated \backslash}
-[2b]                    (2b) a5 $146
+[1w]                    (1w) e4 (#hm=0) $1
+[1b]                    (1b) e6 (#hm=0) $6 $145 {This opening is called the French.}
+[2w]                    (2w) d4 (#hm=0) $14 {A comment with a degenerated \backslash}
+[2b]                    (2b) a5 (#hm=0) $146
 +---+---+---+---+---+---+---+---+
 | r | n | b | q | k | b | n | r |
 +---+---+---+---+---+---+---+---+

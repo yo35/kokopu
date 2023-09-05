@@ -1,18 +1,18 @@
 Event = {Game with long & short comments and variations 3.}
 [start]                 -+<LONG
-[1w]                    (1w) e4 {I'm a long comment with an empty sub-variation sibling.}<LONG
+[1w]                    (1w) e4 (#hm=0) {I'm a long comment with an empty sub-variation sibling.}<LONG
                          |
 [1w-v0-start]            +---+
                          |
-[1b]                    (1b) e5
-[2w]                    (2w) Nf3
+[1b]                    (1b) e5 (#hm=0)
+[2w]                    (2w) Nf3 (#hm=1)
                          |
 [2w-v0-start]            +---+<LONG {I'm a long variation followed by an empty variation.}
-[2w-v0-2w]               |  (2w) Nc3
+[2w-v0-2w]               |  (2w) Nc3 (#hm=1)
                          |
 [2w-v1-start]            +---+
                          |
-[2b]                    (2b) Nc6
+[2b]                    (2b) Nc6 (#hm=2)
 +---+---+---+---+---+---+---+---+
 | r |   | b | q | k | b | n | r |
 +---+---+---+---+---+---+---+---+

@@ -1,16 +1,16 @@
 Event = {Game with annotations 1}
 [start]                 -+<LONG
-[1w]                    (1w) e4
-[1b]                    (1b) e5
-[2w]                    (2w) Bc4
-[2b]                    (2b) Nc6
-[3w]                    (3w) Qh5 [cal = {Gc4f7,Gh5f7}] [csl = {Rf7}] {Threatening checkmate}
-[3b]                    (3b) g6 $1 [cal = {Rg6h5}] {Avoid the checkmate}
+[1w]                    (1w) e4 (#hm=0)
+[1b]                    (1b) e5 (#hm=0)
+[2w]                    (2w) Bc4 (#hm=1)
+[2b]                    (2b) Nc6 (#hm=2)
+[3w]                    (3w) Qh5 (#hm=3) [cal = {Gc4f7,Gh5f7}] [csl = {Rf7}] {Threatening checkmate}
+[3b]                    (3b) g6 (#hm=0) $1 [cal = {Rg6h5}] {Avoid the checkmate}
                          |
 [3b-v0-start]            +---+ {Other defenses are possible, for instance:}
-[3b-v0-3b]               |  (3b) Nf6
+[3b-v0-3b]               |  (3b) Nf6 (#hm=4)
                          |
-[4w]                    (4w) Qf3
+[4w]                    (4w) Qf3 (#hm=1)
 +---+---+---+---+---+---+---+---+
 | r |   | b | q | k | b | n | r |
 +---+---+---+---+---+---+---+---+

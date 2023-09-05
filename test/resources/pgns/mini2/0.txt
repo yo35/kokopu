@@ -3,24 +3,24 @@ Black = {Magnus Carlsen}
 Event = {TV Show}
 Date = {2014-01-23}
 [start]                 -+<LONG
-[1w]                    (1w) e4
-[1b]                    (1b) Nc6
-[2w]                    (2w) Nf3
-[2b]                    (2b) d5
-[3w]                    (3w) Bd3
-[3b]                    (3b) Nf6
-[4w]                    (4w) exd5
-[4b]                    (4b) Qxd5
-[5w]                    (5w) Nc3
-[5b]                    (5b) Qh5
-[6w]                    (6w) O-O
-[6b]                    (6b) Bg4
-[7w]                    (7w) h3
-[7b]                    (7b) Ne5
-[8w]                    (8w) hxg4
-[8b]                    (8b) Nfxg4
-[9w]                    (9w) Nxe5
-[9b]                    (9b) Qh2#
+[1w]                    (1w) e4 (#hm=0)
+[1b]                    (1b) Nc6 (#hm=1)
+[2w]                    (2w) Nf3 (#hm=2)
+[2b]                    (2b) d5 (#hm=0)
+[3w]                    (3w) Bd3 (#hm=1)
+[3b]                    (3b) Nf6 (#hm=2)
+[4w]                    (4w) exd5 (#hm=0)
+[4b]                    (4b) Qxd5 (#hm=0)
+[5w]                    (5w) Nc3 (#hm=1)
+[5b]                    (5b) Qh5 (#hm=2)
+[6w]                    (6w) O-O (#hm=3)
+[6b]                    (6b) Bg4 (#hm=4)
+[7w]                    (7w) h3 (#hm=0)
+[7b]                    (7b) Ne5 (#hm=1)
+[8w]                    (8w) hxg4 (#hm=0)
+[8b]                    (8b) Nfxg4 (#hm=0)
+[9w]                    (9w) Nxe5 (#hm=0)
+[9b]                    (9b) Qh2# (#hm=1)
 +---+---+---+---+---+---+---+---+
 | r |   |   |   | k | b |   | r |
 +---+---+---+---+---+---+---+---+
