@@ -1,6 +1,11 @@
 ChangeLog
 =========
 
+4.8.1 (January 20, 2023)
+------------------------
+* Compile TypeScript to ES2020 (except for standalone lib).
+* Minor fixes in code and dependencies.
+
 4.8.0 (September 5, 2023)
 -------------------------
 * Add method `Node.fiftyMoveClock()` to retrieve the number of half-moves since the last pawn move or capture.
