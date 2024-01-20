@@ -1,7 +1,7 @@
 {
 	"name": "kokopu",
 	"version": "4.8.0",
-	"description": "A JavaScript library implementing the chess game rules and providing tools to read/write the standard chess file formats.",
+	"description": "A JavaScript/TypeScript library implementing the chess game rules and providing tools to read/write the standard chess file formats.",
 	"keywords": [
 		"chess",
 		"fen",
@@ -9,6 +9,7 @@
 		"uci",
 		"games"
 	],
+	"homepage": "https://www.npmjs.com/package/kokopu",
 	"bugs": "https://github.com/yo35/kokopu/issues",
 	"repository": "github:yo35/kokopu",
 	"license": "LGPL-3.0-or-later",
