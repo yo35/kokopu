@@ -251,7 +251,7 @@ export function parseNotation(position: PositionImpl, notation: string, strict: 
 			throw new InvalidNotation(getFEN(position), notation, message);
 		}
 		const expectedCCS = getCheckCheckmateSymbol(position, descriptor);
-		const observedCCS = m[13] === undefined ? '' : m[13];
+		const observedCCS = m[13] ?? '';
 		if (expectedCCS !== observedCCS) {
 			throw new InvalidNotation(getFEN(position), notation, i18n.WRONG_CHECK_CHECKMATE_SYMBOL, expectedCCS, observedCCS);
 		}
@@ -375,7 +375,7 @@ function parseNonPawnNotation(position: PositionImpl, notation: string, strict: 
 	// STRICT-MODE -> check the disambiguation symbol.
 	if (strict) {
 		const expectedDS = getDisambiguationSymbol(position, descriptor._from, to);
-		const observedDS = (fileDisambiguation === undefined ? '' : fileDisambiguation) + (rankDisambiguation === undefined ? '' : rankDisambiguation);
+		const observedDS = (fileDisambiguation ?? '') + (rankDisambiguation ?? '');
 		if (expectedDS !== observedDS) {
 			throw new InvalidNotation(getFEN(position), notation, i18n.WRONG_DISAMBIGUATION_SYMBOL, expectedDS, observedDS);
 		}

@@ -67,8 +67,8 @@ export class DateValue {
 			}
 			this.#type = type;
 			this.#year = dateOrYear;
-			this.#month = month === null ? undefined : month;
-			this.#day = day === null ? undefined : day;
+			this.#month = month ?? undefined;
+			this.#day = day ?? undefined;
 		}
 	}
 

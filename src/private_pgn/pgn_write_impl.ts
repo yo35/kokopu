@@ -51,7 +51,7 @@ function formatNullableHeader(value: string | undefined) {
 
 
 function formatRoundHeader(fullRound: string | undefined) {
-	return fullRound === undefined ? '?' : fullRound;
+	return fullRound ?? '?';
 }
 
 

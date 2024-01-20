@@ -858,7 +858,7 @@ class NodeImpl extends Node {
 	}
 
 	addVariation(longVariation?: boolean) {
-		const result = createVariationData(this._data, longVariation === undefined ? false : longVariation);
+		const result = createVariationData(this._data, longVariation ?? false);
 		this._data.variations.push(result);
 		return new VariationImpl(result, this._positionBefore);
 	}

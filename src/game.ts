@@ -947,7 +947,7 @@ function formatFullRound(round: number | undefined, subRound: number | undefined
 	}
 	let result = round === undefined ? undefinedToken : String(round);
 	if (subRound !== undefined || subSubRound !== undefined) {
-		result += '.' + (subRound === undefined ? undefinedToken : subRound);
+		result += '.' + (subRound ?? undefinedToken);
 	}
 	if (subSubRound !== undefined) {
 		result += '.' + subSubRound;

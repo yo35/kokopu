@@ -242,7 +242,7 @@ export function nagSymbol(nag: number): string {
 		throw new IllegalArgument('nagSymbol()');
 	}
 	const result = NAG_SYMBOLS.get(nag);
-	return result === undefined ? '$' + nag : result;
+	return result ?? '$' + nag;
 }
 
 
