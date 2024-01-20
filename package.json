@@ -48,6 +48,7 @@
 		"nyc": "^15.1.0",
 		"rimraf": "^5.0.5",
 		"ssh2-sftp-client": "^10.0.0",
+		"tsify": "^5.0.4",
 		"typedoc": "0.23.28",
 		"typedoc-plugin-extras": "2.3.2",
 		"typescript": "5.0.4",

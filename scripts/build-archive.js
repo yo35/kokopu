@@ -29,10 +29,11 @@ const fs = require('fs');
 const path = require('path');
 const process = require('process');
 const { author, license, version } = require('../package.json');
+const { compilerOptions } = require('../tsconfig.json');
 
 const output = path.resolve(__dirname, `../dist/kokopu-${version}.zip`);
 const infoFiles = [ 'README.md', 'CHANGELOG.md', 'LICENSE' ].map(file => path.resolve(__dirname, '../' + file));
-const inputLibFile = path.resolve(__dirname, '../dist/lib/index.js');
+const inputFile = path.resolve(__dirname, '../src/index.ts');
 const browserifiedLibFile = path.resolve(__dirname, '../build/kokopu.js');
 const minifiedLibFile = path.resolve(__dirname, '../build/kokopu.min.js');
 
@@ -41,14 +42,17 @@ async function buildBrowserifiedLib() {
 	fs.mkdirSync(path.dirname(browserifiedLibFile), { recursive: true });
 	const browserifiedLibStream = fs.createWriteStream(browserifiedLibFile, { encoding: 'utf8' });
 	browserifiedLibStream.write(
-`/**
+`/*!
  * kokopu (https://www.npmjs.com/package/kokopu)
  * @version ${version}
  * @author ${author}
  * @license ${license}
  */
 `);
-	browserify(inputLibFile, { standalone: 'kokopu' }).bundle().pipe(browserifiedLibStream);
+	browserify(inputFile, { standalone: 'kokopu' })
+		.plugin('tsify', { target: 'es6', lib: [ compilerOptions.target ] })
+		.bundle()
+		.pipe(browserifiedLibStream);
 	return new Promise(resolve => browserifiedLibStream.on('finish', resolve));
 }
 
