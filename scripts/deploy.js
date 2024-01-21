@@ -22,17 +22,19 @@
  * -------------------------------------------------------------------------- */
 
 
+const fs = require('fs');
 const process = require('process');
 const readline = require('readline');
 const { Readable } = require('stream');
 const Client = require('ssh2-sftp-client');
 const { version } = require('../package.json');
 
+
 function promptPassword(prompt, callback) {
 
-	let rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+	const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
 	rl.input.on("keypress", () => {
-		let len = rl.line.length;
+		const len = rl.line.length;
 		readline.moveCursor(rl.output, -len, 0);
 		readline.clearLine(rl.output, 1);
 		rl.output.write('*'.repeat(len));
@@ -48,48 +50,85 @@ function promptPassword(prompt, callback) {
 }
 
 
+function runUpload(host, user, uploadFun) {
+	promptPassword(`Pass for ${user}@${host}: `, async (pass) => {
+
+		// Validate the password.
+		if (!pass) {
+			console.log('Deploy canceled.');
+			return;
+		}
+
+		try {
+			const client = new Client();
+			try {
+
+				// To invoke to upload a file.
+				async function uploadText(text, distPath) {
+					console.log(`Uploading text to ${distPath}`);
+					await client.put(Readable.from([ text ]), distPath, {
+						writeStreamOptions: {
+							mode: 0o644,
+						},
+					});
+				}
+
+				// To invoke to upload a file or (recursively) a directory.
+				async function uploadFile(input, distPath) {
+					if (fs.statSync(input).isDirectory()) {
+						console.log(`Creating directory ${distPath}`);
+						await client.mkdir(distPath);
+						await client.chmod(distPath, 0o755);
+						for (const file of fs.readdirSync(input)) {
+							await uploadFile(`${input}/${file}`, `${distPath}/${file}`);
+						}
+					}
+					else {
+						console.log(`Uploading file ${distPath}`);
+						await client.put(input, distPath, {
+							writeStreamOptions: {
+								mode: 0o644,
+							},
+						});
+					}
+				}
+
+				// Connect to the server, and execute the upload function.
+				await client.connect({
+					host: host,
+					username: user,
+					password: pass,
+				});
+				await uploadFun(uploadText, uploadFile);
+			}
+			finally {
+				await client.end();
+			}
+		}
+		catch (e) {
+			console.error(e);
+			process.exitCode = 1;
+		}
+	});
+}
+
+
 const HOST = 'ftp.cluster007.ovh.net';
 const USER = 'yolgiypr';
 const ROOT_DIR = 'kokopu';
 
-promptPassword(`Pass for ${USER}@${HOST}: `, pass => {
 
-	// Validate the password.
-	if (!pass) {
-		console.log('Deploy canceled.');
-		return;
-	}
+runUpload(HOST, USER, async (uploadText, uploadFile) => {
 
-	let client = new Client();
-	client.connect({
-		host: HOST,
-		username: USER,
-		password: pass,
-	}).then(() => {
+	console.log(`*** Standalone library kokopu-${version}.zip ***`);
+	await uploadFile(`dist/kokopu-${version}.zip`, `${ROOT_DIR}/dist/kokopu-${version}.zip`);
 
-		// Upload the ZIP archive with the browser-ready scripts.
-		console.log(`Upload kokopu-${version}.zip...`);
-		return client.put(`dist/kokopu-${version}.zip`, `${ROOT_DIR}/dist/kokopu-${version}.zip`, { mode: 0o644 });
+	console.log(`*** Redirect /dist/kokopu.zip to /dist/kokopu-${version}.zip ***`);
+	await uploadText(`Redirect "/dist/kokopu.zip" "/dist/kokopu-${version}.zip"`, `${ROOT_DIR}/dist/.htaccess`);
 
-	}).then(() => {
+	console.log('*** Documentation ***');
+	await uploadFile('dist/docs', `${ROOT_DIR}/docs/${version}`);
 
-		// Redirect kokopu.zip to the archive corresponding to the latest version.
-		console.log(`Redirect /dist/kokopu.zip to /dist/kokopu-${version}.zip...`);
-		let htaccess = Readable.from([ `Redirect "/dist/kokopu.zip" "/dist/kokopu-${version}.zip"` ]);
-		return client.put(htaccess, `${ROOT_DIR}/dist/.htaccess`, { mode: 0o644 });
-
-	}).then(() => {
-
-		// Upload the documentation.
-		console.log('Upload documentation...');
-		return client.uploadDir('dist/docs', `${ROOT_DIR}/docs/${version}`);
-
-	}).then(() => {
-
-		// Redirect /docs/current to the directory corresponding to latest documentation version.
-		console.log(`Redirect /docs/current to /docs/${version}...`);
-		let htaccess = Readable.from([ `Redirect "/docs/current" "/docs/${version}"` ]);
-		return client.put(htaccess, `${ROOT_DIR}/docs/.htaccess`, { mode: 0o644 });
-
-	}).then(() => console.log('Done.')).catch(err => { console.error(err); process.exitCode = 1; }).finally(() => client.end());
+	console.log(`*** Redirect /docs/current to /docs/${version} ***`);
+	await uploadText(`Redirect "/docs/current" "/docs/${version}"`, `${ROOT_DIR}/docs/.htaccess`);
 });
