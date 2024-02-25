@@ -96,13 +96,11 @@ export class MoveTreeRoot {
 			}
 			else {
 				let nodeData = variationData.child;
-				while (true) {
+				while (nodeData.child !== undefined) {
 					applyMoveDescriptor(position, nodeData);
-					if (nodeData.child === undefined) {
-						return new NodeImpl(nodeData, position);
-					}
 					nodeData = nodeData.child;
 				}
+				return new NodeImpl(nodeData, position);
 			}
 		}
 		else {

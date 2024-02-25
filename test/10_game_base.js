@@ -22,7 +22,7 @@
  * -------------------------------------------------------------------------- */
 
 
-const { exception, Game, Position } = require('../dist/lib/index');
+const { exception, Game, Position, Variation } = require('../dist/lib/index');
 const test = require('unit.js');
 
 
@@ -639,19 +639,26 @@ describe('FindById with aliases', () => {
 		return game;
 	}
 
-	function itFindIdAlias(label, gameBuilder, idAlias, expectedId) {
+	function itFindIdAlias(label, gameBuilder, idAlias, expectedId, expectedFEN) {
 		it(label, () => {
 			const game = gameBuilder();
-			test.value(game.findById(idAlias).id()).is(expectedId);
-			test.value(game.findById(idAlias, true).id()).is(expectedId);
+
+			const result = game.findById(idAlias);
+			test.value(result.id()).is(expectedId);
+			test.value(result instanceof Variation ? result.initialPosition().fen() : result.position().fen()).is(expectedFEN);
+
+			const result2 = game.findById(idAlias, true);
+			test.value(result2.id()).is(expectedId);
+			test.value(result2 instanceof Variation ? result2.initialPosition().fen() : result2.position().fen()).is(expectedFEN);
+
 			test.value(game.findById(idAlias, false)).is(undefined);
 		});
 	}
 
-	itFindIdAlias('End of main line', buildGame, 'end', '3w');
-	itFindIdAlias('End of sub-variation', buildGame, '1b-v1-end', '1b-v1-2w');
-	itFindIdAlias('End of empty sub-variation', buildGame, '1b-v0-end', '1b-v0-start');
-	itFindIdAlias('End of empty main line', () => new Game(), 'end', 'start');
+	itFindIdAlias('End of main line', buildGame, 'end', '3w', 'r1bqkbnr/pppp1ppp/2n5/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR b KQkq - 0 1');
+	itFindIdAlias('End of sub-variation', buildGame, '1b-v1-end', '1b-v1-2w', 'rnbqkbnr/pppp1ppp/4p3/8/3PP3/8/PPP2PPP/RNBQKBNR b KQkq - 0 1');
+	itFindIdAlias('End of empty sub-variation', buildGame, '1b-v0-end', '1b-v0-start', 'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1');
+	itFindIdAlias('End of empty main line', () => new Game(), 'end', 'start', 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
 });
 
 
