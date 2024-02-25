@@ -59,7 +59,7 @@ export class MoveTreeRoot {
 		return new VariationImpl(this._mainVariationData, this._position);
 	}
 
-	findById(id: string) {
+	findById(id: string, allowAliases: boolean) {
 		const tokens = id.split('-');
 		if (tokens.length % 2 !== 1) {
 			return undefined;
@@ -89,6 +89,21 @@ export class MoveTreeRoot {
 		const lastToken = tokens[tokens.length - 1];
 		if (lastToken === 'start') {
 			return new VariationImpl(variationData, position);
+		}
+		else if (allowAliases && lastToken === 'end') {
+			if (variationData.child === undefined) {
+				return new VariationImpl(variationData, position);
+			}
+			else {
+				let nodeData = variationData.child;
+				while (true) {
+					applyMoveDescriptor(position, nodeData);
+					if (nodeData.child === undefined) {
+						return new NodeImpl(nodeData, position);
+					}
+					nodeData = nodeData.child;
+				}
+			}
 		}
 		else {
 			const nodeData = findNode(variationData, lastToken, position);

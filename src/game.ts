@@ -694,10 +694,23 @@ export class Game {
 	 * Return the node or variation corresponding to the given ID (see {@link Node.id | Node.id} and {@link Variation.id | Variation.id}
 	 * to retrieve the ID of a node or variation).
 	 *
+	 * For the main variation, IDs are built as follows:
+	 * - `'start'` is the ID of the main variation,
+	 * - `'3w'` is for instance the ID of the node whose {@link Node.fullMoveNumber} is 3 and {@link Node.moveColor} is white
+	 *   (i.e. the 3rd white move if the game starts from the usual initial position),
+	 * - `'end'` is an alias corresponding to the last node in the main variation (or the main variation itself if it is empty).
+	 *
+	 * For sub-variations, IDs are built as in the following examples:
+	 * - `'2b-v0-start'` is the ID of the sub-variation at index 0 on node `'2b'` (in the main variation),
+	 * - `'5w-v3-11b'` is the ID of the node whose {@link Node.fullMoveNumber} is 11 and {@link Node.moveColor} is black within
+	 *   the sub-variation at index 3 on node `'5w'` (in the main variation),
+	 * - `'5w-v3-end'` is an alias corresponding to the last node in this sub-variation (or the sub-variation itself if it is empty).
+	 *
+	 * @param allowAliases - If `true`, search `id` among both IDs and ID aliases. If `false`, search among IDs only.
 	 * @returns `undefined` if the given ID does not correspond to an existing {@link Node} and {@link Variation}.
 	 */
-	findById(id: string): Node | Variation | undefined {
-		return this._moveTreeRoot.findById(id);
+	findById(id: string, allowAliases = true): Node | Variation | undefined {
+		return this._moveTreeRoot.findById(id, allowAliases);
 	}
 
 

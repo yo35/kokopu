@@ -620,6 +620,41 @@ describe('Invalid findById', () => {
 });
 
 
+describe('FindById with aliases', () => {
+
+	function buildGame() {
+		const game = new Game();
+		let current = game.mainVariation();
+		current = current.play('e4');
+		current = current.play('e5');
+
+		current.addVariation();
+		const alternative2 = current.addVariation();
+		alternative2.play('e6').play('d4');
+
+		current = current.play('Bc4');
+		current = current.play('Nc6');
+		current = current.play('Qh5');
+
+		return game;
+	}
+
+	function itFindIdAlias(label, gameBuilder, idAlias, expectedId) {
+		it(label, () => {
+			const game = gameBuilder();
+			test.value(game.findById(idAlias).id()).is(expectedId);
+			test.value(game.findById(idAlias, true).id()).is(expectedId);
+			test.value(game.findById(idAlias, false)).is(undefined);
+		});
+	}
+
+	itFindIdAlias('End of main line', buildGame, 'end', '3w');
+	itFindIdAlias('End of sub-variation', buildGame, '1b-v1-end', '1b-v1-2w');
+	itFindIdAlias('End of empty sub-variation', buildGame, '1b-v0-end', '1b-v0-start');
+	itFindIdAlias('End of empty main line', () => new Game(), 'end', 'start');
+});
+
+
 describe('Invalid initial position', () => {
 
 	function itInvalidInitialPosition(label, action) {
