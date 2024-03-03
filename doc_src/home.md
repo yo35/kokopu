@@ -2,7 +2,7 @@
 
 <img align="right" width="96" height="96" src="media://kokopu-logo.png" />
 
-Kokopu is a JavaScript/TypeScript library for chess applications.
+Kokopu is a JavaScript/TypeScript chess library.
 It implements the chess game rules, and provides tools to read/write the standard chess file formats
 ([PGN](https://en.wikipedia.org/wiki/Portable_Game_Notation),
 [FEN](https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation),
