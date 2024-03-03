@@ -131,3 +131,18 @@ describe('FEN without XFEN if possible', () => {
 		test.value(position.fen({ regularFENIfPossible: true })).is(elem.fenOutWithoutXFEN === '' ? elem.fenOutDefault : elem.fenOutWithoutXFEN);
 	});
 });
+
+
+describe('Invalid FEN overloads', () => {
+
+	function itInvalidOverload(label, action) {
+		it(label, () => {
+			const position = new Position();
+			test.exception(() => action(position)).isInstanceOf(exception.IllegalArgument);
+		});
+	}
+
+	itInvalidOverload('Invalid key for getter', pos => pos.fen({ fiftyMoveClock: 'forty two' }));
+	itInvalidOverload('Non-string input for setter', pos => pos.fen(42));
+	itInvalidOverload('Non-boolean option for setter', pos => pos.fen('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', 42));
+});

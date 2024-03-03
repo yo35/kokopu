@@ -179,6 +179,51 @@ describe('Figurine notation', () => {
 });
 
 
+describe('King-take-rook flag for UCI notation generation', () => {
+
+	function itGenerateUCIWithKxR(label, variant, forceKxR, expectedUCI) {
+		it(label, () => {
+			const position = new Position(variant, 'r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w KQkq - 0 1');
+			const moveDescriptor = position.notation('O-O');
+			test.value(position.uci(moveDescriptor, forceKxR)).is(expectedUCI);
+		});
+	}
+
+	itGenerateUCIWithKxR('Force KxR at regular chess', 'regular', true, 'e1h1');
+	itGenerateUCIWithKxR('Do not force KxR at regular chess', 'regular', false, 'e1g1');
+	itGenerateUCIWithKxR('Force KxR at Chess960', 'chess960', true, 'e1h1');
+	itGenerateUCIWithKxR('Do not force KxR at Chess960', 'chess960', false, 'e1h1');
+});
+
+
+describe('King-take-rook flag for UCI notation parsing', () => {
+
+	function itParseValidUCIWithKxR(label, variant, uciNotation, strict) {
+		it(label, () => {
+			const position = new Position(variant, 'r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w KQkq - 0 1');
+			const moveDescriptor = position.uci(uciNotation, strict);
+			test.value(position.notation(moveDescriptor)).is('O-O');
+		});
+	}
+
+	function itParseInvalidUCIWithKxR(label, variant, uciNotation, strict) {
+		it(label + ' (invalid)', () => {
+			const position = new Position(variant, 'r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w KQkq - 0 1');
+			test.exception(() => position.uci(uciNotation, strict)).isInstanceOf(exception.InvalidNotation);
+		});
+	}
+
+	itParseValidUCIWithKxR('Regular chess, king-move style, non-strict mode', 'regular', 'e1g1', false);
+	itParseValidUCIWithKxR('Regular chess, king-move style, strict mode', 'regular', 'e1g1', true);
+	itParseValidUCIWithKxR('Regular chess, KxR style, non-strict mode', 'regular', 'e1h1', false);
+	itParseInvalidUCIWithKxR('Regular chess, KxR style, strict mode', 'regular', 'e1h1', true);
+	itParseInvalidUCIWithKxR('Chess960, king-move style, non-strict mode', 'chess960', 'e1g1', false);
+	itParseInvalidUCIWithKxR('Chess960, king-move style, strict mode', 'chess960', 'e1g1', true);
+	itParseValidUCIWithKxR('Chess960, KxR style, non-strict mode', 'chess960', 'e1h1', false);
+	itParseValidUCIWithKxR('Chess960, KxR style, strict mode', 'chess960', 'e1h1', true);
+});
+
+
 describe('Parse invalid notation', () => {
 
 	function itInvalidNotation(label, parsingAction) {
