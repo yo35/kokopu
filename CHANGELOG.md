@@ -1,6 +1,10 @@
 ChangeLog
 =========
 
+4.9.2 (March 3, 2024)
+---------------------
+* Minor fixes.
+
 4.9.1 (February 25, 2024)
 -------------------------
 * Fix inconsistent object returned by `Game.findById()` for ID aliases.
