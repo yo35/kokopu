@@ -1,15 +1,15 @@
 ChangeLog
 =========
 
-4.9.1 (February 25, 2023)
+4.9.1 (February 25, 2024)
 -------------------------
 * Fix inconsistent object returned by `Game.findById()` for ID aliases.
 
-4.9.0 (February 25, 2023)
+4.9.0 (February 25, 2024)
 -------------------------
 * Make `Game.findById()` work with ID aliases (e.g. `'end'` to indicate the last node in the main variation).
 
-4.8.1 (January 20, 2023)
+4.8.1 (January 20, 2024)
 ------------------------
 * Compile TypeScript to ES2020 (except for standalone lib).
 * Minor fixes in code and dependencies.
