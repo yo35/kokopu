@@ -33,19 +33,19 @@
  */
 export class IllegalArgument {
 
-	/** Name of the function that raises the exception. */
-	functionName: string;
+    /** Name of the function that raises the exception. */
+    functionName: string;
 
-	constructor(functionName: string) {
-		this.functionName = functionName;
-	}
+    constructor(functionName: string) {
+        this.functionName = functionName;
+    }
 
-	/**
-	 * @ignore
-	 */
-	toString(): string {
-		return `Illegal argument in function ${this.functionName}`;
-	}
+    /**
+     * @ignore
+     */
+    toString(): string {
+        return `Illegal argument in function ${this.functionName}`;
+    }
 }
 
 
@@ -54,23 +54,23 @@ export class IllegalArgument {
  */
 export class InvalidFEN {
 
-	/** FEN string that causes the error. */
-	fen: string;
+    /** FEN string that causes the error. */
+    fen: string;
 
-	/** Human-readable message describing the error. */
-	message: string;
+    /** Human-readable message describing the error. */
+    message: string;
 
-	constructor(fen: string, message: string, ...tokens: unknown[]) {
-		this.fen = fen;
-		this.message = buildMessage(message, tokens);
-	}
+    constructor(fen: string, message: string, ...tokens: unknown[]) {
+        this.fen = fen;
+        this.message = buildMessage(message, tokens);
+    }
 
-	/**
-	 * @ignore
-	 */
-	toString(): string {
-		return toStringImpl('InvalidFEN', this.message);
-	}
+    /**
+     * @ignore
+     */
+    toString(): string {
+        return toStringImpl('InvalidFEN', this.message);
+    }
 }
 
 
@@ -79,27 +79,27 @@ export class InvalidFEN {
  */
 export class InvalidNotation {
 
-	/** FEN representation of the position used to interpret the move notation. */
-	fen: string;
+    /** FEN representation of the position used to interpret the move notation. */
+    fen: string;
 
-	/** Move notation that causes the error. */
-	notation: string;
+    /** Move notation that causes the error. */
+    notation: string;
 
-	/** Human-readable message describing the error. */
-	message: string;
+    /** Human-readable message describing the error. */
+    message: string;
 
-	constructor(fen: string, notation: string, message: string, ...tokens: unknown[]) {
-		this.fen = fen;
-		this.notation = notation;
-		this.message = buildMessage(message, tokens);
-	}
+    constructor(fen: string, notation: string, message: string, ...tokens: unknown[]) {
+        this.fen = fen;
+        this.notation = notation;
+        this.message = buildMessage(message, tokens);
+    }
 
-	/**
-	 * @ignore
-	 */
-	toString(): string {
-		return toStringImpl('InvalidNotation', this.message);
-	}
+    /**
+     * @ignore
+     */
+    toString(): string {
+        return toStringImpl('InvalidNotation', this.message);
+    }
 }
 
 
@@ -108,31 +108,31 @@ export class InvalidNotation {
  */
 export class InvalidPGN {
 
-	/** PGN string that causes the error. */
-	pgn: string;
+    /** PGN string that causes the error. */
+    pgn: string;
 
-	/** Index (0-based) of the character in the PGN string where the parsing fails (or a negative value if no particular character is related to the error). */
-	index: number;
+    /** Index (0-based) of the character in the PGN string where the parsing fails (or a negative value if no particular character is related to the error). */
+    index: number;
 
-	/** Index (1-based) of the line in the PGN string where the parsing fails (or a negative value if no particular character is related to the error). */
-	lineNumber: number;
+    /** Index (1-based) of the line in the PGN string where the parsing fails (or a negative value if no particular character is related to the error). */
+    lineNumber: number;
 
-	/** Human-readable message describing the error. */
-	message: string;
+    /** Human-readable message describing the error. */
+    message: string;
 
-	constructor(pgn: string, index: number, lineNumber: number, message: string, ...tokens: unknown[]) {
-		this.pgn = pgn;
-		this.index = index;
-		this.lineNumber = lineNumber;
-		this.message = buildMessage(message, tokens);
-	}
+    constructor(pgn: string, index: number, lineNumber: number, message: string, ...tokens: unknown[]) {
+        this.pgn = pgn;
+        this.index = index;
+        this.lineNumber = lineNumber;
+        this.message = buildMessage(message, tokens);
+    }
 
-	/**
-	 * @ignore
-	 */
-	toString(): string {
-		return toStringImpl('InvalidPGN', `[character=${this.index} line=${this.lineNumber}] ${this.message}`);
-	}
+    /**
+     * @ignore
+     */
+    toString(): string {
+        return toStringImpl('InvalidPGN', `[character=${this.index} line=${this.lineNumber}] ${this.message}`);
+    }
 }
 
 
@@ -141,38 +141,38 @@ export class InvalidPGN {
  */
 export class InvalidPOJO {
 
-	/** POJO that causes the error. */
-	pojo: unknown;
+    /** POJO that causes the error. */
+    pojo: unknown;
 
-	/** Name of the field that causes the error (or an empty string if the error is not related to any particular field). */
-	fieldName: string;
+    /** Name of the field that causes the error (or an empty string if the error is not related to any particular field). */
+    fieldName: string;
 
-	/** Human-readable message describing the error. */
-	message: string;
+    /** Human-readable message describing the error. */
+    message: string;
 
-	constructor(pojo: unknown, fieldName: string, message: string, ...tokens: unknown[]) {
-		this.pojo = pojo;
-		this.fieldName = fieldName;
-		this.message = buildMessage(message, tokens);
-	}
+    constructor(pojo: unknown, fieldName: string, message: string, ...tokens: unknown[]) {
+        this.pojo = pojo;
+        this.fieldName = fieldName;
+        this.message = buildMessage(message, tokens);
+    }
 
-	/**
-	 * @ignore
-	 */
-	toString(): string {
-		return toStringImpl('InvalidPOJO', this.message);
-	}
+    /**
+     * @ignore
+     */
+    toString(): string {
+        return toStringImpl('InvalidPOJO', this.message);
+    }
 }
 
 
 function buildMessage(message: string, tokens: unknown[]) {
-	return message.replace(/{(\d+)}/g, (match, placeholder) => {
-		const placeholderIndex = Number(placeholder);
-		return placeholderIndex < tokens.length ? String(tokens[placeholderIndex]) : match;
-	});
+    return message.replace(/{(\d+)}/g, (match, placeholder) => {
+        const placeholderIndex = Number(placeholder);
+        return placeholderIndex < tokens.length ? String(tokens[placeholderIndex]) : match;
+    });
 }
 
 
 function toStringImpl(exceptionName: string, message: string) {
-	return exceptionName + ' -> ' + message;
+    return exceptionName + ' -> ' + message;
 }

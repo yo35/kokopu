@@ -29,5 +29,5 @@ const fs = require('fs');
  * Check whether a resource file exist or not.
  */
 module.exports = function(filename) {
-	return fs.existsSync('./test/resources/' + filename);
+    return fs.existsSync('./test/resources/' + filename);
 };

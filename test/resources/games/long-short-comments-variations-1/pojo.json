@@ -1,36 +1,36 @@
 {
-	"event": "Game with long & short comments and variations 1.",
-	"mainVariation": {
-		"comment": "I'm the main variation header (long) comment.",
-		"isLongComment": true,
-		"nodes": [
-			{ "notation": "e4", "comment": "I'm a long comment.", "isLongComment": true },
-			{
-				"notation": "e5",
-				"variations": [
-					{
-						"isLongVariation": true,
-						"nodes": [ "c5", "Nf3" ]
-					}
-				]
-			},
-			"Nf3",
-			"Nc6",
-			{
-				"notation": "Bc4",
-				"variations": [
-					{
-						"isLongVariation": true,
-						"comment": "I'm a long comment too.",
-						"isLongComment": true,
-						"nodes": [
-							"Bb5",
-							{ "notation": "a6", "comment": "I'm a short comment." }
-						]
-					}
-				]
-			},
-			{ "notation": "Bc5", "comment": "I'm a long comment at the end of the game.", "isLongComment": true }
-		]
-	}
+    "event": "Game with long & short comments and variations 1.",
+    "mainVariation": {
+        "comment": "I'm the main variation header (long) comment.",
+        "isLongComment": true,
+        "nodes": [
+            { "notation": "e4", "comment": "I'm a long comment.", "isLongComment": true },
+            {
+                "notation": "e5",
+                "variations": [
+                    {
+                        "isLongVariation": true,
+                        "nodes": [ "c5", "Nf3" ]
+                    }
+                ]
+            },
+            "Nf3",
+            "Nc6",
+            {
+                "notation": "Bc4",
+                "variations": [
+                    {
+                        "isLongVariation": true,
+                        "comment": "I'm a long comment too.",
+                        "isLongComment": true,
+                        "nodes": [
+                            "Bb5",
+                            { "notation": "a6", "comment": "I'm a short comment." }
+                        ]
+                    }
+                ]
+            },
+            { "notation": "Bc5", "comment": "I'm a long comment at the end of the game.", "isLongComment": true }
+        ]
+    }
 }

@@ -106,10 +106,10 @@ Or within a browser:
 ```
 <script src="kokopu.js"></script>
 <script>
-	const position = new kokopu.Position();
-	position.play('e4');
-	position.play('e5');
-	// etc...
+    const position = new kokopu.Position();
+    position.play('e4');
+    position.play('e5');
+    // etc...
 </script>
 ```
 

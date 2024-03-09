@@ -1,8 +1,8 @@
 {
-	"event": "Event with a \\ backslash",
-	"site": "Site with \" double-quotes",
-	"mainVariation": {
-		"comment": "Comment with \\ backslash and { some } braces...",
-		"nodes": []
-	}
+    "event": "Event with a \\ backslash",
+    "site": "Site with \" double-quotes",
+    "mainVariation": {
+        "comment": "Comment with \\ backslash and { some } braces...",
+        "nodes": []
+    }
 }

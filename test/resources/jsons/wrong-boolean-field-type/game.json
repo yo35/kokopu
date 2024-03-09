@@ -1,7 +1,7 @@
 {
-	"event": "Wrong boolean field type",
-	"mainVariation": [
-		"e4",
-		{ "notation": "e5", "comment": "I'm a comment...", "isLongComment": "not-a-boolean" }
-	]
+    "event": "Wrong boolean field type",
+    "mainVariation": [
+        "e4",
+        { "notation": "e5", "comment": "I'm a comment...", "isLongComment": "not-a-boolean" }
+    ]
 }

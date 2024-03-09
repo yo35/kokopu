@@ -26,28 +26,28 @@ import { Color, Piece, ColoredPiece, File, Rank, Square, GameResult, GameVariant
 
 
 export const enum ColorImpl {
-	WHITE = 0,
-	BLACK = 1,
+    WHITE = 0,
+    BLACK = 1,
 }
 
 
 export const enum PieceImpl {
-	KING   = 0,
-	QUEEN  = 1,
-	ROOK   = 2,
-	BISHOP = 3,
-	KNIGHT = 4,
-	PAWN   = 5,
+    KING   = 0,
+    QUEEN  = 1,
+    ROOK   = 2,
+    BISHOP = 3,
+    KNIGHT = 4,
+    PAWN   = 5,
 }
 
 
 export const enum CpI {
-	WK =  0, BK =  1,
-	WQ =  2, BQ =  3,
-	WR =  4, BR =  5,
-	WB =  6, BB =  7,
-	WN =  8, BN =  9,
-	WP = 10, BP = 11,
+    WK =  0, BK =  1,
+    WQ =  2, BQ =  3,
+    WR =  4, BR =  5,
+    WB =  6, BB =  7,
+    WN =  8, BN =  9,
+    WP = 10, BP = 11,
 }
 
 
@@ -55,39 +55,39 @@ export const enum CpI {
  * Special constants for chessboard square state.
  */
 export const enum SpI {
-	EMPTY   = -1,
-	INVALID = -2, // Just for the internal board representation.
+    EMPTY   = -1,
+    INVALID = -2, // Just for the internal board representation.
 }
 
 
 export const enum SquareImpl {
-	A1 =   0, B1 =   1, C1 =   2, D1 =   3, E1 =   4, F1 =   5, G1 =   6, H1 =   7,
-	A2 =  16, B2 =  17, C2 =  18, D2 =  19, E2 =  20, F2 =  21, G2 =  22, H2 =  23,
-	A3 =  32, B3 =  33, C3 =  34, D3 =  35, E3 =  36, F3 =  37, G3 =  38, H3 =  39,
-	A4 =  48, B4 =  49, C4 =  50, D4 =  51, E4 =  52, F4 =  53, G4 =  54, H4 =  55,
-	A5 =  64, B5 =  65, C5 =  66, D5 =  67, E5 =  68, F5 =  69, G5 =  70, H5 =  71,
-	A6 =  80, B6 =  81, C6 =  82, D6 =  83, E6 =  84, F6 =  85, G6 =  86, H6 =  87,
-	A7 =  96, B7 =  97, C7 =  98, D7 =  99, E7 = 100, F7 = 101, G7 = 102, H7 = 103,
-	A8 = 112, B8 = 113, C8 = 114, D8 = 115, E8 = 116, F8 = 117, G8 = 118, H8 = 119,
+    A1 =   0, B1 =   1, C1 =   2, D1 =   3, E1 =   4, F1 =   5, G1 =   6, H1 =   7,
+    A2 =  16, B2 =  17, C2 =  18, D2 =  19, E2 =  20, F2 =  21, G2 =  22, H2 =  23,
+    A3 =  32, B3 =  33, C3 =  34, D3 =  35, E3 =  36, F3 =  37, G3 =  38, H3 =  39,
+    A4 =  48, B4 =  49, C4 =  50, D4 =  51, E4 =  52, F4 =  53, G4 =  54, H4 =  55,
+    A5 =  64, B5 =  65, C5 =  66, D5 =  67, E5 =  68, F5 =  69, G5 =  70, H5 =  71,
+    A6 =  80, B6 =  81, C6 =  82, D6 =  83, E6 =  84, F6 =  85, G6 =  86, H6 =  87,
+    A7 =  96, B7 =  97, C7 =  98, D7 =  99, E7 = 100, F7 = 101, G7 = 102, H7 = 103,
+    A8 = 112, B8 = 113, C8 = 114, D8 = 115, E8 = 116, F8 = 117, G8 = 118, H8 = 119,
 }
 
 
 export const enum GameResultImpl {
-	WHITE_WINS = 0,
-	BLACK_WINS = 1,
-	DRAW = 2,
-	LINE = 3,
+    WHITE_WINS = 0,
+    BLACK_WINS = 1,
+    DRAW = 2,
+    LINE = 3,
 }
 
 
 export const enum GameVariantImpl {
-	REGULAR_CHESS = 0,
-	CHESS960 = 1,
-	NO_KING = 2,
-	WHITE_KING_ONLY = 3,
-	BLACK_KING_ONLY = 4,
-	ANTICHESS = 5,
-	HORDE = 6,
+    REGULAR_CHESS = 0,
+    CHESS960 = 1,
+    NO_KING = 2,
+    WHITE_KING_ONLY = 3,
+    BLACK_KING_ONLY = 4,
+    ANTICHESS = 5,
+    HORDE = 6,
 }
 
 
@@ -117,45 +117,45 @@ export function variantFromString(variant : unknown) { return typeof variant ===
 
 
 export function squareToString(square: number) {
-	return FILE_SYMBOL[square % 16] + RANK_SYMBOL[Math.trunc(square / 16)] as Square;
+    return FILE_SYMBOL[square % 16] + RANK_SYMBOL[Math.trunc(square / 16)] as Square;
 }
 
 
 export function squareFromString(square: unknown) {
-	if (typeof square !== 'string' || !/^[a-h][1-8]$/.test(square)) {
-		return -1;
-	}
-	const file = FILE_SYMBOL.indexOf(square[0]);
-	const rank = RANK_SYMBOL.indexOf(square[1]);
-	return rank * 16 + file;
+    if (typeof square !== 'string' || !/^[a-h][1-8]$/.test(square)) {
+        return -1;
+    }
+    const file = FILE_SYMBOL.indexOf(square[0]);
+    const rank = RANK_SYMBOL.indexOf(square[1]);
+    return rank * 16 + file;
 }
 
 
 export function coloredPieceToString(cp: number) {
-	return COLOR_SYMBOL[cp % 2] + PIECE_SYMBOL[Math.trunc(cp / 2)] as ColoredPiece;
+    return COLOR_SYMBOL[cp % 2] + PIECE_SYMBOL[Math.trunc(cp / 2)] as ColoredPiece;
 }
 
 
 export function coloredPieceFromString(cp: unknown) {
-	if (typeof cp !== 'string' || !/^[wb][kqrbnp]$/.test(cp)) {
-		return -1;
-	}
-	const color = COLOR_SYMBOL.indexOf(cp[0]);
-	const piece = PIECE_SYMBOL.indexOf(cp[1]);
-	return piece * 2 + color;
+    if (typeof cp !== 'string' || !/^[wb][kqrbnp]$/.test(cp)) {
+        return -1;
+    }
+    const color = COLOR_SYMBOL.indexOf(cp[0]);
+    const piece = PIECE_SYMBOL.indexOf(cp[1]);
+    return piece * 2 + color;
 }
 
 
 export function figurineToString(cp: number) {
-	return FIGURINE_SYMBOL[cp];
+    return FIGURINE_SYMBOL[cp];
 }
 
 
 export function figurineFromString(cp: unknown) {
-	return FIGURINE_SYMBOL.indexOf(String(cp));
+    return FIGURINE_SYMBOL.indexOf(String(cp));
 }
 
 
 export function squareColorImpl(square: number) {
-	return (~square ^ (square >> 4)) & 0x1;
+    return (~square ^ (square >> 4)) & 0x1;
 }

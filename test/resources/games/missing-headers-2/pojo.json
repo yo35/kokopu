@@ -1,14 +1,14 @@
 {
-	"date": "1955-11-**",
-	"round": 0,
-	"subSubRound": 77,
-	"white": {
-		"elo": 2299,
-		"title": "FM"
-	},
-	"black": {
-		"name": "Mister No-Name"
-	},
-	"opening": "TheOpening",
-	"openingSubVariation": "TheSubVariation"
+    "date": "1955-11-**",
+    "round": 0,
+    "subSubRound": 77,
+    "white": {
+        "elo": 2299,
+        "title": "FM"
+    },
+    "black": {
+        "name": "Mister No-Name"
+    },
+    "opening": "TheOpening",
+    "openingSubVariation": "TheSubVariation"
 }

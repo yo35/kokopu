@@ -1,19 +1,19 @@
 {
-	"event": "Game with swapped variations.",
-	"mainVariation": [
-		"e4",
-		{
-			"notation": "e5",
-			"variations": [
-				[ "c5" ],
-				[ { "notation": "g6", "comment": "Used to be at index 4" } ],
-				[ "d5" ],
-				[ "f5" ],
-				[ { "notation": "c6", "comment": "Used to be at index 1" } ],
-				[ "b5" ],
-				[ "a5" ]
-			]
-		},
-		"Nf3"
-	]
+    "event": "Game with swapped variations.",
+    "mainVariation": [
+        "e4",
+        {
+            "notation": "e5",
+            "variations": [
+                [ "c5" ],
+                [ { "notation": "g6", "comment": "Used to be at index 4" } ],
+                [ "d5" ],
+                [ "f5" ],
+                [ { "notation": "c6", "comment": "Used to be at index 1" } ],
+                [ "b5" ],
+                [ "a5" ]
+            ]
+        },
+        "Nf3"
+    ]
 }

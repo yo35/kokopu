@@ -39,9 +39,9 @@ const minifiedLibFile = path.resolve(__dirname, '../build/kokopu.min.js');
 
 // Merge all lib files into a single one, exporting the symbol `kokopu`.
 async function buildBrowserifiedLib() {
-	fs.mkdirSync(path.dirname(browserifiedLibFile), { recursive: true });
-	const browserifiedLibStream = fs.createWriteStream(browserifiedLibFile, { encoding: 'utf8' });
-	browserifiedLibStream.write(
+    fs.mkdirSync(path.dirname(browserifiedLibFile), { recursive: true });
+    const browserifiedLibStream = fs.createWriteStream(browserifiedLibFile, { encoding: 'utf8' });
+    browserifiedLibStream.write(
 `/*!
  * kokopu (https://www.npmjs.com/package/kokopu)
  * @version ${version}
@@ -49,42 +49,42 @@ async function buildBrowserifiedLib() {
  * @license ${license}
  */
 `);
-	browserify(inputFile, { standalone: 'kokopu' })
-		.plugin('tsify', { target: 'es6', lib: [ compilerOptions.target ] })
-		.bundle()
-		.pipe(browserifiedLibStream);
-	return new Promise(resolve => browserifiedLibStream.on('finish', resolve));
+    browserify(inputFile, { standalone: 'kokopu' })
+        .plugin('tsify', { target: 'es6', lib: [ compilerOptions.target ] })
+        .bundle()
+        .pipe(browserifiedLibStream);
+    return new Promise(resolve => browserifiedLibStream.on('finish', resolve));
 }
 
 // Minify the lib file.
 async function buildMinifiedLib() {
-	fs.mkdirSync(path.dirname(minifiedLibFile), { recursive: true });
-	const browserifiedLibData = fs.readFileSync(browserifiedLibFile, { encoding: 'utf8' });
-	const minifiedLibData = uglify.minify(browserifiedLibData, { output: { comments: 'some' } });
-	if (minifiedLibData.error) {
-		throw minifiedLibData.error;
-	}
-	fs.writeFileSync(minifiedLibFile, minifiedLibData.code, { encoding: 'utf8' });
+    fs.mkdirSync(path.dirname(minifiedLibFile), { recursive: true });
+    const browserifiedLibData = fs.readFileSync(browserifiedLibFile, { encoding: 'utf8' });
+    const minifiedLibData = uglify.minify(browserifiedLibData, { output: { comments: 'some' } });
+    if (minifiedLibData.error) {
+        throw minifiedLibData.error;
+    }
+    fs.writeFileSync(minifiedLibFile, minifiedLibData.code, { encoding: 'utf8' });
 }
 
 // Create the archive.
 async function buildArchive() {
-	fs.mkdirSync(path.dirname(output), { recursive: true });
-	const archive = archiver('zip');
-	archive.pipe(fs.createWriteStream(output));
-	for (const infoFile of infoFiles) {
-		archive.file(infoFile, { name: path.basename(infoFile) });
-	}
-	archive.file(browserifiedLibFile, { name: 'kokopu.js' });
-	archive.file(minifiedLibFile, { name: 'kokopu.min.js' });
-	return archive.finalize();
+    fs.mkdirSync(path.dirname(output), { recursive: true });
+    const archive = archiver('zip');
+    archive.pipe(fs.createWriteStream(output));
+    for (const infoFile of infoFiles) {
+        archive.file(infoFile, { name: path.basename(infoFile) });
+    }
+    archive.file(browserifiedLibFile, { name: 'kokopu.js' });
+    archive.file(minifiedLibFile, { name: 'kokopu.min.js' });
+    return archive.finalize();
 }
 
 
 async function run() {
-	await buildBrowserifiedLib();
-	await buildMinifiedLib();
-	await buildArchive();
+    await buildBrowserifiedLib();
+    await buildMinifiedLib();
+    await buildArchive();
 }
 
 run().catch(err => { console.error(err); process.exitCode = 1; });

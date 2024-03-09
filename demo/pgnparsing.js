@@ -28,65 +28,65 @@ const program = require('commander');
 
 
 function alignLeft(data, width) {
-	const result = String(data);
-	return result.length < width ? result + ' '.repeat(width - result.length) : result;
+    const result = String(data);
+    return result.length < width ? result + ' '.repeat(width - result.length) : result;
 }
 
 
 function alignRight(data, width) {
-	const result = String(data);
-	return result.length < width ? ' '.repeat(width - result.length) + result : result;
+    const result = String(data);
+    return result.length < width ? ' '.repeat(width - result.length) + result : result;
 }
 
 
 function loadDatabase(text, path, errors) {
-	try {
-		return pgnRead(text);
-	}
-	catch (error) {
-		if (error instanceof exception.InvalidPGN) {
-			errors.set(path, error);
-			return null;
-		}
-		else {
-			throw error;
-		}
-	}
+    try {
+        return pgnRead(text);
+    }
+    catch (error) {
+        if (error instanceof exception.InvalidPGN) {
+            errors.set(path, error);
+            return null;
+        }
+        else {
+            throw error;
+        }
+    }
 }
 
 
 function loadGames(database, path, errors) {
-	try {
-		if (database === null) {
-			return;
-		}
+    try {
+        if (database === null) {
+            return;
+        }
 
-		const gameCount = database.gameCount();
-		for (let i = 0; i < gameCount; ++i) {
-			database.game(i);
-		}
-	}
-	catch (error) {
-		if (error instanceof exception.InvalidPGN) {
-			errors.set(path, error);
-		}
-		else {
-			throw error;
-		}
-	}
+        const gameCount = database.gameCount();
+        for (let i = 0; i < gameCount; ++i) {
+            database.game(i);
+        }
+    }
+    catch (error) {
+        if (error instanceof exception.InvalidPGN) {
+            errors.set(path, error);
+        }
+        else {
+            throw error;
+        }
+    }
 }
 
 
 function displayInvalidPGNError(path, error) {
-	console.log(`\nError in file ${path}:\n${error.message}`);
-	if (error.index >= error.pgn.length) {
-		console.log('Occurred at the end of the string.');
-	}
-	else {
-		const endOfExtract = Math.min(error.index + 40, error.pgn.length);
-		const extract = error.pgn.substring(error.index, endOfExtract).replace(/\n|\t|\r/g, ' ');
-		console.log(`Occurred at character ${error.index}: ${extract}`);
-	}
+    console.log(`\nError in file ${path}:\n${error.message}`);
+    if (error.index >= error.pgn.length) {
+        console.log('Occurred at the end of the string.');
+    }
+    else {
+        const endOfExtract = Math.min(error.index + 40, error.pgn.length);
+        const extract = error.pgn.substring(error.index, endOfExtract).replace(/\n|\t|\r/g, ' ');
+        console.log(`Occurred at character ${error.index}: ${extract}`);
+    }
 }
 
 
@@ -94,31 +94,31 @@ function displayInvalidPGNError(path, error) {
  * Load the text files, parse their content as PGN, and display the time it takes to do that.
  */
 function run(paths, pathAlignment) {
-	const errors = new Map();
-	for (const path of paths) {
+    const errors = new Map();
+    for (const path of paths) {
 
-		const text = fs.readFileSync(path, 'utf8');
+        const text = fs.readFileSync(path, 'utf8');
 
-		const startAt = Date.now();
-		const database = loadDatabase(text, path, errors);
-		const stop1 = Date.now();
-		loadGames(database, path, errors);
-		const stop2 = Date.now();
+        const startAt = Date.now();
+        const database = loadDatabase(text, path, errors);
+        const stop1 = Date.now();
+        loadGames(database, path, errors);
+        const stop2 = Date.now();
 
-		const duration1 = stop1 - startAt;
-		const duration2 = stop2 - startAt;
+        const duration1 = stop1 - startAt;
+        const duration2 = stop2 - startAt;
 
-		const sep = '     ';
-		console.log(
-			'File: ' + alignLeft(path, pathAlignment) + sep +
-			'Games: ' + alignRight(database === null ? '--' : database.gameCount(), 7) + sep +
-			'Indexing: ' + alignRight(duration1, 6) + ' ms' + sep +
-			'Loading: ' + alignRight(duration2, 6) + ' ms');
-	}
+        const sep = '     ';
+        console.log(
+            'File: ' + alignLeft(path, pathAlignment) + sep +
+            'Games: ' + alignRight(database === null ? '--' : database.gameCount(), 7) + sep +
+            'Indexing: ' + alignRight(duration1, 6) + ' ms' + sep +
+            'Loading: ' + alignRight(duration2, 6) + ' ms');
+    }
 
-	for (const [path, error] of errors.entries()) {
-		displayInvalidPGNError(path, error);
-	}
+    for (const [path, error] of errors.entries()) {
+        displayInvalidPGNError(path, error);
+    }
 }
 
 
@@ -128,11 +128,11 @@ function run(paths, pathAlignment) {
 // -----------------------------------------------------------------------------
 
 program
-	.arguments('<pgn-files...>')
-	.description('Analyze some PGN files', {
-		'pgn-files': 'path to the PGN files to analyse'
-	})
-	.parse(process.argv);
+    .arguments('<pgn-files...>')
+    .description('Analyze some PGN files', {
+        'pgn-files': 'path to the PGN files to analyse'
+    })
+    .parse(process.argv);
 
 const pathAlignment = program.args.map(path => path.length).reduce((l1, l2) => Math.max(l1, l2));
 console.log('Analyzing ' + program.args.length + ' PGN file(s)...');

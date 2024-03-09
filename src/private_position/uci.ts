@@ -37,20 +37,20 @@ import { i18n } from '../i18n';
  * Convert the given move descriptor to UCI notation.
  */
 export function getUCINotation(position: PositionImpl, descriptor: MoveDescriptorImpl, forceKxR: boolean) {
-	let result = descriptor.from();
+    let result = descriptor.from();
 
-	if (descriptor.isCastling()) {
-		result += forceKxR || position.variant === GameVariantImpl.CHESS960 ? descriptor.rookFrom() : descriptor.to();
-	}
-	else {
-		result += descriptor.to();
-	}
+    if (descriptor.isCastling()) {
+        result += forceKxR || position.variant === GameVariantImpl.CHESS960 ? descriptor.rookFrom() : descriptor.to();
+    }
+    else {
+        result += descriptor.to();
+    }
 
-	if(descriptor.isPromotion()) {
-		result += descriptor.promotion();
-	}
+    if(descriptor.isPromotion()) {
+        result += descriptor.promotion();
+    }
 
-	return result;
+    return result;
 }
 
 
@@ -59,70 +59,70 @@ export function getUCINotation(position: PositionImpl, descriptor: MoveDescripto
  */
 export function parseUCINotation(position: PositionImpl, notation: string, strict: boolean) {
 
-	// General syntax
-	const m = /^([a-h][1-8])([a-h][1-8])([kqrbnp]?)$/.exec(notation);
-	if (m === null) {
-		throw new InvalidNotation(getFEN(position), notation, i18n.INVALID_UCI_NOTATION_SYNTAX);
-	}
+    // General syntax
+    const m = /^([a-h][1-8])([a-h][1-8])([kqrbnp]?)$/.exec(notation);
+    if (m === null) {
+        throw new InvalidNotation(getFEN(position), notation, i18n.INVALID_UCI_NOTATION_SYNTAX);
+    }
 
-	// Ensure that the position is legal (this is also done in `moveGeneration.isMoveLegal(..)`, but performing this check beforehand
-	// allows to fill the exception with an error message that is more explicit).
-	if (!isLegal(position)) {
-		throw new InvalidNotation(getFEN(position), notation, i18n.ILLEGAL_POSITION);
-	}
+    // Ensure that the position is legal (this is also done in `moveGeneration.isMoveLegal(..)`, but performing this check beforehand
+    // allows to fill the exception with an error message that is more explicit).
+    if (!isLegal(position)) {
+        throw new InvalidNotation(getFEN(position), notation, i18n.ILLEGAL_POSITION);
+    }
 
-	// m[1] - from
-	// m[2] - to
-	// m[3] - promotion piece
+    // m[1] - from
+    // m[2] - to
+    // m[3] - promotion piece
 
-	const from = squareFromString(m[1]);
-	let to = squareFromString(m[2]);
-	let kxRSubstitutionApplied = false;
-	let expectedRookFrom = -1; // >= 0 only if KxR substitution has been applied.
+    const from = squareFromString(m[1]);
+    let to = squareFromString(m[2]);
+    let kxRSubstitutionApplied = false;
+    let expectedRookFrom = -1; // >= 0 only if KxR substitution has been applied.
 
-	// For non-Chess960 variants, if KxR is detected (and allowed), replace the given `to` square
-	// by the actual destination square of the king.
-	if (position.variant !== GameVariantImpl.CHESS960 && !strict && position.board[from] !== SpI.EMPTY && position.board[to] !== SpI.EMPTY &&
-		position.board[from] % 2 === position.board[to] % 2) {
-		const fromPiece = Math.trunc(position.board[from] / 2);
-		const toPiece = Math.trunc(position.board[to] / 2);
-		if (fromPiece === PieceImpl.KING && toPiece === PieceImpl.ROOK) {
-			kxRSubstitutionApplied = true;
-			expectedRookFrom = to;
-			to = position.turn * 112 + (from < to ? 6 : 2);
-		}
-	}
+    // For non-Chess960 variants, if KxR is detected (and allowed), replace the given `to` square
+    // by the actual destination square of the king.
+    if (position.variant !== GameVariantImpl.CHESS960 && !strict && position.board[from] !== SpI.EMPTY && position.board[to] !== SpI.EMPTY &&
+        position.board[from] % 2 === position.board[to] % 2) {
+        const fromPiece = Math.trunc(position.board[from] / 2);
+        const toPiece = Math.trunc(position.board[to] / 2);
+        if (fromPiece === PieceImpl.KING && toPiece === PieceImpl.ROOK) {
+            kxRSubstitutionApplied = true;
+            expectedRookFrom = to;
+            to = position.turn * 112 + (from < to ? 6 : 2);
+        }
+    }
 
-	// Perform move analysis.
-	const candidate = isMoveLegal(position, from, to);
-	let result: MoveDescriptorImpl | false = false;
+    // Perform move analysis.
+    const candidate = isMoveLegal(position, from, to);
+    let result: MoveDescriptorImpl | false = false;
 
-	// No legal move.
-	if (!candidate) {
-		throw new InvalidNotation(getFEN(position), notation, i18n.ILLEGAL_UCI_MOVE);
-	}
+    // No legal move.
+    if (!candidate) {
+        throw new InvalidNotation(getFEN(position), notation, i18n.ILLEGAL_UCI_MOVE);
+    }
 
-	// Manage promotion.
-	if (candidate.type === 'promotion') {
-		if (m[3] === '') {
-			throw new InvalidNotation(getFEN(position), notation, i18n.ILLEGAL_UCI_MOVE);
-		}
-		result = candidate.moveDescriptorFactory(pieceFromString(m[3]));
-		if (!result) {
-			throw new InvalidNotation(getFEN(position), notation, i18n.ILLEGAL_UCI_MOVE);
-		}
-	}
-	else {
-		if (m[3] !== '') { // Throw if a promotion piece is provided while no promotion happens.
-			throw new InvalidNotation(getFEN(position), notation, i18n.ILLEGAL_UCI_MOVE);
-		}
-		result = candidate.moveDescriptor;
-	}
+    // Manage promotion.
+    if (candidate.type === 'promotion') {
+        if (m[3] === '') {
+            throw new InvalidNotation(getFEN(position), notation, i18n.ILLEGAL_UCI_MOVE);
+        }
+        result = candidate.moveDescriptorFactory(pieceFromString(m[3]));
+        if (!result) {
+            throw new InvalidNotation(getFEN(position), notation, i18n.ILLEGAL_UCI_MOVE);
+        }
+    }
+    else {
+        if (m[3] !== '') { // Throw if a promotion piece is provided while no promotion happens.
+            throw new InvalidNotation(getFEN(position), notation, i18n.ILLEGAL_UCI_MOVE);
+        }
+        result = candidate.moveDescriptor;
+    }
 
-	// Check that the KxR substitution is valid if it has been applied.
-	if (kxRSubstitutionApplied && (!result.isCastling() || expectedRookFrom !== result._optionalSquare1)) {
-		throw new InvalidNotation(getFEN(position), notation, i18n.ILLEGAL_UCI_MOVE);
-	}
+    // Check that the KxR substitution is valid if it has been applied.
+    if (kxRSubstitutionApplied && (!result.isCastling() || expectedRookFrom !== result._optionalSquare1)) {
+        throw new InvalidNotation(getFEN(position), notation, i18n.ILLEGAL_UCI_MOVE);
+    }
 
-	return result;
+    return result;
 }

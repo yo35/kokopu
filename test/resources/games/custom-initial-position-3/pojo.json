@@ -1,7 +1,7 @@
 {
-	"event": "Custom initial position (canonical start position but non-canonical move number)",
-	"initialPosition": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 3",
-	"mainVariation": [
-		"e4"
-	]
+    "event": "Custom initial position (canonical start position but non-canonical move number)",
+    "initialPosition": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 3",
+    "mainVariation": [
+        "e4"
+    ]
 }

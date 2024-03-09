@@ -30,118 +30,118 @@ import { Color, ColoredPiece, Piece, Square } from './base_types';
  */
 export abstract class MoveDescriptor {
 
-	/**
-	 * @ignore
-	 */
-	protected constructor() {}
+    /**
+     * @ignore
+     */
+    protected constructor() {}
 
-	/**
-	 * Whether the current move is a castling move or not.
-	 */
-	abstract isCastling(): boolean;
+    /**
+     * Whether the current move is a castling move or not.
+     */
+    abstract isCastling(): boolean;
 
-	/**
-	 * Whether the current move is a *en-passant* capture or not.
-	 */
-	abstract isEnPassant(): boolean;
+    /**
+     * Whether the current move is a *en-passant* capture or not.
+     */
+    abstract isEnPassant(): boolean;
 
-	/**
-	 * Whether the current move is a capture (either a regular capture or a *en-passant* capture) or not.
-	 */
-	abstract isCapture(): boolean;
+    /**
+     * Whether the current move is a capture (either a regular capture or a *en-passant* capture) or not.
+     */
+    abstract isCapture(): boolean;
 
-	/**
-	 * Whether the current move is a promotion or not.
-	 */
-	abstract isPromotion(): boolean;
+    /**
+     * Whether the current move is a promotion or not.
+     */
+    abstract isPromotion(): boolean;
 
-	/**
-	 * Origin square of the moving piece. In case of castling, this is the origin square of the king.
-	 */
-	abstract from(): Square;
+    /**
+     * Origin square of the moving piece. In case of castling, this is the origin square of the king.
+     */
+    abstract from(): Square;
 
-	/**
-	 * Destination square of the moving piece. In case of castling, this is the destination square of the king.
-	 */
-	abstract to(): Square;
+    /**
+     * Destination square of the moving piece. In case of castling, this is the destination square of the king.
+     */
+    abstract to(): Square;
 
-	/**
-	 * Color of the moving piece.
-	 */
-	abstract color(): Color;
+    /**
+     * Color of the moving piece.
+     */
+    abstract color(): Color;
 
-	/**
-	 * Type of the moving piece. In case of castling, the moving piece is considered to be the king.
-	 */
-	abstract movingPiece(): Piece;
+    /**
+     * Type of the moving piece. In case of castling, the moving piece is considered to be the king.
+     */
+    abstract movingPiece(): Piece;
 
-	/**
-	 * Color and type of the moving piece. In case of castling, the moving piece is considered to be the king.
-	 */
-	abstract movingColoredPiece(): ColoredPiece;
+    /**
+     * Color and type of the moving piece. In case of castling, the moving piece is considered to be the king.
+     */
+    abstract movingColoredPiece(): ColoredPiece;
 
-	/**
-	 * Type of the captured piece.
-	 *
-	 * @throws {@link exception.IllegalArgument} if the current move is not a capture, i.e. if {@link isCapture} returns `false`.
-	 */
-	abstract capturedPiece(): Piece;
+    /**
+     * Type of the captured piece.
+     *
+     * @throws {@link exception.IllegalArgument} if the current move is not a capture, i.e. if {@link isCapture} returns `false`.
+     */
+    abstract capturedPiece(): Piece;
 
-	/**
-	 * Color and type of the captured piece.
-	 *
-	 * @throws {@link exception.IllegalArgument} if the current move is not a capture, i.e. if {@link isCapture} returns `false`.
-	 */
-	abstract capturedColoredPiece(): ColoredPiece;
+    /**
+     * Color and type of the captured piece.
+     *
+     * @throws {@link exception.IllegalArgument} if the current move is not a capture, i.e. if {@link isCapture} returns `false`.
+     */
+    abstract capturedColoredPiece(): ColoredPiece;
 
-	/**
-	 * Origin square of the rook, in case of a castling move.
-	 *
-	 * @throws {@link exception.IllegalArgument} if the current move is not a castling move, i.e. if {@link isCastling} returns `false`.
-	 */
-	abstract rookFrom(): Square;
+    /**
+     * Origin square of the rook, in case of a castling move.
+     *
+     * @throws {@link exception.IllegalArgument} if the current move is not a castling move, i.e. if {@link isCastling} returns `false`.
+     */
+    abstract rookFrom(): Square;
 
-	/**
-	 * Destination square of the rook, in case of a castling move.
-	 *
-	 * @throws {@link exception.IllegalArgument} if the current move is not a castling move, i.e. if {@link isCastling} returns `false`.
-	 */
-	abstract rookTo(): Square;
+    /**
+     * Destination square of the rook, in case of a castling move.
+     *
+     * @throws {@link exception.IllegalArgument} if the current move is not a castling move, i.e. if {@link isCastling} returns `false`.
+     */
+    abstract rookTo(): Square;
 
-	/**
-	 * Square containing the captured pawn, in case of a *en-passant* capture.
-	 *
-	 * @throws {@link exception.IllegalArgument} if the current move is not a *en-passant* capture, i.e. if {@link isEnPassant} returns `false`.
-	 */
-	abstract enPassantSquare(): Square;
+    /**
+     * Square containing the captured pawn, in case of a *en-passant* capture.
+     *
+     * @throws {@link exception.IllegalArgument} if the current move is not a *en-passant* capture, i.e. if {@link isEnPassant} returns `false`.
+     */
+    abstract enPassantSquare(): Square;
 
-	/**
-	 * Type of the promoted piece, in case of a promotion.
-	 *
-	 * @throws {@link exception.IllegalArgument} if the current move is not a promotion, i.e. if {@link isPromotion} returns `false`.
-	 */
-	abstract promotion(): Piece;
+    /**
+     * Type of the promoted piece, in case of a promotion.
+     *
+     * @throws {@link exception.IllegalArgument} if the current move is not a promotion, i.e. if {@link isPromotion} returns `false`.
+     */
+    abstract promotion(): Piece;
 
-	/**
-	 * Color and type of the promoted piece, in case of a promotion.
-	 *
-	 * @throws {@link exception.IllegalArgument} if the current move is not a promotion, i.e. if {@link isPromotion} returns `false`.
-	 */
-	abstract coloredPromotion(): ColoredPiece;
+    /**
+     * Color and type of the promoted piece, in case of a promotion.
+     *
+     * @throws {@link exception.IllegalArgument} if the current move is not a promotion, i.e. if {@link isPromotion} returns `false`.
+     */
+    abstract coloredPromotion(): ColoredPiece;
 
-	/**
-	 * @ignore
-	 */
-	toString(): string {
-		let result = this.from() + this.to();
-		if (this.isPromotion()) {
-			result += this.promotion().toUpperCase();
-		}
-		else if (this.isCastling()) {
-			result += 'O';
-		}
-		return result;
-	}
+    /**
+     * @ignore
+     */
+    toString(): string {
+        let result = this.from() + this.to();
+        if (this.isPromotion()) {
+            result += this.promotion().toUpperCase();
+        }
+        else if (this.isCastling()) {
+            result += 'O';
+        }
+        return result;
+    }
 }
 
 
@@ -149,5 +149,5 @@ export abstract class MoveDescriptor {
  * @deprecated Use `obj instanceof MoveDescriptor` instead.
  */
 export function isMoveDescriptor(obj: unknown): boolean {
-	return obj instanceof MoveDescriptor;
+    return obj instanceof MoveDescriptor;
 }

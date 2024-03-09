@@ -40,23 +40,23 @@ const secondGame = database.game(1);
 
 for (let node = secondGame.mainVariation().first(); node; node = node.next()) { // iteration over the nodes of the main variation
 
-	// Display the move and the associated text comment, if any.
-	console.log(node.notation() + (node.comment() ? ' ' + node.comment() : ''));
+    // Display the move and the associated text comment, if any.
+    console.log(node.notation() + (node.comment() ? ' ' + node.comment() : ''));
 
-	// Display the alternative variations, if any.
-	node.variations().forEach((variation, index) => {
-		let text = '  variation ' + (index + 1) + ' ->';
-		if (variation.comment()) {
-			text += ' ' + variation.comment();
-		}
-		for (let nodeInVariation = variation.first(); nodeInVariation; nodeInVariation = nodeInVariation.next()) {
-			text += ' ' + nodeInVariation.notation();
-			if (nodeInVariation.comment()) {
-				text += ' ' + nodeInVariation.comment();
-			}
-		}
-		console.log(text);
-	});
+    // Display the alternative variations, if any.
+    node.variations().forEach((variation, index) => {
+        let text = '  variation ' + (index + 1) + ' ->';
+        if (variation.comment()) {
+            text += ' ' + variation.comment();
+        }
+        for (let nodeInVariation = variation.first(); nodeInVariation; nodeInVariation = nodeInVariation.next()) {
+            text += ' ' + nodeInVariation.notation();
+            if (nodeInVariation.comment()) {
+                text += ' ' + nodeInVariation.comment();
+            }
+        }
+        console.log(text);
+    });
 }
 
 // e4

@@ -97,21 +97,21 @@ export type Castle960 = `${Color}${File}`;
  */
 export type Coordinates = {
 
-	/**
-	 * - `0` for file A
-	 * - `1` for file B
-	 * - ...
-	 * - `7` for file H
-	 */
-	file: number;
+    /**
+     * - `0` for file A
+     * - `1` for file B
+     * - ...
+     * - `7` for file H
+     */
+    file: number;
 
-	/**
-	 * - `0` for rank 1
-	 * - `1` for rank 2
-	 * - ...
-	 * - `7` for rank 8
-	 */
-	rank: number;
+    /**
+     * - `0` for rank 1
+     * - `1` for rank 2
+     * - ...
+     * - `7` for rank 8
+     */
+    rank: number;
 };
 
 

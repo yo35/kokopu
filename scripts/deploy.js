@@ -32,84 +32,84 @@ const { version } = require('../package.json');
 
 function promptPassword(prompt, callback) {
 
-	const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
-	rl.input.on("keypress", () => {
-		const len = rl.line.length;
-		readline.moveCursor(rl.output, -len, 0);
-		readline.clearLine(rl.output, 1);
-		rl.output.write('*'.repeat(len));
-	});
+    const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+    rl.input.on("keypress", () => {
+        const len = rl.line.length;
+        readline.moveCursor(rl.output, -len, 0);
+        readline.clearLine(rl.output, 1);
+        rl.output.write('*'.repeat(len));
+    });
 
-	let password = '';
-	rl.on('close', () => callback(password));
+    let password = '';
+    rl.on('close', () => callback(password));
 
-	rl.question(prompt, answer => {
-		password = answer;
-		rl.close();
-	});
+    rl.question(prompt, answer => {
+        password = answer;
+        rl.close();
+    });
 }
 
 
 function runUpload(host, user, uploadFun) {
-	promptPassword(`Pass for ${user}@${host}: `, async (pass) => {
+    promptPassword(`Pass for ${user}@${host}: `, async (pass) => {
 
-		// Validate the password.
-		if (!pass) {
-			console.log('Deploy canceled.');
-			return;
-		}
+        // Validate the password.
+        if (!pass) {
+            console.log('Deploy canceled.');
+            return;
+        }
 
-		try {
-			const client = new Client();
-			try {
+        try {
+            const client = new Client();
+            try {
 
-				// To invoke to upload a file.
-				async function uploadText(text, distPath) {
-					console.log(`Uploading text to ${distPath}`);
-					await client.put(Readable.from([ text ]), distPath, {
-						writeStreamOptions: {
-							mode: 0o644,
-						},
-					});
-				}
+                // To invoke to upload a file.
+                async function uploadText(text, distPath) {
+                    console.log(`Uploading text to ${distPath}`);
+                    await client.put(Readable.from([ text ]), distPath, {
+                        writeStreamOptions: {
+                            mode: 0o644,
+                        },
+                    });
+                }
 
-				// To invoke to upload a file or (recursively) a directory.
-				async function uploadFile(input, distPath) {
-					if (fs.statSync(input).isDirectory()) {
-						console.log(`Creating directory ${distPath}`);
-						await client.mkdir(distPath);
-						await client.chmod(distPath, 0o755);
-						for (const file of fs.readdirSync(input)) {
-							await uploadFile(`${input}/${file}`, `${distPath}/${file}`);
-						}
-					}
-					else {
-						console.log(`Uploading file ${distPath}`);
-						await client.put(input, distPath, {
-							writeStreamOptions: {
-								mode: 0o644,
-							},
-						});
-					}
-				}
+                // To invoke to upload a file or (recursively) a directory.
+                async function uploadFile(input, distPath) {
+                    if (fs.statSync(input).isDirectory()) {
+                        console.log(`Creating directory ${distPath}`);
+                        await client.mkdir(distPath);
+                        await client.chmod(distPath, 0o755);
+                        for (const file of fs.readdirSync(input)) {
+                            await uploadFile(`${input}/${file}`, `${distPath}/${file}`);
+                        }
+                    }
+                    else {
+                        console.log(`Uploading file ${distPath}`);
+                        await client.put(input, distPath, {
+                            writeStreamOptions: {
+                                mode: 0o644,
+                            },
+                        });
+                    }
+                }
 
-				// Connect to the server, and execute the upload function.
-				await client.connect({
-					host: host,
-					username: user,
-					password: pass,
-				});
-				await uploadFun(uploadText, uploadFile);
-			}
-			finally {
-				await client.end();
-			}
-		}
-		catch (e) {
-			console.error(e);
-			process.exitCode = 1;
-		}
-	});
+                // Connect to the server, and execute the upload function.
+                await client.connect({
+                    host: host,
+                    username: user,
+                    password: pass,
+                });
+                await uploadFun(uploadText, uploadFile);
+            }
+            finally {
+                await client.end();
+            }
+        }
+        catch (e) {
+            console.error(e);
+            process.exitCode = 1;
+        }
+    });
 }
 
 
@@ -120,15 +120,15 @@ const ROOT_DIR = 'kokopu';
 
 runUpload(HOST, USER, async (uploadText, uploadFile) => {
 
-	console.log(`*** Standalone library kokopu-${version}.zip ***`);
-	await uploadFile(`dist/kokopu-${version}.zip`, `${ROOT_DIR}/dist/kokopu-${version}.zip`);
+    console.log(`*** Standalone library kokopu-${version}.zip ***`);
+    await uploadFile(`dist/kokopu-${version}.zip`, `${ROOT_DIR}/dist/kokopu-${version}.zip`);
 
-	console.log(`*** Redirect /dist/kokopu.zip to /dist/kokopu-${version}.zip ***`);
-	await uploadText(`Redirect "/dist/kokopu.zip" "/dist/kokopu-${version}.zip"`, `${ROOT_DIR}/dist/.htaccess`);
+    console.log(`*** Redirect /dist/kokopu.zip to /dist/kokopu-${version}.zip ***`);
+    await uploadText(`Redirect "/dist/kokopu.zip" "/dist/kokopu-${version}.zip"`, `${ROOT_DIR}/dist/.htaccess`);
 
-	console.log('*** Documentation ***');
-	await uploadFile('dist/docs', `${ROOT_DIR}/docs/${version}`);
+    console.log('*** Documentation ***');
+    await uploadFile('dist/docs', `${ROOT_DIR}/docs/${version}`);
 
-	console.log(`*** Redirect /docs/current to /docs/${version} ***`);
-	await uploadText(`Redirect "/docs/current" "/docs/${version}"`, `${ROOT_DIR}/docs/.htaccess`);
+    console.log(`*** Redirect /docs/current to /docs/${version} ***`);
+    await uploadText(`Redirect "/docs/current" "/docs/${version}"`, `${ROOT_DIR}/docs/.htaccess`);
 });

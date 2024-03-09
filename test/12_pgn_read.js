@@ -31,17 +31,17 @@ const test = require('unit.js');
 
 
 function testData() {
-	return readCSV('pgns.csv', fields => {
-		const label = fields[0].trim();
-		if (label.length === 0 || label.charAt(0) === '#') {
-			return false;
-		}
-		return {
-			label: label,
-			gameCount: parseInt(fields[1]),
-			pgn: readText(`pgns/${fields[0]}/database.pgn`),
-		};
-	});
+    return readCSV('pgns.csv', fields => {
+        const label = fields[0].trim();
+        if (label.length === 0 || label.charAt(0) === '#') {
+            return false;
+        }
+        return {
+            label: label,
+            gameCount: parseInt(fields[1]),
+            pgn: readText(`pgns/${fields[0]}/database.pgn`),
+        };
+    });
 }
 
 
@@ -50,21 +50,21 @@ function testData() {
  * as a valid PGN item, or is expected to throw an exception on a parsing attempt.
  */
 function getItemType(pgnName, gameIndex) {
-	const fileBasename = `pgns/${pgnName}/${gameIndex}`;
-	const txtExist = resourceExists(fileBasename + '.txt');
-	const errExist = resourceExists(fileBasename + '.err');
-	if (txtExist && errExist) {
-		throw 'Both .txt not .err defined for ' + fileBasename; // eslint-disable-line no-throw-literal
-	}
-	else if (txtExist) {
-		return 'txt';
-	}
-	else if (errExist) {
-		return 'err';
-	}
-	else {
-		throw 'Neither .txt nor .err defined for ' + fileBasename; // eslint-disable-line no-throw-literal
-	}
+    const fileBasename = `pgns/${pgnName}/${gameIndex}`;
+    const txtExist = resourceExists(fileBasename + '.txt');
+    const errExist = resourceExists(fileBasename + '.err');
+    if (txtExist && errExist) {
+        throw 'Both .txt not .err defined for ' + fileBasename; // eslint-disable-line no-throw-literal
+    }
+    else if (txtExist) {
+        return 'txt';
+    }
+    else if (errExist) {
+        return 'err';
+    }
+    else {
+        throw 'Neither .txt nor .err defined for ' + fileBasename; // eslint-disable-line no-throw-literal
+    }
 }
 
 
@@ -72,8 +72,8 @@ function getItemType(pgnName, gameIndex) {
  * Load the descriptor corresponding to a valid PGN item.
  */
 function loadValidItemDescriptor(pgnName, gameIndex) {
-	const filename = `pgns/${pgnName}/${gameIndex}.txt`;
-	return readText(filename).trim();
+    const filename = `pgns/${pgnName}/${gameIndex}.txt`;
+    return readText(filename).trim();
 }
 
 
@@ -81,51 +81,51 @@ function loadValidItemDescriptor(pgnName, gameIndex) {
  * Load the descriptor corresponding to an invalid PGN item.
  */
 function loadErrorItemDescriptor(pgnName, gameIndex) {
-	const filename = `pgns/${pgnName}/${gameIndex}.err`;
-	const fields = readText(filename).split('\n');
-	return { index: parseInt(fields[0]), lineNumber: parseInt(fields[1]), message: fields[2].trim() };
+    const filename = `pgns/${pgnName}/${gameIndex}.err`;
+    const fields = readText(filename).split('\n');
+    return { index: parseInt(fields[0]), lineNumber: parseInt(fields[1]), message: fields[2].trim() };
 }
 
 
 describe('Read PGN - Game count', () => {
-	for (const elem of testData()) {
-		it('File ' + elem.label, () => {
-			const database = pgnRead(elem.pgn);
-			test.value(database).isInstanceOf(Database);
-			test.value(database.gameCount()).is(elem.gameCount);
-		});
-	}
+    for (const elem of testData()) {
+        it('File ' + elem.label, () => {
+            const database = pgnRead(elem.pgn);
+            test.value(database).isInstanceOf(Database);
+            test.value(database.gameCount()).is(elem.gameCount);
+        });
+    }
 });
 
 
 function itCheckPgnItem(label, pgnName, gameIndex, loader) {
-	it(label, () => {
+    it(label, () => {
 
-		// TXT type => ensure that the item is valid, and compare its dump result to the descriptor.
-		if (getItemType(pgnName, gameIndex) === 'txt') {
-			const expectedDescriptor = loadValidItemDescriptor(pgnName, gameIndex);
-			test.value(dumpGame(loader(gameIndex)).trim()).is(expectedDescriptor);
-		}
+        // TXT type => ensure that the item is valid, and compare its dump result to the descriptor.
+        if (getItemType(pgnName, gameIndex) === 'txt') {
+            const expectedDescriptor = loadValidItemDescriptor(pgnName, gameIndex);
+            test.value(dumpGame(loader(gameIndex)).trim()).is(expectedDescriptor);
+        }
 
-		// ERR type => ensure that an exception is thrown, and check its attributes.
-		else {
-			const expectedDescriptor = loadErrorItemDescriptor(pgnName, gameIndex);
-			test.exception(() => loader(gameIndex))
-				.isInstanceOf(exception.InvalidPGN)
-				.hasProperty('index', expectedDescriptor.index)
-				.hasProperty('lineNumber', expectedDescriptor.lineNumber)
-				.hasProperty('message', expectedDescriptor.message);
-		}
-	});
+        // ERR type => ensure that an exception is thrown, and check its attributes.
+        else {
+            const expectedDescriptor = loadErrorItemDescriptor(pgnName, gameIndex);
+            test.exception(() => loader(gameIndex))
+                .isInstanceOf(exception.InvalidPGN)
+                .hasProperty('index', expectedDescriptor.index)
+                .hasProperty('lineNumber', expectedDescriptor.lineNumber)
+                .hasProperty('message', expectedDescriptor.message);
+        }
+    });
 }
 
 
 describe('Read PGN - Game content (direct access)', () => {
-	for (const elem of testData()) {
-		for (let gameIndex = 0; gameIndex < elem.gameCount; ++gameIndex) {
-			itCheckPgnItem(`File ${elem.label} - Game ${gameIndex}`, elem.label, gameIndex, i => pgnRead(elem.pgn, i));
-		}
-	}
+    for (const elem of testData()) {
+        for (let gameIndex = 0; gameIndex < elem.gameCount; ++gameIndex) {
+            itCheckPgnItem(`File ${elem.label} - Game ${gameIndex}`, elem.label, gameIndex, i => pgnRead(elem.pgn, i));
+        }
+    }
 });
 
 
@@ -134,106 +134,106 @@ describe('Read PGN - Game content (direct access)', () => {
  */
 class DatabaseHolder {
 
-	constructor(pgn) {
-		this._pgn = pgn;
-	}
+    constructor(pgn) {
+        this._pgn = pgn;
+    }
 
-	database() {
-		if (this._database === undefined) {
-			this._database = pgnRead(this._pgn);
-		}
-		return this._database;
-	}
+    database() {
+        if (this._database === undefined) {
+            this._database = pgnRead(this._pgn);
+        }
+        return this._database;
+    }
 }
 
 
 describe('Read PGN - Game content (database)', () => {
-	for (const elem of testData()) {
-		const holder = new DatabaseHolder(elem.pgn);
-		for (let gameIndex = 0; gameIndex < elem.gameCount; ++gameIndex) {
-			if (gameIndex % 3 === 2) {
-				continue;
-			}
-			itCheckPgnItem(`File ${elem.label} - Game ${gameIndex}`, elem.label, gameIndex, i => holder.database().game(i));
-		}
-		for (let gameIndex = 0; gameIndex < elem.gameCount; ++gameIndex) {
-			if (gameIndex % 3 !== 2) {
-				continue;
-			}
-			itCheckPgnItem(`File ${elem.label} - Game ${gameIndex}`, elem.label, gameIndex, i => holder.database().game(i));
-		}
-	}
+    for (const elem of testData()) {
+        const holder = new DatabaseHolder(elem.pgn);
+        for (let gameIndex = 0; gameIndex < elem.gameCount; ++gameIndex) {
+            if (gameIndex % 3 === 2) {
+                continue;
+            }
+            itCheckPgnItem(`File ${elem.label} - Game ${gameIndex}`, elem.label, gameIndex, i => holder.database().game(i));
+        }
+        for (let gameIndex = 0; gameIndex < elem.gameCount; ++gameIndex) {
+            if (gameIndex % 3 !== 2) {
+                continue;
+            }
+            itCheckPgnItem(`File ${elem.label} - Game ${gameIndex}`, elem.label, gameIndex, i => holder.database().game(i));
+        }
+    }
 });
 
 
 describe('Read PGN - Wrong game index', () => {
 
-	function itInvalidGameIndex(label, gameIndex, invalidPGNExpected) {
+    function itInvalidGameIndex(label, gameIndex, invalidPGNExpected) {
 
-		it('Database - ' + label, () => {
-			const pgn = readText('pgns/mini2/database.pgn');
-			const database = pgnRead(pgn);
-			if (invalidPGNExpected) {
-				test.exception(() => database.game(gameIndex))
-					.isInstanceOf(exception.InvalidPGN)
-					.hasProperty('pgn', pgn)
-					.hasProperty('message', `Game index ${gameIndex} is invalid (only 2 game(s) found in the PGN data).`);
-			}
-			else {
-				test.exception(() => database.game(gameIndex)).isInstanceOf(exception.IllegalArgument);
-			}
-		});
+        it('Database - ' + label, () => {
+            const pgn = readText('pgns/mini2/database.pgn');
+            const database = pgnRead(pgn);
+            if (invalidPGNExpected) {
+                test.exception(() => database.game(gameIndex))
+                    .isInstanceOf(exception.InvalidPGN)
+                    .hasProperty('pgn', pgn)
+                    .hasProperty('message', `Game index ${gameIndex} is invalid (only 2 game(s) found in the PGN data).`);
+            }
+            else {
+                test.exception(() => database.game(gameIndex)).isInstanceOf(exception.IllegalArgument);
+            }
+        });
 
-		it('Direct access - ' + label, () => {
-			const pgn = readText('pgns/mini2/database.pgn');
-			if (invalidPGNExpected) {
-				test.exception(() => pgnRead(pgn, gameIndex))
-					.isInstanceOf(exception.InvalidPGN)
-					.hasProperty('pgn', pgn)
-					.hasProperty('message', `Game index ${gameIndex} is invalid (only 2 game(s) found in the PGN data).`);
-			}
-			else {
-				test.exception(() => pgnRead(pgn, gameIndex)).isInstanceOf(exception.IllegalArgument);
-			}
-		});
-	}
+        it('Direct access - ' + label, () => {
+            const pgn = readText('pgns/mini2/database.pgn');
+            if (invalidPGNExpected) {
+                test.exception(() => pgnRead(pgn, gameIndex))
+                    .isInstanceOf(exception.InvalidPGN)
+                    .hasProperty('pgn', pgn)
+                    .hasProperty('message', `Game index ${gameIndex} is invalid (only 2 game(s) found in the PGN data).`);
+            }
+            else {
+                test.exception(() => pgnRead(pgn, gameIndex)).isInstanceOf(exception.IllegalArgument);
+            }
+        });
+    }
 
-	itInvalidGameIndex('Negative index', -2, false);
-	itInvalidGameIndex('Non integer index', 0.3, false);
-	itInvalidGameIndex('Too large index', 99, true);
-	itInvalidGameIndex('NaN index', NaN, false);
-	itInvalidGameIndex('Non number index', 'xyz', false);
+    itInvalidGameIndex('Negative index', -2, false);
+    itInvalidGameIndex('Non integer index', 0.3, false);
+    itInvalidGameIndex('Too large index', 99, true);
+    itInvalidGameIndex('NaN index', NaN, false);
+    itInvalidGameIndex('Non number index', 'xyz', false);
 });
 
 
 describe('Read PGN - Database iterator', () => {
 
-	function itCheckIterator(pgnName, pgnText, expectedGameCount) {
-		it(`File ${pgnName}`, () => {
+    function itCheckIterator(pgnName, pgnText, expectedGameCount) {
+        it(`File ${pgnName}`, () => {
 
-			const database = pgnRead(pgnText);
-			let gameIndex = 0;
-			for (const game of database.games()) {
+            const database = pgnRead(pgnText);
+            let gameIndex = 0;
+            for (const game of database.games()) {
 
-				// Find the index of the next parsable item.
-				while (getItemType(pgnName, gameIndex) !== 'txt') {
-					gameIndex++;
-				}
+                // Find the index of the next parsable item.
+                while (getItemType(pgnName, gameIndex) !== 'txt') {
+                    gameIndex++;
+                }
 
-				const expectedDescriptor = loadValidItemDescriptor(pgnName, gameIndex++);
-				test.value(dumpGame(game).trim()).is(expectedDescriptor);
-			}
+                const expectedDescriptor = loadValidItemDescriptor(pgnName, gameIndex++);
+                test.value(dumpGame(game).trim()).is(expectedDescriptor);
+            }
 
-			// Skip the remaining unparsable items.
-			while (gameIndex < expectedGameCount && getItemType(pgnName, gameIndex) !== 'txt') {
-				gameIndex++;
-			}
+            // Skip the remaining unparsable items.
+            while (gameIndex < expectedGameCount && getItemType(pgnName, gameIndex) !== 'txt') {
+                gameIndex++;
+            }
 
-			test.value(gameIndex).is(expectedGameCount);
-		});
-	}
+            test.value(gameIndex).is(expectedGameCount);
+        });
+    }
 
-	for (const elem of testData()) {
-		itCheckIterator(elem.label, elem.pgn, elem.gameCount);
-	}
+    for (const elem of testData()) {
+        itCheckIterator(elem.label, elem.pgn, elem.gameCount);
+    }
 });

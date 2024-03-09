@@ -29,120 +29,120 @@ const test = require('unit.js');
 
 
 function itForEach(fun) {
-	const testData = readCSV('fens.csv', fields => {
-		const label = fields[0].trim();
-		if (label.length === 0 || label.charAt(0) === '#') {
-			return false;
-		}
-		return {
-			label             : fields[ 0],
-			fenIn             : fields[ 1],
-			variant           : fields[ 2],
-			strict            : fields[ 3]==='true',
-			castling          : fields[ 4],
-			enPassant         : fields[ 5],
-			fiftyMoveClock    : parseInt(fields[6]),
-			fullMoveNumber    : parseInt(fields[7]),
-			fenOutDefault     : fields[ 8],
-			fenOutWithCounters: fields[ 9],
-			fenOutWithoutXFEN : fields[10],
-		};
-	});
+    const testData = readCSV('fens.csv', fields => {
+        const label = fields[0].trim();
+        if (label.length === 0 || label.charAt(0) === '#') {
+            return false;
+        }
+        return {
+            label             : fields[ 0],
+            fenIn             : fields[ 1],
+            variant           : fields[ 2],
+            strict            : fields[ 3]==='true',
+            castling          : fields[ 4],
+            enPassant         : fields[ 5],
+            fiftyMoveClock    : parseInt(fields[6]),
+            fullMoveNumber    : parseInt(fields[7]),
+            fenOutDefault     : fields[ 8],
+            fenOutWithCounters: fields[ 9],
+            fenOutWithoutXFEN : fields[10],
+        };
+    });
 
-	for (const elem of testData) {
-		if (elem) {
-			it(elem.label, () => { fun(elem); });
-		}
-	}
+    for (const elem of testData) {
+        if (elem) {
+            it(elem.label, () => { fun(elem); });
+        }
+    }
 }
 
 
 describe('FEN parsing (tolerant)', () => {
-	itForEach(elem => {
-		const position = new Position(elem.variant, 'empty');
-		position.fen(elem.fenIn);
-		test.value(position.fen()).is(elem.fenOutDefault);
-	});
+    itForEach(elem => {
+        const position = new Position(elem.variant, 'empty');
+        position.fen(elem.fenIn);
+        test.value(position.fen()).is(elem.fenOutDefault);
+    });
 });
 
 
 describe('FEN parsing (strict)', () => {
-	itForEach(elem => {
-		const position = new Position(elem.variant, 'empty');
-		if (elem.strict) {
-			position.fen(elem.fenIn, true);
-			test.value(position.fen()).is(elem.fenOutDefault);
-		}
-		else {
-			test.exception(() => position.fen(elem.fenIn, true)).isInstanceOf(exception.InvalidFEN);
-		}
-	});
+    itForEach(elem => {
+        const position = new Position(elem.variant, 'empty');
+        if (elem.strict) {
+            position.fen(elem.fenIn, true);
+            test.value(position.fen()).is(elem.fenOutDefault);
+        }
+        else {
+            test.exception(() => position.fen(elem.fenIn, true)).isInstanceOf(exception.InvalidFEN);
+        }
+    });
 });
 
 
 describe('Castling flag parsing', () => {
-	itForEach(elem => {
-		const position = new Position(elem.variant, 'empty');
-		position.fen(elem.fenIn);
-		test.value(dumpCastlingFlags(position, (p, castle) => p.castling(castle))).is(elem.castling);
-	});
+    itForEach(elem => {
+        const position = new Position(elem.variant, 'empty');
+        position.fen(elem.fenIn);
+        test.value(dumpCastlingFlags(position, (p, castle) => p.castling(castle))).is(elem.castling);
+    });
 });
 
 
 
 describe('En-passant flag parsing', () => {
-	itForEach(elem => {
-		const position = new Position(elem.variant, 'empty');
-		position.fen(elem.fenIn);
-		test.value(position.enPassant()).is(elem.enPassant);
-	});
+    itForEach(elem => {
+        const position = new Position(elem.variant, 'empty');
+        position.fen(elem.fenIn);
+        test.value(position.enPassant()).is(elem.enPassant);
+    });
 });
 
 
 describe('FEN counter parsing', () => {
-	itForEach(elem => {
-		const position = new Position(elem.variant, 'empty');
-		const { fiftyMoveClock, fullMoveNumber } = position.fen(elem.fenIn);
-		test.value(fiftyMoveClock).is(elem.fiftyMoveClock);
-		test.value(fullMoveNumber).is(elem.fullMoveNumber);
-	});
+    itForEach(elem => {
+        const position = new Position(elem.variant, 'empty');
+        const { fiftyMoveClock, fullMoveNumber } = position.fen(elem.fenIn);
+        test.value(fiftyMoveClock).is(elem.fiftyMoveClock);
+        test.value(fullMoveNumber).is(elem.fullMoveNumber);
+    });
 });
 
 
 describe('FEN counters', () => {
-	itForEach(elem => {
-		const position = new Position(elem.variant, elem.fenIn);
-		test.value(position.fen({ fiftyMoveClock: elem.fiftyMoveClock * 2, fullMoveNumber: elem.fullMoveNumber + 1 })).is(elem.fenOutWithCounters);
-	});
+    itForEach(elem => {
+        const position = new Position(elem.variant, elem.fenIn);
+        test.value(position.fen({ fiftyMoveClock: elem.fiftyMoveClock * 2, fullMoveNumber: elem.fullMoveNumber + 1 })).is(elem.fenOutWithCounters);
+    });
 });
 
 
 describe('FEN with variant', () => {
-	itForEach(elem => {
-		const position = new Position(elem.variant, elem.fenIn);
-		test.value(position.fen({ withVariant: true })).is(elem.variant + ':' + elem.fenOutDefault);
-	});
+    itForEach(elem => {
+        const position = new Position(elem.variant, elem.fenIn);
+        test.value(position.fen({ withVariant: true })).is(elem.variant + ':' + elem.fenOutDefault);
+    });
 });
 
 
 describe('FEN without XFEN if possible', () => {
-	itForEach(elem => {
-		const position = new Position(elem.variant, elem.fenIn);
-		test.value(position.fen({ regularFENIfPossible: true })).is(elem.fenOutWithoutXFEN === '' ? elem.fenOutDefault : elem.fenOutWithoutXFEN);
-	});
+    itForEach(elem => {
+        const position = new Position(elem.variant, elem.fenIn);
+        test.value(position.fen({ regularFENIfPossible: true })).is(elem.fenOutWithoutXFEN === '' ? elem.fenOutDefault : elem.fenOutWithoutXFEN);
+    });
 });
 
 
 describe('Invalid FEN overloads', () => {
 
-	function itInvalidOverload(label, action) {
-		it(label, () => {
-			const position = new Position();
-			test.exception(() => action(position)).isInstanceOf(exception.IllegalArgument);
-		});
-	}
+    function itInvalidOverload(label, action) {
+        it(label, () => {
+            const position = new Position();
+            test.exception(() => action(position)).isInstanceOf(exception.IllegalArgument);
+        });
+    }
 
-	itInvalidOverload('Invalid key for getter', pos => pos.fen({ fiftyMoveClock: 'forty two' }));
-	itInvalidOverload('Non-string input for setter', pos => pos.fen(42));
-	itInvalidOverload('Non-boolean option for setter', pos => pos.fen('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', 42));
+    itInvalidOverload('Invalid key for getter', pos => pos.fen({ fiftyMoveClock: 'forty two' }));
+    itInvalidOverload('Non-string input for setter', pos => pos.fen(42));
+    itInvalidOverload('Non-boolean option for setter', pos => pos.fen('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', 42));
 });

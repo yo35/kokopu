@@ -1,11 +1,11 @@
 {
-	"event": "Game with null moves",
-	"mainVariation": [
-		"e4",
-		"--",
-		"d4",
-		"Nf6",
-		"--",
-		"Nc6"
-	]
+    "event": "Game with null moves",
+    "mainVariation": [
+        "e4",
+        "--",
+        "d4",
+        "Nf6",
+        "--",
+        "Nc6"
+    ]
 }

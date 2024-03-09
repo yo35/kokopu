@@ -27,7 +27,7 @@ export * as exception from './exception';
 
 export { Color, Piece, ColoredPiece, File, Rank, Square, SquareCouple, Castle, Castle960, Coordinates, GameResult, GameVariant } from './base_types';
 export { isColor, isPiece, isColoredPiece, isFile, isRank, isSquare, isSquareCouple, isCastle, isCastle960, isGameResult, isGameVariant, forEachSquare,
-	squareColor, squareToCoordinates, coordinatesToSquare, oppositeColor, variantWithCanonicalStartPosition, nagSymbol, isValidECO } from './helper';
+    squareColor, squareToCoordinates, coordinatesToSquare, oppositeColor, variantWithCanonicalStartPosition, nagSymbol, isValidECO } from './helper';
 export { DateValue } from './date_value';
 
 export { MoveDescriptor, isMoveDescriptor } from './move_descriptor';

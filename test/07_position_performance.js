@@ -33,38 +33,38 @@ const FIXED_TIMOUT = 100; // ms
 
 
 function generateSuccessors(pos, depth) {
-	let result = 1;
-	if (depth > 0) {
-		for (const move of pos.moves()) {
-			const nextPos = new Position(pos);
-			nextPos.play(move);
-			result += generateSuccessors(nextPos, depth - 1);
-		}
-	}
-	return result;
+    let result = 1;
+    if (depth > 0) {
+        for (const move of pos.moves()) {
+            const nextPos = new Position(pos);
+            nextPos.play(move);
+            result += generateSuccessors(nextPos, depth - 1);
+        }
+    }
+    return result;
 }
 
 
 function testData() {
-	return readCSV('performance.csv', fields => {
-		return {
-			fen: fields[0],
-			nodes: fields.slice(1),
-		};
-	});
+    return readCSV('performance.csv', fields => {
+        return {
+            fen: fields[0],
+            nodes: fields.slice(1),
+        };
+    });
 }
 
 
 describe('Recursive move generation', () => {
-	for (const elem of testData()) {
-		const initialPos = new Position(elem.fen);
-		for (let depth = 0; depth < elem.nodes.length; ++depth) {
-			const expectedNodeCount = elem.nodes[depth];
-			if (NODE_COUNT_MAX_MAX >= 0 && expectedNodeCount <= NODE_COUNT_MAX_MAX) {
-				it(`From ${elem.fen} up to depth ${depth}`, () => {
-					test.value(generateSuccessors(initialPos, depth), expectedNodeCount);
-				}).timeout(FIXED_TIMOUT + expectedNodeCount / SPEED_MIN);
-			}
-		}
-	}
+    for (const elem of testData()) {
+        const initialPos = new Position(elem.fen);
+        for (let depth = 0; depth < elem.nodes.length; ++depth) {
+            const expectedNodeCount = elem.nodes[depth];
+            if (NODE_COUNT_MAX_MAX >= 0 && expectedNodeCount <= NODE_COUNT_MAX_MAX) {
+                it(`From ${elem.fen} up to depth ${depth}`, () => {
+                    test.value(generateSuccessors(initialPos, depth), expectedNodeCount);
+                }).timeout(FIXED_TIMOUT + expectedNodeCount / SPEED_MIN);
+            }
+        }
+    }
 });

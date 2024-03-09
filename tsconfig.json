@@ -1,14 +1,14 @@
 {
-	"include": [ "./src/**/*" ],
-	"compilerOptions": {
-		"sourceMap": true,
-		"declaration": true,
-		"module": "CommonJS",
-		"target": "es2020",
-		"types": [],
-		"allowJs": false,
-		"strict": true,
-		"forceConsistentCasingInFileNames": true,
-		"moduleResolution": "node"
-	}
+    "include": [ "./src/**/*" ],
+    "compilerOptions": {
+        "sourceMap": true,
+        "declaration": true,
+        "module": "CommonJS",
+        "target": "es2020",
+        "types": [],
+        "allowJs": false,
+        "strict": true,
+        "forceConsistentCasingInFileNames": true,
+        "moduleResolution": "node"
+    }
 }

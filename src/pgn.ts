@@ -47,19 +47,19 @@ export function pgnRead(pgnString: string): Database;
 export function pgnRead(pgnString: string, gameIndex: number): Game;
 
 export function pgnRead(pgnString: string, gameIndex?: number) {
-	if (typeof pgnString !== 'string') {
-		throw new IllegalArgument('pgnRead()');
-	}
+    if (typeof pgnString !== 'string') {
+        throw new IllegalArgument('pgnRead()');
+    }
 
-	if (arguments.length === 1) { // Parse all games (and return a Database object)...
-		return readDatabase(pgnString);
-	}
-	else { // Parse one game...
-		if (!isValidGameIndex(gameIndex)) {
-			throw new IllegalArgument('pgnRead()');
-		}
-		return readOneGame(pgnString, gameIndex!);
-	}
+    if (arguments.length === 1) { // Parse all games (and return a Database object)...
+        return readDatabase(pgnString);
+    }
+    else { // Parse one game...
+        if (!isValidGameIndex(gameIndex)) {
+            throw new IllegalArgument('pgnRead()');
+        }
+        return readOneGame(pgnString, gameIndex!);
+    }
 }
 
 
@@ -76,16 +76,16 @@ export function pgnWrite(game: Game, options?: PGNWriteOptions): string;
 export function pgnWrite(games: Game[], options?: PGNWriteOptions): string;
 
 export function pgnWrite(gameOrGames: Game | Game[], options?: PGNWriteOptions) {
-	if (options === undefined || options === null) {
-		options = {};
-	}
-	if (gameOrGames instanceof Game) {
-		return writeGame(gameOrGames, options);
-	}
-	else if (Array.isArray(gameOrGames) && gameOrGames.every(game => game instanceof Game)) {
-		return writeGames(gameOrGames, options);
-	}
-	else {
-		throw new IllegalArgument('pgnWrite()');
-	}
+    if (options === undefined || options === null) {
+        options = {};
+    }
+    if (gameOrGames instanceof Game) {
+        return writeGame(gameOrGames, options);
+    }
+    else if (Array.isArray(gameOrGames) && gameOrGames.every(game => game instanceof Game)) {
+        return writeGames(gameOrGames, options);
+    }
+    else {
+        throw new IllegalArgument('pgnWrite()');
+    }
 }

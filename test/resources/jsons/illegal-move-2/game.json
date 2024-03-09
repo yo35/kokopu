@@ -1,12 +1,12 @@
 {
-	"event": "Illegal move",
-	"mainVariation": [
-		"e4",
-		"e5",
-		"d4",
-		{
-			"notation": "e6",
-			"comment": "I'm a comment..."
-		}
-	]
+    "event": "Illegal move",
+    "mainVariation": [
+        "e4",
+        "e5",
+        "d4",
+        {
+            "notation": "e6",
+            "comment": "I'm a comment..."
+        }
+    ]
 }

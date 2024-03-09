@@ -1,8 +1,8 @@
 {
-	"event": "Chess game variant - Chess960",
-	"variant": "chess960",
-	"initialPosition": "rnbqnkrb/pppppppp/8/8/8/8/PPPPPPPP/RNBQNKRB w AGag - 0 1",
-	"mainVariation": [
-		"O-O"
-	]
+    "event": "Chess game variant - Chess960",
+    "variant": "chess960",
+    "initialPosition": "rnbqnkrb/pppppppp/8/8/8/8/PPPPPPPP/RNBQNKRB w AGag - 0 1",
+    "mainVariation": [
+        "O-O"
+    ]
 }

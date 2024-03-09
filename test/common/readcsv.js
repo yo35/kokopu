@@ -29,19 +29,19 @@ const fs = require('fs');
  * Read a CSV file and process it line by line.
  */
 module.exports = function(filename, parser) {
-	const result = [];
-	const lines = fs.readFileSync('./test/resources/' + filename, 'utf8').split('\n');
+    const result = [];
+    const lines = fs.readFileSync('./test/resources/' + filename, 'utf8').split('\n');
 
-	for (let index = 0; index < lines.length; ++index) {
+    for (let index = 0; index < lines.length; ++index) {
 
-		// Skip header and empty lines.
-		if (index === 0 || lines[index] === '') {
-			continue;
-		}
+        // Skip header and empty lines.
+        if (index === 0 || lines[index] === '') {
+            continue;
+        }
 
-		const fields = lines[index].split('\t');
-		result.push(parser(fields));
+        const fields = lines[index].split('\t');
+        result.push(parser(fields));
 
-	}
-	return result;
+    }
+    return result;
 };

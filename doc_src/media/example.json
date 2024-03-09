@@ -1,101 +1,101 @@
 {
-	"white": { "name": "Paulsen, Louis" },
-	"black": { "name": "Morphy, Paul" },
-	"event": "1st American Chess Congress", 
-	"round": 4,
-	"subRound": 6,
-	"date": "1857-11-03",
-	"site": "New York, NY USA", 
-	"result": "0-1",
-	"mainVariation": [
-		"e4",
-		"e5",
-		"Nf3",
-		"Nc6",
-		"Nc3",
-		"Nf6",
-		"Bb5",
-		"Bc5",
-		"O-O",
-		"O-O",
-		"Nxe5",
-		"Re8",
-		"Nxc6",
-		"dxc6",
-		"Bc4",
-		"b5",
-		"Be2",
-		"Nxe4",
-		"Nxe4",
-		"Rxe4",
-		"Bf3",
-		"Re6",
-		"c3",
-		"Qd3",
-		"b4",
-		"Bb6",
-		"a4",
-		"bxa4",
-		"Qxa4",
-		"Bd7",
-		"Ra2",
-		"Rae8",
-		{
-			"notation": "Qa6",
-			"comment": "Morphy took twelve minutes over his next move, probably to assure himself that the combination was sound and that he had a forced win in every variation.",
-			"isLongComment": true
-		},
-		{ "notation": "Qxf3", "nags": [ 3 ] },
-		"gxf3",
-		"Rg6+",
-		"Kh1",
-		"Bh3",
-		{
-			"notation": "Rd1",
-			"variations": [
-				{
-					"comment": "Not",
-					"nodes": [
-						"Rg1",
-						"Rxg1+",
-						"Kxg1",
-						{ "notation": "Re1+", "nags": [ 19 ] }
-					]
-				}
-			]
-		},
-		"Bg2+",
-		"Kg1",
-		"Bxf3+",
-		"Kf1",
-		{
-			"notation": "Bg2+",
-			"variations": [
-				{
-					"isLongVariation": true,
-					"nodes": [
-						{ "notation": "Rg2", "comment": "would have won more quickly. For instance:", "nags": [ 1 ] },
-						"Qd3",
-						"Rxf2+",
-						"Kg1",
-						"Rg2+",
-						"Kh1",
-						"Rg1#"
-					]
-				}
-			]
-		},
-		"Kg1",
-		"Bh3+",
-		"Kh1",
-		"Bxf2",
-		{ "notation": "Qf1", "comment": "Absolutely forced." },
-		"Bxf1",
-		"Rxf1",
-		"Re2",
-		"Ra1",
-		"Rh6",
-		"d4",
-		"Be3"
-	]
+    "white": { "name": "Paulsen, Louis" },
+    "black": { "name": "Morphy, Paul" },
+    "event": "1st American Chess Congress", 
+    "round": 4,
+    "subRound": 6,
+    "date": "1857-11-03",
+    "site": "New York, NY USA", 
+    "result": "0-1",
+    "mainVariation": [
+        "e4",
+        "e5",
+        "Nf3",
+        "Nc6",
+        "Nc3",
+        "Nf6",
+        "Bb5",
+        "Bc5",
+        "O-O",
+        "O-O",
+        "Nxe5",
+        "Re8",
+        "Nxc6",
+        "dxc6",
+        "Bc4",
+        "b5",
+        "Be2",
+        "Nxe4",
+        "Nxe4",
+        "Rxe4",
+        "Bf3",
+        "Re6",
+        "c3",
+        "Qd3",
+        "b4",
+        "Bb6",
+        "a4",
+        "bxa4",
+        "Qxa4",
+        "Bd7",
+        "Ra2",
+        "Rae8",
+        {
+            "notation": "Qa6",
+            "comment": "Morphy took twelve minutes over his next move, probably to assure himself that the combination was sound and that he had a forced win in every variation.",
+            "isLongComment": true
+        },
+        { "notation": "Qxf3", "nags": [ 3 ] },
+        "gxf3",
+        "Rg6+",
+        "Kh1",
+        "Bh3",
+        {
+            "notation": "Rd1",
+            "variations": [
+                {
+                    "comment": "Not",
+                    "nodes": [
+                        "Rg1",
+                        "Rxg1+",
+                        "Kxg1",
+                        { "notation": "Re1+", "nags": [ 19 ] }
+                    ]
+                }
+            ]
+        },
+        "Bg2+",
+        "Kg1",
+        "Bxf3+",
+        "Kf1",
+        {
+            "notation": "Bg2+",
+            "variations": [
+                {
+                    "isLongVariation": true,
+                    "nodes": [
+                        { "notation": "Rg2", "comment": "would have won more quickly. For instance:", "nags": [ 1 ] },
+                        "Qd3",
+                        "Rxf2+",
+                        "Kg1",
+                        "Rg2+",
+                        "Kh1",
+                        "Rg1#"
+                    ]
+                }
+            ]
+        },
+        "Kg1",
+        "Bh3+",
+        "Kh1",
+        "Bxf2",
+        { "notation": "Qf1", "comment": "Absolutely forced." },
+        "Bxf1",
+        "Rxf1",
+        "Re2",
+        "Ra1",
+        "Rh6",
+        "d4",
+        "Be3"
+    ]
 }

@@ -26,7 +26,7 @@
  * Trim the given string, and replace all the sub-sequence of 1 or several space-like characters by a single space.
  */
 export function trimAndCollapseSpaces(text: string) {
-	return text.replace(/^\s+|\s+$/g, '').replace(/\s+/g, ' ');
+    return text.replace(/^\s+|\s+$/g, '').replace(/\s+/g, ' ');
 }
 
 
@@ -34,7 +34,7 @@ export function trimAndCollapseSpaces(text: string) {
  * Whether the given value is a valid NAG or not.
  */
 export function isValidNag(nag: unknown) {
-	return Number.isInteger(nag) && (nag as number) >= 0;
+    return Number.isInteger(nag) && (nag as number) >= 0;
 }
 
 
@@ -42,7 +42,7 @@ export function isValidNag(nag: unknown) {
  * Whether the given value is a valid NAG or not.
  */
 export function isValidElo(elo: unknown) {
-	return Number.isInteger(elo) && (elo as number) >= 0;
+    return Number.isInteger(elo) && (elo as number) >= 0;
 }
 
 
@@ -50,5 +50,5 @@ export function isValidElo(elo: unknown) {
  * Whether the given value is a valid round (or sub-round, or sub-sub-round...) or not.
  */
 export function isValidRound(round: unknown) {
-	return Number.isInteger(round) && (round as number) >= 0;
+    return Number.isInteger(round) && (round as number) >= 0;
 }

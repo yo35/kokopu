@@ -1,6 +1,6 @@
 {
-	"event": "Ill-formed elo",
-	"black": {
-		"elo": -1000
-	}
+    "event": "Ill-formed elo",
+    "black": {
+        "elo": -1000
+    }
 }

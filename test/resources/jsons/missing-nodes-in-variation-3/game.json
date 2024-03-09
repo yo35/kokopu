@@ -1,17 +1,17 @@
 {
-	"event": "Missing nodes in variation",
-	"mainVariation": [
-		"e4",
-		"e5",
-		{
-			"notation": "Nf3",
-			"variations": [
-				[ "Nc3" ],
-				{
-					"comment": "I'm a comment..."
-				},
-				[ "f4" ]
-			]
-		}
-	]
+    "event": "Missing nodes in variation",
+    "mainVariation": [
+        "e4",
+        "e5",
+        {
+            "notation": "Nf3",
+            "variations": [
+                [ "Nc3" ],
+                {
+                    "comment": "I'm a comment..."
+                },
+                [ "f4" ]
+            ]
+        }
+    ]
 }

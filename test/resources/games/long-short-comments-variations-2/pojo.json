@@ -1,50 +1,50 @@
 {
-	"event": "Game with long & short comments and variations 2.",
-	"mainVariation": {
-		"comment": "I'm the main variation header (short) comment.",
-		"nodes": [
-			{
-				"notation": "e4",
-				"comment": "I'm a long comment with sub-variation siblings.",
-				"isLongComment": true,
-				"variations": [
-					[ "d4", "d5" ]
-				]
-			},
-			"e5",
-			{
-				"notation": "Nf3",
-				"variations": [
-					{
-						"isLongVariation": true,
-						"nodes": [
-							{ "notation": "Nc3", "comment": "I'm a long comment at the end of a variation.", "isLongComment": true }
-						]
-					}
-				]
-			},
-			"Nc6",
-			{
-				"notation": "Bc4",
-				"variations": [
-					{
-						"isLongVariation": true,
-						"nodes": [ "Bb5", "a6" ]
-					},
-					[ "d4" ]
-				]
-			},
-			{
-				"notation": "Bc5",
-				"variations": [
-					{
-						"isLongVariation": true,
-						"comment": "I'm a long comment at the beginning of a variation.",
-						"isLongComment": true,
-						"nodes": [ "d6" ]
-					}
-				]
-			}
-		]
-	}
+    "event": "Game with long & short comments and variations 2.",
+    "mainVariation": {
+        "comment": "I'm the main variation header (short) comment.",
+        "nodes": [
+            {
+                "notation": "e4",
+                "comment": "I'm a long comment with sub-variation siblings.",
+                "isLongComment": true,
+                "variations": [
+                    [ "d4", "d5" ]
+                ]
+            },
+            "e5",
+            {
+                "notation": "Nf3",
+                "variations": [
+                    {
+                        "isLongVariation": true,
+                        "nodes": [
+                            { "notation": "Nc3", "comment": "I'm a long comment at the end of a variation.", "isLongComment": true }
+                        ]
+                    }
+                ]
+            },
+            "Nc6",
+            {
+                "notation": "Bc4",
+                "variations": [
+                    {
+                        "isLongVariation": true,
+                        "nodes": [ "Bb5", "a6" ]
+                    },
+                    [ "d4" ]
+                ]
+            },
+            {
+                "notation": "Bc5",
+                "variations": [
+                    {
+                        "isLongVariation": true,
+                        "comment": "I'm a long comment at the beginning of a variation.",
+                        "isLongComment": true,
+                        "nodes": [ "d6" ]
+                    }
+                ]
+            }
+        ]
+    }
 }

@@ -1,19 +1,19 @@
 {
-	"event": "Missing notation in node",
-	"mainVariation": [
-		"e4",
-		"e5",
-		{
-			"notation": "Nf3",
-			"variations": [
-				[ "Nc3" ],
-				[
-					"f4",
-					"exf4",
-					"Bc4",
-					{ "comment": "I'm a comment..." }
-				]
-			]
-		}
-	]
+    "event": "Missing notation in node",
+    "mainVariation": [
+        "e4",
+        "e5",
+        {
+            "notation": "Nf3",
+            "variations": [
+                [ "Nc3" ],
+                [
+                    "f4",
+                    "exf4",
+                    "Bc4",
+                    { "comment": "I'm a comment..." }
+                ]
+            ]
+        }
+    ]
 }

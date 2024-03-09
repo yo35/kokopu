@@ -1,18 +1,18 @@
 {
-	"event": "Custom initial position",
-	"initialPosition": "8/2k5/p1P5/P1K5/8/8/8/8 w - - 0 60",
-	"mainVariation": [
-		"Kd5",
-		"Kc8",
-		"Kd4",
-		"Kd8",
-		"Kc4",
-		"Kc8",
-		"Kd5",
-		"Kc7",
-		"Kc5",
-		"Kc8",
-		{ "notation": "Kb6", "nags": [ 18 ] }
-	],
-	"result": "1-0"
+    "event": "Custom initial position",
+    "initialPosition": "8/2k5/p1P5/P1K5/8/8/8/8 w - - 0 60",
+    "mainVariation": [
+        "Kd5",
+        "Kc8",
+        "Kd4",
+        "Kd8",
+        "Kc4",
+        "Kc8",
+        "Kd5",
+        "Kc7",
+        "Kc5",
+        "Kc8",
+        { "notation": "Kb6", "nags": [ 18 ] }
+    ],
+    "result": "1-0"
 }

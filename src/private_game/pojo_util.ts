@@ -31,35 +31,35 @@ import { i18n } from '../i18n';
  */
 export class POJOExceptionBuilder {
 
-	#pojo: unknown;
-	#path: (string | number)[] = [];
+    #pojo: unknown;
+    #path: (string | number)[] = [];
 
-	constructor(pojo: unknown) {
-		this.#pojo = pojo;
-	}
+    constructor(pojo: unknown) {
+        this.#pojo = pojo;
+    }
 
-	push(fieldName: string | number) {
-		this.#path.push(fieldName);
-	}
+    push(fieldName: string | number) {
+        this.#path.push(fieldName);
+    }
 
-	pop() {
-		this.#path.pop();
-	}
+    pop() {
+        this.#path.pop();
+    }
 
-	build(message: string, ...tokens: unknown[]) {
-		let fieldName = '';
-		let isFirstPathComponent = true;
-		for (const pathComponent of this.#path) {
-			if (typeof pathComponent === 'number') {
-				fieldName += `[${pathComponent}]`;
-			}
-			else {
-				fieldName += isFirstPathComponent ? pathComponent : '.' + pathComponent;
-			}
-			isFirstPathComponent = false;
-		}
-		return new InvalidPOJO(this.#pojo, fieldName, message, ...tokens);
-	}
+    build(message: string, ...tokens: unknown[]) {
+        let fieldName = '';
+        let isFirstPathComponent = true;
+        for (const pathComponent of this.#path) {
+            if (typeof pathComponent === 'number') {
+                fieldName += `[${pathComponent}]`;
+            }
+            else {
+                fieldName += isFirstPathComponent ? pathComponent : '.' + pathComponent;
+            }
+            isFirstPathComponent = false;
+        }
+        return new InvalidPOJO(this.#pojo, fieldName, message, ...tokens);
+    }
 }
 
 
@@ -67,18 +67,18 @@ export class POJOExceptionBuilder {
  * Validate a string-valued field read from a POJO.
  */
 export function decodeStringField(pojo: Partial<Record<string, unknown>>, fieldName: string, exceptionBuilder: POJOExceptionBuilder, setter: (value: string) => void) {
-	if (!(fieldName in pojo)) {
-		return;
-	}
-	exceptionBuilder.push(fieldName);
-	const value = pojo[fieldName];
-	if (typeof value === 'string') {
-		setter(value);
-	}
-	else if (value !== undefined) {
-		throw exceptionBuilder.build(i18n.INVALID_POJO_STRING_FIELD);
-	}
-	exceptionBuilder.pop();
+    if (!(fieldName in pojo)) {
+        return;
+    }
+    exceptionBuilder.push(fieldName);
+    const value = pojo[fieldName];
+    if (typeof value === 'string') {
+        setter(value);
+    }
+    else if (value !== undefined) {
+        throw exceptionBuilder.build(i18n.INVALID_POJO_STRING_FIELD);
+    }
+    exceptionBuilder.pop();
 }
 
 
@@ -86,18 +86,18 @@ export function decodeStringField(pojo: Partial<Record<string, unknown>>, fieldN
  * Validate a number-valued field read from a POJO.
  */
 export function decodeNumberField(pojo: Partial<Record<string, unknown>>, fieldName: string, exceptionBuilder: POJOExceptionBuilder, setter: (value: number) => void) {
-	if (!(fieldName in pojo)) {
-		return;
-	}
-	exceptionBuilder.push(fieldName);
-	const value = pojo[fieldName];
-	if (typeof value === 'number') {
-		setter(value);
-	}
-	else if (value !== undefined) {
-		throw exceptionBuilder.build(i18n.INVALID_POJO_NUMBER_FIELD);
-	}
-	exceptionBuilder.pop();
+    if (!(fieldName in pojo)) {
+        return;
+    }
+    exceptionBuilder.push(fieldName);
+    const value = pojo[fieldName];
+    if (typeof value === 'number') {
+        setter(value);
+    }
+    else if (value !== undefined) {
+        throw exceptionBuilder.build(i18n.INVALID_POJO_NUMBER_FIELD);
+    }
+    exceptionBuilder.pop();
 }
 
 
@@ -105,18 +105,18 @@ export function decodeNumberField(pojo: Partial<Record<string, unknown>>, fieldN
  * Validate a boolean-valued field read from a POJO.
  */
 export function decodeBooleanField(pojo: Partial<Record<string, unknown>>, fieldName: string, exceptionBuilder: POJOExceptionBuilder, setter: (value: boolean) => void) {
-	if (!(fieldName in pojo)) {
-		return;
-	}
-	exceptionBuilder.push(fieldName);
-	const value = pojo[fieldName];
-	if (typeof value === 'boolean') {
-		setter(value);
-	}
-	else if (value !== undefined) {
-		throw exceptionBuilder.build(i18n.INVALID_POJO_BOOLEAN_FIELD);
-	}
-	exceptionBuilder.pop();
+    if (!(fieldName in pojo)) {
+        return;
+    }
+    exceptionBuilder.push(fieldName);
+    const value = pojo[fieldName];
+    if (typeof value === 'boolean') {
+        setter(value);
+    }
+    else if (value !== undefined) {
+        throw exceptionBuilder.build(i18n.INVALID_POJO_BOOLEAN_FIELD);
+    }
+    exceptionBuilder.pop();
 }
 
 
@@ -124,18 +124,18 @@ export function decodeBooleanField(pojo: Partial<Record<string, unknown>>, field
  * Validate an array-valued field read from a POJO.
  */
 export function decodeArrayField(pojo: Partial<Record<string, unknown>>, fieldName: string, exceptionBuilder: POJOExceptionBuilder, setter: (value: unknown[]) => void) {
-	if (!(fieldName in pojo)) {
-		return;
-	}
-	exceptionBuilder.push(fieldName);
-	const value = pojo[fieldName];
-	if (Array.isArray(value)) {
-		setter(value);
-	}
-	else if (value !== undefined) {
-		throw exceptionBuilder.build(i18n.INVALID_POJO_ARRAY_FIELD);
-	}
-	exceptionBuilder.pop();
+    if (!(fieldName in pojo)) {
+        return;
+    }
+    exceptionBuilder.push(fieldName);
+    const value = pojo[fieldName];
+    if (Array.isArray(value)) {
+        setter(value);
+    }
+    else if (value !== undefined) {
+        throw exceptionBuilder.build(i18n.INVALID_POJO_ARRAY_FIELD);
+    }
+    exceptionBuilder.pop();
 }
 
 
@@ -143,16 +143,16 @@ export function decodeArrayField(pojo: Partial<Record<string, unknown>>, fieldNa
  * Validate an object-valued field read from a POJO.
  */
 export function decodeObjectField(pojo: Partial<Record<string, unknown>>, fieldName: string, exceptionBuilder: POJOExceptionBuilder, setter: (value: Partial<Record<string, unknown>>) => void) {
-	if (!(fieldName in pojo)) {
-		return;
-	}
-	exceptionBuilder.push(fieldName);
-	const value = pojo[fieldName];
-	if (typeof value === 'object' && value !== null) {
-		setter(value);
-	}
-	else if (value !== undefined) {
-		throw exceptionBuilder.build(i18n.INVALID_POJO_OBJECT_FIELD);
-	}
-	exceptionBuilder.pop();
+    if (!(fieldName in pojo)) {
+        return;
+    }
+    exceptionBuilder.push(fieldName);
+    const value = pojo[fieldName];
+    if (typeof value === 'object' && value !== null) {
+        setter(value);
+    }
+    else if (value !== undefined) {
+        throw exceptionBuilder.build(i18n.INVALID_POJO_OBJECT_FIELD);
+    }
+    exceptionBuilder.pop();
 }

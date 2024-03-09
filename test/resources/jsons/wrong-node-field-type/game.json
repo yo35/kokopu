@@ -1,12 +1,12 @@
 {
-	"event": "Wrong node field type",
-	"mainVariation": [
-		"e4",
-		"e5",
-		"Nf3",
-		"Nc6",
-		"Bb5",
-		42,
-		"Ba4"
-	]
+    "event": "Wrong node field type",
+    "mainVariation": [
+        "e4",
+        "e5",
+        "Nf3",
+        "Nc6",
+        "Bb5",
+        42,
+        "Ba4"
+    ]
 }

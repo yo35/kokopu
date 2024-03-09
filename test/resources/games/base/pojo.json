@@ -1,21 +1,21 @@
 {
-	"white": { "name": "Alice" },
-	"black": { "name": "Bob" },
-	"event": "1st International Open of Whatever",
-	"result": "1-0",
-	"mainVariation": [
-		"e4",
-		{
-			"notation": "e5",
-			"variations": [
-				[ "c5", "Nf3" ],
-				[ "e6", "d4" ]
-			]
-		},
-		"Bc4",
-		"Nc6",
-		"Qh5",
-		"Nf6",
-		{ "notation": "Qxf7#", "comment": "That is the Scholar's Mate" }
-	]
+    "white": { "name": "Alice" },
+    "black": { "name": "Bob" },
+    "event": "1st International Open of Whatever",
+    "result": "1-0",
+    "mainVariation": [
+        "e4",
+        {
+            "notation": "e5",
+            "variations": [
+                [ "c5", "Nf3" ],
+                [ "e6", "d4" ]
+            ]
+        },
+        "Bc4",
+        "Nc6",
+        "Qh5",
+        "Nf6",
+        { "notation": "Qxf7#", "comment": "That is the Scholar's Mate" }
+    ]
 }

@@ -1,4 +1,4 @@
 {
-	"event": "Ill-formed initial position",
-	"initialPosition": "not-a-FEN"
+    "event": "Ill-formed initial position",
+    "initialPosition": "not-a-FEN"
 }

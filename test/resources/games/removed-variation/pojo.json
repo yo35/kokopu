@@ -1,15 +1,15 @@
 {
-	"event": "Game with removed variation.",
-	"mainVariation": [
-		"e4",
-		{
-			"notation": "e5",
-			"variations": [
-				[ "c5" ],
-				[ "c6" ],
-				[ "e6" ]
-			]
-		},
-		"Nf3"
-	]
+    "event": "Game with removed variation.",
+    "mainVariation": [
+        "e4",
+        {
+            "notation": "e5",
+            "variations": [
+                [ "c5" ],
+                [ "c6" ],
+                [ "e6" ]
+            ]
+        },
+        "Nf3"
+    ]
 }

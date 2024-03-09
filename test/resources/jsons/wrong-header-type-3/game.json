@@ -1,6 +1,6 @@
 {
-	"event": "Wrong header type",
-	"white": {
-		"elo": "two thousand"
-	}
+    "event": "Wrong header type",
+    "white": {
+        "elo": "two thousand"
+    }
 }

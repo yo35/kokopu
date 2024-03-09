@@ -29,9 +29,9 @@ import { GameResult, GameVariant } from './base_types';
  * Represent the player-related headers in a {@link GamePOJO}.
  */
 export type PlayerPOJO = {
-	name?: string;
-	elo?: number;
-	title?: string;
+    name?: string;
+    elo?: number;
+    title?: string;
 };
 
 
@@ -41,27 +41,27 @@ export type PlayerPOJO = {
  */
 export type GamePOJO = {
 
-	// Headers
-	white?: PlayerPOJO;
-	black?: PlayerPOJO;
-	event?: string;
-	round?: number;
-	subRound?: number;
-	subSubRound?: number;
-	date?: string;
-	site?: string;
-	annotator?: string;
-	eco?: string;
-	opening?: string;
-	openingVariation?: string;
-	openingSubVariation?: string;
-	termination?: string;
-	result?: GameResult;
+    // Headers
+    white?: PlayerPOJO;
+    black?: PlayerPOJO;
+    event?: string;
+    round?: number;
+    subRound?: number;
+    subSubRound?: number;
+    date?: string;
+    site?: string;
+    annotator?: string;
+    eco?: string;
+    opening?: string;
+    openingVariation?: string;
+    openingSubVariation?: string;
+    termination?: string;
+    result?: GameResult;
 
-	// Moves
-	variant?: GameVariant;
-	initialPosition?: string;
-	mainVariation?: VariationPOJO;
+    // Moves
+    variant?: GameVariant;
+    initialPosition?: string;
+    mainVariation?: VariationPOJO;
 };
 
 
@@ -69,10 +69,10 @@ export type GamePOJO = {
  * Represent a {@link AbstractNode} in a {@link GamePOJO}.
  */
 export type AbstractNodePOJO = {
-	comment?: string;
-	isLongComment?: boolean;
-	nags?: number[];
-	tags?: Record<string, string>;
+    comment?: string;
+    isLongComment?: boolean;
+    nags?: number[];
+    tags?: Record<string, string>;
 };
 
 
@@ -80,8 +80,8 @@ export type AbstractNodePOJO = {
  * Represent a {@link Node} in a {@link GamePOJO}.
  */
 export type NodePOJO = string | AbstractNodePOJO & {
-	notation: string;
-	variations?: VariationPOJO[];
+    notation: string;
+    variations?: VariationPOJO[];
 };
 
 
@@ -89,6 +89,6 @@ export type NodePOJO = string | AbstractNodePOJO & {
  * Represent a {@link Variation} in a {@link GamePOJO}.
  */
 export type VariationPOJO = NodePOJO[] | AbstractNodePOJO & {
-	nodes: NodePOJO[];
-	isLongVariation?: boolean;
+    nodes: NodePOJO[];
+    isLongVariation?: boolean;
 };

@@ -1,25 +1,25 @@
 {
-	"annotator": " The   Annotator ",
-	"date": "2021-09-04",
-	"eco": "D42",
-	"event": "An event name\nspanning several lines",
-	"white": {
-		"name": "  Light side\n\n",
-		"elo": 1942,
-		"title": "CM"
-	},
-	"black": {
-		"name": "Dark\n \n\rside",
-		"elo": 2421,
-		"title": "IM"
-	},
-	"round": 1,
-	"subRound": 12,
-	"subSubRound": 7,
-	"site": "Somewhere...",
-	"opening": "Sicilian Defense",
-	"openingVariation": "Dragon",
-	"openingSubVariation": "Yugoslav Attack",
-	"termination": "adjudication",
-	"result": "0-1"
+    "annotator": " The   Annotator ",
+    "date": "2021-09-04",
+    "eco": "D42",
+    "event": "An event name\nspanning several lines",
+    "white": {
+        "name": "  Light side\n\n",
+        "elo": 1942,
+        "title": "CM"
+    },
+    "black": {
+        "name": "Dark\n \n\rside",
+        "elo": 2421,
+        "title": "IM"
+    },
+    "round": 1,
+    "subRound": 12,
+    "subSubRound": 7,
+    "site": "Somewhere...",
+    "opening": "Sicilian Defense",
+    "openingVariation": "Dragon",
+    "openingSubVariation": "Yugoslav Attack",
+    "termination": "adjudication",
+    "result": "0-1"
 }

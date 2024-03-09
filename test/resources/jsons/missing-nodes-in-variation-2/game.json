@@ -1,7 +1,7 @@
 {
-	"event": "Missing nodes in variation",
-	"mainVariation": {
-		"comment": "I'm a comment...",
-		"nodes": "not-an-array"
-	}
+    "event": "Missing nodes in variation",
+    "mainVariation": {
+        "comment": "I'm a comment...",
+        "nodes": "not-an-array"
+    }
 }

@@ -26,7 +26,7 @@ import { Color, Piece, ColoredPiece, File, Rank, Square, SquareCouple, Castle, C
 import { IllegalArgument } from './exception';
 
 import { colorFromString, pieceFromString, coloredPieceFromString, fileFromString, rankFromString, squareFromString, resultFromString, variantFromString,
-	colorToString, fileToString, rankToString, squareToString, squareColorImpl } from './private_position/base_types_impl';
+    colorToString, fileToString, rankToString, squareToString, squareColorImpl } from './private_position/base_types_impl';
 import { hasCanonicalStartPosition } from './private_position/impl';
 import { isValidNag } from './private_game/common';
 
@@ -35,7 +35,7 @@ import { isValidNag } from './private_game/common';
  * Whether the given value represents a valid {@link Color} or not.
  */
 export function isColor(value: unknown): value is Color {
-	return colorFromString(value) >= 0;
+    return colorFromString(value) >= 0;
 }
 
 
@@ -43,7 +43,7 @@ export function isColor(value: unknown): value is Color {
  * Whether the given value represents a valid {@link Piece} or not.
  */
 export function isPiece(value: unknown): value is Piece {
-	return pieceFromString(value) >= 0;
+    return pieceFromString(value) >= 0;
 }
 
 
@@ -51,7 +51,7 @@ export function isPiece(value: unknown): value is Piece {
  * Whether the given value represents a valid {@link ColoredPiece} or not.
  */
 export function isColoredPiece(value: unknown): value is ColoredPiece {
-	return coloredPieceFromString(value) >= 0;
+    return coloredPieceFromString(value) >= 0;
 }
 
 
@@ -59,7 +59,7 @@ export function isColoredPiece(value: unknown): value is ColoredPiece {
  * Whether the given value represents a valid {@link File} or not.
  */
 export function isFile(value: unknown): value is File {
-	return fileFromString(value) >= 0;
+    return fileFromString(value) >= 0;
 }
 
 
@@ -67,7 +67,7 @@ export function isFile(value: unknown): value is File {
  * Whether the given value represents a valid {@link Rank} or not.
  */
 export function isRank(value: unknown): value is Rank {
-	return rankFromString(value) >= 0;
+    return rankFromString(value) >= 0;
 }
 
 
@@ -75,7 +75,7 @@ export function isRank(value: unknown): value is Rank {
  * Whether the given value represents a valid {@link Square} or not.
  */
 export function isSquare(value: unknown): value is Square {
-	return squareFromString(value) >= 0;
+    return squareFromString(value) >= 0;
 }
 
 
@@ -83,7 +83,7 @@ export function isSquare(value: unknown): value is Square {
  * Whether the given value represents a valid {@link SquareCouple} or not.
  */
 export function isSquareCouple(value: unknown): value is SquareCouple {
-	return typeof value === 'string' && /^[a-h][1-8][a-h][1-8]$/.test(value);
+    return typeof value === 'string' && /^[a-h][1-8][a-h][1-8]$/.test(value);
 }
 
 
@@ -91,7 +91,7 @@ export function isSquareCouple(value: unknown): value is SquareCouple {
  * Whether the given value represents a valid {@link Castle} or not.
  */
 export function isCastle(value: unknown): value is Castle {
-	return typeof value === 'string' && /^[wb][kq]$/.test(value);
+    return typeof value === 'string' && /^[wb][kq]$/.test(value);
 }
 
 
@@ -99,7 +99,7 @@ export function isCastle(value: unknown): value is Castle {
  * Whether the given value represents a valid {@link Castle960} or not.
  */
 export function isCastle960(value: unknown): value is Castle960 {
-	return typeof value === 'string' && /^[wb][a-h]$/.test(value);
+    return typeof value === 'string' && /^[wb][a-h]$/.test(value);
 }
 
 
@@ -107,7 +107,7 @@ export function isCastle960(value: unknown): value is Castle960 {
  * Whether the given value represents a valid {@link GameResult} or not.
  */
 export function isGameResult(value: unknown): value is GameResult {
-	return resultFromString(value) >= 0;
+    return resultFromString(value) >= 0;
 }
 
 
@@ -115,7 +115,7 @@ export function isGameResult(value: unknown): value is GameResult {
  * Whether the given value represents a valid {@link GameVariant} or not.
  */
 export function isGameVariant(value: unknown): value is GameVariant {
-	return variantFromString(value) >= 0;
+    return variantFromString(value) >= 0;
 }
 
 
@@ -123,11 +123,11 @@ export function isGameVariant(value: unknown): value is GameVariant {
  * Execute the given callback on each of the 64 squares.
  */
 export function forEachSquare(callback: (square: Square) => void): void {
-	for (let rank = 0; rank < 8; ++rank) {
-		for (let file = 0; file < 8; ++file) {
-			callback(squareToString(rank * 16 + file));
-		}
-	}
+    for (let rank = 0; rank < 8; ++rank) {
+        for (let file = 0; file < 8; ++file) {
+            callback(squareToString(rank * 16 + file));
+        }
+    }
 }
 
 
@@ -135,11 +135,11 @@ export function forEachSquare(callback: (square: Square) => void): void {
  * Return the color of a square.
  */
 export function squareColor(square: Square): Color {
-	const squareCode = squareFromString(square);
-	if (squareCode < 0) {
-		throw new IllegalArgument('squareColor()');
-	}
-	return colorToString(squareColorImpl(squareCode));
+    const squareCode = squareFromString(square);
+    if (squareCode < 0) {
+        throw new IllegalArgument('squareColor()');
+    }
+    return colorToString(squareColorImpl(squareCode));
 }
 
 
@@ -147,11 +147,11 @@ export function squareColor(square: Square): Color {
  * Return the coordinates of a square.
  */
 export function squareToCoordinates(square: Square): Coordinates {
-	const squareCode = squareFromString(square);
-	if (squareCode < 0) {
-		throw new IllegalArgument('squareToCoordinates()');
-	}
-	return { rank: Math.trunc(squareCode / 16), file: squareCode % 16 };
+    const squareCode = squareFromString(square);
+    if (squareCode < 0) {
+        throw new IllegalArgument('squareToCoordinates()');
+    }
+    return { rank: Math.trunc(squareCode / 16), file: squareCode % 16 };
 }
 
 
@@ -166,12 +166,12 @@ export function coordinatesToSquare(file: number, rank: number): Square;
 export function coordinatesToSquare(coordinates: Coordinates): Square;
 
 export function coordinatesToSquare(fileOrCoordinates: number | Coordinates, rankOrUndefined?: number): Square {
-	const file = typeof fileOrCoordinates === 'number' ? fileOrCoordinates : fileOrCoordinates.file;
-	const rank = typeof fileOrCoordinates === 'number' ? rankOrUndefined! : fileOrCoordinates.rank;
-	if (!Number.isInteger(file) || !Number.isInteger(rank) || file < 0 || file >= 8 || rank < 0 || rank >= 8) {
-		throw new IllegalArgument('coordinatesToSquare()');
-	}
-	return fileToString(file) + rankToString(rank) as Square;
+    const file = typeof fileOrCoordinates === 'number' ? fileOrCoordinates : fileOrCoordinates.file;
+    const rank = typeof fileOrCoordinates === 'number' ? rankOrUndefined! : fileOrCoordinates.rank;
+    if (!Number.isInteger(file) || !Number.isInteger(rank) || file < 0 || file >= 8 || rank < 0 || rank >= 8) {
+        throw new IllegalArgument('coordinatesToSquare()');
+    }
+    return fileToString(file) + rankToString(rank) as Square;
 }
 
 
@@ -179,11 +179,11 @@ export function coordinatesToSquare(fileOrCoordinates: number | Coordinates, ran
  * Change white to black, and black to white.
  */
 export function oppositeColor(color: Color): Color {
-	const colorCode = colorFromString(color);
-	if (colorCode < 0) {
-		throw new IllegalArgument('oppositeColor()');
-	}
-	return colorToString(1 - colorCode);
+    const colorCode = colorFromString(color);
+    if (colorCode < 0) {
+        throw new IllegalArgument('oppositeColor()');
+    }
+    return colorToString(1 - colorCode);
 }
 
 
@@ -191,11 +191,11 @@ export function oppositeColor(color: Color): Color {
  * Whether the given variant has a canonical start position or not.
  */
 export function variantWithCanonicalStartPosition(variant: GameVariant): boolean {
-	const variantCode = variantFromString(variant);
-	if (variantCode < 0) {
-		throw new IllegalArgument('variantWithCanonicalStartPosition()');
-	}
-	return hasCanonicalStartPosition(variantCode);
+    const variantCode = variantFromString(variant);
+    if (variantCode < 0) {
+        throw new IllegalArgument('variantWithCanonicalStartPosition()');
+    }
+    return hasCanonicalStartPosition(variantCode);
 }
 
 
@@ -240,11 +240,11 @@ NAG_SYMBOLS.set(146, 'N',           ); // Novelty
  * Return the human-readable symbol for the given [NAG](https://en.wikipedia.org/wiki/Numeric_Annotation_Glyphs).
  */
 export function nagSymbol(nag: number): string {
-	if (!isValidNag(nag)) {
-		throw new IllegalArgument('nagSymbol()');
-	}
-	const result = NAG_SYMBOLS.get(nag);
-	return result ?? '$' + nag;
+    if (!isValidNag(nag)) {
+        throw new IllegalArgument('nagSymbol()');
+    }
+    const result = NAG_SYMBOLS.get(nag);
+    return result ?? '$' + nag;
 }
 
 
@@ -252,5 +252,5 @@ export function nagSymbol(nag: number): string {
  * Whether the given string represents a valid [ECO code](https://en.wikipedia.org/wiki/List_of_chess_openings) or not.
  */
 export function isValidECO(eco: string): boolean {
-	return typeof eco === 'string' && /^[A-E][0-9][0-9]$/.test(eco);
+    return typeof eco === 'string' && /^[A-E][0-9][0-9]$/.test(eco);
 }

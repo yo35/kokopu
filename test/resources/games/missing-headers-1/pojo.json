@@ -1,13 +1,13 @@
 {
-	"date": "1998-**-**",
-	"white": {
-		"name": "John Doe",
-		"elo": 2345
-	},
-	"black": {
-		"title": "GM"
-	},
-	"round": 3,
-	"openingVariation": "TheVariation",
-	"result": "1/2-1/2"
+    "date": "1998-**-**",
+    "white": {
+        "name": "John Doe",
+        "elo": 2345
+    },
+    "black": {
+        "title": "GM"
+    },
+    "round": 3,
+    "openingVariation": "TheVariation",
+    "result": "1/2-1/2"
 }
