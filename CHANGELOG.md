@@ -1,6 +1,10 @@
 ChangeLog
 =========
 
+4.10.0 (March 9, 2024)
+----------------------
+* Add support for NAGs $20 and $21.
+
 4.9.2 (March 3, 2024)
 ---------------------
 * Minor fixes.
