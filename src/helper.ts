@@ -201,37 +201,39 @@ export function variantWithCanonicalStartPosition(variant: GameVariant): boolean
 
 const NAG_SYMBOLS = new Map<number, string>();
 
-NAG_SYMBOLS.set(  1, '!',     ); // good move
-NAG_SYMBOLS.set(  2, '?',     ); // bad move
-NAG_SYMBOLS.set(  3, '!!',    ); // very good move
-NAG_SYMBOLS.set(  4, '??',    ); // very bad move
-NAG_SYMBOLS.set(  5, '!?',    ); // interesting move
-NAG_SYMBOLS.set(  6, '?!',    ); // questionable move
-NAG_SYMBOLS.set(  7, '\u25a1' ); // Only move
-NAG_SYMBOLS.set(  8, '\u25a1' ); // Only move (ChessBase)
-NAG_SYMBOLS.set(  9, '\u2612' ); // Worst move (Chess.com)
-NAG_SYMBOLS.set( 10, '=',     ); // equal position
-NAG_SYMBOLS.set( 11, '=',     ); // equal position (ChessBase)
-NAG_SYMBOLS.set( 13, '\u221e' ); // unclear position
-NAG_SYMBOLS.set( 14, '\u2a72' ); // White has a slight advantage
-NAG_SYMBOLS.set( 15, '\u2a71' ); // Black has a slight advantage
-NAG_SYMBOLS.set( 16, '\u00b1' ); // White has a moderate advantage
-NAG_SYMBOLS.set( 17, '\u2213' ); // Black has a moderate advantage
-NAG_SYMBOLS.set( 18, '+\u2212'); // White has a decisive advantage
-NAG_SYMBOLS.set( 19, '\u2212+'); // Black has a decisive advantage
-NAG_SYMBOLS.set( 22, '\u2a00' ); // Zugzwang
-NAG_SYMBOLS.set( 32, '\u27f3' ); // Development advantage
-NAG_SYMBOLS.set( 36, '\u2191' ); // Initiative
-NAG_SYMBOLS.set( 40, '\u2192' ); // Attack
-NAG_SYMBOLS.set( 44, '\u2bf9' ); // Compensation
-NAG_SYMBOLS.set(132, '\u21c6' ); // Counterplay
-NAG_SYMBOLS.set(138, '\u2a01' ); // Zeitnot
-NAG_SYMBOLS.set(140, '\u2206' ); // With idea...
-NAG_SYMBOLS.set(141, '\u2207' ); // Aimed against...
-NAG_SYMBOLS.set(142, '\u2313' ); // Better is...
-NAG_SYMBOLS.set(143, '\u2264' ); // Worse is...
-NAG_SYMBOLS.set(145, 'RR',    ); // Editorial comment
-NAG_SYMBOLS.set(146, 'N',     ); // Novelty
+NAG_SYMBOLS.set(  1, '!',           ); // good move
+NAG_SYMBOLS.set(  2, '?',           ); // bad move
+NAG_SYMBOLS.set(  3, '!!',          ); // very good move
+NAG_SYMBOLS.set(  4, '??',          ); // very bad move
+NAG_SYMBOLS.set(  5, '!?',          ); // interesting move
+NAG_SYMBOLS.set(  6, '?!',          ); // questionable move
+NAG_SYMBOLS.set(  7, '\u25a1'       ); // Only move
+NAG_SYMBOLS.set(  8, '\u25a1'       ); // Only move (ChessBase)
+NAG_SYMBOLS.set(  9, '\u2612'       ); // Worst move (Chess.com)
+NAG_SYMBOLS.set( 10, '=',           ); // equal position
+NAG_SYMBOLS.set( 11, '=',           ); // equal position (ChessBase)
+NAG_SYMBOLS.set( 13, '\u221e'       ); // unclear position
+NAG_SYMBOLS.set( 14, '\u2a72'       ); // White has a slight advantage
+NAG_SYMBOLS.set( 15, '\u2a71'       ); // Black has a slight advantage
+NAG_SYMBOLS.set( 16, '\u00b1'       ); // White has a moderate advantage
+NAG_SYMBOLS.set( 17, '\u2213'       ); // Black has a moderate advantage
+NAG_SYMBOLS.set( 18, '+\u2212'      ); // White has a decisive advantage
+NAG_SYMBOLS.set( 19, '\u2212+'      ); // Black has a decisive advantage
+NAG_SYMBOLS.set( 20, '+\u2212\u2212'); // White has a crushing advantage
+NAG_SYMBOLS.set( 21, '\u2212\u2212+'); // Black has a crushing advantage
+NAG_SYMBOLS.set( 22, '\u2a00'       ); // Zugzwang
+NAG_SYMBOLS.set( 32, '\u27f3'       ); // Development advantage
+NAG_SYMBOLS.set( 36, '\u2191'       ); // Initiative
+NAG_SYMBOLS.set( 40, '\u2192'       ); // Attack
+NAG_SYMBOLS.set( 44, '\u2bf9'       ); // Compensation
+NAG_SYMBOLS.set(132, '\u21c6'       ); // Counterplay
+NAG_SYMBOLS.set(138, '\u2a01'       ); // Zeitnot
+NAG_SYMBOLS.set(140, '\u2206'       ); // With idea...
+NAG_SYMBOLS.set(141, '\u2207'       ); // Aimed against...
+NAG_SYMBOLS.set(142, '\u2313'       ); // Better is...
+NAG_SYMBOLS.set(143, '\u2264'       ); // Worse is...
+NAG_SYMBOLS.set(145, 'RR',          ); // Editorial comment
+NAG_SYMBOLS.set(146, 'N',           ); // Novelty
 
 
 /**
