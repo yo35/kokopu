@@ -1,11 +1,16 @@
-# Eclipse's stuff
+# IDEs stuff
 /.buildpath
 /.project
 /.settings
+/.vscode
 
-# Node's stuff
+# Node stuff
 /node_modules
 
 # Generated files
 /build
 /dist
+
+# OS stuff
+.DS_Store
+Thumbs.db
