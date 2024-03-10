@@ -23,7 +23,7 @@
 
 
 const { Position } = require('../dist/lib/index');
-const program = require('commander');
+const { program } = require('commander');
 
 
 function align(data, width) {

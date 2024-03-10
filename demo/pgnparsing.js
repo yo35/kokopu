@@ -24,7 +24,7 @@
 
 const { exception, pgnRead } = require('../dist/lib/index');
 const fs = require('fs');
-const program = require('commander');
+const { program } = require('commander');
 
 
 function alignLeft(data, width) {
@@ -128,10 +128,8 @@ function run(paths, pathAlignment) {
 // -----------------------------------------------------------------------------
 
 program
-    .arguments('<pgn-files...>')
-    .description('Analyze some PGN files', {
-        'pgn-files': 'path to the PGN files to analyse'
-    })
+    .argument('<pgn-files...>', 'path to the PGN files to analyse')
+    .description('Analyze some PGN files')
     .parse(process.argv);
 
 const pathAlignment = program.args.map(path => path.length).reduce((l1, l2) => Math.max(l1, l2));
