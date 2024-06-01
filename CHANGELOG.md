@@ -1,6 +1,10 @@
 ChangeLog
 =========
 
+4.11.0 (June 1, 2024)
+---------------------
+* Make PGN parsing tolerant to missing end-of-game token at the very end of the PGN string (see [#46](https://github.com/yo35/kokopu/issues/46)).
+
 4.10.0 (March 9, 2024)
 ----------------------
 * Add support for NAGs $20 and $21.
