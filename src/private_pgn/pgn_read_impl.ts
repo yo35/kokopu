@@ -199,18 +199,16 @@ function initializeInitialPosition(stream: TokenStream, game: Game, factory: Ini
 function doParseGame(stream: TokenStream) {
 
     // State variable for syntactic analysis.
-    let game: Game | null = null;  // the result
+    const game = new Game(); // the result
+    let endOfGameEncountered = false;
+    let atLeastOneTokenFound = false;
     let node: Node | Variation | null = null;  // current node (or variation) to which the next move should be appended
     const nodeStack: (Node | Variation)[] = []; // when starting a variation, its parent node (btw., always a "true" node, not a variation) is stacked here
     const initialPositionFactory: InitialPositionFactory = {};
 
     // Token loop
-    while (stream.consumeToken()) {
-
-        // Create a new game if necessary
-        if (game === null) {
-            game = new Game();
-        }
+    while (!endOfGameEncountered && stream.consumeToken()) {
+        atLeastOneTokenFound = true;
 
         // Set-up the root node when the first move-text token is encountered.
         if (stream.isMoveTextSection() && node === null) {
@@ -219,7 +217,7 @@ function doParseGame(stream: TokenStream) {
         }
 
         // Token type switch
-        switch(stream.token()) {
+        switch (stream.token()) {
 
             // Header
             case TokenType.BEGIN_HEADER: {
@@ -306,11 +304,9 @@ function doParseGame(stream: TokenStream) {
 
             // End-of-game
             case TokenType.END_OF_GAME:
-                if (nodeStack.length !== 0) {
-                    throw new InvalidPGN(stream.text(), stream.tokenCharacterIndex(), stream.tokenLineIndex(), i18n.UNEXPECTED_END_OF_GAME);
-                }
+                endOfGameEncountered = true;
                 game.result(stream.tokenValue<GameResult>());
-                return game;
+                break;
 
             // Something unexpected...
             default:
@@ -320,7 +316,12 @@ function doParseGame(stream: TokenStream) {
 
     } // while(stream.consumeToken())
 
-    throw new InvalidPGN(stream.text(), stream.tokenCharacterIndex(), stream.tokenLineIndex(), i18n.UNEXPECTED_END_OF_TEXT);
+    if (nodeStack.length !== 0) {
+        throw new InvalidPGN(stream.text(), stream.tokenCharacterIndex(), stream.tokenLineIndex(), i18n.UNEXPECTED_END_OF_GAME);
+    }
+    else {
+        return { game: game, atLeastOneTokenFound: atLeastOneTokenFound };
+    }
 }
 
 
@@ -363,9 +364,9 @@ class PGNDatabaseImpl extends Database {
             this._stream = new TokenStream(this._text, this._gameLocations[gameIndex]);
         }
         this._currentGameIndex = -1;
-        const result = doParseGame(this._stream);
+        const { game } = doParseGame(this._stream);
         this._currentGameIndex = gameIndex + 1;
-        return result;
+        return game;
     }
 
 }
@@ -386,12 +387,14 @@ export function readOneGame(pgnString: string, gameIndex: number) {
     const stream = new TokenStream(pgnString);
     let gameCounter = 0;
     while (gameCounter !== gameIndex) {
-        if (stream.skipGame()) {
-            ++gameCounter;
-        }
-        else {
+        if (!stream.skipGame()) {
             throw new InvalidPGN(pgnString, -1, -1, i18n.INVALID_GAME_INDEX, gameIndex, gameCounter);
         }
+        ++gameCounter;
     }
-    return doParseGame(stream);
+    const { game, atLeastOneTokenFound } = doParseGame(stream);
+    if (!atLeastOneTokenFound) {
+        throw new InvalidPGN(pgnString, -1, -1, i18n.INVALID_GAME_INDEX, gameIndex, gameCounter);
+    }
+    return game;
 }

@@ -85,7 +85,6 @@ export let MISSING_END_OF_PGN_HEADER     = 'Missing or invalid end of PGN game h
 export let UNEXPECTED_BEGIN_OF_VARIATION = 'Unexpected begin of variation.';
 export let UNEXPECTED_END_OF_VARIATION   = 'Unexpected end of variation.';
 export let UNEXPECTED_END_OF_GAME        = 'Unexpected end of game: there are pending variations.';
-export let UNEXPECTED_END_OF_TEXT        = 'Unexpected end of text: there is a pending game.';
 export let INVALID_GAME_INDEX            = 'Game index {0} is invalid (only {1} game(s) found in the PGN data).';
 export let UNKNOWN_VARIANT               = 'Unknown chess game variant ({0}).';
 export let VARIANT_WITHOUT_FEN           = 'For game variant {0}, the FEN header is mandatory.';

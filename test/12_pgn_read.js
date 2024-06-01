@@ -168,16 +168,16 @@ describe('Read PGN - Game content (database)', () => {
 
 describe('Read PGN - Wrong game index', () => {
 
-    function itInvalidGameIndex(label, gameIndex, invalidPGNExpected) {
+    function itInvalidGameIndex(label, pgnName, gameCount, gameIndex, invalidPGNExpected) {
 
         it('Database - ' + label, () => {
-            const pgn = readText('pgns/mini2/database.pgn');
+            const pgn = readText(`pgns/${pgnName}/database.pgn`);
             const database = pgnRead(pgn);
             if (invalidPGNExpected) {
                 test.exception(() => database.game(gameIndex))
                     .isInstanceOf(exception.InvalidPGN)
                     .hasProperty('pgn', pgn)
-                    .hasProperty('message', `Game index ${gameIndex} is invalid (only 2 game(s) found in the PGN data).`);
+                    .hasProperty('message', `Game index ${gameIndex} is invalid (only ${gameCount} game(s) found in the PGN data).`);
             }
             else {
                 test.exception(() => database.game(gameIndex)).isInstanceOf(exception.IllegalArgument);
@@ -185,12 +185,12 @@ describe('Read PGN - Wrong game index', () => {
         });
 
         it('Direct access - ' + label, () => {
-            const pgn = readText('pgns/mini2/database.pgn');
+            const pgn = readText(`pgns/${pgnName}/database.pgn`);
             if (invalidPGNExpected) {
                 test.exception(() => pgnRead(pgn, gameIndex))
                     .isInstanceOf(exception.InvalidPGN)
                     .hasProperty('pgn', pgn)
-                    .hasProperty('message', `Game index ${gameIndex} is invalid (only 2 game(s) found in the PGN data).`);
+                    .hasProperty('message', `Game index ${gameIndex} is invalid (only ${gameCount} game(s) found in the PGN data).`);
             }
             else {
                 test.exception(() => pgnRead(pgn, gameIndex)).isInstanceOf(exception.IllegalArgument);
@@ -198,11 +198,16 @@ describe('Read PGN - Wrong game index', () => {
         });
     }
 
-    itInvalidGameIndex('Negative index', -2, false);
-    itInvalidGameIndex('Non integer index', 0.3, false);
-    itInvalidGameIndex('Too large index', 99, true);
-    itInvalidGameIndex('NaN index', NaN, false);
-    itInvalidGameIndex('Non number index', 'xyz', false);
+    itInvalidGameIndex('Negative index', 'mini2', 2, -2, false);
+    itInvalidGameIndex('Non integer index', 'mini2', 2, 0.3, false);
+    itInvalidGameIndex('Too large index (regular file)', 'mini2', 2, 99, true);
+    itInvalidGameIndex('Too large index (empty file)', 'empty', 0, 99, true);
+    itInvalidGameIndex('Too large index (without last end-of-game)', 'missing-last-end-of-game', 2, 99, true);
+    itInvalidGameIndex('Just after the last game (regular file)', 'mini2', 2, 2, true);
+    itInvalidGameIndex('Just after the last game (empty file)', 'empty', 0, 0, true);
+    itInvalidGameIndex('Just after the last game (without last end-of-game)', 'missing-last-end-of-game', 2, 2, true);
+    itInvalidGameIndex('NaN index', 'mini2', 2, NaN, false);
+    itInvalidGameIndex('Non number index', 'mini2', 2, 'xyz', false);
 });
 
 
