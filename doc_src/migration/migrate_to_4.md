@@ -1,8 +1,16 @@
+---
+title: Migrate to 4.x
+---
+
+
+Migrate to 4.x
+==============
+
 Kokopu version 4.0.0 introduces some breaking changes with regard to the previous versions.
 Those changes may require some fixes or adjustments in your codebase when upgrading Kokopu
 from 3.x to 4.0.0 (or any subsequent version).
 
-To upgrade from an older version (1.x or 2.x), follow the {@page migrate_to_3.md migration guide to 3.x} beforehand.
+To upgrade from an older version (1.x or 2.x), follow the [migration guide to 3.x](migrate_to_3.md) beforehand.
 
 
 

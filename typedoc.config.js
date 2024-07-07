@@ -22,8 +22,22 @@
  * -------------------------------------------------------------------------- */
 
 
-.tsd-typography hr {
-    border: none;
-    height: 1px;
-    background-color: var(--color-accent);
-}
+module.exports = {
+    entryPoints: [ './src/index.ts' ],
+    out: './dist/docs',
+    readme: './doc_src/home.md',
+    favicon: './doc_src/kokopu-favicon.png',
+    customCss: './doc_src/style.css',
+    excludePrivate: true,
+    includeVersion: true,
+    disableSources: true,
+    footerDate: true,
+    name: 'Kokopu',
+    plugin: [ 'typedoc-plugin-extras' ],
+    customTitle: 'Kokopu documentation',
+    alwaysCreateEntryPointModule: false,
+    projectDocuments: [
+        './doc_src/migration.md',
+        './doc_src/tutorials.md',
+    ],
+};

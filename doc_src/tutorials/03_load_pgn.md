@@ -1,8 +1,16 @@
+---
+title: Load a PGN file
+---
+
+
+Load a PGN file
+===============
+
 The [Portable Game Notation](https://en.wikipedia.org/wiki/Portable_Game_Notation) is a standard plain-text file format used to describe chess games.
 The format is capable to describe not only the game moves, but also all the meta-data associated to the games (name of the players,
 date at which the game has been played, etc.), and move annotations (text comment, alternative variations, etc.).
 
-An example of such PGN file is provided here: [`example.pgn`](media://example.pgn).
+An example of such PGN file is provided here: [`example.pgn`](example.pgn).
 
 ```
 const { pgnRead } = require('kokopu');

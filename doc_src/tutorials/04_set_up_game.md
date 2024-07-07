@@ -1,3 +1,11 @@
+---
+title: Set-up a game from scratch
+---
+
+
+Set-up a game from scratch
+==========================
+
 A {@link Game} object describes the total state of a chess game, i.e. the played moves, the corresponding positions,
 the metadata associated to the game (players' names, date, etc...), and the annotations associated to the moves
 (text comments, alternative moves considered by the annotator, [NAGs](https://en.wikipedia.org/wiki/Numeric_Annotation_Glyphs),

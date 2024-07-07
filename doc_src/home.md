@@ -1,6 +1,6 @@
 ---
 
-<img align="right" width="96" height="96" src="media://kokopu-logo.png" />
+<img align="right" width="96" height="96" src="kokopu-logo.png" />
 
 Kokopu is a JavaScript/TypeScript chess library.
 It implements the chess game rules, and provides tools to read/write the standard chess file formats
@@ -31,8 +31,9 @@ Migrate to 3.x and 4.x
 Versions 3.0.0 and 4.0.0 introduce some breaking changes with regard to the previous versions.
 To determine whether your codebase needs to be adapted or not when upgrading Kokopu,
 please look at:
-- {@page migrate_to_4.md} to upgrade from 3.x to 4.0.0 (or any subsequent version).
-- {@page migrate_to_3.md} and {@page migrate_to_4.md} to upgrade from 1.x or 2.x to 4.0.0 (or any subsequent version).
+- [Migration guide to 4.x](migration/migrate_to_4.md) to upgrade from 3.x to 4.0.0 (or any subsequent version).
+- [Migration guide to 3.x](migration/migrate_to_3.md) and [migration guide to 4.x](migration/migrate_to_4.md) to upgrade
+from 1.x or 2.x to 4.0.0 (or any subsequent version).
 
 
 

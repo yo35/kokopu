@@ -1,7 +1,15 @@
+---
+title: Game/JSON conversion
+---
+
+
+Game/JSON conversion
+====================
+
 A {@link Game} object can be serialized to JSON using method {@link Game.pojo}, while the corresponding de-serialization operation
 is achieved by method {@link Game.fromPOJO}.
 
-An example of JSON de-serialization from file [`example.json`](media://example.json) is presented below:
+An example of JSON de-serialization from file [`example.json`](example.json) is presented below:
 
 ```
 const { Game } = require('kokopu');

@@ -1,3 +1,11 @@
+---
+title: Migrate to 3.x
+---
+
+
+Migrate to 3.x
+==============
+
 Kokopu version 3.0.0 introduces some breaking changes with regard to the previous versions.
 Those changes may require some fixes or adjustments in your codebase when upgrading Kokopu
 from 1.x or 2.x to 3.0.0 (or any subsequent version).

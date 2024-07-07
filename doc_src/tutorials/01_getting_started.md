@@ -1,3 +1,11 @@
+---
+title: Getting started
+---
+
+
+Getting started
+===============
+
 This example shows how to create a chess position, how to play some moves, and how to retrieve some information about the resulting position.
 More details available in {@link Position}.
 

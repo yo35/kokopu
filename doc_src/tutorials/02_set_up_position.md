@@ -1,3 +1,11 @@
+---
+title: Set-up a position
+---
+
+
+Set-up a position
+=================
+
 Several ways are available to set-up a chess position:
 - set-up from scratch,
 - copy another position,
