@@ -27,3 +27,9 @@
     height: 1px;
     background-color: var(--color-accent);
 }
+
+#changelog h2 {
+    font-size: inherit;
+    font-weight: bold;
+    margin-top: 24px;
+}

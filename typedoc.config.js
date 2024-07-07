@@ -22,6 +22,22 @@
  * -------------------------------------------------------------------------- */
 
 
+const fs = require('fs');
+const path = require('path');
+
+
+const tmpDir = './build/tmp_docs';
+fs.mkdirSync(path.resolve(__dirname, tmpDir), { recursive: true });
+
+
+// Generate the changelog page.
+const changelog = fs.readFileSync(path.resolve(__dirname, './CHANGELOG.md'), { encoding: 'utf8' }).split('\n').splice(2);
+changelog.unshift('---', 'title: ChangeLog', '---', '', '# ChangeLog', '', '<div id="changelog">');
+changelog.push('</div>');
+fs.writeFileSync(path.resolve(__dirname, `${tmpDir}/changelog.md`), changelog.join('\n'));
+
+
+// TypeDoc config.
 module.exports = {
     entryPoints: [ './src/index.ts' ],
     out: './dist/docs',
@@ -37,6 +53,7 @@ module.exports = {
     customTitle: 'Kokopu documentation',
     alwaysCreateEntryPointModule: false,
     projectDocuments: [
+        `${tmpDir}/changelog.md`,
         './doc_src/migration.md',
         './doc_src/tutorials.md',
     ],
