@@ -1,6 +1,10 @@
 ChangeLog
 =========
 
+4.11.2 (July 13, 2024)
+----------------------
+* Fix broken links in documentation.
+
 4.11.1 (July 7, 2024)
 ---------------------
 * Upgrade and rework documentation generator (TypeDoc).
