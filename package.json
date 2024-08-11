@@ -37,21 +37,21 @@
         "typedoc.json"
     ],
     "devDependencies": {
-        "@typescript-eslint/eslint-plugin": "^7.16.0",
-        "@typescript-eslint/parser": "^7.16.0",
+        "@typescript-eslint/eslint-plugin": "^7.18.0",
+        "@typescript-eslint/parser": "^7.18.0",
         "archiver": "^7.0.1",
         "browserify": "^17.0.0",
         "commander": "^12.1.0",
         "eslint": "^8.57.0",
-        "mocha": "^10.5.0",
+        "mocha": "^10.7.3",
         "nyc": "^17.0.0",
         "rimraf": "^6.0.1",
-        "ssh2-sftp-client": "^10.0.3",
+        "ssh2-sftp-client": "^11.0.0",
         "tsify": "^5.0.4",
-        "typedoc": "^0.26.4",
+        "typedoc": "^0.26.5",
         "typedoc-plugin-extras": "^3.1.0",
-        "typescript": "^5.5.3",
-        "uglify-js": "^3.18.0",
+        "typescript": "^5.5.4",
+        "uglify-js": "^3.19.2",
         "unit.js": "^2.1.1"
     },
     "scripts": {
