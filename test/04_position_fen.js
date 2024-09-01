@@ -35,17 +35,17 @@ function itForEach(fun) {
             return false;
         }
         return {
-            label             : fields[ 0],
-            fenIn             : fields[ 1],
-            variant           : fields[ 2],
-            strict            : fields[ 3]==='true',
-            castling          : fields[ 4],
-            enPassant         : fields[ 5],
-            fiftyMoveClock    : parseInt(fields[6]),
-            fullMoveNumber    : parseInt(fields[7]),
-            fenOutDefault     : fields[ 8],
-            fenOutWithCounters: fields[ 9],
-            fenOutWithoutXFEN : fields[10],
+            label: fields[0],
+            fenIn: fields[1],
+            variant: fields[2],
+            strict: fields[3] === 'true',
+            castling: fields[4],
+            enPassant: fields[5],
+            fiftyMoveClock: parseInt(fields[6]),
+            fullMoveNumber: parseInt(fields[7]),
+            fenOutDefault: fields[8],
+            fenOutWithCounters: fields[9],
+            fenOutWithoutXFEN: fields[10],
         };
     });
 
@@ -87,7 +87,6 @@ describe('Castling flag parsing', () => {
         test.value(dumpCastlingFlags(position, (p, castle) => p.castling(castle))).is(elem.castling);
     });
 });
-
 
 
 describe('En-passant flag parsing', () => {

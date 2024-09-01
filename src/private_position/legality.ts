@@ -301,14 +301,14 @@ export function refreshEffectiveEnPassant(position: PositionImpl) {
     // - and there must be at least one black pawn on d4 or f4.
     const square2 = (6 - position.turn * 5) * 16 + position.enPassant;
     const square3 = (5 - position.turn * 3) * 16 + position.enPassant;
-    const square4 = (4 - position.turn    ) * 16 + position.enPassant;
+    const square4 = (4 - position.turn) * 16 + position.enPassant;
     const capturingPawn = PieceImpl.PAWN * 2 + position.turn;
     const capturedPawn = PieceImpl.PAWN * 2 + 1 - position.turn;
     if (position.board[square2] !== SpI.EMPTY || position.board[square3] !== SpI.EMPTY || position.board[square4] !== capturedPawn) {
         return;
     }
     const hasCapturingPawnBefore = ((square4 - 1) & 0x88) === 0 && position.board[square4 - 1] === capturingPawn;
-    const hasCapturingPawnAfter  = ((square4 + 1) & 0x88) === 0 && position.board[square4 + 1] === capturingPawn;
+    const hasCapturingPawnAfter = ((square4 + 1) & 0x88) === 0 && position.board[square4 + 1] === capturingPawn;
     if (!hasCapturingPawnBefore && !hasCapturingPawnAfter) {
         return;
     }

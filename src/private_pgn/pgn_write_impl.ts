@@ -103,7 +103,7 @@ function writeAnnotations(node: AbstractNode, skipLineAfterCommentIfLong: boolea
 
     // Prepare tags
     const tags = node.tags();
-    const tagValues: Map<string, string> = new Map();
+    const tagValues = new Map<string, string>();
     let nonEmptyTagFound = false;
     for (const tagKey of tags) {
         const tagValue = trimAndCollapseSpaces(node.tag(tagKey)!.replace(/[[\]]/g, '')); // Square-brackets are erased in tag values in PGN.
@@ -211,7 +211,7 @@ export interface PGNWriteOptions {
     /**
      * If `true`, a PGN tag `[PlyCount "..."]` corresponding to the number of half-moves is added to each game in the generated PGN string. `false` by default.
      */
-    withPlyCount?: boolean;
+    withPlyCount?: boolean,
 }
 
 

@@ -116,11 +116,10 @@ function run(paths, pathAlignment) {
             'Loading: ' + alignRight(duration2, 6) + ' ms');
     }
 
-    for (const [path, error] of errors.entries()) {
+    for (const [ path, error ] of errors.entries()) {
         displayInvalidPGNError(path, error);
     }
 }
-
 
 
 // -----------------------------------------------------------------------------

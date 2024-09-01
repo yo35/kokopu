@@ -27,7 +27,7 @@
  */
 export namespace i18n {
 
-/* eslint-disable prefer-const */
+/* eslint-disable prefer-const, @stylistic/indent, @stylistic/no-multi-spaces */
 // WARNING: all those constants must be declared with "let" to allow them to be re-defined if necessary by consumer codes.
 
 // FEN parsing error messages

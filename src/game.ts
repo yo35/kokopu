@@ -981,7 +981,7 @@ function formatPlayer(key: string, playerName: string | undefined, playerElo: nu
         result += ` (${playerElo})`;
     }
     else if (playerTitle !== undefined) {
-        result +=  ` (${trimCollapseAndMarkEmpty(playerTitle)})`;
+        result += ` (${trimCollapseAndMarkEmpty(playerTitle)})`;
     }
     return result;
 }

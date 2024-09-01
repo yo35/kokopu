@@ -82,7 +82,7 @@ export abstract class Database {
         return {
             [Symbol.iterator]() {
                 return new GameIteratorImpl(gameCount, gameLoader);
-            }
+            },
         };
     }
 

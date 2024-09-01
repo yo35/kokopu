@@ -654,7 +654,7 @@ function getTagKeys(data: AbstractNodeData) {
  */
 function filterTags(data: AbstractNodeData, filter: (tagKey: string, tagValue: string) => boolean) {
     const result = new Map<string, string>();
-    for (const [tagKey, tagValue] of data.tags.entries()) {
+    for (const [ tagKey, tagValue ] of data.tags.entries()) {
         if (filter(tagKey, tagValue)) {
             result.set(tagKey, tagValue);
         }
@@ -668,7 +668,7 @@ function filterTags(data: AbstractNodeData, filter: (tagKey: string, tagValue: s
  */
 function getTagRecords(data: AbstractNodeData) {
     const result: Record<string, string> = {};
-    for (const [tagKey, tagValue] of data.tags.entries()) {
+    for (const [ tagKey, tagValue ] of data.tags.entries()) {
         result[tagKey] = tagValue;
     }
     return result;

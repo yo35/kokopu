@@ -35,26 +35,26 @@ function itForEach(fun) {
             return false;
         }
         return {
-            label              : label,
-            constructor        : fields[ 1],
-            variant            : fields[ 2],
-            fen                : fields[ 3],
-            turn               : fields[ 4],
-            isLegal            : fields[ 5]==='true',
-            whiteKing          : fields[ 6]==='-' ? false : fields[6],
-            blackKing          : fields[ 7]==='-' ? false : fields[7],
-            effectiveCastling  : fields[ 8],
-            effectiveEnPassant : fields[ 9],
-            isCheck            : fields[10]==='true',
-            isCheckmate        : fields[11]==='true',
-            isStalemate        : fields[12]==='true',
-            isDead             : fields[13]==='true',
-            isDeadUSCF         : fields[14]==='true',
-            hasMove            : fields[15]==='true',
-            moves              : fields[16],
-            uciMoves           : fields[17],
-            notations          : fields[18],
-            successors         : fields[19],
+            label: label,
+            constructor: fields[1],
+            variant: fields[2],
+            fen: fields[3],
+            turn: fields[4],
+            isLegal: fields[5] === 'true',
+            whiteKing: fields[6] === '-' ? false : fields[6],
+            blackKing: fields[7] === '-' ? false : fields[7],
+            effectiveCastling: fields[8],
+            effectiveEnPassant: fields[9],
+            isCheck: fields[10] === 'true',
+            isCheckmate: fields[11] === 'true',
+            isStalemate: fields[12] === 'true',
+            isDead: fields[13] === 'true',
+            isDeadUSCF: fields[14] === 'true',
+            hasMove: fields[15] === 'true',
+            moves: fields[16],
+            uciMoves: fields[17],
+            notations: fields[18],
+            successors: fields[19],
         };
     });
 
@@ -250,7 +250,7 @@ describe('Standard algebraic notation generation', () => {
 
 
 describe('UCI notation parsing', () => {
-    const PROMO  = ['', 'k', 'q', 'r', 'b', 'n', 'p'];
+    const PROMO = [ '', 'k', 'q', 'r', 'b', 'n', 'p' ];
     itForEach(elem => {
         const pos = createPosition(elem);
         let moves = [];
@@ -275,7 +275,7 @@ describe('UCI notation parsing', () => {
 
         // Sort the moves and remove the duplicates.
         moves.sort();
-        moves = moves.filter((move, index, tab) => index === 0 || move !== tab[index-1]);
+        moves = moves.filter((move, index, tab) => index === 0 || move !== tab[index - 1]);
 
         test.value(moves.join('/')).is(elem.moves);
     });
@@ -283,8 +283,8 @@ describe('UCI notation parsing', () => {
 
 
 describe('Standard algebraic notation parsing', () => {
-    const RANK_DISAMBIGUATION = ['', '1', '2', '3', '4', '5', '6', '7', '8'];
-    const FILE_DISAMBIGUATION = ['', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+    const RANK_DISAMBIGUATION = [ '', '1', '2', '3', '4', '5', '6', '7', '8' ];
+    const FILE_DISAMBIGUATION = [ '', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h' ];
 
     itForEach(elem => {
         const pos = createPosition(elem);
@@ -310,7 +310,7 @@ describe('Standard algebraic notation parsing', () => {
         // Pawn move
         forEachSquare(to => {
             for (const fd of FILE_DISAMBIGUATION) {
-                for (const promo of ['', '=K', '=Q', '=R', '=B', '=N', '=P']) {
+                for (const promo of [ '', '=K', '=Q', '=R', '=B', '=N', '=P' ]) {
                     const text = fd + to + promo;
                     parseNotation(text);
                 }
@@ -331,7 +331,7 @@ describe('Standard algebraic notation parsing', () => {
 
         // Sort the moves and remove the duplicates.
         moves.sort();
-        moves = moves.filter((move, index, tab) => index === 0 || move !== tab[index-1]);
+        moves = moves.filter((move, index, tab) => index === 0 || move !== tab[index - 1]);
 
         test.value(moves.join('/')).is(elem.moves);
     });

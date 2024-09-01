@@ -201,17 +201,18 @@ export function variantWithCanonicalStartPosition(variant: GameVariant): boolean
 
 const NAG_SYMBOLS = new Map<number, string>();
 
-NAG_SYMBOLS.set(  1, '!',           ); // good move
-NAG_SYMBOLS.set(  2, '?',           ); // bad move
-NAG_SYMBOLS.set(  3, '!!',          ); // very good move
-NAG_SYMBOLS.set(  4, '??',          ); // very bad move
-NAG_SYMBOLS.set(  5, '!?',          ); // interesting move
-NAG_SYMBOLS.set(  6, '?!',          ); // questionable move
+/* eslint-disable @stylistic/no-multi-spaces, @stylistic/space-in-parens */
+NAG_SYMBOLS.set(  1, '!'            ); // good move
+NAG_SYMBOLS.set(  2, '?'            ); // bad move
+NAG_SYMBOLS.set(  3, '!!'           ); // very good move
+NAG_SYMBOLS.set(  4, '??'           ); // very bad move
+NAG_SYMBOLS.set(  5, '!?'           ); // interesting move
+NAG_SYMBOLS.set(  6, '?!'           ); // questionable move
 NAG_SYMBOLS.set(  7, '\u25a1'       ); // Only move
 NAG_SYMBOLS.set(  8, '\u25a1'       ); // Only move (ChessBase)
 NAG_SYMBOLS.set(  9, '\u2612'       ); // Worst move (Chess.com)
-NAG_SYMBOLS.set( 10, '=',           ); // equal position
-NAG_SYMBOLS.set( 11, '=',           ); // equal position (ChessBase)
+NAG_SYMBOLS.set( 10, '='            ); // equal position
+NAG_SYMBOLS.set( 11, '='            ); // equal position (ChessBase)
 NAG_SYMBOLS.set( 13, '\u221e'       ); // unclear position
 NAG_SYMBOLS.set( 14, '\u2a72'       ); // White has a slight advantage
 NAG_SYMBOLS.set( 15, '\u2a71'       ); // Black has a slight advantage
@@ -232,8 +233,9 @@ NAG_SYMBOLS.set(140, '\u2206'       ); // With idea...
 NAG_SYMBOLS.set(141, '\u2207'       ); // Aimed against...
 NAG_SYMBOLS.set(142, '\u2313'       ); // Better is...
 NAG_SYMBOLS.set(143, '\u2264'       ); // Worse is...
-NAG_SYMBOLS.set(145, 'RR',          ); // Editorial comment
-NAG_SYMBOLS.set(146, 'N',           ); // Novelty
+NAG_SYMBOLS.set(145, 'RR'           ); // Editorial comment
+NAG_SYMBOLS.set(146, 'N'            ); // Novelty
+/* eslint-enable */
 
 
 /**

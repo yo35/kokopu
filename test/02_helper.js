@@ -112,11 +112,11 @@ describe('Square color', () => {
 
 
 describe('Square to coordinates', () => {
-    it('a1', () => { test.value(squareToCoordinates('a1')).is({ file:0, rank:0 }); });
-    it('h1', () => { test.value(squareToCoordinates('h1')).is({ file:7, rank:0 }); });
-    it('a8', () => { test.value(squareToCoordinates('a8')).is({ file:0, rank:7 }); });
-    it('h8', () => { test.value(squareToCoordinates('h8')).is({ file:7, rank:7 }); });
-    it('e3', () => { test.value(squareToCoordinates('e3')).is({ file:4, rank:2 }); });
+    it('a1', () => { test.value(squareToCoordinates('a1')).is({ file: 0, rank: 0 }); });
+    it('h1', () => { test.value(squareToCoordinates('h1')).is({ file: 7, rank: 0 }); });
+    it('a8', () => { test.value(squareToCoordinates('a8')).is({ file: 0, rank: 7 }); });
+    it('h8', () => { test.value(squareToCoordinates('h8')).is({ file: 7, rank: 7 }); });
+    it('e3', () => { test.value(squareToCoordinates('e3')).is({ file: 4, rank: 2 }); });
 
     it('Error with <empty string>', () => { test.exception(() => squareToCoordinates('')).isInstanceOf(exception.IllegalArgument); });
     it('Error with cc', () => { test.exception(() => squareToCoordinates('cc')).isInstanceOf(exception.IllegalArgument); });

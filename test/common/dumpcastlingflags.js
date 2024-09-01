@@ -22,7 +22,7 @@
  * -------------------------------------------------------------------------- */
 
 
-module.exports = function(position, getter) {
+module.exports = function (position, getter) {
     let result = '';
     for (const castle of position.variant() === 'chess960' ? 'abcdefgh' : 'kq') {
         if (getter(position, 'w' + castle)) {

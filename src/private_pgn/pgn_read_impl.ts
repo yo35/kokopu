@@ -101,12 +101,12 @@ function parseVariant(value: string): GameVariant | undefined {
 
 
 interface InitialPositionFactory {
-    fen?: string;
-    fenTokenCharacterIndex?: number;
-    fenTokenLineIndex?: number;
-    variant?: GameVariant;
-    variantTokenCharacterIndex?: number;
-    variantTokenLineIndex?: number;
+    fen?: string,
+    fenTokenCharacterIndex?: number,
+    fenTokenLineIndex?: number,
+    variant?: GameVariant,
+    variantTokenCharacterIndex?: number,
+    variantTokenLineIndex?: number,
 }
 
 
@@ -202,7 +202,7 @@ function doParseGame(stream: TokenStream) {
     const game = new Game(); // the result
     let endOfGameEncountered = false;
     let atLeastOneTokenFound = false;
-    let node: Node | Variation | null = null;  // current node (or variation) to which the next move should be appended
+    let node: Node | Variation | null = null; // current node (or variation) to which the next move should be appended
     const nodeStack: (Node | Variation)[] = []; // when starting a variation, its parent node (btw., always a "true" node, not a variation) is stacked here
     const initialPositionFactory: InitialPositionFactory = {};
 

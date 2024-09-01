@@ -41,9 +41,8 @@ export const ATTACK_DIRECTIONS = [
     [ -33, -31, -18, -14, 14, 18, 31, 33 ], // knight
     [ -33, -31, -18, -14, 14, 18, 31, 33 ], // knight
     [ 15, 17 ], // white pawn
-    [ -17, -15 ] // black pawn
+    [ -17, -15 ], // black pawn
 ];
-
 
 
 // -----------------------------------------------------------------------------
@@ -63,9 +62,8 @@ export function isAttacked(position: PositionImpl, square: number, attackerColor
 
 
 function isAttackedByNonSliding(position: PositionImpl, square: number, nonSlidingAttacker: number) {
-    const directions = ATTACK_DIRECTIONS[nonSlidingAttacker];
-    for (let i = 0; i < directions.length; ++i) {
-        const sq = square - directions[i];
+    for (const attackDirection of ATTACK_DIRECTIONS[nonSlidingAttacker]) {
+        const sq = square - attackDirection;
         if ((sq & 0x88) === 0 && position.board[sq] === nonSlidingAttacker) {
             return true;
         }
@@ -75,11 +73,10 @@ function isAttackedByNonSliding(position: PositionImpl, square: number, nonSlidi
 
 
 function isAttackedBySliding(position: PositionImpl, square: number, slidingAttacker: number, queenAttacker: number) {
-    const directions = ATTACK_DIRECTIONS[slidingAttacker];
-    for (let i = 0; i < directions.length; ++i) {
+    for (const attackDirection of ATTACK_DIRECTIONS[slidingAttacker]) {
         let sq = square;
         while (true) {
-            sq -= directions[i];
+            sq -= attackDirection;
             if ((sq & 0x88) === 0) {
                 const cp = position.board[sq];
                 if (cp === SpI.EMPTY) {
@@ -94,7 +91,6 @@ function isAttackedBySliding(position: PositionImpl, square: number, slidingAtta
     }
     return false;
 }
-
 
 
 // -----------------------------------------------------------------------------
@@ -116,9 +112,8 @@ export function getAttacks(position: PositionImpl, square: number, attackerColor
 
 
 function findNonSlidingAttacks(position: PositionImpl, square: number, result: number[], nonSlidingAttacker: number) {
-    const directions = ATTACK_DIRECTIONS[nonSlidingAttacker];
-    for (let i = 0; i < directions.length; ++i) {
-        const sq = square - directions[i];
+    for (const attackDirection of ATTACK_DIRECTIONS[nonSlidingAttacker]) {
+        const sq = square - attackDirection;
         if ((sq & 0x88) === 0 && position.board[sq] === nonSlidingAttacker) {
             result.push(sq);
         }
@@ -127,11 +122,10 @@ function findNonSlidingAttacks(position: PositionImpl, square: number, result: n
 
 
 function findSlidingAttacks(position: PositionImpl, square: number, result: number[], slidingAttacker: number, queenAttacker: number) {
-    const directions = ATTACK_DIRECTIONS[slidingAttacker];
-    for (let i = 0; i < directions.length; ++i) {
+    for (const attackDirection of ATTACK_DIRECTIONS[slidingAttacker]) {
         let sq = square;
         while (true) {
-            sq -= directions[i];
+            sq -= attackDirection;
             if ((sq & 0x88) === 0) {
                 const cp = position.board[sq];
                 if (cp === SpI.EMPTY) {

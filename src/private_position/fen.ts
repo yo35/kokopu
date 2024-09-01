@@ -211,7 +211,7 @@ export function parseFEN(variant: number, fen: string, strict: boolean): { posit
 
     // Board parsing
     for (let r = 7; r >= 0; --r) {
-        const rankField = rankFields[ 7 - r];
+        const rankField = rankFields[7 - r];
         let i = 0;
         let c = 0;
         while (i < rankField.length && c < 8) {
@@ -352,7 +352,7 @@ function castlingFromStringXFEN(castling: string, strict: boolean, board: number
     for (let file = 0; file < 8; ++file) {
         const s = fileToString(file);
         if (castling.indexOf(s.toUpperCase()) >= 0) { result[ColorImpl.WHITE] |= 1 << file; }
-        if (castling.indexOf(s              ) >= 0) { result[ColorImpl.BLACK] |= 1 << file; }
+        if (castling.indexOf(s) >= 0) { result[ColorImpl.BLACK] |= 1 << file; }
     }
     return result;
 }

@@ -28,14 +28,14 @@ import { trimAndCollapseSpaces } from '../private_game/common';
 
 
 interface RegExpWrapper extends RegExp {
-    needIncrementLineIndex: boolean;
-    matchedIndex: number;
-    matched: RegExpExecArray | null;
+    needIncrementLineIndex: boolean,
+    matchedIndex: number,
+    matched: RegExpExecArray | null,
 }
 
 
 function regExpWrapper(re: RegExp, needIncrementLineIndex?: boolean) {
-    const result = (re as RegExpWrapper);
+    const result = re as RegExpWrapper;
     result.needIncrementLineIndex = needIncrementLineIndex !== undefined && needIncrementLineIndex;
     result.matchedIndex = -1;
     result.matched = null;
@@ -47,6 +47,7 @@ function regExpWrapper(re: RegExp, needIncrementLineIndex?: boolean) {
  * Types of tokens that could be encountered in a PGN.
  */
 export const enum TokenType {
+    /* eslint-disable @stylistic/no-multi-spaces */
     INVALID         =  0,
     BEGIN_HEADER    =  1, // [
     END_HEADER      =  2, // ]
@@ -59,6 +60,7 @@ export const enum TokenType {
     BEGIN_VARIATION =  9, // (
     END_VARIATION   = 10, // )
     END_OF_GAME     = 11, // 1-0, 0-1, 1/2-1/2 or *
+    /* eslint-enable */
 }
 
 
@@ -68,7 +70,8 @@ const LAST_MOVE_TEXT_TOKEN = TokenType.END_OF_GAME;
 
 
 // Conversion table NAG -> numeric code
-const SPECIAL_NAGS_LOOKUP: Map<string, number> = new Map();
+const SPECIAL_NAGS_LOOKUP = new Map<string, number>();
+/* eslint-disable @stylistic/no-multi-spaces, @stylistic/comma-spacing */
 SPECIAL_NAGS_LOOKUP.set('!!' ,   3); // very good move
 SPECIAL_NAGS_LOOKUP.set('!'  ,   1); // good move
 SPECIAL_NAGS_LOOKUP.set('!?' ,   5); // interesting move
@@ -88,14 +91,15 @@ SPECIAL_NAGS_LOOKUP.set('-/+',  17); // Black has a moderate advantage
 SPECIAL_NAGS_LOOKUP.set('-+' ,  19); // Black has a decisive advantage
 SPECIAL_NAGS_LOOKUP.set('RR' , 145); // Editorial comment
 SPECIAL_NAGS_LOOKUP.set('N'  , 146); // Novelty
+/* eslint-enable */
 
 
 /**
  * Location within a PGN text.
  */
 export interface StreamPosition {
-    pos: number;
-    lineIndex: number;
+    pos: number,
+    lineIndex: number,
 }
 
 
@@ -129,7 +133,7 @@ export class TokenStream {
     private _emptyLineBeforeToken = false;
 
     /** Whether an empty line will be encountered after the current token. */
-    private _emptyLineAfterToken  = false;
+    private _emptyLineAfterToken = false;
 
     // Space-like matchers
     private _matchSpaces = regExpWrapper(/[ \f\t\v]+/g);
@@ -265,20 +269,21 @@ export class TokenStream {
 
         // Match a move number
         if (this.testAtPos(this._matchMoveNumber)) {
-            this._token      = TokenType.MOVE_NUMBER;
+            this._token = TokenType.MOVE_NUMBER;
             this._tokenValue = null;
         }
 
         // Match a move or a null-move
         else if (this.testAtPos(this._matchMove)) {
-            this._token      = TokenType.MOVE;
+            this._token = TokenType.MOVE;
             this._tokenValue = this._matchMove.matched![0];
         }
 
         // Match a NAG
         else if (this.testAtPos(this._matchNag)) {
-            this._token      = TokenType.NAG;
-            this._tokenValue = this._matchNag.matched![2] === undefined ? SPECIAL_NAGS_LOOKUP.get(this._matchNag.matched![1]) :
+            this._token = TokenType.NAG;
+            this._tokenValue = this._matchNag.matched![2] === undefined ?
+                SPECIAL_NAGS_LOOKUP.get(this._matchNag.matched![1]) :
                 parseInt(this._matchNag.matched![2], 10);
         }
 
@@ -287,43 +292,43 @@ export class TokenStream {
             if (!this.testAtPos(this._commentMode)) {
                 throw new InvalidPGN(this._text, this._pos, this._lineIndex, i18n.INVALID_PGN_TOKEN);
             }
-            this._token      = TokenType.COMMENT;
+            this._token = TokenType.COMMENT;
             this._tokenValue = parseCommentValue(this._commentMode.matched![1]);
         }
 
         // Match the beginning of a variation
         else if (this.testAtPos(this._matchBeginVariation)) {
-            this._token      = TokenType.BEGIN_VARIATION;
+            this._token = TokenType.BEGIN_VARIATION;
             this._tokenValue = null;
         }
 
         // Match the end of a variation
         else if (this.testAtPos(this._matchEndVariation)) {
-            this._token      = TokenType.END_VARIATION;
+            this._token = TokenType.END_VARIATION;
             this._tokenValue = null;
         }
 
         // Match a end-of-game marker
         else if (this.testAtPos(this._matchEndOfGame)) {
-            this._token      = TokenType.END_OF_GAME;
+            this._token = TokenType.END_OF_GAME;
             this._tokenValue = this._matchEndOfGame.matched![0];
         }
 
         // Match the beginning of a game header
         else if (this.testAtPos(this._matchBeginHeader)) {
-            this._token      = TokenType.BEGIN_HEADER;
+            this._token = TokenType.BEGIN_HEADER;
             this._tokenValue = null;
         }
 
         // Match the end of a game header
         else if (this.testAtPos(this._matchEndHeader)) {
-            this._token      = TokenType.END_HEADER;
+            this._token = TokenType.END_HEADER;
             this._tokenValue = null;
         }
 
         // Match the ID of a game header
         else if (this.testAtPos(this._matchHeaderId)) {
-            this._token      = TokenType.HEADER_ID;
+            this._token = TokenType.HEADER_ID;
             this._tokenValue = this._matchHeaderId.matched![1];
         }
 
@@ -332,7 +337,7 @@ export class TokenStream {
             if (!this.testAtPos(this._headerValueMode)) {
                 throw new InvalidPGN(this._text, this._pos, this._lineIndex, i18n.INVALID_PGN_TOKEN);
             }
-            this._token      = TokenType.HEADER_VALUE;
+            this._token = TokenType.HEADER_VALUE;
             this._tokenValue = parseHeaderValue(this._headerValueMode.matched![1]);
         }
 
@@ -445,8 +450,8 @@ export class TokenStream {
 
 
 export interface TokenCommentData {
-    comment: string | undefined;
-    tags: Map<string, string>;
+    comment: string | undefined,
+    tags: Map<string, string>,
 }
 
 

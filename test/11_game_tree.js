@@ -468,9 +468,9 @@ const oneGamefactories = {
 
 const fullPgnFactories = {
 
-    'empty': () => [],
+    empty: () => [],
 
-    'mini2': () => {
+    mini2: () => {
 
         const game0 = new Game();
         game0.event('TV Show');
@@ -486,7 +486,7 @@ const fullPgnFactories = {
         game1.mainVariation().play('e4').play('e5').play('Bc4').play('Nc6').play('Qh5').play('Nf6').play('Qxf7#');
 
         return [ game0, game1 ];
-    }
+    },
 };
 
 

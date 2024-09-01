@@ -31,7 +31,7 @@ const ID_PADDING = '                        ';
 /**
  * Dump the content of a Game object.
  */
-module.exports = function(game) {
+module.exports = function (game) {
     let res = '\n';
 
     function dumpHeader(key, value) {
@@ -125,7 +125,7 @@ module.exports = function(game) {
 
         // Variation header
         res += formatNodeOrVariationId(variation.id()) + indentFirst + '-+';
-        if(variation.isLongVariation()) {
+        if (variation.isLongVariation()) {
             res += '<LONG';
         }
         dumpNags(variation);

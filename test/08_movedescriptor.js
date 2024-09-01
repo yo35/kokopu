@@ -74,6 +74,8 @@ describe('Normal move', () => {
         });
     }
 
+    /* eslint-disable @stylistic/comma-spacing, @stylistic/no-multi-spaces */
+
     itDescriptor('Is descriptor?', testIsMoveDescriptor);
     itDescriptor('Is castling?'  , descriptor => test.value(descriptor.isCastling()).is(false));
     itDescriptor('Is en-passant?', descriptor => test.value(descriptor.isEnPassant()).is(false));
@@ -93,6 +95,8 @@ describe('Normal move', () => {
     itDescriptor('Promotion'             , descriptor => test.exception(() => descriptor.promotion()).isInstanceOf(exception.IllegalArgument));
     itDescriptor('Colored promotion'     , descriptor => test.exception(() => descriptor.coloredPromotion()).isInstanceOf(exception.IllegalArgument));
     itDescriptor('To string'             , descriptor => test.value(descriptor.toString()).is('b1a3'));
+
+    /* eslint-enable */
 });
 
 
@@ -106,6 +110,8 @@ describe('Normal move with capture', () => {
             action(descriptor);
         });
     }
+
+    /* eslint-disable @stylistic/comma-spacing, @stylistic/no-multi-spaces */
 
     itDescriptor('Is descriptor?', testIsMoveDescriptor);
     itDescriptor('Is castling?'  , descriptor => test.value(descriptor.isCastling()).is(false));
@@ -126,6 +132,8 @@ describe('Normal move with capture', () => {
     itDescriptor('Promotion'             , descriptor => test.exception(() => descriptor.promotion()).isInstanceOf(exception.IllegalArgument));
     itDescriptor('Colored promotion'     , descriptor => test.exception(() => descriptor.coloredPromotion()).isInstanceOf(exception.IllegalArgument));
     itDescriptor('To string'             , descriptor => test.value(descriptor.toString()).is('c3c7'));
+
+    /* eslint-enable */
 });
 
 
@@ -139,6 +147,8 @@ describe('Castling move', () => {
             action(descriptor);
         });
     }
+
+    /* eslint-disable @stylistic/comma-spacing, @stylistic/no-multi-spaces */
 
     itDescriptor('Is descriptor?', testIsMoveDescriptor);
     itDescriptor('Is castling?'  , descriptor => test.value(descriptor.isCastling()).is(true));
@@ -159,6 +169,8 @@ describe('Castling move', () => {
     itDescriptor('Promotion'             , descriptor => test.exception(() => descriptor.promotion()).isInstanceOf(exception.IllegalArgument));
     itDescriptor('Colored promotion'     , descriptor => test.exception(() => descriptor.coloredPromotion()).isInstanceOf(exception.IllegalArgument));
     itDescriptor('To string'             , descriptor => test.value(descriptor.toString()).is('e1g1O'));
+
+    /* eslint-enable */
 });
 
 
@@ -172,6 +184,8 @@ describe('En-passant move', () => {
             action(descriptor);
         });
     }
+
+    /* eslint-disable @stylistic/comma-spacing, @stylistic/no-multi-spaces */
 
     itDescriptor('Is descriptor?', testIsMoveDescriptor);
     itDescriptor('Is castling?'  , descriptor => test.value(descriptor.isCastling()).is(false));
@@ -192,6 +206,8 @@ describe('En-passant move', () => {
     itDescriptor('Promotion'             , descriptor => test.exception(() => descriptor.promotion()).isInstanceOf(exception.IllegalArgument));
     itDescriptor('Colored promotion'     , descriptor => test.exception(() => descriptor.coloredPromotion()).isInstanceOf(exception.IllegalArgument));
     itDescriptor('To string'             , descriptor => test.value(descriptor.toString()).is('g5f6'));
+
+    /* eslint-enable */
 });
 
 
@@ -205,6 +221,8 @@ describe('Promotion move', () => {
             action(descriptor);
         });
     }
+
+    /* eslint-disable @stylistic/comma-spacing, @stylistic/no-multi-spaces */
 
     itDescriptor('Is descriptor?', testIsMoveDescriptor);
     itDescriptor('Is castling?'  , descriptor => test.value(descriptor.isCastling()).is(false));
@@ -225,6 +243,8 @@ describe('Promotion move', () => {
     itDescriptor('Promotion'             , descriptor => test.value(descriptor.promotion()).is('q'));
     itDescriptor('Colored promotion'     , descriptor => test.value(descriptor.coloredPromotion()).is('wq'));
     itDescriptor('To string'             , descriptor => test.value(descriptor.toString()).is('a7a8Q'));
+
+    /* eslint-enable */
 });
 
 
@@ -238,6 +258,8 @@ describe('Promotion move with capture', () => {
             action(descriptor);
         });
     }
+
+    /* eslint-disable @stylistic/comma-spacing, @stylistic/no-multi-spaces */
 
     itDescriptor('Is descriptor?', testIsMoveDescriptor);
     itDescriptor('Is castling?'  , descriptor => test.value(descriptor.isCastling()).is(false));
@@ -258,4 +280,6 @@ describe('Promotion move with capture', () => {
     itDescriptor('Promotion'             , descriptor => test.value(descriptor.promotion()).is('r'));
     itDescriptor('Colored promotion'     , descriptor => test.value(descriptor.coloredPromotion()).is('wr'));
     itDescriptor('To string'             , descriptor => test.value(descriptor.toString()).is('a7b8R'));
+
+    /* eslint-enable */
 });

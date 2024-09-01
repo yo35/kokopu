@@ -28,7 +28,7 @@ const fs = require('fs');
 /**
  * Read a CSV file and process it line by line.
  */
-module.exports = function(filename, parser) {
+module.exports = function (filename, parser) {
     const result = [];
     const lines = fs.readFileSync('./test/resources/' + filename, 'utf8').split('\n');
 

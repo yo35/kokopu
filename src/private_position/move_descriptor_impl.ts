@@ -28,10 +28,12 @@ import { IllegalArgument } from '../exception';
 import { MoveDescriptor } from '../move_descriptor';
 
 
+/* eslint-disable @stylistic/no-multi-spaces */
 const CASTLING_FLAG   = 0x01;
 const EN_PASSANT_FLAG = 0x02;
 const CAPTURE_FLAG    = 0x04;
 const PROMOTION_FLAG  = 0x08;
+/* eslint-enable */
 
 
 /**
@@ -82,8 +84,8 @@ export class MoveDescriptorImpl extends MoveDescriptor {
     _movingColoredPiece: number;
     _finalColoredPiece: number;
     _optionalColoredPiece: number; // Captured (colored) piece in case of capture, moving (colored) rook in case of castling.
-    _optionalSquare1: number;      // Rook-from or en-passant square.
-    _optionalSquare2: number;      // Rook-to.
+    _optionalSquare1: number; // Rook-from or en-passant square.
+    _optionalSquare2: number; // Rook-to.
 
     private constructor(flags: number, from: number, to: number, movingColoredPiece: number, finalColoredPiece: number, optionalColoredPiece: number,
         optionalSquare1: number, optionalSquare2: number) {
@@ -94,8 +96,8 @@ export class MoveDescriptorImpl extends MoveDescriptor {
         this._movingColoredPiece = movingColoredPiece;
         this._finalColoredPiece = finalColoredPiece;
         this._optionalColoredPiece = optionalColoredPiece; // Captured (colored) piece in case of capture, moving (colored) rook in case of castling.
-        this._optionalSquare1 = optionalSquare1;    // Rook-from or en-passant square.
-        this._optionalSquare2 = optionalSquare2;    // Rook-to.
+        this._optionalSquare1 = optionalSquare1; // Rook-from or en-passant square.
+        this._optionalSquare2 = optionalSquare2; // Rook-to.
     }
 
     isCastling() {

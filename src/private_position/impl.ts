@@ -37,6 +37,7 @@ const EMPTY_BOARD = [
 ];
 
 const REGULAR_START_BOARD = [
+    /* eslint-disable @stylistic/comma-spacing, @stylistic/no-multi-spaces */
     CpI.WR   , CpI.WN   , CpI.WB   , CpI.WQ   , CpI.WK   , CpI.WB   , CpI.WN   , CpI.WR   , SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID,
     CpI.WP   , CpI.WP   , CpI.WP   , CpI.WP   , CpI.WP   , CpI.WP   , CpI.WP   , CpI.WP   , SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID,
     SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID,
@@ -45,9 +46,11 @@ const REGULAR_START_BOARD = [
     SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID,
     CpI.BP   , CpI.BP   , CpI.BP   , CpI.BP   , CpI.BP   , CpI.BP   , CpI.BP   , CpI.BP   , SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID,
     CpI.BR   , CpI.BN   , CpI.BB   , CpI.BQ   , CpI.BK   , CpI.BB   , CpI.BN   , CpI.BR   ,
+    /* eslint-enable */
 ];
 
 const HORDE_START_BOARD = [
+    /* eslint-disable @stylistic/comma-spacing, @stylistic/no-multi-spaces */
     CpI.WP   , CpI.WP   , CpI.WP   , CpI.WP   , CpI.WP   , CpI.WP   , CpI.WP   , CpI.WP   , SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID,
     CpI.WP   , CpI.WP   , CpI.WP   , CpI.WP   , CpI.WP   , CpI.WP   , CpI.WP   , CpI.WP   , SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID,
     CpI.WP   , CpI.WP   , CpI.WP   , CpI.WP   , CpI.WP   , CpI.WP   , CpI.WP   , CpI.WP   , SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID,
@@ -56,6 +59,7 @@ const HORDE_START_BOARD = [
     SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID,
     CpI.BP   , CpI.BP   , CpI.BP   , CpI.BP   , CpI.BP   , CpI.BP   , CpI.BP   , CpI.BP   , SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID,
     CpI.BR   , CpI.BN   , CpI.BB   , CpI.BQ   , CpI.BK   , CpI.BB   , CpI.BN   , CpI.BR   ,
+    /* eslint-enable */
 ];
 
 
@@ -172,6 +176,7 @@ export function make960FromScharnagl(scharnaglCode: number): PositionImpl {
     const rank8 = info.pieceScheme.map(piece => piece * 2 + ColorImpl.BLACK);
     return {
         board: [
+            /* eslint-disable @stylistic/comma-spacing, @stylistic/no-multi-spaces */
             rank1[0] , rank1[1] , rank1[2] , rank1[3] , rank1[4] , rank1[5] , rank1[6] , rank1[7] , SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID,
             CpI.WP   , CpI.WP   , CpI.WP   , CpI.WP   , CpI.WP   , CpI.WP   , CpI.WP   , CpI.WP   , SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID,
             SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID,
@@ -180,6 +185,7 @@ export function make960FromScharnagl(scharnaglCode: number): PositionImpl {
             SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.EMPTY, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID,
             CpI.BP   , CpI.BP   , CpI.BP   , CpI.BP   , CpI.BP   , CpI.BP   , CpI.BP   , CpI.BP   , SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID, SpI.INVALID,
             rank8[0] , rank8[1] , rank8[2] , rank8[3] , rank8[4] , rank8[5] , rank8[6] , rank8[7] ,
+            /* eslint-enable */
         ],
         turn: ColorImpl.WHITE,
         castling: [ info.castling, info.castling ],
@@ -261,21 +267,21 @@ function decodeScharnagl(scharnaglCode: number): ScharnaglInfo {
     return {
         pieceScheme: scheme,
         castling: castling,
-        kingFile: kingFile
+        kingFile: kingFile,
     };
 }
 
 
 export function makeCopy(position: PositionImpl): PositionImpl {
     return {
-        board              : position.board.slice(),
-        turn               : position.turn,
-        castling           : position.castling.slice(),
-        enPassant          : position.enPassant,
-        variant            : position.variant,
-        legal              : position.legal,
-        king               : position.king.slice(),
-        effectiveCastling  : position.effectiveCastling === null ? null : position.effectiveCastling.slice(),
-        effectiveEnPassant : position.effectiveEnPassant,
+        board: position.board.slice(),
+        turn: position.turn,
+        castling: position.castling.slice(),
+        enPassant: position.enPassant,
+        variant: position.variant,
+        legal: position.legal,
+        king: position.king.slice(),
+        effectiveCastling: position.effectiveCastling === null ? null : position.effectiveCastling.slice(),
+        effectiveEnPassant: position.effectiveEnPassant,
     };
 }

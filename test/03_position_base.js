@@ -27,11 +27,11 @@ const dumpCastlingFlags = require('./common/dumpcastlingflags');
 const readCSV = require('./common/readcsv');
 const test = require('unit.js');
 
-const startFEN  = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+const startFEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 const startXFEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w AHah - 0 1';
 const startFENAntichess = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w - - 0 1';
 const startFENHorde = 'rnbqkbnr/pppppppp/8/1PP2PP1/PPPPPPPP/PPPPPPPP/PPPPPPPP/PPPPPPPP w kq - 0 1';
-const emptyFEN  = '8/8/8/8/8/8/8/8 w - - 0 1';
+const emptyFEN = '8/8/8/8/8/8/8/8 w - - 0 1';
 const customFEN = 'r3k2r/pb3pbp/1p4p1/3n4/1PpP4/P4NB1/5PPP/R3KB1R b KQkq d3 0 1';
 const customFENNoCastling = 'r3k2r/pb3pbp/1p4p1/3n4/1PpP4/P4NB1/5PPP/R3KB1R b - d3 0 1';
 const customFENWhiteCastlingOnly = 'r3k2r/pb3pbp/1p4p1/3n4/1PpP4/P4NB1/5PPP/R3KB1R b KQ d3 0 1';
@@ -40,7 +40,7 @@ const customXFEN = 'qrkbrnbn/pppppppp/8/8/8/8/PPPPPPPP/QRKBRNBN w BEbe - 0 1';
 const customXFENAsFEN = 'qrkbrnbn/pppppppp/8/8/8/8/PPPPPPPP/QRKBRNBN w KQkq - 0 1';
 const customFENHorde = '1Q3rk1/2P4p/1P2pp2/2PP4/5P1P/2q1PPPP/2P1PPPP/2PPPPPP b - - 0 1';
 
-const variants = ['regular', 'chess960', 'no-king', 'white-king-only', 'black-king-only', 'antichess', 'horde'];
+const variants = [ 'regular', 'chess960', 'no-king', 'white-king-only', 'black-king-only', 'antichess', 'horde' ];
 
 
 describe('Position constructor', () => {
@@ -52,6 +52,8 @@ describe('Position constructor', () => {
             test.value(position.fen()).is(expectedFEN);
         });
     }
+
+    /* eslint-disable @stylistic/comma-spacing, @stylistic/no-multi-spaces */
 
     doTest('Default constructor'  , 'regular', startFEN , () => new Position());
     doTest('Constructor \'start\'', 'regular', startFEN , () => new Position('start'));
@@ -88,6 +90,8 @@ describe('Position constructor', () => {
     doTest('Constructor \'empty\' (horde)'            , 'horde', emptyFEN      , () => new Position('horde', 'empty'));
     doTest('Constructor FEN-based (horde)'            , 'horde', customFENHorde, () => new Position('horde', customFENHorde));
     doTest('Constructor FEN-based with prefix (horde)', 'horde', customFENHorde, () => new Position('horde:' + customFENHorde));
+
+    /* eslint-enable */
 
     function doFailureTest(label, fenParsingErrorExpected, positionFactory) {
         it(label, () => { test.exception(positionFactory).isInstanceOf(fenParsingErrorExpected ? exception.InvalidFEN : exception.IllegalArgument); });
@@ -197,7 +201,7 @@ describe('Reset 960 mutator', () => {
         });
     }
 
-    for (const elem of [960, 18.3, '546']) {
+    for (const elem of [ 960, 18.3, '546' ]) {
         it('Error with Scharnagl code ' + elem, () => {
             const p = new Position();
             test.exception(() => p.reset960(elem)).isInstanceOf(exception.IllegalArgument);
@@ -281,14 +285,14 @@ describe('Position getters', () => {
     it('Get en-passant 1', () => { const p = new Position(); test.value(p.enPassant()).is('-'); });
     it('Get en-passant 2', () => { const p = new Position(currentFEN); test.value(p.enPassant()).is('e'); });
 
-    for (const elem of ['j1', 'f9']) {
+    for (const elem of [ 'j1', 'f9' ]) {
         it('Error for board with ' + elem, () => {
             const p = new Position();
             test.exception(() => p.square(elem)).isInstanceOf(exception.IllegalArgument);
         });
     }
 
-    for (const elem of ['bK', 'wa']) {
+    for (const elem of [ 'bK', 'wa' ]) {
         it('Error for castling with ' + elem, () => {
             const p = new Position();
             test.exception(() => p.castling(elem)).isInstanceOf(exception.IllegalArgument);
@@ -296,7 +300,7 @@ describe('Position getters', () => {
         });
     }
 
-    for (const elem of ['wA', 'bq']) {
+    for (const elem of [ 'wA', 'bq' ]) {
         it('Error for castling (chess960) with ' + elem, () => {
             const p = new Position('chess960', 123);
             test.exception(() => p.castling(elem)).isInstanceOf(exception.IllegalArgument);
@@ -374,28 +378,28 @@ describe('Position setters', () => {
         testCastlingEnPassantFEN(p, 'Fadf', '-', 'rknnbrqb/pppppppp/8/8/8/8/PPPPPPPP/RKNNBRQB w Faf - 0 1');
     });
 
-    for (const elem of ['p', 'Q', 'kw']) {
+    for (const elem of [ 'p', 'Q', 'kw' ]) {
         it('Error for board with colored piece ' + elem, () => {
             const p = new Position();
             test.exception(() => p.square('d4', elem)).isInstanceOf(exception.IllegalArgument);
         });
     }
 
-    for (const elem of ['', 'W', 'bb', 'wb']) {
+    for (const elem of [ '', 'W', 'bb', 'wb' ]) {
         it('Error for turn with ' + (elem === '' ? '<empty string>' : elem), () => {
             const p = new Position();
             test.exception(() => p.turn(elem)).isInstanceOf(exception.IllegalArgument);
         });
     }
 
-    for (const elem of [0, 1, 'false', 'true']) {
+    for (const elem of [ 0, 1, 'false', 'true' ]) {
         it('Error for set castling with ' + (elem === '' ? '<empty string>' : elem), () => {
             const p = new Position();
             test.exception(() => p.castling('wk', elem)).isInstanceOf(exception.IllegalArgument);
         });
     }
 
-    for (const elem of ['', 'i', 'gg', 'abcdefgh']) {
+    for (const elem of [ '', 'i', 'gg', 'abcdefgh' ]) {
         it('Error for en-passant with ' + (elem === '' ? '<empty string>' : elem), () => {
             const p = new Position();
             test.exception(() => p.enPassant(elem)).isInstanceOf(exception.IllegalArgument);

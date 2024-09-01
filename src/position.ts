@@ -52,7 +52,6 @@ export class Position {
     private _impl: PositionImpl;
 
 
-
     // -------------------------------------------------------------------------
     // Constructor & reset/clear
     // -------------------------------------------------------------------------
@@ -267,7 +266,6 @@ export class Position {
     }
 
 
-
     // -------------------------------------------------------------------------
     // FEN & ASCII conversion
     // -------------------------------------------------------------------------
@@ -365,7 +363,6 @@ export class Position {
             throw new IllegalArgument('Position.fen()');
         }
     }
-
 
 
     // -------------------------------------------------------------------------
@@ -579,7 +576,6 @@ export class Position {
     }
 
 
-
     // -------------------------------------------------------------------------
     // Legality
     // -------------------------------------------------------------------------
@@ -619,7 +615,6 @@ export class Position {
         const squareCode = this._impl.king[colorCode];
         return squareCode < 0 ? false : squareToString(squareCode);
     }
-
 
 
     // -------------------------------------------------------------------------
@@ -841,7 +836,6 @@ export class Position {
     }
 
 
-
     // -------------------------------------------------------------------------
     // Algebraic notation
     // -------------------------------------------------------------------------
@@ -914,7 +908,6 @@ export class Position {
     }
 
 
-
     // -------------------------------------------------------------------------
     // UCI
     // -------------------------------------------------------------------------
@@ -971,8 +964,8 @@ export class Position {
  * @see {@link Position.isMoveLegal}
  */
 export type RegularMoveFactory = {
-    status: 'regular';
-    (): MoveDescriptor;
+    status: 'regular',
+    (): MoveDescriptor,
 };
 
 
@@ -980,8 +973,8 @@ export type RegularMoveFactory = {
  * @see {@link Position.isMoveLegal}
  */
 export type PromotionMoveFactory = {
-    status: 'promotion';
-    (promotion: Piece): MoveDescriptor;
+    status: 'promotion',
+    (promotion: Piece): MoveDescriptor,
 };
 
 

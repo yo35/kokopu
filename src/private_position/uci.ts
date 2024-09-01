@@ -46,7 +46,7 @@ export function getUCINotation(position: PositionImpl, descriptor: MoveDescripto
         result += descriptor.to();
     }
 
-    if(descriptor.isPromotion()) {
+    if (descriptor.isPromotion()) {
         result += descriptor.promotion();
     }
 

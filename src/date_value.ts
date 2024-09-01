@@ -265,7 +265,7 @@ function computeType(year: number, month?: number, day?: number): false | 'y' | 
         return isValidYear(year) && isValidMonth(month) ? 'ym' : false;
     }
     else {
-        return isValidYear(year) ? 'y': false;
+        return isValidYear(year) ? 'y' : false;
     }
 }
 

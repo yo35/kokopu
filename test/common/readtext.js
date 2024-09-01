@@ -28,6 +28,6 @@ const fs = require('fs');
 /**
  * Read a text file and return its content as a string.
  */
-module.exports = function(filename) {
+module.exports = function (filename) {
     return fs.readFileSync('./test/resources/' + filename, 'utf8');
 };

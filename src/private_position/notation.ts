@@ -112,8 +112,7 @@ function getDisambiguationSymbol(position: PositionImpl, from: number, to: numbe
     let foundOnSameFile = false;
     const rankFrom = Math.trunc(from / 16);
     const fileFrom = from % 16;
-    for (let i = 0; i < attackers.length; ++i) {
-        const sq = attackers[i];
+    for (const sq of attackers) {
         if (sq === from || isPinned(position, sq, to)) {
             continue;
         }
@@ -157,15 +156,15 @@ function isPinned(position: PositionImpl, sq: number, aimingAtSq: number) {
         return aimingAtVector >= 8 && pinningLoockup(position, kingSquare, sq, kingSquare < sq ? 1 : -1, pinnerRook, pinnerQueen);
     }
     else if (vector % 16 === 0) {
-        return aimingAtVector % 16 !==0 && pinningLoockup(position, kingSquare, sq, kingSquare < sq ? 16 : -16, pinnerRook, pinnerQueen);
+        return aimingAtVector % 16 !== 0 && pinningLoockup(position, kingSquare, sq, kingSquare < sq ? 16 : -16, pinnerRook, pinnerQueen);
     }
 
     // Potential pinning on diagonal.
     else if (vector % 15 === 0) {
-        return aimingAtVector % 15 !==0 && pinningLoockup(position, kingSquare, sq, kingSquare < sq ? 15 : -15, pinnerBishop, pinnerQueen);
+        return aimingAtVector % 15 !== 0 && pinningLoockup(position, kingSquare, sq, kingSquare < sq ? 15 : -15, pinnerBishop, pinnerQueen);
     }
     else if (vector % 17 === 0) {
-        return aimingAtVector % 17 !==0 && pinningLoockup(position, kingSquare, sq, kingSquare < sq ? 17 : -17, pinnerBishop, pinnerQueen);
+        return aimingAtVector % 17 !== 0 && pinningLoockup(position, kingSquare, sq, kingSquare < sq ? 17 : -17, pinnerBishop, pinnerQueen);
     }
 
     // No pinning for sure.
@@ -359,12 +358,12 @@ function parseNonPawnNotation(position: PositionImpl, notation: string, strict: 
 
     // Compute the move descriptor for each remaining "from"-square candidate
     let descriptor: MoveDescriptorImpl | false = false;
-    for (let i = 0; i < attackers.length; ++i) {
-        if (isKingSafeAfterMove(position, attackers[i], to)) {
+    for (const sq of attackers) {
+        if (isKingSafeAfterMove(position, sq, to)) {
             if (descriptor) {
                 throw new InvalidNotation(getFEN(position), notation, i18n.REQUIRE_DISAMBIGUATION, pieceSymbol, destinationSquare);
             }
-            descriptor = MoveDescriptorImpl.make(attackers[i], to, movingColoredPiece, toContent);
+            descriptor = MoveDescriptorImpl.make(sq, to, movingColoredPiece, toContent);
         }
     }
     if (!descriptor) {
@@ -399,7 +398,7 @@ function parsePawnMoveNotation(position: PositionImpl, notation: string, strict:
     const coloredPawn = PieceImpl.PAWN * 2 + position.turn;
     const to = squareFromString(destinationSquare);
     const toContent = position.board[to];
-    const vector = 16 - position.turn*32;
+    const vector = 16 - position.turn * 32;
     let from = to - vector;
     let enPassantSquare = -1;
     if (originFile !== undefined) { // Capturing pawn move

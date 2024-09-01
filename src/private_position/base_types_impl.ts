@@ -24,6 +24,9 @@
 
 import { Color, Piece, ColoredPiece, File, Rank, Square, GameResult, GameVariant } from '../base_types';
 
+/* eslint-disable @stylistic/computed-property-spacing, @stylistic/no-multi-spaces, @stylistic/no-whitespace-before-property, @stylistic/semi-spacing,
+@stylistic/space-before-function-paren, @stylistic/space-in-parens, @stylistic/type-annotation-spacing */
+
 
 export const enum ColorImpl {
     WHITE = 0,

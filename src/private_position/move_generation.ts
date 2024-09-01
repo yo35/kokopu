@@ -31,12 +31,11 @@ import { MoveDescriptorImpl } from './move_descriptor_impl';
 import { MoveDescriptor } from '../move_descriptor';
 
 
-/* eslint-disable no-mixed-spaces-and-tabs, indent */
-
 /**
  * Displacement lookup per square index difference.
  */
 const DISPLACEMENT_LOOKUP = [
+    /* eslint-disable @stylistic/indent, @stylistic/no-multi-spaces */
     204,    0,    0,    0,    0,    0,    0,   60,    0,    0,    0,    0,    0,    0,  204,    0,
       0,  204,    0,    0,    0,    0,    0,   60,    0,    0,    0,    0,    0,  204,    0,    0,
       0,    0,  204,    0,    0,    0,    0,   60,    0,    0,    0,    0,  204,    0,    0,    0,
@@ -51,13 +50,15 @@ const DISPLACEMENT_LOOKUP = [
       0,    0,    0,  204,    0,    0,    0,   60,    0,    0,    0,  204,    0,    0,    0,    0,
       0,    0,  204,    0,    0,    0,    0,   60,    0,    0,    0,    0,  204,    0,    0,    0,
       0,  204,    0,    0,    0,    0,    0,   60,    0,    0,    0,    0,    0,  204,    0,    0,
-    204,    0,    0,    0,    0,    0,    0,   60,    0,    0,    0,    0,    0,    0,  204,    0
+    204,    0,    0,    0,    0,    0,    0,   60,    0,    0,    0,    0,    0,    0,  204,    0,
+    /* eslint-enable */
 ];
 
 /**
  * Sliding direction
  */
 const SLIDING_DIRECTION = [
+    /* eslint-disable @stylistic/indent, @stylistic/no-multi-spaces */
     -17,   0,   0,   0,   0,   0,   0, -16,   0,   0,   0,   0,   0,   0, -15,   0,
       0, -17,   0,   0,   0,   0,   0, -16,   0,   0,   0,   0,   0, -15,   0,   0,
       0,   0, -17,   0,   0,   0,   0, -16,   0,   0,   0,   0, -15,   0,   0,   0,
@@ -72,10 +73,9 @@ const SLIDING_DIRECTION = [
       0,   0,   0,  15,   0,   0,   0,  16,   0,   0,   0,  17,   0,   0,   0,   0,
       0,   0,  15,   0,   0,   0,   0,  16,   0,   0,   0,   0,  17,   0,   0,   0,
       0,  15,   0,   0,   0,   0,   0,  16,   0,   0,   0,   0,   0,  17,   0,   0,
-     15,   0,   0,   0,   0,   0,   0,  16,   0,   0,   0,   0,   0,   0,  17,   0
+     15,   0,   0,   0,   0,   0,   0,  16,   0,   0,   0,   0,   0,   0,  17,   0,
+    /* eslint-enable */
 ];
-
-/* eslint-enable no-mixed-spaces-and-tabs, indent */
 
 
 /**
@@ -245,7 +245,7 @@ export function hasMove(position: PositionImpl) {
         generateMoves(position, () => { throw new MoveFound(); });
         return false;
     }
-    catch(err) {
+    catch (err) {
         // istanbul ignore else
         if (err instanceof MoveFound) {
             return true;
@@ -300,7 +300,7 @@ function generateMoves(position: PositionImpl, moveDescriptorConsumer: (moveDesc
     refreshEffectiveEnPassant(position);
     if (position.effectiveEnPassant! >= 0) {
         const square3 = (5 - position.turn * 3) * 16 + position.effectiveEnPassant!;
-        const square4 = (4 - position.turn    ) * 16 + position.effectiveEnPassant!;
+        const square4 = (4 - position.turn) * 16 + position.effectiveEnPassant!;
         const capturingPawn = PieceImpl.PAWN * 2 + position.turn;
         if (((square4 - 1) & 0x88) === 0 && position.board[square4 - 1] === capturingPawn && isKingSafeAfterMove(position, square4 - 1, square3, square4)) {
             moveDescriptorConsumer(MoveDescriptorImpl.makeEnPassant(square4 - 1, square3, square4, position.turn));
@@ -324,9 +324,8 @@ function generateMoves(position: PositionImpl, moveDescriptorConsumer: (moveDesc
         if (movingPiece === PieceImpl.PAWN) {
 
             // Regular capturing moves (en-passant not handled here)
-            const attackDirections = ATTACK_DIRECTIONS[fromContent];
-            for (let i = 0; i < attackDirections.length; ++i) {
-                const to = from + attackDirections[i];
+            for (const attackDirection of ATTACK_DIRECTIONS[fromContent]) {
+                const to = from + attackDirection;
                 if ((to & 0x88) === 0 && position.board[to] !== SpI.EMPTY && position.board[to] % 2 !== position.turn && isKingSafeAfterMove(position, from, to)) {
                     generateRegularPawnMoveOrPromotion(position, from, to, moveDescriptorConsumer);
                 }
@@ -355,9 +354,8 @@ function generateMoves(position: PositionImpl, moveDescriptorConsumer: (moveDesc
 
         // Generate moves for non-sliding non-pawn pieces
         else if (movingPiece === PieceImpl.KNIGHT || movingPiece === PieceImpl.KING) {
-            const directions = ATTACK_DIRECTIONS[fromContent];
-            for (let i = 0; i < directions.length; ++i) {
-                const to = from + directions[i];
+            for (const attackDirection of ATTACK_DIRECTIONS[fromContent]) {
+                const to = from + attackDirection;
                 if ((to & 0x88) === 0) {
                     const toContent = position.board[to];
                     if ((toContent === SpI.EMPTY ? nonCaptureIsAllowed : toContent % 2 !== position.turn) && isKingSafeAfterMove(position, from, to)) {
@@ -369,9 +367,8 @@ function generateMoves(position: PositionImpl, moveDescriptorConsumer: (moveDesc
 
         // Generate moves for sliding pieces
         else {
-            const directions = ATTACK_DIRECTIONS[fromContent];
-            for (let i = 0; i < directions.length; ++i) {
-                for (let to = from + directions[i]; (to & 0x88) === 0; to += directions[i]) {
+            for (const attackDirection of ATTACK_DIRECTIONS[fromContent]) {
+                for (let to = from + attackDirection; (to & 0x88) === 0; to += attackDirection) {
                     const toContent = position.board[to];
                     if ((toContent === SpI.EMPTY ? nonCaptureIsAllowed : toContent % 2 !== position.turn) && isKingSafeAfterMove(position, from, to)) {
                         moveDescriptorConsumer(MoveDescriptorImpl.make(from, to, fromContent, toContent));
@@ -634,7 +631,8 @@ export function isMoveLegal(position: PositionImpl, from: number, to: number): R
     else {
         return {
             type: 'regular',
-            moveDescriptor: enPassantSquare >= 0 ? MoveDescriptorImpl.makeEnPassant(from, to, enPassantSquare, position.turn) :
+            moveDescriptor: enPassantSquare >= 0 ?
+                MoveDescriptorImpl.makeEnPassant(from, to, enPassantSquare, position.turn) :
                 MoveDescriptorImpl.make(from, to, fromContent, toContent),
         };
     }
@@ -683,10 +681,10 @@ export function play(position: PositionImpl, descriptor: MoveDescriptorImpl) {
     if (movingPiece === PieceImpl.KING) {
         position.effectiveCastling![position.turn] = 0;
     }
-    if (descriptor._from <    8) { position.effectiveCastling![ColorImpl.WHITE] &= ~(1 <<  descriptor._from      ); }
-    if (descriptor._to   <    8) { position.effectiveCastling![ColorImpl.WHITE] &= ~(1 <<  descriptor._to        ); }
+    if (descriptor._from < 8) { position.effectiveCastling![ColorImpl.WHITE] &= ~(1 << descriptor._from); }
+    if (descriptor._to < 8) { position.effectiveCastling![ColorImpl.WHITE] &= ~(1 << descriptor._to); }
     if (descriptor._from >= 112) { position.effectiveCastling![ColorImpl.BLACK] &= ~(1 << (descriptor._from % 16)); }
-    if (descriptor._to   >= 112) { position.effectiveCastling![ColorImpl.BLACK] &= ~(1 << (descriptor._to   % 16)); }
+    if (descriptor._to >= 112) { position.effectiveCastling![ColorImpl.BLACK] &= ~(1 << (descriptor._to % 16)); }
     position.castling[ColorImpl.WHITE] = position.effectiveCastling![ColorImpl.WHITE];
     position.castling[ColorImpl.BLACK] = position.effectiveCastling![ColorImpl.BLACK];
 
