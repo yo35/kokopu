@@ -1,7 +1,0 @@
-env:
-  node: true
-  mocha: true
-
-rules:
-  '@typescript-eslint/no-shadow':       [ error, { builtinGlobals: true, allow: [ test ] }]
-  '@typescript-eslint/no-var-requires': [ off ]
