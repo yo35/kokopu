@@ -1,6 +1,10 @@
 ChangeLog
 =========
 
+4.11.3 (January 1, 2025)
+------------------------
+* Minor fixes.
+
 4.11.2 (July 13, 2024)
 ----------------------
 * Fix broken links in documentation.
