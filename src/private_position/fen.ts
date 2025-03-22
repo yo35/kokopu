@@ -46,15 +46,19 @@ export function ascii(position: PositionImpl) {
             const cp = position.board[r * 16 + c];
             result += '| ' + (cp === SpI.EMPTY ? ' ' : FEN_PIECE_SYMBOL[cp]) + ' ';
         }
-        result += '|\n';
+        result += '| ' + (r + 1) + '\n';
         result += '+---+---+---+---+---+---+---+---+\n';
     }
+    result += '  a   b   c   d   e   f   g   h\n';
 
     // Flags
     result += colorToString(position.turn) + ' ' + castlingToString(position) + ' ' + enPassantToString(position);
     if (position.variant !== GameVariantImpl.REGULAR_CHESS) {
         result += ' (' + variantToString(position.variant) + ')';
     }
+
+    // fen string
+    result += '\n' + getFEN(position) + '\n';
 
     return result;
 }
