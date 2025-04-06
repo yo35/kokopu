@@ -34,24 +34,56 @@ const EN_PASSANT_RANK = [ '6', '3' ];
 
 
 /**
+ * Options for the {@link Position.ascii()} method.
+ */
+export interface PositionAsciiOptions {
+
+    /**
+     * If true, the board is represented from Black's point of view. false by default.
+     */
+    flipped?: boolean,
+
+    /**
+     * If provided, each line of the ASCII-art picture is prefixed with this string.
+     */
+    prefix?: string,
+
+    /**
+     * Whether board coordinates should be present or not. false by default.
+     */
+    coordinateVisible?: boolean,
+}
+
+
+/**
  * Return a human-readable string representing the position. This string is multi-line,
  * and is intended to be displayed in a fixed-width font (similarly to an ASCII-art picture).
  */
-export function ascii(position: PositionImpl) {
+export function ascii(position: PositionImpl, { flipped = false, prefix = '', coordinateVisible = false }: PositionAsciiOptions) {
 
     // Board scanning
-    let result = '+---+---+---+---+---+---+---+---+\n';
-    for (let r = 7; r >= 0; --r) {
-        for (let c = 0; c < 8; ++c) {
+    const lineSeparator = prefix + (coordinateVisible ? '  ' : '') + '+---+---+---+---+---+---+---+---+\n';
+    const rows = flipped ? [ 0, 1, 2, 3, 4, 5, 6, 7 ] : [ 7, 6, 5, 4, 3, 2, 1, 0 ];
+    const columns = flipped ? [ 7, 6, 5, 4, 3, 2, 1, 0 ] : [ 0, 1, 2, 3, 4, 5, 6, 7 ];
+    let result = lineSeparator;
+    for (const r of rows) {
+        result += prefix;
+        if (coordinateVisible) {
+            result += (r + 1) + ' ';
+        }
+        for (const c of columns) {
             const cp = position.board[r * 16 + c];
             result += '| ' + (cp === SpI.EMPTY ? ' ' : FEN_PIECE_SYMBOL[cp]) + ' ';
         }
         result += '|\n';
-        result += '+---+---+---+---+---+---+---+---+\n';
+        result += lineSeparator;
+    }
+    if (coordinateVisible) {
+        result += prefix + (flipped ? '    h   g   f   e   d   c   b   a\n' : '    a   b   c   d   e   f   g   h\n');
     }
 
     // Flags
-    result += colorToString(position.turn) + ' ' + castlingToString(position) + ' ' + enPassantToString(position);
+    result += prefix + colorToString(position.turn) + ' ' + castlingToString(position) + ' ' + enPassantToString(position);
     if (position.variant !== GameVariantImpl.REGULAR_CHESS) {
         result += ' (' + variantToString(position.variant) + ')';
     }

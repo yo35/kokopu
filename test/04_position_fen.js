@@ -25,6 +25,7 @@
 const { exception, Position } = require('../dist/lib/index');
 const dumpCastlingFlags = require('./common/dumpcastlingflags');
 const readCSV = require('./common/readcsv');
+const readText = require('./common/readtext');
 const test = require('unit.js');
 
 
@@ -144,4 +145,23 @@ describe('Invalid FEN overloads', () => {
     itInvalidOverload('Invalid key for getter', pos => pos.fen({ fiftyMoveClock: 'forty two' }));
     itInvalidOverload('Non-string input for setter', pos => pos.fen(42));
     itInvalidOverload('Non-boolean option for setter', pos => pos.fen('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', 42));
+});
+
+
+describe('ASCII representation for position', () => {
+
+    function itTestOption(label, filename, options) {
+        it(label, () => {
+            const expected = readText(`ascii/${filename}.txt`).trimEnd();
+            const position = new Position('r1bqkbnr/pppp1ppp/2n5/1B2p3/4P3/5N2/PPPP1PPP/RNBQK2R b KQkq - 3 3');
+            test.value(position.ascii(options)).is(expected);
+        });
+    }
+
+    itTestOption('Default options', 'default', {});
+    itTestOption('Default options (explicitly)', 'default', { flipped: false, coordinateVisible: false, prefix: '' });
+    itTestOption('Coordinate visible', 'coordinate-visible', { coordinateVisible: true });
+    itTestOption('Flipped', 'flipped', { flipped: true });
+    itTestOption('Flipped & coordinate visible', 'flipped-coordinate-visible', { flipped: true, coordinateVisible: true });
+    itTestOption('Prefixed', 'prefixed', { prefix: '> ', coordinateVisible: true });
 });

@@ -31,7 +31,7 @@ import { MoveDescriptor } from './move_descriptor';
 import { isAttacked, getAttacks } from './private_position/attacks';
 import { SpI, GameVariantImpl, colorFromString, colorToString, pieceFromString, coloredPieceFromString, coloredPieceToString,
     fileFromString, fileToString, squareFromString, squareToString, variantFromString, variantToString } from './private_position/base_types_impl';
-import { ascii, getFEN, parseFEN } from './private_position/fen';
+import { PositionAsciiOptions, ascii, getFEN, parseFEN } from './private_position/fen';
 import { PositionImpl, makeCopy, makeEmpty, makeInitial, make960FromScharnagl, hasCanonicalStartPosition } from './private_position/impl';
 import { isLegal, refreshLegalFlagAndKingSquares, refreshEffectiveEnPassant, isEqual, refreshEffectiveCastling } from './private_position/legality';
 import { MoveDescriptorImpl } from './private_position/move_descriptor_impl';
@@ -278,30 +278,31 @@ export class Position {
      *
      * ```
      * const position = new Position();
-     * console.log(position.ascii());
+     * console.log(position.ascii({ coordinateVisible: true }));
      *
-     * // +---+---+---+---+---+---+---+---+
-     * // | r | n | b | q | k | b | n | r |
-     * // +---+---+---+---+---+---+---+---+
-     * // | p | p | p | p | p | p | p | p |
-     * // +---+---+---+---+---+---+---+---+
-     * // |   |   |   |   |   |   |   |   |
-     * // +---+---+---+---+---+---+---+---+
-     * // |   |   |   |   |   |   |   |   |
-     * // +---+---+---+---+---+---+---+---+
-     * // |   |   |   |   |   |   |   |   |
-     * // +---+---+---+---+---+---+---+---+
-     * // |   |   |   |   |   |   |   |   |
-     * // +---+---+---+---+---+---+---+---+
-     * // | P | P | P | P | P | P | P | P |
-     * // +---+---+---+---+---+---+---+---+
-     * // | R | N | B | Q | K | B | N | R |
-     * // +---+---+---+---+---+---+---+---+
+     * //   +---+---+---+---+---+---+---+---+
+     * // 8 | r | n | b | q | k | b | n | r |
+     * //   +---+---+---+---+---+---+---+---+
+     * // 7 | p | p | p | p | p | p | p | p |
+     * //   +---+---+---+---+---+---+---+---+
+     * // 6 |   |   |   |   |   |   |   |   |
+     * //   +---+---+---+---+---+---+---+---+
+     * // 5 |   |   |   |   |   |   |   |   |
+     * //   +---+---+---+---+---+---+---+---+
+     * // 4 |   |   |   |   |   |   |   |   |
+     * //   +---+---+---+---+---+---+---+---+
+     * // 3 |   |   |   |   |   |   |   |   |
+     * //   +---+---+---+---+---+---+---+---+
+     * // 2 | P | P | P | P | P | P | P | P |
+     * //   +---+---+---+---+---+---+---+---+
+     * // 1 | R | N | B | Q | K | B | N | R |
+     * //   +---+---+---+---+---+---+---+---+
+     * //     a   b   c   d   e   f   g   h
      * // w KQkq -
      * ```
      */
-    ascii(): string {
-        return ascii(this._impl);
+    ascii(options?: PositionAsciiOptions): string {
+        return ascii(this._impl, options ?? {});
     }
 
 

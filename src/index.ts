@@ -30,6 +30,8 @@ export { isColor, isPiece, isColoredPiece, isFile, isRank, isSquare, isSquareCou
     squareColor, squareToCoordinates, coordinatesToSquare, oppositeColor, variantWithCanonicalStartPosition, nagSymbol, isValidECO } from './helper';
 export { DateValue } from './date_value';
 
+export { PositionAsciiOptions } from './private_position/fen';
+
 export { MoveDescriptor, isMoveDescriptor } from './move_descriptor';
 export { Position, RegularMoveFactory, PromotionMoveFactory } from './position';
 export { AbstractNode, Node, Variation } from './node_variation';
