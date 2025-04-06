@@ -1,6 +1,10 @@
 ChangeLog
 =========
 
+4.12.0 (April 6, 2025)
+----------------------
+* Add options for `Position.ascii()`: flip / coordinates / prefix (based on [#49](https://github.com/yo35/kokopu/pull/49)).
+
 4.11.3 (January 1, 2025)
 ------------------------
 * Minor fixes.
