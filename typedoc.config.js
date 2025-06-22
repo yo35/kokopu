@@ -36,6 +36,9 @@ changelog.unshift('---', 'title: ChangeLog', '---', '', '# ChangeLog', '', '<div
 changelog.push('</div>');
 fs.writeFileSync(path.resolve(__dirname, `${tmpDir}/changelog.md`), changelog.join('\n'));
 
+// Write the generation date in the footer.
+const formatter = new Intl.DateTimeFormat('en-US', { dateStyle: 'long' });
+const generatedAt = formatter.format(Date.now());
 
 // TypeDoc config.
 module.exports = {
@@ -47,10 +50,8 @@ module.exports = {
     excludePrivate: true,
     includeVersion: true,
     disableSources: true,
-    footerDate: true,
     name: 'Kokopu',
-    plugin: [ 'typedoc-plugin-extras' ],
-    customTitle: 'Kokopu documentation',
+    customFooterHtml: generatedAt,
     alwaysCreateEntryPointModule: false,
     projectDocuments: [
         `${tmpDir}/changelog.md`,
