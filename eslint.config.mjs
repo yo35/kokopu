@@ -7,7 +7,7 @@ export default tseslint.config(
 
     // Base config
     eslint.configs.recommended,
-    stylistic.configs['recommended-flat'],
+    stylistic.configs.recommended,
     ...tseslint.configs.strict,
     ...tseslint.configs.stylistic,
 
