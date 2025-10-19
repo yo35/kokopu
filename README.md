@@ -118,4 +118,16 @@ console.log(moves.map(move => position.notation(move)));
 // 'Be7', 'Bd6', 'Bc5', 'Bb4', 'Ba3', 'Nf6', 'Nh6', 'Ne7' ]
 ```
 
+Or directly within a HTML page, if no package manager is used:
+
+```html
+<script src="kokopu.js"></script>
+<script>
+    const position = new kokopu.Position();
+    position.play('e4');
+    position.play('e5');
+    // etc...
+</script>
+```
+
 More examples available in [documentation](https://kokopu.yo35.org/).
