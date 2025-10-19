@@ -33,7 +33,7 @@ Installation
 npm install kokopu
 ```
 
-- Without a package manager: download the single-file package [kokopu.zip](https://kokopu.yo35.org/dist/kokopu.zip), unzip it,
+- Without a package manager: download the single-file package [`kokopu.zip`](https://kokopu.yo35.org/dist/kokopu.zip), unzip it,
 and include either file `kokopu.js` or file `kokopu.min.js` in your HTML page.
 
 
