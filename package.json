@@ -65,8 +65,6 @@
         "build:doc": "typedoc",
         "build:lib": "rimraf dist/lib && tsc --outDir dist/lib",
         "start": "typedoc --watch --preserveWatchOutput",
-        "clean": "rimraf build dist",
-        "predeploy": "npm run test && npm run build",
-        "deploy": "npm publish && node scripts/deploy.js"
+        "clean": "rimraf build dist"
     }
 }

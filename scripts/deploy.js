@@ -24,111 +24,77 @@
 
 const fs = require('fs');
 const process = require('process');
-const readline = require('readline');
 const { Readable } = require('stream');
 const Client = require('ssh2-sftp-client');
 const { version } = require('../package.json');
 
 
-function promptPassword(prompt, callback) {
-
-    const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
-    rl.input.on("keypress", () => {
-        const len = rl.line.length;
-        readline.moveCursor(rl.output, -len, 0);
-        readline.clearLine(rl.output, 1);
-        rl.output.write('*'.repeat(len));
-    });
-
-    let password = '';
-    rl.on('close', () => callback(password));
-
-    rl.question(prompt, answer => {
-        password = answer;
-        rl.close();
-    });
-}
-
-
-function runUpload(host, user, uploadFun) {
-    promptPassword(`Pass for ${user}@${host}: `, async (pass) => {
-
-        // Validate the password.
-        if (!pass) {
-            console.log('Deploy canceled.');
-            return;
-        }
-
+async function runUpload(uploadFun) {
+    try {
+        const client = new Client();
         try {
-            const client = new Client();
-            try {
 
-                // To invoke to upload a file.
-                async function uploadText(text, distPath) {
-                    console.log(`Uploading text to ${distPath}`);
-                    await client.put(Readable.from([ text ]), distPath, {
+            // To invoke to upload a file.
+            async function uploadText(text, distPath) {
+                console.log(`Uploading text to ${distPath}`);
+                await client.put(Readable.from([ text ]), distPath, {
+                    writeStreamOptions: {
+                        mode: 0o644,
+                    },
+                });
+            }
+
+            // To invoke to upload a file or (recursively) a directory.
+            async function uploadFile(input, distPath) {
+                if (fs.statSync(input).isDirectory()) {
+                    console.log(`Creating directory ${distPath}`);
+                    await client.mkdir(distPath);
+                    await client.chmod(distPath, 0o755);
+                    for (const file of fs.readdirSync(input)) {
+                        await uploadFile(`${input}/${file}`, `${distPath}/${file}`);
+                    }
+                }
+                else {
+                    console.log(`Uploading file ${distPath}`);
+                    await client.put(input, distPath, {
                         writeStreamOptions: {
                             mode: 0o644,
                         },
                     });
                 }
-
-                // To invoke to upload a file or (recursively) a directory.
-                async function uploadFile(input, distPath) {
-                    if (fs.statSync(input).isDirectory()) {
-                        console.log(`Creating directory ${distPath}`);
-                        await client.mkdir(distPath);
-                        await client.chmod(distPath, 0o755);
-                        for (const file of fs.readdirSync(input)) {
-                            await uploadFile(`${input}/${file}`, `${distPath}/${file}`);
-                        }
-                    }
-                    else {
-                        console.log(`Uploading file ${distPath}`);
-                        await client.put(input, distPath, {
-                            writeStreamOptions: {
-                                mode: 0o644,
-                            },
-                        });
-                    }
-                }
-
-                // Connect to the server, and execute the upload function.
-                await client.connect({
-                    host: host,
-                    username: user,
-                    password: pass,
-                });
-                await uploadFun(uploadText, uploadFile);
             }
-            finally {
-                await client.end();
-            }
+
+            // Connect to the server, and execute the upload function.
+            await client.connect({
+                host: process.env.DEPLOY_HOST,
+                port: process.env.DEPLOY_PORT,
+                username: process.env.DEPLOY_USER,
+                password: process.env.DEPLOY_PASS,
+            });
+            await uploadFun(uploadText, uploadFile);
         }
-        catch (e) {
-            console.error(e);
-            process.exitCode = 1;
+        finally {
+            await client.end();
         }
-    });
+    }
+    catch (e) {
+        console.error(e);
+        process.exitCode = 1;
+    }
 }
 
 
-const HOST = 'ftp.cluster007.ovh.net';
-const USER = 'yolgiypr';
-const ROOT_DIR = 'kokopu';
+runUpload(async (uploadText, uploadFile) => {
 
-
-runUpload(HOST, USER, async (uploadText, uploadFile) => {
-
-    console.log(`*** Standalone library kokopu-${version}.zip ***`);
-    await uploadFile(`dist/kokopu-${version}.zip`, `${ROOT_DIR}/dist/kokopu-${version}.zip`);
+    console.log('*** Single-file package kokopu.zip ***');
+    await uploadFile(`dist/kokopu-${version}.zip`, `dist/kokopu-${version}.zip`);
 
     console.log(`*** Redirect /dist/kokopu.zip to /dist/kokopu-${version}.zip ***`);
-    await uploadText(`Redirect "/dist/kokopu.zip" "/dist/kokopu-${version}.zip"`, `${ROOT_DIR}/dist/.htaccess`);
+    await uploadText(`Redirect "/dist/kokopu.zip" "/dist/kokopu-${version}.zip"`, 'dist/.htaccess');
 
     console.log('*** Documentation ***');
-    await uploadFile('dist/docs', `${ROOT_DIR}/docs/${version}`);
+    await uploadFile('dist/docs', `docs/${version}`);
 
     console.log(`*** Redirect /docs/current to /docs/${version} ***`);
-    await uploadText(`Redirect "/docs/current" "/docs/${version}"`, `${ROOT_DIR}/docs/.htaccess`);
+    await uploadText(`Redirect "/docs/current" "/docs/${version}"`, 'docs/.htaccess');
 });
