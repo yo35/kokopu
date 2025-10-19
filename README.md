@@ -10,9 +10,9 @@ It implements the chess game rules, and provides tools to read/write the standar
 [UCI](https://en.wikipedia.org/wiki/Universal_Chess_Interface),
 etc.).
 
-![NPM Version](https://img.shields.io/npm/v/kokopu)
-![NPM Last Update](https://img.shields.io/npm/last-update/kokopu)
-![NPM Downloads](https://img.shields.io/npm/dw/kokopu)
+[![NPM Version](https://img.shields.io/npm/v/kokopu)](https://www.npmjs.com/package/kokopu)
+[![NPM Last Update](https://img.shields.io/npm/last-update/kokopu)](https://github.com/yo35/kokopu/actions/workflows/publish.yml)
+[![NPM Downloads](https://img.shields.io/npm/dw/kokopu)](https://www.npmjs.com/package/kokopu)
 [![Build Status](https://github.com/yo35/kokopu/actions/workflows/main.yml/badge.svg)](https://github.com/yo35/kokopu/actions/workflows/main.yml)
 [![Coverage Status](https://coveralls.io/repos/github/yo35/kokopu/badge.svg?branch=master)](https://coveralls.io/github/yo35/kokopu?branch=master)
 
