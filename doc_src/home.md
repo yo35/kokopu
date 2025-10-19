@@ -16,12 +16,12 @@ etc.).
 Installation
 ------------
 
-- For use within a browser: [download the package](https://kokopu.yo35.org/dist/kokopu.zip)
-and include either file `kokopu.js` or file `kokopu.min.js` in your HTML page.
-- For Node.js:
+- With NPM (or similarly with any package manager for Node.js such as Yarn):
 ```
 npm install kokopu
 ```
+- Without a package manager: download the single-file package [`kokopu.zip`](https://kokopu.yo35.org/dist/kokopu.zip),
+unzip it, and include either file `kokopu.js` or file `kokopu.min.js` in your HTML page.
 
 
 
@@ -103,7 +103,7 @@ console.log(moves.map(move => position.notation(move)));
 // 'Be7', 'Bd6', 'Bc5', 'Bb4', 'Ba3', 'Nf6', 'Nh6', 'Ne7' ]
 ```
 
-Or within a browser:
+Or directly within a HTML page, if no package manager is used:
 
 ```
 <script src="kokopu.js"></script>

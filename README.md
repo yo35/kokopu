@@ -10,17 +10,11 @@ It implements the chess game rules, and provides tools to read/write the standar
 [UCI](https://en.wikipedia.org/wiki/Universal_Chess_Interface),
 etc.).
 
-https://www.npmjs.com/package/kokopu
-
+![NPM Version](https://img.shields.io/npm/v/kokopu)
+![NPM Last Update](https://img.shields.io/npm/last-update/kokopu)
+![NPM Downloads](https://img.shields.io/npm/dw/kokopu)
 [![Build Status](https://github.com/yo35/kokopu/actions/workflows/main.yml/badge.svg)](https://github.com/yo35/kokopu/actions/workflows/main.yml)
 [![Coverage Status](https://coveralls.io/repos/github/yo35/kokopu/badge.svg?branch=master)](https://coveralls.io/github/yo35/kokopu?branch=master)
-
-
-
-Download
---------
-
-https://kokopu.yo35.org/dist/kokopu.zip
 
 
 
@@ -28,6 +22,18 @@ Documentation
 -------------
 
 https://kokopu.yo35.org/
+
+
+
+Installation
+------------
+
+- With NPM (or similarly with any package manager for Node.js such as Yarn):
+```
+npm install kokopu
+```
+- Without a package manager: download the single-file package [`kokopu.zip`](https://kokopu.yo35.org/dist/kokopu.zip),
+unzip it, and include either file `kokopu.js` or file `kokopu.min.js` in your HTML page.
 
 
 
@@ -109,6 +115,18 @@ console.log(moves.map(move => position.notation(move)));
 // [ 'a6', 'a5', 'b6', 'b5', 'c6', 'c5', 'd6','d5', 'f6', 'f5', 'g6',
 // 'g5', 'h6', 'h5', 'Na6', 'Nc6', 'Qe7', 'Qf6', 'Qg5', 'Qh4', 'Ke7',
 // 'Be7', 'Bd6', 'Bc5', 'Bb4', 'Ba3', 'Nf6', 'Nh6', 'Ne7' ]
+```
+
+Or directly within a HTML page, if no package manager is used:
+
+```html
+<script src="kokopu.js"></script>
+<script>
+    const position = new kokopu.Position();
+    position.play('e4');
+    position.play('e5');
+    // etc...
+</script>
 ```
 
 More examples available in [documentation](https://kokopu.yo35.org/).
