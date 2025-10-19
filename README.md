@@ -28,7 +28,7 @@ https://kokopu.yo35.org/
 Installation
 ------------
 
-- With NPM (or similarly with another JavaScript package manager such as Yarn):
+- With NPM (or similarly with any package manager for Node.js such as Yarn):
 ```
 npm install kokopu
 ```
