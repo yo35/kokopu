@@ -10,17 +10,11 @@ It implements the chess game rules, and provides tools to read/write the standar
 [UCI](https://en.wikipedia.org/wiki/Universal_Chess_Interface),
 etc.).
 
-https://www.npmjs.com/package/kokopu
-
+![NPM Version](https://img.shields.io/npm/v/kokopu)
+![NPM Last Update](https://img.shields.io/npm/last-update/kokopu)
+![NPM Downloads](https://img.shields.io/npm/dw/kokopu)
 [![Build Status](https://github.com/yo35/kokopu/actions/workflows/main.yml/badge.svg)](https://github.com/yo35/kokopu/actions/workflows/main.yml)
 [![Coverage Status](https://coveralls.io/repos/github/yo35/kokopu/badge.svg?branch=master)](https://coveralls.io/github/yo35/kokopu?branch=master)
-
-
-
-Download
---------
-
-https://kokopu.yo35.org/dist/kokopu.zip
 
 
 
@@ -28,6 +22,19 @@ Documentation
 -------------
 
 https://kokopu.yo35.org/
+
+
+
+Installation
+------------
+
+- With NPM (or similarly with another JavaScript package manager such as Yarn):
+```
+npm install kokopu
+```
+
+- Without a package manager: download the single-file package [kokopu.zip](https://kokopu.yo35.org/dist/kokopu.zip), unzip it,
+and include either file `kokopu.js` or file `kokopu.min.js` in your HTML page.
 
 
 
