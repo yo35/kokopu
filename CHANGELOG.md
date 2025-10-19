@@ -1,6 +1,10 @@
 ChangeLog
 =========
 
+4.12.2 (October 19, 2025)
+-------------------------
+* Automated deployment using GitHub Actions.
+
 4.12.1 (June 22, 2025)
 ----------------------
 * Minor fixes in documentation.
