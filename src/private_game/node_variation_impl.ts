@@ -222,7 +222,7 @@ function getVariationPOJO(position: Position, variationData: VariationData, isLo
 function getNodePOJO(position: Position, nodeData: NodeData): NodePOJO {
 
     const pojo: NodePOJO = {
-        notation: nodeData.moveDescriptor === null ? '--' : position.notation(nodeData.moveDescriptor),
+        notation: getNodeDataNotation(position, nodeData),
     };
     let pojoIsTrivial = true;
 
@@ -436,10 +436,14 @@ interface NodeData extends AbstractNodeData {
     fiftyMoveClock: number, // Number of half-moves since the last pawn move or capture BEFORE the current move.
     fullMoveNumber: number,
     moveDescriptor: MoveDescriptor | null, // `null` represents a null-move
+
+    // Computed attributes.
+    notation: string | null, // `null` if not yet computed.
 }
 
 
-function createNodeData(parentVariation: VariationData, moveColor: Color, fiftyMoveClock: number, fullMoveNumber: number, moveDescriptor: MoveDescriptor | null): NodeData {
+function createNodeData(parentVariation: VariationData, moveColor: Color, fiftyMoveClock: number, fullMoveNumber: number,
+    moveDescriptor: MoveDescriptor | null): NodeData {
     return {
         parentVariation: parentVariation,
         child: undefined,
@@ -452,7 +456,16 @@ function createNodeData(parentVariation: VariationData, moveColor: Color, fiftyM
         tags: new Map(),
         comment: undefined,
         isLongComment: false,
+        notation: null,
     };
+}
+
+
+function getNodeDataNotation(position: Position, nodeData: NodeData): string {
+    if (nodeData.notation === null) {
+        nodeData.notation = nodeData.moveDescriptor === null ? '--' : position.notation(nodeData.moveDescriptor);
+    }
+    return nodeData.notation;
 }
 
 
@@ -801,7 +814,7 @@ class NodeImpl extends Node {
     }
 
     notation() {
-        return this._data.moveDescriptor === null ? '--' : this._positionBefore.notation(this._data.moveDescriptor);
+        return getNodeDataNotation(this._positionBefore, this._data);
     }
 
     figurineNotation() {
