@@ -1,15 +1,16 @@
+import { defineConfig } from 'eslint/config';
 import eslint from '@eslint/js';
 import globals from 'globals';
 import stylistic from '@stylistic/eslint-plugin';
-import tseslint from 'typescript-eslint';
+import tsPlugin from 'typescript-eslint';
 
-export default tseslint.config(
+export default defineConfig(
 
     // Base config
     eslint.configs.recommended,
     stylistic.configs.recommended,
-    ...tseslint.configs.strict,
-    ...tseslint.configs.stylistic,
+    ...tsPlugin.configs.strict,
+    ...tsPlugin.configs.stylistic,
 
     {
         rules: {
