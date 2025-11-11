@@ -591,6 +591,22 @@ function buildVariationIdPrefix(variationData: VariationData): string {
 }
 
 
+function buildFollowingNodeIdSuffix(fullMoveNumber: number, moveColor: Color, distance: number): string {
+    let targetFullMoveNumber = fullMoveNumber + Math.trunc(distance / 2);
+    let targetMoveColor = moveColor;
+    if (distance % 2 === 1) {
+        if (moveColor === 'w') {
+            targetMoveColor = 'b';
+        }
+        else {
+            targetFullMoveNumber++;
+            targetMoveColor = 'w';
+        }
+    }
+    return targetFullMoveNumber + targetMoveColor;
+}
+
+
 /**
  * Whether the variation corresponding to the given descriptor is a "long variation",
  * i.e. whether it is a flagged as "isLongVariation" AND SO ARE ALL IT'S PARENTS.
@@ -704,6 +720,13 @@ class NodeImpl extends Node {
 
     id() {
         return buildNodeId(this._data);
+    }
+
+    followingId(distance: number) {
+        if (!isPositiveInteger(distance)) {
+            throw new IllegalArgument('Node.followingId()');
+        }
+        return buildVariationIdPrefix(this._data.parentVariation) + buildFollowingNodeIdSuffix(this._data.fullMoveNumber, this._data.moveColor, distance);
     }
 
     nags() {
@@ -996,6 +1019,14 @@ class VariationImpl extends Variation {
 
     id() {
         return buildVariationIdPrefix(this._data) + 'start';
+    }
+
+    followingId(distance: number) {
+        if (!isPositiveInteger(distance)) {
+            throw new IllegalArgument('Variation.followingId()');
+        }
+        const suffix = distance === 0 ? 'start' : buildFollowingNodeIdSuffix(this.initialFullMoveNumber(), this._initialPosition.turn(), distance - 1);
+        return buildVariationIdPrefix(this._data) + suffix;
     }
 
     nags() {

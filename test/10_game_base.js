@@ -662,6 +662,96 @@ describe('FindById with aliases', () => {
 });
 
 
+describe('Following ID', () => {
+
+    function checkVariation(variation) {
+
+        // Check the method on the variation itself.
+        test.value(variation.followingId(0)).is(variation.id());
+
+        // Check the method on each node of the variation.
+        const previousNodesOrVariation = [ variation ];
+        let currentNode = variation.first();
+        while (currentNode) {
+
+            // Check current node.
+            let index = 0;
+            for (const previousNodeOrVariation of previousNodesOrVariation) {
+                test.value(previousNodeOrVariation.followingId(previousNodesOrVariation.length - index)).is(currentNode.id());
+                ++index;
+            }
+            test.value(currentNode.followingId(0)).is(currentNode.id());
+
+            // Check the variations starting at the current node, if any.
+            for (const subVariation of currentNode.variations()) {
+                checkVariation(subVariation);
+            }
+
+            // Go to the next node.
+            previousNodesOrVariation.push(currentNode);
+            currentNode = currentNode.next();
+        }
+    }
+
+    function itFollowingID(label, gameBuilder) {
+        it(label, () => {
+            const game = gameBuilder();
+            checkVariation(game.mainVariation());
+        });
+    }
+
+    itFollowingID('Linear game', () => {
+        const game = new Game();
+        game.mainVariation().play('e4').play('e5').play('Nf3').play('Nc6').play('Bc4').play('Nf6');
+        return game;
+    });
+
+    itFollowingID('Game with sub-variations', () => {
+        const game = new Game();
+        let current = game.mainVariation();
+        current = current.play('e4');
+        current = current.play('e5');
+
+        const alternative1 = current.addVariation();
+        alternative1.play('c5').play('Nf3').play('d6');
+
+        const alternative2 = current.addVariation();
+        alternative2.play('e6').play('d4');
+
+        current = current.play('Bc4');
+        current = current.play('Nc6');
+        current = current.play('Qh5');
+        current = current.play('Nf6');
+        current = current.play('Qxf7#');
+        return game;
+    });
+});
+
+
+describe('Invalid followingId', () => {
+
+    function itInvalidFollowingId(label, distance) {
+        it(label, () => {
+
+            const game = new Game();
+            const mainVariation = game.mainVariation();
+            const firstNode = mainVariation.play('e4');
+            const secondNode = firstNode.play('e5');
+
+            test.exception(() => mainVariation.followingId(distance)).isInstanceOf(exception.IllegalArgument);
+            test.exception(() => firstNode.followingId(distance)).isInstanceOf(exception.IllegalArgument);
+            test.exception(() => secondNode.followingId(distance)).isInstanceOf(exception.IllegalArgument);
+        });
+    }
+
+    itInvalidFollowingId('String', '1');
+    itInvalidFollowingId('Negative integer', -1);
+    itInvalidFollowingId('Non-integer', 1.2);
+    itInvalidFollowingId('Infinite value', Number.POSITIVE_INFINITY);
+    itInvalidFollowingId('NaN', Number.NaN);
+});
+
+
 describe('Invalid initial position', () => {
 
     function itInvalidInitialPosition(label, action) {

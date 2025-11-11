@@ -45,6 +45,18 @@ export abstract class AbstractNode {
     abstract id(): string;
 
     /**
+     * Identifier of the {@link Node} that arise after playing `distance` moves starting from the current {@link Node} or {@link Variation}.
+     *
+     * REMARK: the ID returned by this method may not correspond to an existing {@link Node} if the underlying variation is not long enough.
+     * Still, in that case, the returned ID is always properly formed, and could correspond to a valid node later if the variation is extended.
+     *
+     * If `distance` is 0, this method returns the same result as {@link AbstractNode.id}.
+     *
+     * @param distance Must be a positive integer.
+     */
+    abstract followingId(distance: number): string;
+
+    /**
      * @deprecated Use `obj instanceof Variation` instead.
      */
     abstract isVariation(): boolean;
