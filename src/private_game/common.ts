@@ -31,24 +31,8 @@ export function trimAndCollapseSpaces(text: string) {
 
 
 /**
- * Whether the given value is a valid NAG or not.
+ * Whether the given value is an integer >= 0.
  */
-export function isValidNag(nag: unknown) {
-    return Number.isInteger(nag) && (nag as number) >= 0;
-}
-
-
-/**
- * Whether the given value is a valid NAG or not.
- */
-export function isValidElo(elo: unknown) {
-    return Number.isInteger(elo) && (elo as number) >= 0;
-}
-
-
-/**
- * Whether the given value is a valid round (or sub-round, or sub-sub-round...) or not.
- */
-export function isValidRound(round: unknown) {
-    return Number.isInteger(round) && (round as number) >= 0;
+export function isPositiveInteger(value: unknown) {
+    return Number.isInteger(value) && (value as number) >= 0;
 }

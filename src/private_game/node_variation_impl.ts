@@ -31,7 +31,7 @@ import { MoveDescriptor } from '../move_descriptor';
 import { Node, Variation } from '../node_variation';
 import { Position } from '../position';
 
-import { isValidNag } from './common';
+import { isPositiveInteger } from './common';
 import { POJOExceptionBuilder, decodeStringField, decodeBooleanField, decodeArrayField, decodeObjectField } from './pojo_util';
 import { variantFromString } from '../private_position/base_types_impl';
 
@@ -380,7 +380,7 @@ function decodeAnnotationFields(abstractNodePOJO: Partial<Record<string, unknown
             if (nag === undefined) {
                 continue;
             }
-            else if (!isValidNag(nag)) {
+            else if (!isPositiveInteger(nag)) {
                 exceptionBuilder.push(i); // no-pop
                 throw exceptionBuilder.build(i18n.INVALID_NAG_IN_POJO, nag);
             }
@@ -711,21 +711,21 @@ class NodeImpl extends Node {
     }
 
     hasNag(nag: number) {
-        if (!isValidNag(nag)) {
+        if (!isPositiveInteger(nag)) {
             throw new IllegalArgument('Node.hasNag()');
         }
         return this._data.nags.has(nag);
     }
 
     addNag(nag: number) {
-        if (!isValidNag(nag)) {
+        if (!isPositiveInteger(nag)) {
             throw new IllegalArgument('Node.addNag()');
         }
         return this._data.nags.add(nag);
     }
 
     removeNag(nag: number) {
-        if (!isValidNag(nag)) {
+        if (!isPositiveInteger(nag)) {
             throw new IllegalArgument('Node.removeNag()');
         }
         return this._data.nags.delete(nag);
@@ -1003,21 +1003,21 @@ class VariationImpl extends Variation {
     }
 
     hasNag(nag: number) {
-        if (!isValidNag(nag)) {
+        if (!isPositiveInteger(nag)) {
             throw new IllegalArgument('Variation.hasNag()');
         }
         return this._data.nags.has(nag);
     }
 
     addNag(nag: number) {
-        if (!isValidNag(nag)) {
+        if (!isPositiveInteger(nag)) {
             throw new IllegalArgument('Variation.addNag()');
         }
         return this._data.nags.add(nag);
     }
 
     removeNag(nag: number) {
-        if (!isValidNag(nag)) {
+        if (!isPositiveInteger(nag)) {
             throw new IllegalArgument('Variation.removeNag()');
         }
         return this._data.nags.delete(nag);

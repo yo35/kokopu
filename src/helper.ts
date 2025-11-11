@@ -28,7 +28,7 @@ import { IllegalArgument } from './exception';
 import { colorFromString, pieceFromString, coloredPieceFromString, fileFromString, rankFromString, squareFromString, resultFromString, variantFromString,
     colorToString, fileToString, rankToString, squareToString, squareColorImpl } from './private_position/base_types_impl';
 import { hasCanonicalStartPosition } from './private_position/impl';
-import { isValidNag } from './private_game/common';
+import { isPositiveInteger } from './private_game/common';
 
 
 /**
@@ -242,7 +242,7 @@ NAG_SYMBOLS.set(146, 'N'            ); // Novelty
  * Return the human-readable symbol for the given [NAG](https://en.wikipedia.org/wiki/Numeric_Annotation_Glyphs).
  */
 export function nagSymbol(nag: number): string {
-    if (!isValidNag(nag)) {
+    if (!isPositiveInteger(nag)) {
         throw new IllegalArgument('nagSymbol()');
     }
     const result = NAG_SYMBOLS.get(nag);

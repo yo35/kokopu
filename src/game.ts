@@ -31,7 +31,7 @@ import { i18n } from './i18n';
 import { AbstractNode, Node, Variation } from './node_variation';
 import { Position } from './position';
 
-import { trimAndCollapseSpaces, isValidElo, isValidRound } from './private_game/common';
+import { trimAndCollapseSpaces, isPositiveInteger } from './private_game/common';
 import { MoveTreeRoot } from './private_game/node_variation_impl';
 import { POJOExceptionBuilder, decodeStringField, decodeNumberField, decodeObjectField } from './private_game/pojo_util';
 
@@ -155,7 +155,7 @@ export class Game {
         }
         else {
             value = sanitizeNumberHeader(value);
-            if (value === undefined || isValidElo(value)) {
+            if (value === undefined || isPositiveInteger(value)) {
                 this._playerElo[colorCode] = value;
             }
             else {
@@ -281,7 +281,7 @@ export class Game {
 
     private _setRoundPart(roundPart: RoundPart, value: number | undefined, methodName: string) {
         value = sanitizeNumberHeader(value);
-        if (value === undefined || isValidRound(value)) {
+        if (value === undefined || isPositiveInteger(value)) {
             this._round[roundPart] = value;
         }
         else {
@@ -775,7 +775,7 @@ export class Game {
         function processPlayerPOJO(playerPOJO: Partial<Record<string, unknown>>, color: ColorImpl) {
             decodeStringField(playerPOJO, 'name', exceptionBuilder, value => { game._playerName[color] = value; });
             decodeNumberField(playerPOJO, 'elo', exceptionBuilder, value => {
-                if (!isValidElo(value)) {
+                if (!isPositiveInteger(value)) {
                     throw exceptionBuilder.build(i18n.INVALID_ELO_IN_POJO);
                 }
                 game._playerElo[color] = value;
@@ -784,7 +784,7 @@ export class Game {
         }
 
         function processRoundPart(value: number, roundPart: RoundPart) {
-            if (!isValidRound(value)) {
+            if (!isPositiveInteger(value)) {
                 throw exceptionBuilder.build(i18n.INVALID_ROUND_IN_POJO);
             }
             game._round[roundPart] = value;
