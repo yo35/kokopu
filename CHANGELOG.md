@@ -1,8 +1,8 @@
 ChangeLog
 =========
 
-4.13.0 (October 19, 2025)
--------------------------
+4.13.0 (November 11, 2025)
+--------------------------
 * Add `AbstractNode.followingId()` to compute the ID of any node following a given node or variation.
 * Cache the result of `Node.notation()` for efficiency.
 
