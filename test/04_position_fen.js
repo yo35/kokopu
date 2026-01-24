@@ -26,7 +26,7 @@ const { exception, Position } = require('../dist/lib/index');
 const dumpCastlingFlags = require('./common/dumpcastlingflags');
 const readCSV = require('./common/readcsv');
 const readText = require('./common/readtext');
-const test = require('unit.js');
+const assert = require('node:assert/strict');
 
 
 function itForEach(fun) {
@@ -62,7 +62,7 @@ describe('FEN parsing (tolerant)', () => {
     itForEach(elem => {
         const position = new Position(elem.variant, 'empty');
         position.fen(elem.fenIn);
-        test.value(position.fen()).is(elem.fenOutDefault);
+        assert.deepEqual(position.fen(), elem.fenOutDefault);
     });
 });
 
@@ -72,10 +72,10 @@ describe('FEN parsing (strict)', () => {
         const position = new Position(elem.variant, 'empty');
         if (elem.strict) {
             position.fen(elem.fenIn, true);
-            test.value(position.fen()).is(elem.fenOutDefault);
+            assert.deepEqual(position.fen(), elem.fenOutDefault);
         }
         else {
-            test.exception(() => position.fen(elem.fenIn, true)).isInstanceOf(exception.InvalidFEN);
+            assert.throws(() => position.fen(elem.fenIn, true), exception.InvalidFEN);
         }
     });
 });
@@ -85,7 +85,7 @@ describe('Castling flag parsing', () => {
     itForEach(elem => {
         const position = new Position(elem.variant, 'empty');
         position.fen(elem.fenIn);
-        test.value(dumpCastlingFlags(position, (p, castle) => p.castling(castle))).is(elem.castling);
+        assert.deepEqual(dumpCastlingFlags(position, (p, castle) => p.castling(castle)), elem.castling);
     });
 });
 
@@ -94,7 +94,7 @@ describe('En-passant flag parsing', () => {
     itForEach(elem => {
         const position = new Position(elem.variant, 'empty');
         position.fen(elem.fenIn);
-        test.value(position.enPassant()).is(elem.enPassant);
+        assert.deepEqual(position.enPassant(), elem.enPassant);
     });
 });
 
@@ -103,8 +103,8 @@ describe('FEN counter parsing', () => {
     itForEach(elem => {
         const position = new Position(elem.variant, 'empty');
         const { fiftyMoveClock, fullMoveNumber } = position.fen(elem.fenIn);
-        test.value(fiftyMoveClock).is(elem.fiftyMoveClock);
-        test.value(fullMoveNumber).is(elem.fullMoveNumber);
+        assert.deepEqual(fiftyMoveClock, elem.fiftyMoveClock);
+        assert.deepEqual(fullMoveNumber, elem.fullMoveNumber);
     });
 });
 
@@ -112,7 +112,7 @@ describe('FEN counter parsing', () => {
 describe('FEN counters', () => {
     itForEach(elem => {
         const position = new Position(elem.variant, elem.fenIn);
-        test.value(position.fen({ fiftyMoveClock: elem.fiftyMoveClock * 2, fullMoveNumber: elem.fullMoveNumber + 1 })).is(elem.fenOutWithCounters);
+        assert.deepEqual(position.fen({ fiftyMoveClock: elem.fiftyMoveClock * 2, fullMoveNumber: elem.fullMoveNumber + 1 }), elem.fenOutWithCounters);
     });
 });
 
@@ -120,7 +120,7 @@ describe('FEN counters', () => {
 describe('FEN with variant', () => {
     itForEach(elem => {
         const position = new Position(elem.variant, elem.fenIn);
-        test.value(position.fen({ withVariant: true })).is(elem.variant + ':' + elem.fenOutDefault);
+        assert.deepEqual(position.fen({ withVariant: true }), elem.variant + ':' + elem.fenOutDefault);
     });
 });
 
@@ -128,7 +128,7 @@ describe('FEN with variant', () => {
 describe('FEN without XFEN if possible', () => {
     itForEach(elem => {
         const position = new Position(elem.variant, elem.fenIn);
-        test.value(position.fen({ regularFENIfPossible: true })).is(elem.fenOutWithoutXFEN === '' ? elem.fenOutDefault : elem.fenOutWithoutXFEN);
+        assert.deepEqual(position.fen({ regularFENIfPossible: true }), elem.fenOutWithoutXFEN === '' ? elem.fenOutDefault : elem.fenOutWithoutXFEN);
     });
 });
 
@@ -138,7 +138,7 @@ describe('Invalid FEN overloads', () => {
     function itInvalidOverload(label, action) {
         it(label, () => {
             const position = new Position();
-            test.exception(() => action(position)).isInstanceOf(exception.IllegalArgument);
+            assert.throws(() => action(position), exception.IllegalArgument);
         });
     }
 
@@ -154,7 +154,7 @@ describe('ASCII representation for position', () => {
         it(label, () => {
             const expected = readText(`ascii/${filename}.txt`).trimEnd();
             const position = new Position('r1bqkbnr/pppp1ppp/2n5/1B2p3/4P3/5N2/PPPP1PPP/RNBQK2R b KQkq - 3 3');
-            test.value(position.ascii(options)).is(expected);
+            assert.deepEqual(position.ascii(options), expected);
         });
     }
 

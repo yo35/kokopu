@@ -24,7 +24,7 @@
 
 const { Position } = require('../dist/lib/index');
 const readCSV = require('./common/readcsv');
-const test = require('unit.js');
+const assert = require('node:assert/strict');
 
 
 const NODE_COUNT_MAX_MAX = 10000000; // -1 for "no limit"
@@ -49,7 +49,7 @@ function testData() {
     return readCSV('performance.csv', fields => {
         return {
             fen: fields[0],
-            nodes: fields.slice(1),
+            nodes: fields.slice(1).map(value => parseInt(value)),
         };
     });
 }
@@ -62,7 +62,7 @@ describe('Recursive move generation', () => {
             const expectedNodeCount = elem.nodes[depth];
             if (NODE_COUNT_MAX_MAX >= 0 && expectedNodeCount <= NODE_COUNT_MAX_MAX) {
                 it(`From ${elem.fen} up to depth ${depth}`, () => {
-                    test.value(generateSuccessors(initialPos, depth), expectedNodeCount);
+                    assert.deepEqual(generateSuccessors(initialPos, depth), expectedNodeCount);
                 }).timeout(FIXED_TIMOUT + expectedNodeCount / SPEED_MIN);
             }
         }

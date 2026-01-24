@@ -23,23 +23,23 @@
 
 
 const { exception, DateValue } = require('../dist/lib/index');
-const test = require('unit.js');
+const assert = require('node:assert/strict');
 
 
 function validateDateValue(dv, expectedType, expectedYear, expectedMonth, expectedDay) {
-    test.value(dv.type()).is(expectedType);
-    test.value(dv.year()).is(expectedYear);
+    assert.deepEqual(dv.type(), expectedType);
+    assert.deepEqual(dv.year(), expectedYear);
     if (expectedMonth === null) {
-        test.exception(() => dv.month()).isInstanceOf(exception.IllegalArgument);
+        assert.throws(() => dv.month(), exception.IllegalArgument);
     }
     else {
-        test.value(dv.month()).is(expectedMonth);
+        assert.deepEqual(dv.month(), expectedMonth);
     }
     if (expectedDay === null) {
-        test.exception(() => dv.day()).isInstanceOf(exception.IllegalArgument);
+        assert.throws(() => dv.day(), exception.IllegalArgument);
     }
     else {
-        test.value(dv.day()).is(expectedDay);
+        assert.deepEqual(dv.day(), expectedDay);
     }
 }
 
@@ -56,17 +56,17 @@ describe('Date value attributes', () => {
 
         it(label + ' - Conversion to date', () => {
             const dv = builder();
-            test.value(dv.toDate()).is(expectedDate);
+            assert.deepEqual(dv.toDate(), expectedDate);
         });
 
         it(label + ' - Conversion to string', () => {
             const dv = builder();
-            test.value(dv.toString()).is(expectedString);
+            assert.deepEqual(dv.toString(), expectedString);
         });
 
         it(label + ' - Conversion to PGN string', () => {
             const dv = builder();
-            test.value(dv.toPGNString()).is(expectedPGNString);
+            assert.deepEqual(dv.toPGNString(), expectedPGNString);
         });
 
         it(label + ' - Conversion from string', () => {
@@ -81,8 +81,8 @@ describe('Date value attributes', () => {
 
         it(label + ' - Conversion to human readable string', () => {
             const dv = builder();
-            test.value(dv.toHumanReadableString('en-us')).is(expectedReadableStringEN);
-            test.value(dv.toHumanReadableString('fr')).is(expectedReadableStringFR);
+            assert.deepEqual(dv.toHumanReadableString('en-us'), expectedReadableStringEN);
+            assert.deepEqual(dv.toHumanReadableString('fr'), expectedReadableStringFR);
         });
     }
 
@@ -100,7 +100,7 @@ describe('Invalid date values', () => {
 
     function itInvalid(label, builder) {
         it(label, () => {
-            test.exception(builder).isInstanceOf(exception.IllegalArgument);
+            assert.throws(builder, exception.IllegalArgument);
         });
     }
 
@@ -127,7 +127,7 @@ describe('Invalid date value parsing', () => {
 
     function itInvalidValue(label, builder) {
         it(label, () => {
-            test.value(builder()).is(undefined);
+            assert.deepEqual(builder(), undefined);
         });
     }
 
@@ -153,8 +153,8 @@ describe('Invalid date value parsing', () => {
 
     function itInvalidArgument(label, value) {
         it(label, () => {
-            test.exception(() => DateValue.fromString(value)).isInstanceOf(exception.IllegalArgument);
-            test.exception(() => DateValue.fromPGNString(value)).isInstanceOf(exception.IllegalArgument);
+            assert.throws(() => DateValue.fromString(value), exception.IllegalArgument);
+            assert.throws(() => DateValue.fromPGNString(value), exception.IllegalArgument);
         });
     }
 

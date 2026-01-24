@@ -23,13 +23,13 @@
 
 
 const { exception, Position, forEachSquare } = require('../dist/lib/index');
-const test = require('unit.js');
+const assert = require('node:assert/strict');
 
 
 function itInvalidArgument(label, action) {
     it(label, () => {
         const position = new Position();
-        test.exception(() => action(position)).isInstanceOf(exception.IllegalArgument);
+        assert.throws(() => action(position), exception.IllegalArgument);
     });
 }
 
@@ -45,7 +45,7 @@ describe('isAttacked', () => {
                     res.push(square);
                 }
             });
-            test.value(res.join('/')).is(attackedSquares);
+            assert.deepEqual(res.join('/'), attackedSquares);
         });
     }
 
@@ -72,7 +72,7 @@ describe('getAttacks', () => {
             const position = new Position(fen);
             for (const sq in squares) {
                 const attacks = position.getAttacks(sq, byWho).sort().join('/');
-                test.value(attacks).is(squares[sq]);
+                assert.deepEqual(attacks, squares[sq]);
             }
         });
     }
@@ -105,8 +105,9 @@ describe('Move legality check', () => {
         it(label, () => {
             const position = new Position(fen);
             const md = position.isMoveLegal(from, to);
-            test.value(md).isFunction().hasProperty('status', 'regular');
-            test.value(md().toString()).is(expectedSignature);
+            assert(typeof md === 'function');
+            assert.deepEqual(md.status, 'regular');
+            assert.deepEqual(md().toString(), expectedSignature);
         });
     }
 
@@ -118,7 +119,7 @@ describe('Move legality check', () => {
         it(label, () => {
             const position = new Position(fen);
             const md = position.isMoveLegal(from, to);
-            test.value(md).is(false);
+            assert.deepEqual(md, false);
         });
     }
 
@@ -129,8 +130,9 @@ describe('Move legality check', () => {
         it(label, () => {
             const position = new Position(fen);
             const md = position.isMoveLegal(from, to);
-            test.value(md).isFunction().hasProperty('status', 'promotion');
-            test.exception(() => md(promo)).isInstanceOf(exception.IllegalArgument);
+            assert(typeof md === 'function');
+            assert.deepEqual(md.status, 'promotion');
+            assert.throws(() => md(promo), exception.IllegalArgument);
         });
     }
 
@@ -146,17 +148,17 @@ describe('Figurine notation', () => {
         it(`Generate ${label}`, () => {
             const position = new Position(fen);
             const md = position.notation(sanMove, true);
-            test.value(position.figurineNotation(md)).is(figurineMove);
+            assert.deepEqual(position.figurineNotation(md), figurineMove);
         });
         it(`Parse ${label}`, () => {
             const position = new Position(fen);
             const md = position.figurineNotation(figurineMove);
-            test.value(position.notation(md)).is(sanMove);
+            assert.deepEqual(position.notation(md), sanMove);
         });
         it(`Parse ${label} (strict)`, () => {
             const position = new Position(fen);
             const md = position.figurineNotation(figurineMove, true);
-            test.value(position.notation(md)).is(sanMove);
+            assert.deepEqual(position.notation(md), sanMove);
         });
     }
 
@@ -185,7 +187,7 @@ describe('King-take-rook flag for UCI notation generation', () => {
         it(label, () => {
             const position = new Position(variant, 'r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w KQkq - 0 1');
             const moveDescriptor = position.notation('O-O');
-            test.value(position.uci(moveDescriptor, forceKxR)).is(expectedUCI);
+            assert.deepEqual(position.uci(moveDescriptor, forceKxR), expectedUCI);
         });
     }
 
@@ -202,14 +204,14 @@ describe('King-take-rook flag for UCI notation parsing', () => {
         it(label, () => {
             const position = new Position(variant, 'r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w KQkq - 0 1');
             const moveDescriptor = position.uci(uciNotation, strict);
-            test.value(position.notation(moveDescriptor)).is('O-O');
+            assert.deepEqual(position.notation(moveDescriptor), 'O-O');
         });
     }
 
     function itParseInvalidUCIWithKxR(label, variant, uciNotation, strict) {
         it(label + ' (invalid)', () => {
             const position = new Position(variant, 'r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w KQkq - 0 1');
-            test.exception(() => position.uci(uciNotation, strict)).isInstanceOf(exception.InvalidNotation);
+            assert.throws(() => position.uci(uciNotation, strict), exception.InvalidNotation);
         });
     }
 
@@ -229,7 +231,7 @@ describe('Parse invalid notation', () => {
     function itInvalidNotation(label, parsingAction) {
         it(label, () => {
             const position = new Position();
-            test.exception(() => parsingAction(position)).isInstanceOf(exception.InvalidNotation);
+            assert.throws(() => parsingAction(position), exception.InvalidNotation);
         });
     }
 
@@ -246,12 +248,12 @@ describe('Parse degenerated notation', () => {
         it(label, () => {
             const position = new Position(fen);
             const md = position.notation(move);
-            test.value(md.toString()).is(expected);
-            test.value(position.notation(md)).is(expectedSAN);
+            assert.deepEqual(md.toString(), expected);
+            assert.deepEqual(position.notation(md), expectedSAN);
         });
         it(label + ' (error if strict)', () => {
             const position = new Position(fen);
-            test.exception(() => position.notation(move, true)).isInstanceOf(exception.InvalidNotation);
+            assert.throws(() => position.notation(move, true), exception.InvalidNotation);
         });
     }
 
@@ -275,12 +277,12 @@ describe('Parse degenerated figurine notation', () => {
         it(label, () => {
             const position = new Position(fen);
             const md = position.figurineNotation(move);
-            test.value(md.toString()).is(expected);
-            test.value(position.notation(md)).is(expectedSAN);
+            assert.deepEqual(md.toString(), expected);
+            assert.deepEqual(position.notation(md), expectedSAN);
         });
         it(label + ' (error if strict)', () => {
             const position = new Position(fen);
-            test.exception(() => position.figurineNotation(move, true)).isInstanceOf(exception.InvalidNotation);
+            assert.throws(() => position.figurineNotation(move, true), exception.InvalidNotation);
         });
     }
 
@@ -294,7 +296,7 @@ describe('Invalid notation parsing overloads', () => {
     function itInvalidOverload(label, action) {
         it(label, () => {
             const position = new Position();
-            test.exception(() => action(position)).isInstanceOf(exception.IllegalArgument);
+            assert.throws(() => action(position), exception.IllegalArgument);
         });
     }
 
@@ -311,22 +313,22 @@ describe('Parse and play move', () => {
 
     it('Legal move (notation)', () => {
         const position = new Position();
-        test.value(position.play('e4')).is(true);
-        test.value(position.fen()).is('rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1');
+        assert.deepEqual(position.play('e4'), true);
+        assert.deepEqual(position.fen(), 'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1');
     });
 
     it('Legal move (descriptor)', () => {
         const position = new Position();
         const md = position.notation('Nf3', true);
-        test.value(position.play(md)).is(true);
-        test.value(position.fen()).is('rnbqkbnr/pppppppp/8/8/8/5N2/PPPPPPPP/RNBQKB1R b KQkq - 0 1');
+        assert.deepEqual(position.play(md), true);
+        assert.deepEqual(position.fen(), 'rnbqkbnr/pppppppp/8/8/8/5N2/PPPPPPPP/RNBQKB1R b KQkq - 0 1');
     });
 
     function itInvalidMove(label, fen, move) {
         it(label, () => {
             const position = new Position(fen);
-            test.value(position.play(move)).is(false);
-            test.value(position.fen()).is(fen);
+            assert.deepEqual(position.play(move), false);
+            assert.deepEqual(position.fen(), fen);
         });
     }
 
@@ -335,12 +337,12 @@ describe('Parse and play move', () => {
 
     it('No argument', () => {
         const position = new Position();
-        test.exception(() => position.play()).isInstanceOf(exception.IllegalArgument);
+        assert.throws(() => position.play(), exception.IllegalArgument);
     });
 
     it('Invalid argument type', () => {
         const position = new Position();
-        test.exception(() => position.play(42)).isInstanceOf(exception.IllegalArgument);
+        assert.throws(() => position.play(42), exception.IllegalArgument);
     });
 });
 
@@ -350,8 +352,8 @@ describe('Play null-move', () => {
     function itNullMove(label, fen, expected, fenAfter) {
         it(label, () => {
             const position = new Position(fen);
-            test.value(position.playNullMove()).is(expected);
-            test.value(position.fen()).is(expected ? fenAfter : fen);
+            assert.deepEqual(position.playNullMove(), expected);
+            assert.deepEqual(position.fen(), expected ? fenAfter : fen);
         });
     }
 

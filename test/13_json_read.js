@@ -27,7 +27,7 @@ const dumpGame = require('./common/dumpgame');
 const readCSV = require('./common/readcsv');
 const readText = require('./common/readtext');
 const resourceExists = require('./common/resourceexists');
-const test = require('unit.js');
+const assert = require('node:assert/strict');
 
 
 function testData() {
@@ -92,16 +92,18 @@ function itCheckJSONItem(label, jsonName, loader) {
         // TXT type => ensure that the item is valid, and compare its dump result to the descriptor.
         if (getItemType(jsonName) === 'txt') {
             const expectedDescriptor = loadValidItemDescriptor(jsonName);
-            test.value(dumpGame(loader()).trim()).is(expectedDescriptor);
+            assert.deepEqual(dumpGame(loader()).trim(), expectedDescriptor);
         }
 
         // ERR type => ensure that an exception is thrown, and check its attributes.
         else {
             const expectedDescriptor = loadErrorItemDescriptor(jsonName);
-            test.exception(() => loader())
-                .isInstanceOf(exception.InvalidPOJO)
-                .hasProperty('fieldName', expectedDescriptor.fieldName)
-                .hasProperty('message', expectedDescriptor.message);
+            assert.throws(() => loader(), e => {
+                assert(e instanceof exception.InvalidPOJO);
+                assert.deepEqual(e.fieldName, expectedDescriptor.fieldName);
+                assert.deepEqual(e.message, expectedDescriptor.message);
+                return true;
+            });
         }
     });
 }

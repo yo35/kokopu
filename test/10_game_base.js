@@ -22,59 +22,59 @@
  * -------------------------------------------------------------------------- */
 
 
-const { exception, Game, Position, Variation } = require('../dist/lib/index');
-const test = require('unit.js');
+const { exception, DateValue, Game, Position, Variation } = require('../dist/lib/index');
+const assert = require('node:assert/strict');
 
 
 describe('General game header', () => {
 
     it('Initial state', () => {
         const game = new Game();
-        test.value(game.event()).is(undefined);
+        assert.deepEqual(game.event(), undefined);
     });
 
     it('Set & get', () => {
         const game = new Game();
         game.event('The event');
-        test.value(game.event()).is('The event');
+        assert.deepEqual(game.event(), 'The event');
     });
 
     it('Set empty string', () => {
         const game = new Game();
         game.event('');
-        test.value(game.event()).is('');
+        assert.deepEqual(game.event(), '');
     });
 
     it('Set blank string', () => {
         const game = new Game();
         game.event('  ');
-        test.value(game.event()).is('  ');
+        assert.deepEqual(game.event(), '  ');
     });
 
     it('Set non-string (number)', () => {
         const game = new Game();
         game.event(42);
-        test.value(game.event()).is('42');
+        assert.deepEqual(game.event(), '42');
     });
 
     it('Set non-string (boolean)', () => {
         const game = new Game();
         game.event(false);
-        test.value(game.event()).is('false');
+        assert.deepEqual(game.event(), 'false');
     });
 
     it('Erase with undefined', () => {
         const game = new Game();
         game.event('The event');
         game.event(undefined);
-        test.value(game.event()).is(undefined);
+        assert.deepEqual(game.event(), undefined);
     });
 
     it('Erase with null', () => {
         const game = new Game();
         game.event('The event');
         game.event(null);
-        test.value(game.event()).is(undefined);
+        assert.deepEqual(game.event(), undefined);
     });
 });
 
@@ -83,19 +83,19 @@ describe('Result header', () => {
 
     it('Default value', () => {
         const game = new Game();
-        test.value(game.result()).is('*');
+        assert.deepEqual(game.result(), '*');
     });
 
     it('Set & get', () => {
         const game = new Game();
         game.result('1-0');
-        test.value(game.result()).is('1-0');
+        assert.deepEqual(game.result(), '1-0');
     });
 
     function itInvalidValue(label, value) {
         it(label, () => {
             const game = new Game();
-            test.exception(() => game.result(value)).isInstanceOf(exception.IllegalArgument);
+            assert.throws(() => game.result(value), exception.IllegalArgument);
         });
     }
 
@@ -111,7 +111,7 @@ describe('ECO header', () => {
     function itInvalidValue(label, value) {
         it(label, () => {
             const game = new Game();
-            test.exception(() => game.eco(value)).isInstanceOf(exception.IllegalArgument);
+            assert.throws(() => game.eco(value), exception.IllegalArgument);
         });
     }
 
@@ -128,7 +128,7 @@ describe('Color-dependant header', () => {
     function itInvalidColor(label, action) {
         it(label, () => {
             const game = new Game();
-            test.exception(() => action(game)).isInstanceOf(exception.IllegalArgument);
+            assert.throws(() => action(game), exception.IllegalArgument);
         });
     }
 
@@ -144,25 +144,25 @@ describe('Elo header', () => {
     it('Set number 1', () => {
         const game = new Game();
         game.playerElo('w', 899);
-        test.value(game.playerElo('w')).is(899);
+        assert.deepEqual(game.playerElo('w'), 899);
     });
 
     it('Set number 2', () => {
         const game = new Game();
         game.playerElo('w', 0);
-        test.value(game.playerElo('w')).is(0);
+        assert.deepEqual(game.playerElo('w'), 0);
     });
 
     it('Set number as string', () => {
         const game = new Game();
         game.playerElo('b', '2000');
-        test.value(game.playerElo('b')).is(2000);
+        assert.deepEqual(game.playerElo('b'), 2000);
     });
 
     function itInvalidElo(label, action) {
         it(label, () => {
             const game = new Game();
-            test.exception(() => action(game)).isInstanceOf(exception.IllegalArgument);
+            assert.throws(() => action(game), exception.IllegalArgument);
         });
     }
 
@@ -176,31 +176,31 @@ describe('Round / sub-round / sub-sub-round headers', () => {
     it('Set number 1', () => {
         const game = new Game();
         game.round(3);
-        test.value(game.round()).is(3);
+        assert.deepEqual(game.round(), 3);
     });
 
     it('Set number 2', () => {
         const game = new Game();
         game.subRound(0);
-        test.value(game.subRound()).is(0);
+        assert.deepEqual(game.subRound(), 0);
     });
 
     it('Set number 3', () => {
         const game = new Game();
         game.subSubRound(9999);
-        test.value(game.subSubRound()).is(9999);
+        assert.deepEqual(game.subSubRound(), 9999);
     });
 
     it('Set number as string', () => {
         const game = new Game();
         game.round('2000');
-        test.value(game.round()).is(2000);
+        assert.deepEqual(game.round(), 2000);
     });
 
     function itInvalidRound(label, action) {
         it(label, () => {
             const game = new Game();
-            test.exception(() => action(game)).isInstanceOf(exception.IllegalArgument);
+            assert.throws(() => action(game), exception.IllegalArgument);
         });
     }
 
@@ -213,14 +213,14 @@ describe('Round / sub-round / sub-sub-round headers', () => {
 describe('Date header', () => {
 
     function testDateIsUndefined(game) {
-        test.value(game.date()).is(undefined);
-        test.value(game.dateAsDate()).is(undefined);
+        assert.deepEqual(game.date(), undefined);
+        assert.deepEqual(game.dateAsDate(), undefined);
     }
 
     function testDateIs(game, value, dateValue) {
-        test.value(game.date()).isNotFalse();
-        test.value(game.date().toString()).is(value);
-        test.value(game.dateAsDate()).is(dateValue);
+        assert(game.date() instanceof DateValue);
+        assert.deepEqual(game.date().toString(), value);
+        assert.deepEqual(game.dateAsDate(), dateValue);
     }
 
     it('Initial state', () => {
@@ -299,28 +299,28 @@ describe('Date header', () => {
     it('Get as string (full date)', () => {
         const game = new Game();
         game.date(2021, 9, 12);
-        test.value(game.dateAsString('en-us')).is('September 12, 2021');
-        test.value(game.dateAsString('fr')).is('12 septembre 2021');
+        assert.deepEqual(game.dateAsString('en-us'), 'September 12, 2021');
+        assert.deepEqual(game.dateAsString('fr'), '12 septembre 2021');
     });
 
     it('Get as string (month+year)', () => {
         const game = new Game();
         game.date(2021, 12);
-        test.value(game.dateAsString('en-us')).is('December 2021');
-        test.value(game.dateAsString('fr')).is('décembre 2021');
+        assert.deepEqual(game.dateAsString('en-us'), 'December 2021');
+        assert.deepEqual(game.dateAsString('fr'), 'décembre 2021');
     });
 
     it('Get as string (year only)', () => {
         const game = new Game();
         game.date(2021);
-        test.value(game.dateAsString('en-us')).is('2021');
-        test.value(game.dateAsString('fr')).is('2021');
+        assert.deepEqual(game.dateAsString('en-us'), '2021');
+        assert.deepEqual(game.dateAsString('fr'), '2021');
     });
 
     function itInvalidValue(label, value) {
         it(label, () => {
             const game = new Game();
-            test.exception(() => game.date(value)).isInstanceOf(exception.IllegalArgument);
+            assert.throws(() => game.date(value), exception.IllegalArgument);
         });
     }
 
@@ -333,7 +333,7 @@ describe('Date header', () => {
     function itInvalidYMD(label, year, month, day) {
         it(label, () => {
             const game = new Game();
-            test.exception(() => game.date(year, month, day)).isInstanceOf(exception.IllegalArgument);
+            assert.throws(() => game.date(year, month, day), exception.IllegalArgument);
         });
     }
 
@@ -367,26 +367,26 @@ describe('NAGs', () => {
 
     itOnNodeAndVariation('Set & test', nodeGetter => {
         nodeGetter().addNag(34);
-        test.value(nodeGetter().nags()).is([ 34 ]);
-        test.value(nodeGetter().hasNag(34)).is(true);
-        test.value(nodeGetter().hasNag(42)).is(false);
+        assert.deepEqual(nodeGetter().nags(), [ 34 ]);
+        assert.deepEqual(nodeGetter().hasNag(34), true);
+        assert.deepEqual(nodeGetter().hasNag(42), false);
     });
 
     itOnNodeAndVariation('Erase', nodeGetter => {
         nodeGetter().addNag(18);
         nodeGetter().addNag(21);
         nodeGetter().addNag(5);
-        test.value(nodeGetter().nags()).is([ 5, 18, 21 ]);
+        assert.deepEqual(nodeGetter().nags(), [ 5, 18, 21 ]);
         nodeGetter().removeNag(18);
-        test.value(nodeGetter().nags()).is([ 5, 21 ]);
-        test.value(nodeGetter().hasNag(18)).is(false);
-        test.value(nodeGetter().hasNag(21)).is(true);
+        assert.deepEqual(nodeGetter().nags(), [ 5, 21 ]);
+        assert.deepEqual(nodeGetter().hasNag(18), false);
+        assert.deepEqual(nodeGetter().hasNag(21), true);
         nodeGetter().removeNag(5);
-        test.value(nodeGetter().nags()).is([ 21 ]);
+        assert.deepEqual(nodeGetter().nags(), [ 21 ]);
         nodeGetter().removeNag(16);
-        test.value(nodeGetter().nags()).is([ 21 ]);
+        assert.deepEqual(nodeGetter().nags(), [ 21 ]);
         nodeGetter().removeNag(21);
-        test.value(nodeGetter().nags()).is([]);
+        assert.deepEqual(nodeGetter().nags(), []);
     });
 
     itOnNodeAndVariation('Sorted NAGs', nodeGetter => {
@@ -396,16 +396,16 @@ describe('NAGs', () => {
         nodeGetter().addNag(1234);
         nodeGetter().addNag(2);
         nodeGetter().addNag(1);
-        test.value(nodeGetter().nags()).is([ 1, 2, 11, 18, 34, 1234 ]);
+        assert.deepEqual(nodeGetter().nags(), [ 1, 2, 11, 18, 34, 1234 ]);
     });
 
     itOnNodeAndVariation('Clear NAGs', nodeGetter => {
         nodeGetter().addNag(52);
         nodeGetter().addNag(3);
         nodeGetter().addNag(14);
-        test.value(nodeGetter().nags()).is([ 3, 14, 52 ]);
+        assert.deepEqual(nodeGetter().nags(), [ 3, 14, 52 ]);
         nodeGetter().clearNags();
-        test.value(nodeGetter().nags()).is([]);
+        assert.deepEqual(nodeGetter().nags(), []);
     });
 
     itOnNodeAndVariation('Filter NAGs', nodeGetter => {
@@ -414,17 +414,17 @@ describe('NAGs', () => {
         nodeGetter().addNag(14);
         nodeGetter().addNag(24);
         nodeGetter().addNag(31);
-        test.value(nodeGetter().nags()).is([ 1, 14, 18, 24, 31 ]);
+        assert.deepEqual(nodeGetter().nags(), [ 1, 14, 18, 24, 31 ]);
         nodeGetter().filterNags(nag => nag % 2 === 1);
-        test.value(nodeGetter().nags()).is([ 1, 31 ]);
+        assert.deepEqual(nodeGetter().nags(), [ 1, 31 ]);
     });
 
     function itInvalidNag(label, value) {
 
         function doIt(nodeFactory) {
-            test.exception(() => nodeFactory().addNag(value)).isInstanceOf(exception.IllegalArgument);
-            test.exception(() => nodeFactory().removeNag(value)).isInstanceOf(exception.IllegalArgument);
-            test.exception(() => nodeFactory().hasNag(value)).isInstanceOf(exception.IllegalArgument);
+            assert.throws(() => nodeFactory().addNag(value), exception.IllegalArgument);
+            assert.throws(() => nodeFactory().removeNag(value), exception.IllegalArgument);
+            assert.throws(() => nodeFactory().hasNag(value), exception.IllegalArgument);
         }
 
         it(label + ' (node)', () => {
@@ -467,47 +467,47 @@ describe('Tags', () => {
 
     itOnNodeAndVariation('Set & get', nodeGetter => {
         nodeGetter().tag('TheKey', 'TheValue');
-        test.value(nodeGetter().tags()).is([ 'TheKey' ]);
-        test.value(nodeGetter().tag('TheKey')).is('TheValue');
-        test.value(nodeGetter().tag('AnotherKey')).is(undefined);
+        assert.deepEqual(nodeGetter().tags(), [ 'TheKey' ]);
+        assert.deepEqual(nodeGetter().tag('TheKey'), 'TheValue');
+        assert.deepEqual(nodeGetter().tag('AnotherKey'), undefined);
     });
 
     itOnNodeAndVariation('Set empty string', nodeGetter => {
         nodeGetter().tag('TheKey1', '');
-        test.value(nodeGetter().tags()).is([ 'TheKey1' ]);
-        test.value(nodeGetter().tag('TheKey1')).is('');
+        assert.deepEqual(nodeGetter().tags(), [ 'TheKey1' ]);
+        assert.deepEqual(nodeGetter().tag('TheKey1'), '');
     });
 
     itOnNodeAndVariation('Set blank string', nodeGetter => {
         nodeGetter().tag('__TheKey__', '  ');
-        test.value(nodeGetter().tags()).is([ '__TheKey__' ]);
-        test.value(nodeGetter().tag('__TheKey__')).is('  ');
+        assert.deepEqual(nodeGetter().tags(), [ '__TheKey__' ]);
+        assert.deepEqual(nodeGetter().tag('__TheKey__'), '  ');
     });
 
     itOnNodeAndVariation('Set non-string (number)', nodeGetter => {
         nodeGetter().tag('_', 42);
-        test.value(nodeGetter().tags()).is([ '_' ]);
-        test.value(nodeGetter().tag('_')).is('42');
+        assert.deepEqual(nodeGetter().tags(), [ '_' ]);
+        assert.deepEqual(nodeGetter().tag('_'), '42');
     });
 
     itOnNodeAndVariation('Set non-string (boolean)', nodeGetter => {
         nodeGetter().tag('123', false);
-        test.value(nodeGetter().tags()).is([ '123' ]);
-        test.value(nodeGetter().tag('123')).is('false');
+        assert.deepEqual(nodeGetter().tags(), [ '123' ]);
+        assert.deepEqual(nodeGetter().tag('123'), 'false');
     });
 
     itOnNodeAndVariation('Erase with undefined', nodeGetter => {
         nodeGetter().tag('TheKey', 'TheValue');
         nodeGetter().tag('TheKey', undefined);
-        test.value(nodeGetter().tags()).is([]);
-        test.value(nodeGetter().tag('TheKey')).is(undefined);
+        assert.deepEqual(nodeGetter().tags(), []);
+        assert.deepEqual(nodeGetter().tag('TheKey'), undefined);
     });
 
     itOnNodeAndVariation('Erase with null', nodeGetter => {
         nodeGetter().tag('TheKey', 'TheValue');
         nodeGetter().tag('TheKey', null);
-        test.value(nodeGetter().tags()).is([]);
-        test.value(nodeGetter().tag('TheKey')).is(undefined);
+        assert.deepEqual(nodeGetter().tags(), []);
+        assert.deepEqual(nodeGetter().tag('TheKey'), undefined);
     });
 
     itOnNodeAndVariation('Sorted keys', nodeGetter => {
@@ -518,15 +518,15 @@ describe('Tags', () => {
         nodeGetter().tag('32', 'blah');
         nodeGetter().tag('xyz', 0);
         nodeGetter().tag('Blah', 33);
-        test.value(nodeGetter().tags()).is([ '1234', '32', 'ABCD', 'Blah', 'TheKey', '_a', 'xyz' ]);
+        assert.deepEqual(nodeGetter().tags(), [ '1234', '32', 'ABCD', 'Blah', 'TheKey', '_a', 'xyz' ]);
     });
 
     itOnNodeAndVariation('Clear tags', nodeGetter => {
         nodeGetter().tag('TheKey1', 'TheValue');
         nodeGetter().tag('TheKey2', 'TheOtherValue');
-        test.value(nodeGetter().tags()).is([ 'TheKey1', 'TheKey2' ]);
+        assert.deepEqual(nodeGetter().tags(), [ 'TheKey1', 'TheKey2' ]);
         nodeGetter().clearTags();
-        test.value(nodeGetter().tags()).is([]);
+        assert.deepEqual(nodeGetter().tags(), []);
     });
 
     itOnNodeAndVariation('Filter tags', nodeGetter => {
@@ -534,9 +534,9 @@ describe('Tags', () => {
         nodeGetter().tag('cd', 'b');
         nodeGetter().tag('ef', 'c');
         nodeGetter().tag('gh', 'd');
-        test.value(nodeGetter().tags()).is([ 'ab', 'cd', 'ef', 'gh' ]);
+        assert.deepEqual(nodeGetter().tags(), [ 'ab', 'cd', 'ef', 'gh' ]);
         nodeGetter().filterTags((tagKey, tagValue) => tagKey.includes('b') || tagValue.includes('d'));
-        test.value(nodeGetter().tags()).is([ 'ab', 'gh' ]);
+        assert.deepEqual(nodeGetter().tags(), [ 'ab', 'gh' ]);
     });
 
     function itInvalidKey(label, action) {
@@ -544,12 +544,12 @@ describe('Tags', () => {
         it(label + ' (node)', () => {
             const game = new Game();
             game.mainVariation().play('e4');
-            test.exception(() => action(game.mainVariation().first())).isInstanceOf(exception.IllegalArgument);
+            assert.throws(() => action(game.mainVariation().first()), exception.IllegalArgument);
         });
 
         it(label + ' (variation)', () => {
             const game = new Game();
-            test.exception(() => action(game.mainVariation())).isInstanceOf(exception.IllegalArgument);
+            assert.throws(() => action(game.mainVariation()), exception.IllegalArgument);
         });
     }
 
@@ -566,19 +566,19 @@ describe('ToString', () => {
     it('Node', () => {
         const game = new Game();
         const node = game.mainVariation().play('e4').play('e5').play('Nf3').play('Nc6');
-        test.value(node.toString()).is('2b[Nc6]');
+        assert.deepEqual(node.toString(), '2b[Nc6]');
     });
 
     it('Main variation', () => {
         const game = new Game();
         const variation = game.mainVariation();
-        test.value(variation.toString()).is('start');
+        assert.deepEqual(variation.toString(), 'start');
     });
 
     it('Sub-variation', () => {
         const game = new Game();
         const variation = game.mainVariation().play('e4').addVariation();
-        test.value(variation.toString()).is('1w-v0-start');
+        assert.deepEqual(variation.toString(), '1w-v0-start');
     });
 });
 
@@ -606,7 +606,7 @@ describe('Invalid findById', () => {
             current = current.play('Qxf7#');
             game.result('1-0');
 
-            test.value(game.findById(id)).is(undefined);
+            assert.deepEqual(game.findById(id), undefined);
         });
     }
 
@@ -644,14 +644,14 @@ describe('FindById with aliases', () => {
             const game = gameBuilder();
 
             const result = game.findById(idAlias);
-            test.value(result.id()).is(expectedId);
-            test.value(result instanceof Variation ? result.initialPosition().fen() : result.position().fen()).is(expectedFEN);
+            assert.deepEqual(result.id(), expectedId);
+            assert.deepEqual(result instanceof Variation ? result.initialPosition().fen() : result.position().fen(), expectedFEN);
 
             const result2 = game.findById(idAlias, true);
-            test.value(result2.id()).is(expectedId);
-            test.value(result2 instanceof Variation ? result2.initialPosition().fen() : result2.position().fen()).is(expectedFEN);
+            assert.deepEqual(result2.id(), expectedId);
+            assert.deepEqual(result2 instanceof Variation ? result2.initialPosition().fen() : result2.position().fen(), expectedFEN);
 
-            test.value(game.findById(idAlias, false)).is(undefined);
+            assert.deepEqual(game.findById(idAlias, false), undefined);
         });
     }
 
@@ -667,7 +667,7 @@ describe('Following ID', () => {
     function checkVariation(variation) {
 
         // Check the method on the variation itself.
-        test.value(variation.followingId(0)).is(variation.id());
+        assert.deepEqual(variation.followingId(0), variation.id());
 
         // Check the method on each node of the variation.
         const previousNodesOrVariation = [ variation ];
@@ -677,10 +677,10 @@ describe('Following ID', () => {
             // Check current node.
             let index = 0;
             for (const previousNodeOrVariation of previousNodesOrVariation) {
-                test.value(previousNodeOrVariation.followingId(previousNodesOrVariation.length - index)).is(currentNode.id());
+                assert.deepEqual(previousNodeOrVariation.followingId(previousNodesOrVariation.length - index), currentNode.id());
                 ++index;
             }
-            test.value(currentNode.followingId(0)).is(currentNode.id());
+            assert.deepEqual(currentNode.followingId(0), currentNode.id());
 
             // Check the variations starting at the current node, if any.
             for (const subVariation of currentNode.variations()) {
@@ -738,9 +738,9 @@ describe('Invalid followingId', () => {
             const firstNode = mainVariation.play('e4');
             const secondNode = firstNode.play('e5');
 
-            test.exception(() => mainVariation.followingId(distance)).isInstanceOf(exception.IllegalArgument);
-            test.exception(() => firstNode.followingId(distance)).isInstanceOf(exception.IllegalArgument);
-            test.exception(() => secondNode.followingId(distance)).isInstanceOf(exception.IllegalArgument);
+            assert.throws(() => mainVariation.followingId(distance), exception.IllegalArgument);
+            assert.throws(() => firstNode.followingId(distance), exception.IllegalArgument);
+            assert.throws(() => secondNode.followingId(distance), exception.IllegalArgument);
         });
     }
 
@@ -757,7 +757,7 @@ describe('Invalid initial position', () => {
     function itInvalidInitialPosition(label, action) {
         it(label, () => {
             const game = new Game();
-            test.exception(() => action(game)).isInstanceOf(exception.IllegalArgument);
+            assert.throws(() => action(game), exception.IllegalArgument);
         });
     }
 
@@ -778,7 +778,7 @@ describe('Invalid variation index', () => {
             node.addVariation().play('c6').play('d4');
             node.addVariation().play('e6').play('d4').play('d5');
             node.play('Nf3').play('Nc6').play('Bc4');
-            test.exception(() => action(node)).isInstanceOf(exception.IllegalArgument);
+            assert.throws(() => action(node), exception.IllegalArgument);
         });
     }
 
@@ -798,18 +798,18 @@ describe('Figurine notation', () => {
     it('White piece', () => {
         const game = new Game();
         const node = game.mainVariation().play('Nf3');
-        test.value(node.figurineNotation()).is('\u2658f3');
+        assert.deepEqual(node.figurineNotation(), '\u2658f3');
     });
 
     it('Black piece', () => {
         const game = new Game();
         const node = game.mainVariation().play('e4').play('e5').play('Nc3').play('Bc5');
-        test.value(node.figurineNotation()).is('\u265dc5');
+        assert.deepEqual(node.figurineNotation(), '\u265dc5');
     });
 
     it('Null move', () => {
         const game = new Game();
         const node = game.mainVariation().play('e4').play('--');
-        test.value(node.figurineNotation()).is('--');
+        assert.deepEqual(node.figurineNotation(), '--');
     });
 });

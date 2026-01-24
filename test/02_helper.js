@@ -25,16 +25,16 @@
 const { exception, isColor, isPiece, isColoredPiece, isFile, isRank, isSquare, isSquareCouple, isCastle, isCastle960, isGameResult, isGameVariant, squareColor,
     squareToCoordinates, coordinatesToSquare, oppositeColor, variantWithCanonicalStartPosition, nagSymbol, isValidECO } = require('../dist/lib/index');
 const readText = require('./common/readtext');
-const test = require('unit.js');
+const assert = require('node:assert/strict');
 
 
 function itIsType(func, validCases, invalidCases) {
     for (const validCase of validCases) {
-        it(validCase, () => { test.value(func(validCase)).is(true); });
+        it(validCase, () => { assert.deepEqual(func(validCase), true); });
     }
     for (const invalidCase of invalidCases) {
         const label = `Not ${invalidCase === '' ? '<empty string>' : typeof invalidCase === 'number' ? '<number>' : String(invalidCase)}`;
-        it(label, () => { test.value(func(invalidCase)).is(false); });
+        it(label, () => { assert.deepEqual(func(invalidCase), false); });
     }
 }
 
@@ -95,31 +95,31 @@ describe('Is game variant', () => {
 
 
 describe('Square color', () => {
-    it('a1', () => { test.value(squareColor('a1')).is('b'); });
-    it('h1', () => { test.value(squareColor('h1')).is('w'); });
-    it('a8', () => { test.value(squareColor('a8')).is('w'); });
-    it('h8', () => { test.value(squareColor('h8')).is('b'); });
-    it('b3', () => { test.value(squareColor('b3')).is('w'); });
-    it('b4', () => { test.value(squareColor('b4')).is('b'); });
-    it('c4', () => { test.value(squareColor('c4')).is('w'); });
-    it('f5', () => { test.value(squareColor('f5')).is('w'); });
-    it('e5', () => { test.value(squareColor('e5')).is('b'); });
-    it('e6', () => { test.value(squareColor('e6')).is('w'); });
+    it('a1', () => { assert.deepEqual(squareColor('a1'), 'b'); });
+    it('h1', () => { assert.deepEqual(squareColor('h1'), 'w'); });
+    it('a8', () => { assert.deepEqual(squareColor('a8'), 'w'); });
+    it('h8', () => { assert.deepEqual(squareColor('h8'), 'b'); });
+    it('b3', () => { assert.deepEqual(squareColor('b3'), 'w'); });
+    it('b4', () => { assert.deepEqual(squareColor('b4'), 'b'); });
+    it('c4', () => { assert.deepEqual(squareColor('c4'), 'w'); });
+    it('f5', () => { assert.deepEqual(squareColor('f5'), 'w'); });
+    it('e5', () => { assert.deepEqual(squareColor('e5'), 'b'); });
+    it('e6', () => { assert.deepEqual(squareColor('e6'), 'w'); });
 
-    it('Error with 7', () => { test.exception(() => squareColor('7')).isInstanceOf(exception.IllegalArgument); });
-    it('Error with b8g', () => { test.exception(() => squareColor('b8g')).isInstanceOf(exception.IllegalArgument); });
+    it('Error with 7', () => { assert.throws(() => squareColor('7'), exception.IllegalArgument); });
+    it('Error with b8g', () => { assert.throws(() => squareColor('b8g'), exception.IllegalArgument); });
 });
 
 
 describe('Square to coordinates', () => {
-    it('a1', () => { test.value(squareToCoordinates('a1')).is({ file: 0, rank: 0 }); });
-    it('h1', () => { test.value(squareToCoordinates('h1')).is({ file: 7, rank: 0 }); });
-    it('a8', () => { test.value(squareToCoordinates('a8')).is({ file: 0, rank: 7 }); });
-    it('h8', () => { test.value(squareToCoordinates('h8')).is({ file: 7, rank: 7 }); });
-    it('e3', () => { test.value(squareToCoordinates('e3')).is({ file: 4, rank: 2 }); });
+    it('a1', () => { assert.deepEqual(squareToCoordinates('a1'), { file: 0, rank: 0 }); });
+    it('h1', () => { assert.deepEqual(squareToCoordinates('h1'), { file: 7, rank: 0 }); });
+    it('a8', () => { assert.deepEqual(squareToCoordinates('a8'), { file: 0, rank: 7 }); });
+    it('h8', () => { assert.deepEqual(squareToCoordinates('h8'), { file: 7, rank: 7 }); });
+    it('e3', () => { assert.deepEqual(squareToCoordinates('e3'), { file: 4, rank: 2 }); });
 
-    it('Error with <empty string>', () => { test.exception(() => squareToCoordinates('')).isInstanceOf(exception.IllegalArgument); });
-    it('Error with cc', () => { test.exception(() => squareToCoordinates('cc')).isInstanceOf(exception.IllegalArgument); });
+    it('Error with <empty string>', () => { assert.throws(() => squareToCoordinates(''), exception.IllegalArgument); });
+    it('Error with cc', () => { assert.throws(() => squareToCoordinates('cc'), exception.IllegalArgument); });
 });
 
 
@@ -127,8 +127,8 @@ describe('Coordinates to square', () => {
 
     function itCoordinatesToSquare(square, file, rank) {
         it(square, () => {
-            test.value(coordinatesToSquare(file, rank)).is(square);
-            test.value(coordinatesToSquare({ file: file, rank: rank })).is(square);
+            assert.deepEqual(coordinatesToSquare(file, rank), square);
+            assert.deepEqual(coordinatesToSquare({ file: file, rank: rank }), square);
         });
     }
 
@@ -138,28 +138,28 @@ describe('Coordinates to square', () => {
     itCoordinatesToSquare('h8', 7, 7);
     itCoordinatesToSquare('e3', 4, 2);
 
-    it('Error with (-1,4)', () => { test.exception(() => coordinatesToSquare(-1, 4)).isInstanceOf(exception.IllegalArgument); });
-    it('Error with (8,3)', () => { test.exception(() => coordinatesToSquare(8, 3)).isInstanceOf(exception.IllegalArgument); });
-    it('Error with (5,-1)', () => { test.exception(() => coordinatesToSquare(5, -1)).isInstanceOf(exception.IllegalArgument); });
-    it('Error with (5,8)', () => { test.exception(() => coordinatesToSquare(7, 8)).isInstanceOf(exception.IllegalArgument); });
+    it('Error with (-1,4)', () => { assert.throws(() => coordinatesToSquare(-1, 4), exception.IllegalArgument); });
+    it('Error with (8,3)', () => { assert.throws(() => coordinatesToSquare(8, 3), exception.IllegalArgument); });
+    it('Error with (5,-1)', () => { assert.throws(() => coordinatesToSquare(5, -1), exception.IllegalArgument); });
+    it('Error with (5,8)', () => { assert.throws(() => coordinatesToSquare(7, 8), exception.IllegalArgument); });
 });
 
 
 describe('Opposite color', () => {
-    it('white to black', () => { test.value(oppositeColor('w')).is('b'); });
-    it('black to white', () => { test.value(oppositeColor('b')).is('w'); });
+    it('white to black', () => { assert.deepEqual(oppositeColor('w'), 'b'); });
+    it('black to white', () => { assert.deepEqual(oppositeColor('b'), 'w'); });
 
-    it('Error with z', () => { test.exception(() => oppositeColor('z')).isInstanceOf(exception.IllegalArgument); });
-    it('Error with bb', () => { test.exception(() => oppositeColor('bb')).isInstanceOf(exception.IllegalArgument); });
+    it('Error with z', () => { assert.throws(() => oppositeColor('z'), exception.IllegalArgument); });
+    it('Error with bb', () => { assert.throws(() => oppositeColor('bb'), exception.IllegalArgument); });
 });
 
 
 describe('Variant with canonical start position', () => {
-    it('no-king', () => { test.value(variantWithCanonicalStartPosition('no-king')).is(false); });
-    it('chess960', () => { test.value(variantWithCanonicalStartPosition('chess960')).is(false); });
-    it('antichess', () => { test.value(variantWithCanonicalStartPosition('antichess')).is(true); });
+    it('no-king', () => { assert.deepEqual(variantWithCanonicalStartPosition('no-king'), false); });
+    it('chess960', () => { assert.deepEqual(variantWithCanonicalStartPosition('chess960'), false); });
+    it('antichess', () => { assert.deepEqual(variantWithCanonicalStartPosition('antichess'), true); });
 
-    it('Error with invalid variant', () => { test.exception(() => variantWithCanonicalStartPosition('whatever')).isInstanceOf(exception.IllegalArgument); });
+    it('Error with invalid variant', () => { assert.throws(() => variantWithCanonicalStartPosition('whatever'), exception.IllegalArgument); });
 });
 
 
@@ -169,28 +169,28 @@ describe('NAG symbols', () => {
 
     function itNagWithSymbol(i) {
         const nag = nags[i];
-        it('NAG ' + nag, () => { test.value(nagSymbol(nag)).is(expectedSymbols[i]); });
+        it('NAG ' + nag, () => { assert.deepEqual(nagSymbol(nag), expectedSymbols[i]); });
     }
 
     for (let i = 0; i < nags.length; ++i) {
         itNagWithSymbol(i);
     }
 
-    it('NAG without symbol', () => { test.value(nagSymbol(99)).is('$99'); });
+    it('NAG without symbol', () => { assert.deepEqual(nagSymbol(99), '$99'); });
 
-    it('Error with string', () => { test.exception(() => nagSymbol('1')).isInstanceOf(exception.IllegalArgument); });
-    it('Error with null', () => { test.exception(() => nagSymbol(null)).isInstanceOf(exception.IllegalArgument); });
-    it('Error with non-integer', () => { test.exception(() => nagSymbol(3.2)).isInstanceOf(exception.IllegalArgument); });
-    it('Error with negative integer', () => { test.exception(() => nagSymbol(-1)).isInstanceOf(exception.IllegalArgument); });
+    it('Error with string', () => { assert.throws(() => nagSymbol('1'), exception.IllegalArgument); });
+    it('Error with null', () => { assert.throws(() => nagSymbol(null), exception.IllegalArgument); });
+    it('Error with non-integer', () => { assert.throws(() => nagSymbol(3.2), exception.IllegalArgument); });
+    it('Error with negative integer', () => { assert.throws(() => nagSymbol(-1), exception.IllegalArgument); });
 });
 
 
 describe('Is valid ECO', () => {
 
-    it('Valid ECO 1', () => { test.value(isValidECO('A00')).is(true); });
-    it('Valid ECO 2', () => { test.value(isValidECO('E99')).is(true); });
+    it('Valid ECO 1', () => { assert.deepEqual(isValidECO('A00'), true); });
+    it('Valid ECO 2', () => { assert.deepEqual(isValidECO('E99'), true); });
 
-    it('Invalid ECO 1', () => { test.value(isValidECO('F00')).is(false); });
-    it('Invalid ECO 2', () => { test.value(isValidECO('A00b')).is(false); });
-    it('Invalid ECO (number)', () => { test.value(isValidECO(42)).is(false); });
+    it('Invalid ECO 1', () => { assert.deepEqual(isValidECO('F00'), false); });
+    it('Invalid ECO 2', () => { assert.deepEqual(isValidECO('A00b'), false); });
+    it('Invalid ECO (number)', () => { assert.deepEqual(isValidECO(42), false); });
 });

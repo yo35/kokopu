@@ -26,7 +26,7 @@ const { exception, Game, Position, AbstractNode, Node, Variation, pgnRead, pgnWr
 const readText = require('./common/readtext');
 const resourceExists = require('./common/resourceexists');
 const dumpGame = require('./common/dumpgame');
-const test = require('unit.js');
+const assert = require('node:assert/strict');
 
 /**
  * WARNING: this factory must return a game with all the headers set to a non-default value. Do not forget to update when adding new headers.
@@ -495,7 +495,7 @@ describe('Check isVariation', () => {
     function checkNode(game, node) {
 
         // Check the current node.
-        test.value(node.isVariation()).is(false);
+        assert.deepEqual(node.isVariation(), false);
 
         // Check the variations.
         for (const subVariation of node.variations()) {
@@ -506,7 +506,7 @@ describe('Check isVariation', () => {
     function checkVariation(game, variation) {
 
         // Check the current variation.
-        test.value(variation.isVariation()).is(true);
+        assert.deepEqual(variation.isVariation(), true);
 
         // Check the moves.
         let node = variation.first();
@@ -536,10 +536,10 @@ describe('Check IDs', () => {
         // Check the current node.
         const nodeId = node.id();
         const searchedNode = game.findById(nodeId);
-        test.value(searchedNode).isInstanceOf(AbstractNode);
-        test.value(searchedNode).isInstanceOf(Node);
-        test.value(searchedNode.id()).is(nodeId);
-        test.value(searchedNode.positionBefore().fen()).is(node.positionBefore().fen());
+        assert(searchedNode instanceof AbstractNode);
+        assert(searchedNode instanceof Node);
+        assert.deepEqual(searchedNode.id(), nodeId);
+        assert.deepEqual(searchedNode.positionBefore().fen(), node.positionBefore().fen());
 
         // Check the variations.
         for (const subVariation of node.variations()) {
@@ -552,10 +552,10 @@ describe('Check IDs', () => {
         // Check the current variation.
         const variationId = variation.id();
         const searchedVariation = game.findById(variationId);
-        test.value(searchedVariation).isInstanceOf(AbstractNode);
-        test.value(searchedVariation).isInstanceOf(Variation);
-        test.value(searchedVariation.id()).is(variationId);
-        test.value(searchedVariation.initialPosition().fen()).is(variation.initialPosition().fen());
+        assert(searchedVariation instanceof AbstractNode);
+        assert(searchedVariation instanceof Variation);
+        assert.deepEqual(searchedVariation.id(), variationId);
+        assert.deepEqual(searchedVariation.initialPosition().fen(), variation.initialPosition().fen());
 
         // Check the moves.
         let node = variation.first();
@@ -584,17 +584,17 @@ describe('Backward iterators', () => {
 
         // Check the parent variation.
         const actualParentVariation = node.parentVariation();
-        test.value(actualParentVariation.id()).is(parentVariation.id());
-        test.value(actualParentVariation.initialPosition().fen()).is(parentVariation.initialPosition().fen());
+        assert.deepEqual(actualParentVariation.id(), parentVariation.id());
+        assert.deepEqual(actualParentVariation.initialPosition().fen(), parentVariation.initialPosition().fen());
 
         // Check the previous node.
         const actualPreviousNode = node.previous();
         if (previousNode !== undefined) {
-            test.value(actualPreviousNode.id()).is(previousNode.id());
-            test.value(actualPreviousNode.positionBefore().fen()).is(previousNode.positionBefore().fen());
+            assert.deepEqual(actualPreviousNode.id(), previousNode.id());
+            assert.deepEqual(actualPreviousNode.positionBefore().fen(), previousNode.positionBefore().fen());
         }
         else {
-            test.value(actualPreviousNode).isNotTrue();
+            assert.deepEqual(actualPreviousNode, undefined);
         }
 
         // Check the variations.
@@ -608,11 +608,11 @@ describe('Backward iterators', () => {
         // Check the current variation.
         const actualParentNode = variation.parentNode();
         if (parentNode !== undefined) {
-            test.value(actualParentNode.id()).is(parentNode.id());
-            test.value(actualParentNode.positionBefore().fen()).is(parentNode.positionBefore().fen());
+            assert.deepEqual(actualParentNode.id(), parentNode.id());
+            assert.deepEqual(actualParentNode.positionBefore().fen(), parentNode.positionBefore().fen());
         }
         else {
-            test.value(actualParentNode).isNotTrue();
+            assert.deepEqual(actualParentNode, undefined);
         }
 
         // Check the moves.
@@ -646,7 +646,7 @@ describe('Game nodes', () => {
             const expectedText = resourceExists(resource) ? readText(resource).trim() : '';
             const game = factory();
             const text = (withSubVariations === 'default' ? game.nodes() : game.nodes(withSubVariations)).map(node => `[${node.id()}] ${node.notation()}`).join('\n');
-            test.value(text).is(expectedText);
+            assert.deepEqual(text, expectedText);
         });
     }
 
@@ -683,7 +683,7 @@ describe('Final positions', () => {
             const lines = game.nodes(true).flatMap(node => node.variations()).map(variation => `[${variation.id()}] ${getter(variation)}`);
             lines.unshift(`{initial} ${game.initialFEN()}`);
             lines.push(`[${game.mainVariation().id()}] ${game.finalFEN()}`);
-            test.value(lines.join('\n')).is(expectedText);
+            assert.deepEqual(lines.join('\n'), expectedText);
         });
     }
 
@@ -700,7 +700,7 @@ describe('Write ASCII', () => {
         it(filename, () => {
             const expectedText = readText(`games/${filename}/ascii.txt`).trim();
             const game = factory();
-            test.value(game.ascii().trim()).is(expectedText);
+            assert.deepEqual(game.ascii().trim(), expectedText);
         });
     }
 
@@ -716,7 +716,7 @@ describe('Write ASCII (extensive)', () => {
         it(filename, () => {
             const expectedText = readText(`games/${filename}/dump.txt`).trim();
             const game = factory();
-            test.value(dumpGame(game).trim()).is(expectedText);
+            assert.deepEqual(dumpGame(game).trim(), expectedText);
         });
     }
 
@@ -732,7 +732,7 @@ describe('Write PGN', () => {
         it(filename, () => {
             const expectedText = readText(`games/${filename}/database.pgn`);
             const game = factory();
-            test.value(pgnWrite(game)).is(expectedText);
+            assert.deepEqual(pgnWrite(game), expectedText);
         });
     }
 
@@ -744,7 +744,7 @@ describe('Write PGN', () => {
         it('Full PGN - ' + filename, () => {
             const expectedText = readText(`pgns/${filename}/database.pgn`);
             const games = factory();
-            test.value(pgnWrite(games)).is(expectedText);
+            assert.deepEqual(pgnWrite(games), expectedText);
         });
     }
 
@@ -761,7 +761,7 @@ describe('Write PGN with options', () => {
             const expectedText = readText(`games/${filename}/database-options.pgn`);
             const factory = oneGamefactories[filename];
             const game = factory();
-            test.value(pgnWrite(game, options)).is(expectedText);
+            assert.deepEqual(pgnWrite(game, options), expectedText);
         });
     }
 
@@ -774,7 +774,7 @@ describe('Write PGN (invalid arguments)', () => {
 
     function itInvalidArgument(label, value) {
         it(label, () => {
-            test.exception(() => pgnWrite(value)).isInstanceOf(exception.IllegalArgument);
+            assert.throws(() => pgnWrite(value), exception.IllegalArgument);
         });
     }
 
@@ -795,7 +795,7 @@ describe('Read PGN', () => {
             const expectedText = readText(resource).trim();
             const inputText = readText(`games/${filename}/database.pgn`);
             const game = pgnRead(inputText, 0);
-            test.value(dumpGame(game).trim()).is(expectedText);
+            assert.deepEqual(dumpGame(game).trim(), expectedText);
         });
     }
 
@@ -809,7 +809,7 @@ describe('Read PGN (invalid arguments)', () => {
 
     function itInvalidArgument(label, value) {
         it(label, () => {
-            test.exception(() => pgnRead(value)).isInstanceOf(exception.IllegalArgument);
+            assert.throws(() => pgnRead(value), exception.IllegalArgument);
         });
     }
 
@@ -825,7 +825,7 @@ describe('Game to POJO', () => {
         it(filename, () => {
             const expectedPOJO = JSON.parse(readText(`games/${filename}/pojo.json`).trim());
             const game = factory();
-            test.value(game.pojo()).is(expectedPOJO);
+            assert.deepEqual(game.pojo(), expectedPOJO);
         });
     }
 
@@ -843,7 +843,7 @@ describe('POJO to Game', () => {
             const expectedText = readText(resource).trim();
             const pojo = JSON.parse(readText(`games/${filename}/pojo.json`).trim());
             const game = Game.fromPOJO(pojo);
-            test.value(dumpGame(game).trim()).is(expectedText);
+            assert.deepEqual(dumpGame(game).trim(), expectedText);
         });
     }
 

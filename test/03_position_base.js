@@ -25,7 +25,7 @@
 const { exception, Position } = require('../dist/lib/index');
 const dumpCastlingFlags = require('./common/dumpcastlingflags');
 const readCSV = require('./common/readcsv');
-const test = require('unit.js');
+const assert = require('node:assert/strict');
 
 const startFEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 const startXFEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w AHah - 0 1';
@@ -48,8 +48,8 @@ describe('Position constructor', () => {
     function doTest(label, expectedVariant, expectedFEN, positionFactory) {
         it(label, () => {
             const position = positionFactory();
-            test.value(position.variant()).is(expectedVariant);
-            test.value(position.fen()).is(expectedFEN);
+            assert.deepEqual(position.variant(), expectedVariant);
+            assert.deepEqual(position.fen(), expectedFEN);
         });
     }
 
@@ -94,7 +94,7 @@ describe('Position constructor', () => {
     /* eslint-enable */
 
     function doFailureTest(label, fenParsingErrorExpected, positionFactory) {
-        it(label, () => { test.exception(positionFactory).isInstanceOf(fenParsingErrorExpected ? exception.InvalidFEN : exception.IllegalArgument); });
+        it(label, () => { assert.throws(positionFactory, fenParsingErrorExpected ? exception.InvalidFEN : exception.IllegalArgument); });
     }
 
     doFailureTest('Invalid variant', false, () => new Position('not-a-variant', 'empty'));
@@ -135,10 +135,10 @@ describe('Position copy constructor', () => {
             p1.clear(variant);
 
             // Check their states
-            test.value(p1.variant()).is(variant);
-            test.value(p2.variant()).is(variant);
-            test.value(p1.fen()).is(emptyFEN);
-            test.value(p2.fen()).is(expectedFEN);
+            assert.deepEqual(p1.variant(), variant);
+            assert.deepEqual(p2.variant(), variant);
+            assert.deepEqual(p1.fen(), emptyFEN);
+            assert.deepEqual(p2.fen(), expectedFEN);
         });
     }
 
@@ -158,22 +158,22 @@ describe('Clear mutator', () => {
         it('From ' + variantSource + ' to default', () => {
             const position = new Position(variantSource, customFEN);
             position.clear();
-            test.value(position.variant()).is('regular');
-            test.value(position.fen()).is(emptyFEN);
+            assert.deepEqual(position.variant(), 'regular');
+            assert.deepEqual(position.fen(), emptyFEN);
         });
 
         for (const variantTarget of variants) {
             it('From ' + variantSource + ' to ' + variantTarget, () => {
                 const position = new Position(variantSource, customFEN);
                 position.clear(variantTarget);
-                test.value(position.variant()).is(variantTarget);
-                test.value(position.fen()).is(emptyFEN);
+                assert.deepEqual(position.variant(), variantTarget);
+                assert.deepEqual(position.fen(), emptyFEN);
             });
         }
 
         it('From ' + variantSource + ' to error', () => {
             const position = new Position(variantSource, customFEN);
-            test.exception(() => position.clear('not-a-variant')).isInstanceOf(exception.IllegalArgument);
+            assert.throws(() => position.clear('not-a-variant'), exception.IllegalArgument);
         });
     }
 });
@@ -184,8 +184,8 @@ describe('Reset mutator', () => {
         it('From ' + variant, () => {
             const position = new Position(variant, customFEN);
             position.reset();
-            test.value(position.variant()).is('regular');
-            test.value(position.fen()).is(startFEN);
+            assert.deepEqual(position.variant(), 'regular');
+            assert.deepEqual(position.fen(), startFEN);
         });
     }
 });
@@ -196,15 +196,15 @@ describe('Reset 960 mutator', () => {
         it('From ' + variant, () => {
             const position = new Position(variant, customFEN);
             position.reset960(518);
-            test.value(position.variant()).is('chess960');
-            test.value(position.fen()).is(startXFEN);
+            assert.deepEqual(position.variant(), 'chess960');
+            assert.deepEqual(position.fen(), startXFEN);
         });
     }
 
     for (const elem of [ 960, 18.3, '546' ]) {
         it('Error with Scharnagl code ' + elem, () => {
             const p = new Position();
-            test.exception(() => p.reset960(elem)).isInstanceOf(exception.IllegalArgument);
+            assert.throws(() => p.reset960(elem), exception.IllegalArgument);
         });
     }
 });
@@ -215,8 +215,8 @@ describe('Reset antichess mutator', () => {
         it('From ' + variant, () => {
             const position = new Position(variant, customFEN);
             position.resetAntichess();
-            test.value(position.variant()).is('antichess');
-            test.value(position.fen()).is(startFENAntichess);
+            assert.deepEqual(position.variant(), 'antichess');
+            assert.deepEqual(position.fen(), startFENAntichess);
         });
     }
 });
@@ -227,8 +227,8 @@ describe('Reset horde mutator', () => {
         it('From ' + variant, () => {
             const position = new Position(variant, customFEN);
             position.resetHorde();
-            test.value(position.variant()).is('horde');
-            test.value(position.fen()).is(startFENHorde);
+            assert.deepEqual(position.variant(), 'horde');
+            assert.deepEqual(position.fen(), startFENHorde);
         });
     }
 });
@@ -246,8 +246,8 @@ describe('Position Scharnagl constructor', () => {
     for (const elem of testData) {
         it('Chess960 initial position ' + elem.scharnaglCode, () => {
             const position = new Position('chess960', elem.scharnaglCode);
-            test.value(position.variant()).is('chess960');
-            test.value(position.fen()).is(elem.fen);
+            assert.deepEqual(position.variant(), 'chess960');
+            assert.deepEqual(position.fen(), elem.fen);
         });
     }
 });
@@ -257,54 +257,54 @@ describe('Position getters', () => {
 
     const currentFEN = 'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b Kk e3 0 1';
 
-    it('Get board 1', () => { const p = new Position(); test.value(p.square('e1')).is('wk'); });
-    it('Get board 2', () => { const p = new Position(); test.value(p.square('f7')).is('bp'); });
-    it('Get board 3', () => { const p = new Position(); test.value(p.square('b4')).is('-'); });
+    it('Get board 1', () => { const p = new Position(); assert.deepEqual(p.square('e1'), 'wk'); });
+    it('Get board 2', () => { const p = new Position(); assert.deepEqual(p.square('f7'), 'bp'); });
+    it('Get board 3', () => { const p = new Position(); assert.deepEqual(p.square('b4'), '-'); });
 
-    it('Get turn 1', () => { const p = new Position(); test.value(p.turn()).is('w'); });
-    it('Get turn 2', () => { const p = new Position(currentFEN); test.value(p.turn()).is('b'); });
+    it('Get turn 1', () => { const p = new Position(); assert.deepEqual(p.turn(), 'w'); });
+    it('Get turn 2', () => { const p = new Position(currentFEN); assert.deepEqual(p.turn(), 'b'); });
 
-    it('Get castling 1', () => { const p = new Position(); test.value(p.castling('wq')).is(true); });
-    it('Get castling 2', () => { const p = new Position(currentFEN); test.value(p.castling('bq')).is(false); });
-    it('Get castling 3', () => { const p = new Position(currentFEN); test.value(p.castling('bk')).is(true); });
-    it('Get castling 4 (chess960)', () => { const p = new Position('chess960', 763); test.value(p.castling('wa')).is(true); });
-    it('Get castling 5 (chess960)', () => { const p = new Position('chess960', 763); test.value(p.castling('wb')).is(false); });
-    it('Get castling 6 (chess960)', () => { const p = new Position('chess960', 763); test.value(p.castling('bf')).is(true); });
-    it('Get castling 7 (chess960)', () => { const p = new Position('chess960', 763); test.value(p.castling('bh')).is(false); });
-    it('Get castling 8 (no-king)', () => { const p = new Position('no-king', 'empty'); test.value(p.castling('bq')).is(false); });
-    it('Get castling 9 (no-king)', () => { const p = new Position('no-king', startFEN); test.value(p.castling('wk')).is(true); });
-    it('Get castling 10 (white-king-only)', () => { const p = new Position('white-king-only', 'empty'); test.value(p.castling('wk')).is(false); });
-    it('Get castling 11 (white-king-only)', () => { const p = new Position('white-king-only', 'empty'); test.value(p.castling('bq')).is(false); });
-    it('Get castling 12 (white-king-only)', () => { const p = new Position('white-king-only', startFEN); test.value(p.castling('wq')).is(true); });
-    it('Get castling 13 (white-king-only)', () => { const p = new Position('white-king-only', startFEN); test.value(p.castling('bk')).is(true); });
-    it('Get castling 14 (black-king-only)', () => { const p = new Position('black-king-only', 'empty'); test.value(p.castling('wk')).is(false); });
-    it('Get castling 15 (black-king-only)', () => { const p = new Position('black-king-only', 'empty'); test.value(p.castling('bq')).is(false); });
-    it('Get castling 16 (black-king-only)', () => { const p = new Position('black-king-only', startFEN); test.value(p.castling('wq')).is(true); });
-    it('Get castling 17 (black-king-only)', () => { const p = new Position('black-king-only', startFEN); test.value(p.castling('bk')).is(true); });
+    it('Get castling 1', () => { const p = new Position(); assert.deepEqual(p.castling('wq'), true); });
+    it('Get castling 2', () => { const p = new Position(currentFEN); assert.deepEqual(p.castling('bq'), false); });
+    it('Get castling 3', () => { const p = new Position(currentFEN); assert.deepEqual(p.castling('bk'), true); });
+    it('Get castling 4 (chess960)', () => { const p = new Position('chess960', 763); assert.deepEqual(p.castling('wa'), true); });
+    it('Get castling 5 (chess960)', () => { const p = new Position('chess960', 763); assert.deepEqual(p.castling('wb'), false); });
+    it('Get castling 6 (chess960)', () => { const p = new Position('chess960', 763); assert.deepEqual(p.castling('bf'), true); });
+    it('Get castling 7 (chess960)', () => { const p = new Position('chess960', 763); assert.deepEqual(p.castling('bh'), false); });
+    it('Get castling 8 (no-king)', () => { const p = new Position('no-king', 'empty'); assert.deepEqual(p.castling('bq'), false); });
+    it('Get castling 9 (no-king)', () => { const p = new Position('no-king', startFEN); assert.deepEqual(p.castling('wk'), true); });
+    it('Get castling 10 (white-king-only)', () => { const p = new Position('white-king-only', 'empty'); assert.deepEqual(p.castling('wk'), false); });
+    it('Get castling 11 (white-king-only)', () => { const p = new Position('white-king-only', 'empty'); assert.deepEqual(p.castling('bq'), false); });
+    it('Get castling 12 (white-king-only)', () => { const p = new Position('white-king-only', startFEN); assert.deepEqual(p.castling('wq'), true); });
+    it('Get castling 13 (white-king-only)', () => { const p = new Position('white-king-only', startFEN); assert.deepEqual(p.castling('bk'), true); });
+    it('Get castling 14 (black-king-only)', () => { const p = new Position('black-king-only', 'empty'); assert.deepEqual(p.castling('wk'), false); });
+    it('Get castling 15 (black-king-only)', () => { const p = new Position('black-king-only', 'empty'); assert.deepEqual(p.castling('bq'), false); });
+    it('Get castling 16 (black-king-only)', () => { const p = new Position('black-king-only', startFEN); assert.deepEqual(p.castling('wq'), true); });
+    it('Get castling 17 (black-king-only)', () => { const p = new Position('black-king-only', startFEN); assert.deepEqual(p.castling('bk'), true); });
 
-    it('Get en-passant 1', () => { const p = new Position(); test.value(p.enPassant()).is('-'); });
-    it('Get en-passant 2', () => { const p = new Position(currentFEN); test.value(p.enPassant()).is('e'); });
+    it('Get en-passant 1', () => { const p = new Position(); assert.deepEqual(p.enPassant(), '-'); });
+    it('Get en-passant 2', () => { const p = new Position(currentFEN); assert.deepEqual(p.enPassant(), 'e'); });
 
     for (const elem of [ 'j1', 'f9' ]) {
         it('Error for board with ' + elem, () => {
             const p = new Position();
-            test.exception(() => p.square(elem)).isInstanceOf(exception.IllegalArgument);
+            assert.throws(() => p.square(elem), exception.IllegalArgument);
         });
     }
 
     for (const elem of [ 'bK', 'wa' ]) {
         it('Error for castling with ' + elem, () => {
             const p = new Position();
-            test.exception(() => p.castling(elem)).isInstanceOf(exception.IllegalArgument);
-            test.exception(() => p.effectiveCastling(elem)).isInstanceOf(exception.IllegalArgument);
+            assert.throws(() => p.castling(elem), exception.IllegalArgument);
+            assert.throws(() => p.effectiveCastling(elem), exception.IllegalArgument);
         });
     }
 
     for (const elem of [ 'wA', 'bq' ]) {
         it('Error for castling (chess960) with ' + elem, () => {
             const p = new Position('chess960', 123);
-            test.exception(() => p.castling(elem)).isInstanceOf(exception.IllegalArgument);
-            test.exception(() => p.effectiveCastling(elem)).isInstanceOf(exception.IllegalArgument);
+            assert.throws(() => p.castling(elem), exception.IllegalArgument);
+            assert.throws(() => p.effectiveCastling(elem), exception.IllegalArgument);
         });
     }
 });
@@ -313,9 +313,9 @@ describe('Position getters', () => {
 describe('Position setters', () => {
 
     function testCastlingEnPassantFEN(position, expectedCastling, expectedEnPassant, expectedFEN) {
-        test.value(dumpCastlingFlags(position, (p, castle) => p.castling(castle))).is(expectedCastling);
-        test.value(position.enPassant()).is(expectedEnPassant);
-        test.value(position.fen()).is(expectedFEN);
+        assert.deepEqual(dumpCastlingFlags(position, (p, castle) => p.castling(castle)), expectedCastling);
+        assert.deepEqual(position.enPassant(), expectedEnPassant);
+        assert.deepEqual(position.fen(), expectedFEN);
     }
 
     it('Scenario 1', () => {
@@ -381,28 +381,28 @@ describe('Position setters', () => {
     for (const elem of [ 'p', 'Q', 'kw' ]) {
         it('Error for board with colored piece ' + elem, () => {
             const p = new Position();
-            test.exception(() => p.square('d4', elem)).isInstanceOf(exception.IllegalArgument);
+            assert.throws(() => p.square('d4', elem), exception.IllegalArgument);
         });
     }
 
     for (const elem of [ '', 'W', 'bb', 'wb' ]) {
         it('Error for turn with ' + (elem === '' ? '<empty string>' : elem), () => {
             const p = new Position();
-            test.exception(() => p.turn(elem)).isInstanceOf(exception.IllegalArgument);
+            assert.throws(() => p.turn(elem), exception.IllegalArgument);
         });
     }
 
     for (const elem of [ 0, 1, 'false', 'true' ]) {
         it('Error for set castling with ' + (elem === '' ? '<empty string>' : elem), () => {
             const p = new Position();
-            test.exception(() => p.castling('wk', elem)).isInstanceOf(exception.IllegalArgument);
+            assert.throws(() => p.castling('wk', elem), exception.IllegalArgument);
         });
     }
 
     for (const elem of [ '', 'i', 'gg', 'abcdefgh' ]) {
         it('Error for en-passant with ' + (elem === '' ? '<empty string>' : elem), () => {
             const p = new Position();
-            test.exception(() => p.enPassant(elem)).isInstanceOf(exception.IllegalArgument);
+            assert.throws(() => p.enPassant(elem), exception.IllegalArgument);
         });
     }
 });
@@ -411,8 +411,8 @@ describe('Position setters', () => {
 describe('Position equality', () => {
 
     function checkIsEqual(p1, p2, expected) {
-        test.value(Position.isEqual(p1, p2)).is(expected);
-        test.value(Position.isEqual(p2, p1)).is(expected);
+        assert.deepEqual(Position.isEqual(p1, p2), expected);
+        assert.deepEqual(Position.isEqual(p2, p1), expected);
     }
 
     it('On copy (base)', () => {

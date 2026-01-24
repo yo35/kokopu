@@ -25,7 +25,7 @@
 const { exception, Position, forEachSquare } = require('../dist/lib/index');
 const dumpCastlingFlags = require('./common/dumpcastlingflags');
 const readCSV = require('./common/readcsv');
-const test = require('unit.js');
+const assert = require('node:assert/strict');
 
 
 function itForEach(fun) {
@@ -80,7 +80,7 @@ function createPosition(testDataDescriptor) {
 describe('Variant getter', () => {
     itForEach(elem => {
         const pos = createPosition(elem);
-        test.value(pos.variant()).is(elem.variant);
+        assert.deepEqual(pos.variant(), elem.variant);
     });
 });
 
@@ -88,7 +88,7 @@ describe('Variant getter', () => {
 describe('Turn getter', () => {
     itForEach(elem => {
         const pos = createPosition(elem);
-        test.value(pos.turn()).is(elem.turn);
+        assert.deepEqual(pos.turn(), elem.turn);
     });
 });
 
@@ -96,9 +96,9 @@ describe('Turn getter', () => {
 describe('Legality check & king squares', () => {
     itForEach(elem => {
         const pos = createPosition(elem);
-        test.value(pos.isLegal()).is(elem.isLegal);
-        test.value(pos.kingSquare('w')).is(elem.whiteKing);
-        test.value(pos.kingSquare('b')).is(elem.blackKing);
+        assert.deepEqual(pos.isLegal(), elem.isLegal);
+        assert.deepEqual(pos.kingSquare('w'), elem.whiteKing);
+        assert.deepEqual(pos.kingSquare('b'), elem.blackKing);
     });
 });
 
@@ -106,7 +106,7 @@ describe('Legality check & king squares', () => {
 describe('Effective castling', () => {
     itForEach(elem => {
         const pos = createPosition(elem);
-        test.value(dumpCastlingFlags(pos, (p, castle) => p.effectiveCastling(castle))).is(elem.effectiveCastling);
+        assert.deepEqual(dumpCastlingFlags(pos, (p, castle) => p.effectiveCastling(castle)), elem.effectiveCastling);
     });
 });
 
@@ -114,7 +114,7 @@ describe('Effective castling', () => {
 describe('Effective en-passant', () => {
     itForEach(elem => {
         const pos = createPosition(elem);
-        test.value(pos.effectiveEnPassant()).is(elem.effectiveEnPassant);
+        assert.deepEqual(pos.effectiveEnPassant(), elem.effectiveEnPassant);
     });
 });
 
@@ -122,7 +122,7 @@ describe('Effective en-passant', () => {
 describe('Is check?', () => {
     itForEach(elem => {
         const pos = createPosition(elem);
-        test.value(pos.isCheck()).is(elem.isCheck);
+        assert.deepEqual(pos.isCheck(), elem.isCheck);
     });
 });
 
@@ -130,7 +130,7 @@ describe('Is check?', () => {
 describe('Is checkmate?', () => {
     itForEach(elem => {
         const pos = createPosition(elem);
-        test.value(pos.isCheckmate()).is(elem.isCheckmate);
+        assert.deepEqual(pos.isCheckmate(), elem.isCheckmate);
     });
 });
 
@@ -138,7 +138,7 @@ describe('Is checkmate?', () => {
 describe('Is stalemate?', () => {
     itForEach(elem => {
         const pos = createPosition(elem);
-        test.value(pos.isStalemate()).is(elem.isStalemate);
+        assert.deepEqual(pos.isStalemate(), elem.isStalemate);
     });
 });
 
@@ -146,7 +146,7 @@ describe('Is stalemate?', () => {
 describe('Is dead?', () => {
     itForEach(elem => {
         const pos = createPosition(elem);
-        test.value(pos.isDead()).is(elem.isDead);
+        assert.deepEqual(pos.isDead(), elem.isDead);
     });
 });
 
@@ -154,7 +154,7 @@ describe('Is dead?', () => {
 describe('Is dead? (USCF rules)', () => {
     itForEach(elem => {
         const pos = createPosition(elem);
-        test.value(pos.isDead(true)).is(elem.isDeadUSCF);
+        assert.deepEqual(pos.isDead(true), elem.isDeadUSCF);
     });
 });
 
@@ -162,7 +162,7 @@ describe('Is dead? (USCF rules)', () => {
 describe('Has move?', () => {
     itForEach(elem => {
         const pos = createPosition(elem);
-        test.value(pos.hasMove()).is(elem.hasMove);
+        assert.deepEqual(pos.hasMove(), elem.hasMove);
     });
 });
 
@@ -170,7 +170,7 @@ describe('Has move?', () => {
 describe('Move generation', () => {
     itForEach(elem => {
         const moves = createPosition(elem).moves().map(move => move.toString()).sort();
-        test.value(moves.join('/')).is(elem.moves);
+        assert.deepEqual(moves.join('/'), elem.moves);
     });
 });
 
@@ -210,7 +210,7 @@ describe('Move legality check', () => {
             });
         });
 
-        test.value(moves.map(move => move.toString()).sort().join('/')).is(elem.moves);
+        assert.deepEqual(moves.map(move => move.toString()).sort().join('/'), elem.moves);
     });
 });
 
@@ -224,7 +224,7 @@ describe('Play', () => {
             nextPos.play(move);
             return nextPos.fen();
         });
-        test.value(successors.join('|')).is(elem.successors);
+        assert.deepEqual(successors.join('|'), elem.successors);
     });
 });
 
@@ -234,7 +234,7 @@ describe('UCI notation generation', () => {
         const pos = createPosition(elem);
         const moves = pos.moves().sort((e1, e2) => e1.toString().localeCompare(e2.toString()));
         const actionNotations = moves.map(move => pos.uci(move));
-        test.value(actionNotations.join('/')).is(elem.uciMoves);
+        assert.deepEqual(actionNotations.join('/'), elem.uciMoves);
     });
 });
 
@@ -244,7 +244,7 @@ describe('Standard algebraic notation generation', () => {
         const pos = createPosition(elem);
         const moves = pos.moves().sort((e1, e2) => e1.toString().localeCompare(e2.toString()));
         const actionNotations = moves.map(move => pos.notation(move));
-        test.value(actionNotations.join('/')).is(elem.notations);
+        assert.deepEqual(actionNotations.join('/'), elem.notations);
     });
 });
 
@@ -277,7 +277,7 @@ describe('UCI notation parsing', () => {
         moves.sort();
         moves = moves.filter((move, index, tab) => index === 0 || move !== tab[index - 1]);
 
-        test.value(moves.join('/')).is(elem.moves);
+        assert.deepEqual(moves.join('/'), elem.moves);
     });
 });
 
@@ -333,6 +333,6 @@ describe('Standard algebraic notation parsing', () => {
         moves.sort();
         moves = moves.filter((move, index, tab) => index === 0 || move !== tab[index - 1]);
 
-        test.value(moves.join('/')).is(elem.moves);
+        assert.deepEqual(moves.join('/'), elem.moves);
     });
 });

@@ -23,14 +23,14 @@
 
 
 const { exception, i18n } = require('../dist/lib/index');
-const test = require('unit.js');
+const assert = require('node:assert/strict');
 
 
 describe('Invalid argument exception', () => {
     it('Constructor', () => {
         const e = new exception.IllegalArgument('MyFunction');
-        test.value(e.functionName).is('MyFunction');
-        test.value(e.toString()).is('Illegal argument in function MyFunction');
+        assert.deepEqual(e.functionName, 'MyFunction');
+        assert.deepEqual(e.toString(), 'Illegal argument in function MyFunction');
     });
 });
 
@@ -38,9 +38,9 @@ describe('Invalid argument exception', () => {
 describe('Invalid FEN exception', () => {
 
     function testInvalidFEN(e, expectedFEN, expectedMessage) {
-        test.value(e.fen).is(expectedFEN);
-        test.value(e.message).is(expectedMessage);
-        test.value(e.toString()).is('InvalidFEN -> ' + expectedMessage);
+        assert.deepEqual(e.fen, expectedFEN);
+        assert.deepEqual(e.message, expectedMessage);
+        assert.deepEqual(e.toString(), 'InvalidFEN -> ' + expectedMessage);
     }
 
     it('No-argument message', () => {
@@ -61,10 +61,10 @@ describe('Invalid FEN exception', () => {
 describe('Invalid notation exception', () => {
 
     function testInvalidNotation(e, expectedFEN, expectedNotation, expectedMessage) {
-        test.value(e.fen).is(expectedFEN);
-        test.value(e.notation).is(expectedNotation);
-        test.value(e.message).is(expectedMessage);
-        test.value(e.toString()).is('InvalidNotation -> ' + expectedMessage);
+        assert.deepEqual(e.fen, expectedFEN);
+        assert.deepEqual(e.notation, expectedNotation);
+        assert.deepEqual(e.message, expectedMessage);
+        assert.deepEqual(e.toString(), 'InvalidNotation -> ' + expectedMessage);
     }
 
     it('No-argument message', () => {
@@ -89,11 +89,11 @@ describe('Invalid notation exception', () => {
 describe('Invalid PGN exception', () => {
 
     function testInvalidPGN(e, expectedPGN, expectedIndex, expectedLineNumber, expectedMessagePrefix, expectedMessage) {
-        test.value(e.pgn).is(expectedPGN);
-        test.value(e.index).is(expectedIndex);
-        test.value(e.lineNumber).is(expectedLineNumber);
-        test.value(e.message).is(expectedMessage);
-        test.value(e.toString()).is('InvalidPGN -> ' + expectedMessagePrefix + ' ' + expectedMessage);
+        assert.deepEqual(e.pgn, expectedPGN);
+        assert.deepEqual(e.index, expectedIndex);
+        assert.deepEqual(e.lineNumber, expectedLineNumber);
+        assert.deepEqual(e.message, expectedMessage);
+        assert.deepEqual(e.toString(), 'InvalidPGN -> ' + expectedMessagePrefix + ' ' + expectedMessage);
     }
 
     it('No-argument message', () => {
@@ -118,10 +118,10 @@ describe('Invalid PGN exception', () => {
 describe('Invalid POJO exception', () => {
 
     function testInvalidPOJO(e, expectedPOJO, expectedFieldName, expectedMessage) {
-        test.value(e.pojo).is(expectedPOJO);
-        test.value(e.fieldName).is(expectedFieldName);
-        test.value(e.message).is(expectedMessage);
-        test.value(e.toString()).is('InvalidPOJO -> ' + expectedMessage);
+        assert.deepEqual(e.pojo, expectedPOJO);
+        assert.deepEqual(e.fieldName, expectedFieldName);
+        assert.deepEqual(e.message, expectedMessage);
+        assert.deepEqual(e.toString(), 'InvalidPOJO -> ' + expectedMessage);
     }
 
     it('No-argument message', () => {

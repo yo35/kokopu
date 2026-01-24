@@ -23,7 +23,7 @@
 
 
 const { exception, MoveDescriptor, Position, isMoveDescriptor } = require('../dist/lib/index');
-const test = require('unit.js');
+const assert = require('node:assert/strict');
 
 
 function makeDescriptor(from, to) {
@@ -53,13 +53,13 @@ function makeDescriptor(from, to) {
 
 
 describe('Illegal move', () => {
-    it('Status?', () => { test.value(makeDescriptor('c1', 'a3')).is(false); });
+    it('Status?', () => { assert.deepEqual(makeDescriptor('c1', 'a3'), false); });
 });
 
 
 function testIsMoveDescriptor(descriptor) {
-    test.value(descriptor).isInstanceOf(MoveDescriptor);
-    test.value(isMoveDescriptor(descriptor)).is(true);
+    assert(descriptor instanceof MoveDescriptor);
+    assert.deepEqual(isMoveDescriptor(descriptor), true);
 }
 
 
@@ -68,7 +68,7 @@ describe('Normal move', () => {
     function itDescriptor(label, action) {
         it(label, () => {
             const preDescriptor = makeDescriptor('b1', 'a3');
-            test.value(preDescriptor.status).is('regular');
+            assert.deepEqual(preDescriptor.status, 'regular');
             const descriptor = preDescriptor();
             action(descriptor);
         });
@@ -77,24 +77,24 @@ describe('Normal move', () => {
     /* eslint-disable @stylistic/comma-spacing, @stylistic/no-multi-spaces */
 
     itDescriptor('Is descriptor?', testIsMoveDescriptor);
-    itDescriptor('Is castling?'  , descriptor => test.value(descriptor.isCastling()).is(false));
-    itDescriptor('Is en-passant?', descriptor => test.value(descriptor.isEnPassant()).is(false));
-    itDescriptor('Is capture?'   , descriptor => test.value(descriptor.isCapture()).is(false));
-    itDescriptor('Is promotion?' , descriptor => test.value(descriptor.isPromotion()).is(false));
+    itDescriptor('Is castling?'  , descriptor => assert.deepEqual(descriptor.isCastling(), false));
+    itDescriptor('Is en-passant?', descriptor => assert.deepEqual(descriptor.isEnPassant(), false));
+    itDescriptor('Is capture?'   , descriptor => assert.deepEqual(descriptor.isCapture(), false));
+    itDescriptor('Is promotion?' , descriptor => assert.deepEqual(descriptor.isPromotion(), false));
 
-    itDescriptor('Square from'           , descriptor => test.value(descriptor.from()).is('b1'));
-    itDescriptor('Square to'             , descriptor => test.value(descriptor.to()).is('a3'));
-    itDescriptor('Color'                 , descriptor => test.value(descriptor.color()).is('w'));
-    itDescriptor('Moving piece'          , descriptor => test.value(descriptor.movingPiece()).is('n'));
-    itDescriptor('Moving colored piece'  , descriptor => test.value(descriptor.movingColoredPiece()).is('wn'));
-    itDescriptor('Captured piece'        , descriptor => test.exception(() => descriptor.capturedPiece()).isInstanceOf(exception.IllegalArgument));
-    itDescriptor('Captured colored piece', descriptor => test.exception(() => descriptor.capturedColoredPiece()).isInstanceOf(exception.IllegalArgument));
-    itDescriptor('Rook from'             , descriptor => test.exception(() => descriptor.rookFrom()).isInstanceOf(exception.IllegalArgument));
-    itDescriptor('Rook to'               , descriptor => test.exception(() => descriptor.rookTo()).isInstanceOf(exception.IllegalArgument));
-    itDescriptor('En-passant square'     , descriptor => test.exception(() => descriptor.enPassantSquare()).isInstanceOf(exception.IllegalArgument));
-    itDescriptor('Promotion'             , descriptor => test.exception(() => descriptor.promotion()).isInstanceOf(exception.IllegalArgument));
-    itDescriptor('Colored promotion'     , descriptor => test.exception(() => descriptor.coloredPromotion()).isInstanceOf(exception.IllegalArgument));
-    itDescriptor('To string'             , descriptor => test.value(descriptor.toString()).is('b1a3'));
+    itDescriptor('Square from'           , descriptor => assert.deepEqual(descriptor.from(), 'b1'));
+    itDescriptor('Square to'             , descriptor => assert.deepEqual(descriptor.to(), 'a3'));
+    itDescriptor('Color'                 , descriptor => assert.deepEqual(descriptor.color(), 'w'));
+    itDescriptor('Moving piece'          , descriptor => assert.deepEqual(descriptor.movingPiece(), 'n'));
+    itDescriptor('Moving colored piece'  , descriptor => assert.deepEqual(descriptor.movingColoredPiece(), 'wn'));
+    itDescriptor('Captured piece'        , descriptor => assert.throws(() => descriptor.capturedPiece(), exception.IllegalArgument));
+    itDescriptor('Captured colored piece', descriptor => assert.throws(() => descriptor.capturedColoredPiece(), exception.IllegalArgument));
+    itDescriptor('Rook from'             , descriptor => assert.throws(() => descriptor.rookFrom(), exception.IllegalArgument));
+    itDescriptor('Rook to'               , descriptor => assert.throws(() => descriptor.rookTo(), exception.IllegalArgument));
+    itDescriptor('En-passant square'     , descriptor => assert.throws(() => descriptor.enPassantSquare(), exception.IllegalArgument));
+    itDescriptor('Promotion'             , descriptor => assert.throws(() => descriptor.promotion(), exception.IllegalArgument));
+    itDescriptor('Colored promotion'     , descriptor => assert.throws(() => descriptor.coloredPromotion(), exception.IllegalArgument));
+    itDescriptor('To string'             , descriptor => assert.deepEqual(descriptor.toString(), 'b1a3'));
 
     /* eslint-enable */
 });
@@ -105,7 +105,7 @@ describe('Normal move with capture', () => {
     function itDescriptor(label, action) {
         it(label, () => {
             const preDescriptor = makeDescriptor('c3', 'c7');
-            test.value(preDescriptor.status).is('regular');
+            assert.deepEqual(preDescriptor.status, 'regular');
             const descriptor = preDescriptor();
             action(descriptor);
         });
@@ -114,24 +114,24 @@ describe('Normal move with capture', () => {
     /* eslint-disable @stylistic/comma-spacing, @stylistic/no-multi-spaces */
 
     itDescriptor('Is descriptor?', testIsMoveDescriptor);
-    itDescriptor('Is castling?'  , descriptor => test.value(descriptor.isCastling()).is(false));
-    itDescriptor('Is en-passant?', descriptor => test.value(descriptor.isEnPassant()).is(false));
-    itDescriptor('Is capture?'   , descriptor => test.value(descriptor.isCapture()).is(true));
-    itDescriptor('Is promotion?' , descriptor => test.value(descriptor.isPromotion()).is(false));
+    itDescriptor('Is castling?'  , descriptor => assert.deepEqual(descriptor.isCastling(), false));
+    itDescriptor('Is en-passant?', descriptor => assert.deepEqual(descriptor.isEnPassant(), false));
+    itDescriptor('Is capture?'   , descriptor => assert.deepEqual(descriptor.isCapture(), true));
+    itDescriptor('Is promotion?' , descriptor => assert.deepEqual(descriptor.isPromotion(), false));
 
-    itDescriptor('Square from'           , descriptor => test.value(descriptor.from()).is('c3'));
-    itDescriptor('Square to'             , descriptor => test.value(descriptor.to()).is('c7'));
-    itDescriptor('Color'                 , descriptor => test.value(descriptor.color()).is('w'));
-    itDescriptor('Moving piece'          , descriptor => test.value(descriptor.movingPiece()).is('q'));
-    itDescriptor('Moving colored piece'  , descriptor => test.value(descriptor.movingColoredPiece()).is('wq'));
-    itDescriptor('Captured piece'        , descriptor => test.value(descriptor.capturedPiece()).is('q'));
-    itDescriptor('Captured colored piece', descriptor => test.value(descriptor.capturedColoredPiece()).is('bq'));
-    itDescriptor('Rook from'             , descriptor => test.exception(() => descriptor.rookFrom()).isInstanceOf(exception.IllegalArgument));
-    itDescriptor('Rook to'               , descriptor => test.exception(() => descriptor.rookTo()).isInstanceOf(exception.IllegalArgument));
-    itDescriptor('En-passant square'     , descriptor => test.exception(() => descriptor.enPassantSquare()).isInstanceOf(exception.IllegalArgument));
-    itDescriptor('Promotion'             , descriptor => test.exception(() => descriptor.promotion()).isInstanceOf(exception.IllegalArgument));
-    itDescriptor('Colored promotion'     , descriptor => test.exception(() => descriptor.coloredPromotion()).isInstanceOf(exception.IllegalArgument));
-    itDescriptor('To string'             , descriptor => test.value(descriptor.toString()).is('c3c7'));
+    itDescriptor('Square from'           , descriptor => assert.deepEqual(descriptor.from(), 'c3'));
+    itDescriptor('Square to'             , descriptor => assert.deepEqual(descriptor.to(), 'c7'));
+    itDescriptor('Color'                 , descriptor => assert.deepEqual(descriptor.color(), 'w'));
+    itDescriptor('Moving piece'          , descriptor => assert.deepEqual(descriptor.movingPiece(), 'q'));
+    itDescriptor('Moving colored piece'  , descriptor => assert.deepEqual(descriptor.movingColoredPiece(), 'wq'));
+    itDescriptor('Captured piece'        , descriptor => assert.deepEqual(descriptor.capturedPiece(), 'q'));
+    itDescriptor('Captured colored piece', descriptor => assert.deepEqual(descriptor.capturedColoredPiece(), 'bq'));
+    itDescriptor('Rook from'             , descriptor => assert.throws(() => descriptor.rookFrom(), exception.IllegalArgument));
+    itDescriptor('Rook to'               , descriptor => assert.throws(() => descriptor.rookTo(), exception.IllegalArgument));
+    itDescriptor('En-passant square'     , descriptor => assert.throws(() => descriptor.enPassantSquare(), exception.IllegalArgument));
+    itDescriptor('Promotion'             , descriptor => assert.throws(() => descriptor.promotion(), exception.IllegalArgument));
+    itDescriptor('Colored promotion'     , descriptor => assert.throws(() => descriptor.coloredPromotion(), exception.IllegalArgument));
+    itDescriptor('To string'             , descriptor => assert.deepEqual(descriptor.toString(), 'c3c7'));
 
     /* eslint-enable */
 });
@@ -142,7 +142,7 @@ describe('Castling move', () => {
     function itDescriptor(label, action) {
         it(label, () => {
             const preDescriptor = makeDescriptor('e1', 'g1');
-            test.value(preDescriptor.status).is('regular');
+            assert.deepEqual(preDescriptor.status, 'regular');
             const descriptor = preDescriptor();
             action(descriptor);
         });
@@ -151,24 +151,24 @@ describe('Castling move', () => {
     /* eslint-disable @stylistic/comma-spacing, @stylistic/no-multi-spaces */
 
     itDescriptor('Is descriptor?', testIsMoveDescriptor);
-    itDescriptor('Is castling?'  , descriptor => test.value(descriptor.isCastling()).is(true));
-    itDescriptor('Is en-passant?', descriptor => test.value(descriptor.isEnPassant()).is(false));
-    itDescriptor('Is capture?'   , descriptor => test.value(descriptor.isCapture()).is(false));
-    itDescriptor('Is promotion?' , descriptor => test.value(descriptor.isPromotion()).is(false));
+    itDescriptor('Is castling?'  , descriptor => assert.deepEqual(descriptor.isCastling(), true));
+    itDescriptor('Is en-passant?', descriptor => assert.deepEqual(descriptor.isEnPassant(), false));
+    itDescriptor('Is capture?'   , descriptor => assert.deepEqual(descriptor.isCapture(), false));
+    itDescriptor('Is promotion?' , descriptor => assert.deepEqual(descriptor.isPromotion(), false));
 
-    itDescriptor('Square from'           , descriptor => test.value(descriptor.from()).is('e1'));
-    itDescriptor('Square to'             , descriptor => test.value(descriptor.to()).is('g1'));
-    itDescriptor('Color'                 , descriptor => test.value(descriptor.color()).is('w'));
-    itDescriptor('Moving piece'          , descriptor => test.value(descriptor.movingPiece()).is('k'));
-    itDescriptor('Moving colored piece'  , descriptor => test.value(descriptor.movingColoredPiece()).is('wk'));
-    itDescriptor('Captured piece'        , descriptor => test.exception(() => descriptor.capturedPiece()).isInstanceOf(exception.IllegalArgument));
-    itDescriptor('Captured colored piece', descriptor => test.exception(() => descriptor.capturedColoredPiece()).isInstanceOf(exception.IllegalArgument));
-    itDescriptor('Rook from'             , descriptor => test.value(descriptor.rookFrom()).is('h1'));
-    itDescriptor('Rook to'               , descriptor => test.value(descriptor.rookTo()).is('f1'));
-    itDescriptor('En-passant square'     , descriptor => test.exception(() => descriptor.enPassantSquare()).isInstanceOf(exception.IllegalArgument));
-    itDescriptor('Promotion'             , descriptor => test.exception(() => descriptor.promotion()).isInstanceOf(exception.IllegalArgument));
-    itDescriptor('Colored promotion'     , descriptor => test.exception(() => descriptor.coloredPromotion()).isInstanceOf(exception.IllegalArgument));
-    itDescriptor('To string'             , descriptor => test.value(descriptor.toString()).is('e1g1O'));
+    itDescriptor('Square from'           , descriptor => assert.deepEqual(descriptor.from(), 'e1'));
+    itDescriptor('Square to'             , descriptor => assert.deepEqual(descriptor.to(), 'g1'));
+    itDescriptor('Color'                 , descriptor => assert.deepEqual(descriptor.color(), 'w'));
+    itDescriptor('Moving piece'          , descriptor => assert.deepEqual(descriptor.movingPiece(), 'k'));
+    itDescriptor('Moving colored piece'  , descriptor => assert.deepEqual(descriptor.movingColoredPiece(), 'wk'));
+    itDescriptor('Captured piece'        , descriptor => assert.throws(() => descriptor.capturedPiece(), exception.IllegalArgument));
+    itDescriptor('Captured colored piece', descriptor => assert.throws(() => descriptor.capturedColoredPiece(), exception.IllegalArgument));
+    itDescriptor('Rook from'             , descriptor => assert.deepEqual(descriptor.rookFrom(), 'h1'));
+    itDescriptor('Rook to'               , descriptor => assert.deepEqual(descriptor.rookTo(), 'f1'));
+    itDescriptor('En-passant square'     , descriptor => assert.throws(() => descriptor.enPassantSquare(), exception.IllegalArgument));
+    itDescriptor('Promotion'             , descriptor => assert.throws(() => descriptor.promotion(), exception.IllegalArgument));
+    itDescriptor('Colored promotion'     , descriptor => assert.throws(() => descriptor.coloredPromotion(), exception.IllegalArgument));
+    itDescriptor('To string'             , descriptor => assert.deepEqual(descriptor.toString(), 'e1g1O'));
 
     /* eslint-enable */
 });
@@ -179,7 +179,7 @@ describe('En-passant move', () => {
     function itDescriptor(label, action) {
         it(label, () => {
             const preDescriptor = makeDescriptor('g5', 'f6');
-            test.value(preDescriptor.status).is('regular');
+            assert.deepEqual(preDescriptor.status, 'regular');
             const descriptor = preDescriptor();
             action(descriptor);
         });
@@ -188,24 +188,24 @@ describe('En-passant move', () => {
     /* eslint-disable @stylistic/comma-spacing, @stylistic/no-multi-spaces */
 
     itDescriptor('Is descriptor?', testIsMoveDescriptor);
-    itDescriptor('Is castling?'  , descriptor => test.value(descriptor.isCastling()).is(false));
-    itDescriptor('Is en-passant?', descriptor => test.value(descriptor.isEnPassant()).is(true));
-    itDescriptor('Is capture?'   , descriptor => test.value(descriptor.isCapture()).is(true));
-    itDescriptor('Is promotion?' , descriptor => test.value(descriptor.isPromotion()).is(false));
+    itDescriptor('Is castling?'  , descriptor => assert.deepEqual(descriptor.isCastling(), false));
+    itDescriptor('Is en-passant?', descriptor => assert.deepEqual(descriptor.isEnPassant(), true));
+    itDescriptor('Is capture?'   , descriptor => assert.deepEqual(descriptor.isCapture(), true));
+    itDescriptor('Is promotion?' , descriptor => assert.deepEqual(descriptor.isPromotion(), false));
 
-    itDescriptor('Square from'           , descriptor => test.value(descriptor.from()).is('g5'));
-    itDescriptor('Square to'             , descriptor => test.value(descriptor.to()).is('f6'));
-    itDescriptor('Color'                 , descriptor => test.value(descriptor.color()).is('w'));
-    itDescriptor('Moving piece'          , descriptor => test.value(descriptor.movingPiece()).is('p'));
-    itDescriptor('Moving colored piece'  , descriptor => test.value(descriptor.movingColoredPiece()).is('wp'));
-    itDescriptor('Captured piece'        , descriptor => test.value(descriptor.capturedPiece()).is('p'));
-    itDescriptor('Captured colored piece', descriptor => test.value(descriptor.capturedColoredPiece()).is('bp'));
-    itDescriptor('Rook from'             , descriptor => test.exception(() => descriptor.rookFrom()).isInstanceOf(exception.IllegalArgument));
-    itDescriptor('Rook to'               , descriptor => test.exception(() => descriptor.rookTo()).isInstanceOf(exception.IllegalArgument));
-    itDescriptor('En-passant square'     , descriptor => test.value(descriptor.enPassantSquare()).is('f5'));
-    itDescriptor('Promotion'             , descriptor => test.exception(() => descriptor.promotion()).isInstanceOf(exception.IllegalArgument));
-    itDescriptor('Colored promotion'     , descriptor => test.exception(() => descriptor.coloredPromotion()).isInstanceOf(exception.IllegalArgument));
-    itDescriptor('To string'             , descriptor => test.value(descriptor.toString()).is('g5f6'));
+    itDescriptor('Square from'           , descriptor => assert.deepEqual(descriptor.from(), 'g5'));
+    itDescriptor('Square to'             , descriptor => assert.deepEqual(descriptor.to(), 'f6'));
+    itDescriptor('Color'                 , descriptor => assert.deepEqual(descriptor.color(), 'w'));
+    itDescriptor('Moving piece'          , descriptor => assert.deepEqual(descriptor.movingPiece(), 'p'));
+    itDescriptor('Moving colored piece'  , descriptor => assert.deepEqual(descriptor.movingColoredPiece(), 'wp'));
+    itDescriptor('Captured piece'        , descriptor => assert.deepEqual(descriptor.capturedPiece(), 'p'));
+    itDescriptor('Captured colored piece', descriptor => assert.deepEqual(descriptor.capturedColoredPiece(), 'bp'));
+    itDescriptor('Rook from'             , descriptor => assert.throws(() => descriptor.rookFrom(), exception.IllegalArgument));
+    itDescriptor('Rook to'               , descriptor => assert.throws(() => descriptor.rookTo(), exception.IllegalArgument));
+    itDescriptor('En-passant square'     , descriptor => assert.deepEqual(descriptor.enPassantSquare(), 'f5'));
+    itDescriptor('Promotion'             , descriptor => assert.throws(() => descriptor.promotion(), exception.IllegalArgument));
+    itDescriptor('Colored promotion'     , descriptor => assert.throws(() => descriptor.coloredPromotion(), exception.IllegalArgument));
+    itDescriptor('To string'             , descriptor => assert.deepEqual(descriptor.toString(), 'g5f6'));
 
     /* eslint-enable */
 });
@@ -216,7 +216,7 @@ describe('Promotion move', () => {
     function itDescriptor(label, action) {
         it(label, () => {
             const preDescriptor = makeDescriptor('a7', 'a8');
-            test.value(preDescriptor.status).is('promotion');
+            assert.deepEqual(preDescriptor.status, 'promotion');
             const descriptor = preDescriptor('q');
             action(descriptor);
         });
@@ -225,24 +225,24 @@ describe('Promotion move', () => {
     /* eslint-disable @stylistic/comma-spacing, @stylistic/no-multi-spaces */
 
     itDescriptor('Is descriptor?', testIsMoveDescriptor);
-    itDescriptor('Is castling?'  , descriptor => test.value(descriptor.isCastling()).is(false));
-    itDescriptor('Is en-passant?', descriptor => test.value(descriptor.isEnPassant()).is(false));
-    itDescriptor('Is capture?'   , descriptor => test.value(descriptor.isCapture()).is(false));
-    itDescriptor('Is promotion?' , descriptor => test.value(descriptor.isPromotion()).is(true));
+    itDescriptor('Is castling?'  , descriptor => assert.deepEqual(descriptor.isCastling(), false));
+    itDescriptor('Is en-passant?', descriptor => assert.deepEqual(descriptor.isEnPassant(), false));
+    itDescriptor('Is capture?'   , descriptor => assert.deepEqual(descriptor.isCapture(), false));
+    itDescriptor('Is promotion?' , descriptor => assert.deepEqual(descriptor.isPromotion(), true));
 
-    itDescriptor('Square from'           , descriptor => test.value(descriptor.from()).is('a7'));
-    itDescriptor('Square to'             , descriptor => test.value(descriptor.to()).is('a8'));
-    itDescriptor('Color'                 , descriptor => test.value(descriptor.color()).is('w'));
-    itDescriptor('Moving piece'          , descriptor => test.value(descriptor.movingPiece()).is('p'));
-    itDescriptor('Moving colored piece'  , descriptor => test.value(descriptor.movingColoredPiece()).is('wp'));
-    itDescriptor('Captured piece'        , descriptor => test.exception(() => descriptor.capturedPiece()).isInstanceOf(exception.IllegalArgument));
-    itDescriptor('Captured colored piece', descriptor => test.exception(() => descriptor.capturedColoredPiece()).isInstanceOf(exception.IllegalArgument));
-    itDescriptor('Rook from'             , descriptor => test.exception(() => descriptor.rookFrom()).isInstanceOf(exception.IllegalArgument));
-    itDescriptor('Rook to'               , descriptor => test.exception(() => descriptor.rookTo()).isInstanceOf(exception.IllegalArgument));
-    itDescriptor('En-passant square'     , descriptor => test.exception(() => descriptor.enPassantSquare()).isInstanceOf(exception.IllegalArgument));
-    itDescriptor('Promotion'             , descriptor => test.value(descriptor.promotion()).is('q'));
-    itDescriptor('Colored promotion'     , descriptor => test.value(descriptor.coloredPromotion()).is('wq'));
-    itDescriptor('To string'             , descriptor => test.value(descriptor.toString()).is('a7a8Q'));
+    itDescriptor('Square from'           , descriptor => assert.deepEqual(descriptor.from(), 'a7'));
+    itDescriptor('Square to'             , descriptor => assert.deepEqual(descriptor.to(), 'a8'));
+    itDescriptor('Color'                 , descriptor => assert.deepEqual(descriptor.color(), 'w'));
+    itDescriptor('Moving piece'          , descriptor => assert.deepEqual(descriptor.movingPiece(), 'p'));
+    itDescriptor('Moving colored piece'  , descriptor => assert.deepEqual(descriptor.movingColoredPiece(), 'wp'));
+    itDescriptor('Captured piece'        , descriptor => assert.throws(() => descriptor.capturedPiece(), exception.IllegalArgument));
+    itDescriptor('Captured colored piece', descriptor => assert.throws(() => descriptor.capturedColoredPiece(), exception.IllegalArgument));
+    itDescriptor('Rook from'             , descriptor => assert.throws(() => descriptor.rookFrom(), exception.IllegalArgument));
+    itDescriptor('Rook to'               , descriptor => assert.throws(() => descriptor.rookTo(), exception.IllegalArgument));
+    itDescriptor('En-passant square'     , descriptor => assert.throws(() => descriptor.enPassantSquare(), exception.IllegalArgument));
+    itDescriptor('Promotion'             , descriptor => assert.deepEqual(descriptor.promotion(), 'q'));
+    itDescriptor('Colored promotion'     , descriptor => assert.deepEqual(descriptor.coloredPromotion(), 'wq'));
+    itDescriptor('To string'             , descriptor => assert.deepEqual(descriptor.toString(), 'a7a8Q'));
 
     /* eslint-enable */
 });
@@ -253,7 +253,7 @@ describe('Promotion move with capture', () => {
     function itDescriptor(label, action) {
         it(label, () => {
             const preDescriptor = makeDescriptor('a7', 'b8');
-            test.value(preDescriptor.status).is('promotion');
+            assert.deepEqual(preDescriptor.status, 'promotion');
             const descriptor = preDescriptor('r');
             action(descriptor);
         });
@@ -262,24 +262,24 @@ describe('Promotion move with capture', () => {
     /* eslint-disable @stylistic/comma-spacing, @stylistic/no-multi-spaces */
 
     itDescriptor('Is descriptor?', testIsMoveDescriptor);
-    itDescriptor('Is castling?'  , descriptor => test.value(descriptor.isCastling()).is(false));
-    itDescriptor('Is en-passant?', descriptor => test.value(descriptor.isEnPassant()).is(false));
-    itDescriptor('Is capture?'   , descriptor => test.value(descriptor.isCapture()).is(true));
-    itDescriptor('Is promotion?' , descriptor => test.value(descriptor.isPromotion()).is(true));
+    itDescriptor('Is castling?'  , descriptor => assert.deepEqual(descriptor.isCastling(), false));
+    itDescriptor('Is en-passant?', descriptor => assert.deepEqual(descriptor.isEnPassant(), false));
+    itDescriptor('Is capture?'   , descriptor => assert.deepEqual(descriptor.isCapture(), true));
+    itDescriptor('Is promotion?' , descriptor => assert.deepEqual(descriptor.isPromotion(), true));
 
-    itDescriptor('Square from'           , descriptor => test.value(descriptor.from()).is('a7'));
-    itDescriptor('Square to'             , descriptor => test.value(descriptor.to()).is('b8'));
-    itDescriptor('Color'                 , descriptor => test.value(descriptor.color()).is('w'));
-    itDescriptor('Moving piece'          , descriptor => test.value(descriptor.movingPiece()).is('p'));
-    itDescriptor('Moving colored piece'  , descriptor => test.value(descriptor.movingColoredPiece()).is('wp'));
-    itDescriptor('Captured piece'        , descriptor => test.value(descriptor.capturedPiece()).is('n'));
-    itDescriptor('Captured colored piece', descriptor => test.value(descriptor.capturedColoredPiece()).is('bn'));
-    itDescriptor('Rook from'             , descriptor => test.exception(() => descriptor.rookFrom()).isInstanceOf(exception.IllegalArgument));
-    itDescriptor('Rook to'               , descriptor => test.exception(() => descriptor.rookTo()).isInstanceOf(exception.IllegalArgument));
-    itDescriptor('En-passant square'     , descriptor => test.exception(() => descriptor.enPassantSquare()).isInstanceOf(exception.IllegalArgument));
-    itDescriptor('Promotion'             , descriptor => test.value(descriptor.promotion()).is('r'));
-    itDescriptor('Colored promotion'     , descriptor => test.value(descriptor.coloredPromotion()).is('wr'));
-    itDescriptor('To string'             , descriptor => test.value(descriptor.toString()).is('a7b8R'));
+    itDescriptor('Square from'           , descriptor => assert.deepEqual(descriptor.from(), 'a7'));
+    itDescriptor('Square to'             , descriptor => assert.deepEqual(descriptor.to(), 'b8'));
+    itDescriptor('Color'                 , descriptor => assert.deepEqual(descriptor.color(), 'w'));
+    itDescriptor('Moving piece'          , descriptor => assert.deepEqual(descriptor.movingPiece(), 'p'));
+    itDescriptor('Moving colored piece'  , descriptor => assert.deepEqual(descriptor.movingColoredPiece(), 'wp'));
+    itDescriptor('Captured piece'        , descriptor => assert.deepEqual(descriptor.capturedPiece(), 'n'));
+    itDescriptor('Captured colored piece', descriptor => assert.deepEqual(descriptor.capturedColoredPiece(), 'bn'));
+    itDescriptor('Rook from'             , descriptor => assert.throws(() => descriptor.rookFrom(), exception.IllegalArgument));
+    itDescriptor('Rook to'               , descriptor => assert.throws(() => descriptor.rookTo(), exception.IllegalArgument));
+    itDescriptor('En-passant square'     , descriptor => assert.throws(() => descriptor.enPassantSquare(), exception.IllegalArgument));
+    itDescriptor('Promotion'             , descriptor => assert.deepEqual(descriptor.promotion(), 'r'));
+    itDescriptor('Colored promotion'     , descriptor => assert.deepEqual(descriptor.coloredPromotion(), 'wr'));
+    itDescriptor('To string'             , descriptor => assert.deepEqual(descriptor.toString(), 'a7b8R'));
 
     /* eslint-enable */
 });

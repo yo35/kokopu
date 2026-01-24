@@ -27,7 +27,7 @@ const dumpGame = require('./common/dumpgame');
 const readCSV = require('./common/readcsv');
 const readText = require('./common/readtext');
 const resourceExists = require('./common/resourceexists');
-const test = require('unit.js');
+const assert = require('node:assert/strict');
 
 
 function testData() {
@@ -91,8 +91,8 @@ describe('Read PGN - Game count', () => {
     for (const elem of testData()) {
         it('File ' + elem.label, () => {
             const database = pgnRead(elem.pgn);
-            test.value(database).isInstanceOf(Database);
-            test.value(database.gameCount()).is(elem.gameCount);
+            assert(database instanceof Database);
+            assert.deepEqual(database.gameCount(), elem.gameCount);
         });
     }
 });
@@ -104,17 +104,19 @@ function itCheckPgnItem(label, pgnName, gameIndex, loader) {
         // TXT type => ensure that the item is valid, and compare its dump result to the descriptor.
         if (getItemType(pgnName, gameIndex) === 'txt') {
             const expectedDescriptor = loadValidItemDescriptor(pgnName, gameIndex);
-            test.value(dumpGame(loader(gameIndex)).trim()).is(expectedDescriptor);
+            assert.deepEqual(dumpGame(loader(gameIndex)).trim(), expectedDescriptor);
         }
 
         // ERR type => ensure that an exception is thrown, and check its attributes.
         else {
             const expectedDescriptor = loadErrorItemDescriptor(pgnName, gameIndex);
-            test.exception(() => loader(gameIndex))
-                .isInstanceOf(exception.InvalidPGN)
-                .hasProperty('index', expectedDescriptor.index)
-                .hasProperty('lineNumber', expectedDescriptor.lineNumber)
-                .hasProperty('message', expectedDescriptor.message);
+            assert.throws(() => loader(gameIndex), e => {
+                assert(e instanceof exception.InvalidPGN);
+                assert.deepEqual(e.index, expectedDescriptor.index);
+                assert.deepEqual(e.lineNumber, expectedDescriptor.lineNumber);
+                assert.deepEqual(e.message, expectedDescriptor.message);
+                return true;
+            });
         }
     });
 }
@@ -174,26 +176,30 @@ describe('Read PGN - Wrong game index', () => {
             const pgn = readText(`pgns/${pgnName}/database.pgn`);
             const database = pgnRead(pgn);
             if (invalidPGNExpected) {
-                test.exception(() => database.game(gameIndex))
-                    .isInstanceOf(exception.InvalidPGN)
-                    .hasProperty('pgn', pgn)
-                    .hasProperty('message', `Game index ${gameIndex} is invalid (only ${gameCount} game(s) found in the PGN data).`);
+                assert.throws(() => database.game(gameIndex), e => {
+                    assert(e instanceof exception.InvalidPGN);
+                    assert.deepEqual(e.pgn, pgn);
+                    assert.deepEqual(e.message, `Game index ${gameIndex} is invalid (only ${gameCount} game(s) found in the PGN data).`);
+                    return true;
+                });
             }
             else {
-                test.exception(() => database.game(gameIndex)).isInstanceOf(exception.IllegalArgument);
+                assert.throws(() => database.game(gameIndex), exception.IllegalArgument);
             }
         });
 
         it('Direct access - ' + label, () => {
             const pgn = readText(`pgns/${pgnName}/database.pgn`);
             if (invalidPGNExpected) {
-                test.exception(() => pgnRead(pgn, gameIndex))
-                    .isInstanceOf(exception.InvalidPGN)
-                    .hasProperty('pgn', pgn)
-                    .hasProperty('message', `Game index ${gameIndex} is invalid (only ${gameCount} game(s) found in the PGN data).`);
+                assert.throws(() => pgnRead(pgn, gameIndex), e => {
+                    assert(e instanceof exception.InvalidPGN);
+                    assert.deepEqual(e.pgn, pgn);
+                    assert.deepEqual(e.message, `Game index ${gameIndex} is invalid (only ${gameCount} game(s) found in the PGN data).`);
+                    return true;
+                });
             }
             else {
-                test.exception(() => pgnRead(pgn, gameIndex)).isInstanceOf(exception.IllegalArgument);
+                assert.throws(() => pgnRead(pgn, gameIndex), exception.IllegalArgument);
             }
         });
     }
@@ -226,7 +232,7 @@ describe('Read PGN - Database iterator', () => {
                 }
 
                 const expectedDescriptor = loadValidItemDescriptor(pgnName, gameIndex++);
-                test.value(dumpGame(game).trim()).is(expectedDescriptor);
+                assert.deepEqual(dumpGame(game).trim(), expectedDescriptor);
             }
 
             // Skip the remaining unparsable items.
@@ -234,7 +240,7 @@ describe('Read PGN - Database iterator', () => {
                 gameIndex++;
             }
 
-            test.value(gameIndex).is(expectedGameCount);
+            assert.deepEqual(gameIndex, expectedGameCount);
         });
     }
 
