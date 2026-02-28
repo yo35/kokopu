@@ -225,7 +225,7 @@ export function parseNotation(position: PositionImpl, notation: string, strict: 
     // OTHER
     // m[13] -> +/# (check/checkmate symbol)
 
-    let descriptor: MoveDescriptorImpl | false = false;
+    let descriptor: MoveDescriptorImpl;
 
     // Parse castling moves
     if (m[1] !== undefined || m[2] !== undefined) {

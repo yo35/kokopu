@@ -438,8 +438,8 @@ export function isCaptureMandatory(position: PositionImpl) {
  */
 export function isCastlingMoveLegal(position: PositionImpl, from: number, to: number): MoveDescriptorImpl | false {
 
-    let rookFrom = -1;
-    let rookTo = -1;
+    let rookFrom: number;
+    let rookTo: number;
 
     // Validate `from` and `to`, check the castling flags, and compute the origin and destination squares of the rook.
     if (position.variant === GameVariantImpl.CHESS960) {

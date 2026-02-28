@@ -95,7 +95,7 @@ export function parseUCINotation(position: PositionImpl, notation: string, stric
 
     // Perform move analysis.
     const candidate = isMoveLegal(position, from, to);
-    let result: MoveDescriptorImpl | false = false;
+    let result: MoveDescriptorImpl | false;
 
     // No legal move.
     if (!candidate) {

@@ -589,9 +589,7 @@ describe('Invalid findById', () => {
         it(label, () => {
 
             const game = new Game();
-            let current = game.mainVariation();
-            current = current.play('e4');
-            current = current.play('e5');
+            const current = game.mainVariation().play('e4').play('e5');
 
             const alternative1 = current.addVariation();
             alternative1.play('c5').play('Nf3');
@@ -599,11 +597,7 @@ describe('Invalid findById', () => {
             const alternative2 = current.addVariation();
             alternative2.play('e6').play('d4');
 
-            current = current.play('Bc4');
-            current = current.play('Nc6');
-            current = current.play('Qh5');
-            current = current.play('Nf6');
-            current = current.play('Qxf7#');
+            current.play('Bc4').play('Nc6').play('Qh5').play('Nf6').play('Qxf7#');
             game.result('1-0');
 
             assert.deepEqual(game.findById(id), undefined);
@@ -624,17 +618,13 @@ describe('FindById with aliases', () => {
 
     function buildGame() {
         const game = new Game();
-        let current = game.mainVariation();
-        current = current.play('e4');
-        current = current.play('e5');
+        const current = game.mainVariation().play('e4').play('e5');
 
         current.addVariation();
         const alternative2 = current.addVariation();
         alternative2.play('e6').play('d4');
 
-        current = current.play('Bc4');
-        current = current.play('Nc6');
-        current = current.play('Qh5');
+        current.play('Bc4').play('Nc6').play('Qh5');
 
         return game;
     }
@@ -708,9 +698,7 @@ describe('Following ID', () => {
 
     itFollowingID('Game with sub-variations', () => {
         const game = new Game();
-        let current = game.mainVariation();
-        current = current.play('e4');
-        current = current.play('e5');
+        const current = game.mainVariation().play('e4').play('e5');
 
         const alternative1 = current.addVariation();
         alternative1.play('c5').play('Nf3').play('d6');
@@ -718,11 +706,7 @@ describe('Following ID', () => {
         const alternative2 = current.addVariation();
         alternative2.play('e6').play('d4');
 
-        current = current.play('Bc4');
-        current = current.play('Nc6');
-        current = current.play('Qh5');
-        current = current.play('Nf6');
-        current = current.play('Qxf7#');
+        current.play('Bc4').play('Nc6').play('Qh5').play('Nf6').play('Qxf7#');
         return game;
     });
 });
