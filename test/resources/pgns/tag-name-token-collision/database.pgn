@@ -1,0 +1,47 @@
+[White "Novelty word tag"]
+[Black "Player 2"]
+[New "This is a novelty"]
+[Result "*"]
+
+1. e4 e5 *
+
+
+[White "Bare novelty NAG tag"]
+[Black "Player 2"]
+[N "novelty"]
+[Result "*"]
+
+1. d4 d5 *
+
+
+[White "Editorial NAG tag"]
+[Black "Player 2"]
+[RR "editorial comment"]
+[Result "*"]
+
+1. c4 c5 *
+
+
+[White "Piece-move-like tag"]
+[Black "Player 2"]
+[Nf3 "looks like a knight move"]
+[Result "*"]
+
+1. Nf3 Nf6 *
+
+
+[White "Pawn-move-like tag"]
+[Black "Player 2"]
+[e4 "looks like a pawn move"]
+[Result "*"]
+
+1. e4 c5 *
+
+
+[White "Player 1"]
+[Black "Player 2"]
+[Annotator "Kibitz"]
+[New "novelty alongside a recognized tag"]
+[Result "*"]
+
+1. e4 e5 *
