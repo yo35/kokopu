@@ -267,8 +267,25 @@ export class TokenStream {
         this._tokenCharacterIndex = this._pos;
         this._tokenLineIndex = this._lineIndex;
 
+        // Right after a BEGIN_HEADER token (`[`), the PGN grammar requires the header
+        // identifier (i.e. the tag name). This tokenizer is otherwise context-free and tries
+        // the move/move-number/NAG matchers first, so without this guard a tag name that happens
+        // to look like a move (e.g. `[e4 "..."]`, `[Nf3 "..."]`), a move number, or a NAG
+        // (e.g. `[N "..."]` matching the novelty NAG, `[RR "..."]` matching the editorial NAG)
+        // would be mis-tokenized, making perfectly valid tag pairs such as `[New "..."]`
+        // impossible to parse ("Missing or invalid PGN game header ID").
+        if (this._token === TokenType.BEGIN_HEADER) {
+            if (this.testAtPos(this._matchHeaderId)) {
+                this._token = TokenType.HEADER_ID;
+                this._tokenValue = this._matchHeaderId.matched![1];
+            }
+            else {
+                throw new InvalidPGN(this._text, this._pos, this._lineIndex, i18n.MISSING_PGN_HEADER_ID);
+            }
+        }
+
         // Match a move number
-        if (this.testAtPos(this._matchMoveNumber)) {
+        else if (this.testAtPos(this._matchMoveNumber)) {
             this._token = TokenType.MOVE_NUMBER;
             this._tokenValue = null;
         }
