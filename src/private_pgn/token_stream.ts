@@ -274,14 +274,9 @@ export class TokenStream {
         // (e.g. `[N "..."]` matching the novelty NAG, `[RR "..."]` matching the editorial NAG)
         // would be mis-tokenized, making perfectly valid tag pairs such as `[New "..."]`
         // impossible to parse ("Missing or invalid PGN game header ID").
-        if (this._token === TokenType.BEGIN_HEADER) {
-            if (this.testAtPos(this._matchHeaderId)) {
-                this._token = TokenType.HEADER_ID;
-                this._tokenValue = this._matchHeaderId.matched![1];
-            }
-            else {
-                throw new InvalidPGN(this._text, this._pos, this._lineIndex, i18n.MISSING_PGN_HEADER_ID);
-            }
+        if (this._token === TokenType.BEGIN_HEADER && this.testAtPos(this._matchHeaderId)) {
+            this._token = TokenType.HEADER_ID;
+            this._tokenValue = this._matchHeaderId.matched![1];
         }
 
         // Match a move number
@@ -343,12 +338,6 @@ export class TokenStream {
             this._tokenValue = null;
         }
 
-        // Match the ID of a game header
-        else if (this.testAtPos(this._matchHeaderId)) {
-            this._token = TokenType.HEADER_ID;
-            this._tokenValue = this._matchHeaderId.matched![1];
-        }
-
         // Match the value of a game header
         else if (this.testAtPos(this._matchEnterHeaderValue)) {
             if (!this.testAtPos(this._headerValueMode)) {
@@ -358,12 +347,14 @@ export class TokenStream {
             this._tokenValue = parseHeaderValue(this._headerValueMode.matched![1]);
         }
 
-        // Otherwise, the string is badly formatted with respect to the PGN syntax
+        // Otherwise, the string is badly formatted with respect to the PGN syntax.
+        // Still, do not throw immediately, to let a chance to the caller to throw a meaningful exception depending on the context.
         else {
-            throw new InvalidPGN(this._text, this._pos, this._lineIndex, i18n.INVALID_PGN_TOKEN);
+            this._token = TokenType.INVALID;
+            this._tokenValue = null;
         }
 
-        this._emptyLineAfterToken = this._token === TokenType.END_OF_GAME ? false : this.skipBlanks();
+        this._emptyLineAfterToken = this._token === TokenType.END_OF_GAME || this._token === TokenType.INVALID ? false : this.skipBlanks();
         return true;
     }
 
