@@ -52,7 +52,7 @@
         "ssh2-sftp-client": "^12.1.1",
         "tsify": "^5.0.4",
         "typedoc": "^0.28.19",
-        "typescript": "~5.9.3",
+        "typescript": "~6.0.3",
         "typescript-eslint": "^8.61.1",
         "uglify-js": "^3.19.3"
     },
