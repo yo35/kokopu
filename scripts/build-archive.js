@@ -22,7 +22,7 @@
  * -------------------------------------------------------------------------- */
 
 
-const archiver = require('archiver');
+const { ZipArchive } = require('archiver');
 const browserify = require('browserify');
 const uglify = require('uglify-js');
 const fs = require('fs');
@@ -70,7 +70,7 @@ async function buildMinifiedLib() {
 // Create the archive.
 async function buildArchive() {
     fs.mkdirSync(path.dirname(output), { recursive: true });
-    const archive = archiver('zip');
+    const archive = new ZipArchive();
     archive.pipe(fs.createWriteStream(output));
     for (const infoFile of infoFiles) {
         archive.file(infoFile, { name: path.basename(infoFile) });
