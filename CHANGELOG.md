@@ -1,6 +1,10 @@
 ChangeLog
 =========
 
+4.13.4 (July 18, 2026)
+----------------------
+* Minor fixes.
+
 4.13.3 (June 15, 2026)
 ----------------------
 * Fix minor parsing issue (see [#64](https://github.com/yo35/kokopu/issues/64)).
