@@ -44,15 +44,15 @@
         "archiver": "^8.0.0",
         "commander": "^15.0.0",
         "eslint": "^10.8.0",
-        "globals": "^17.8.0",
-        "mocha": "^11.7.6",
+        "globals": "^17.9.0",
+        "mocha": "^11.8.0",
         "nyc": "^18.0.0",
         "rimraf": "^6.1.3",
         "ssh2-sftp-client": "^12.1.1",
         "ts-loader": "^9.6.2",
         "typedoc": "^0.28.20",
         "typescript": "~6.0.3",
-        "typescript-eslint": "^8.65.0",
+        "typescript-eslint": "^8.66.0",
         "webpack": "^5.109.2"
     },
     "scripts": {
